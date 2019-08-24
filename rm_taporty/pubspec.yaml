@@ -33,7 +33,7 @@ dependencies:
   path_provider: any
 
   easy_firebase:
-    path: ../../plugins/easy_firebase
+    path: ../plugins/easy_firebase
 
   intl: ^0.15.7
 
@@ -70,17 +70,17 @@ dependencies:
   rubber: any
 
   easy_blocs:
-    path: ../../plugins/easy_blocs
+    path: ../plugins/easy_blocs
 
   easy_route:
-    path: ../../plugins/easy_route
+    path: ../plugins/easy_route
   easy_widget:
-    path: ../../plugins/easy_widget
+    path: ../plugins/easy_widget
   easy_stripe:
-    path: ../../plugins/easy_stripe
+    path: ../plugins/easy_stripe
 
   pocket_map:
-    path: ../../plugins/pocket_map
+    path: ../plugins/pocket_map
 
   dash: any
   rxdart: any

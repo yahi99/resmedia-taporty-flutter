@@ -1,0 +1,142 @@
+import 'package:easy_blocs/easy_blocs.dart';
+import 'package:easy_firebase/easy_firebase.dart';
+import 'package:easy_route/easy_route.dart';
+import 'package:easy_widget/easy_widget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:mobile_app/data/config.dart';
+import 'package:mobile_app/interface/view/logo_view.dart';
+import 'package:mobile_app/logic/bloc/UserBloc.dart';
+import 'package:mobile_app/model/UserModel.dart';
+import 'package:rxdart/rxdart.dart';
+
+class SettingsScreen extends StatefulWidget implements WidgetRoute {
+  static const ROUTE = 'SettingsScreen';
+  @override
+  String get route => ROUTE;
+
+  @override
+  _SettingsState createState() => _SettingsState();
+}
+
+class _SettingsState extends State<SettingsScreen> {
+
+  final user=UserBloc.of();
+
+  @override
+  void dispose(){
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<User>(
+        stream:user.outUser,
+        builder:(ctx,snap)
+    {
+      if(!snap.hasData) return Center(child:CircularProgressIndicator());
+      return Scaffold(
+        appBar: AppBar(
+          title: Text("Settings"),
+        ),
+        body: Padding(
+          padding:
+          const EdgeInsets.only(top: SPACE * 2),
+          child: ListView(
+            children: <Widget>[
+              Row(
+                children: <Widget>[
+                  Text('RICEVI AGGIORNAMENTI TRAMITE'),
+                ],
+              ),
+              Row(
+                children: <Widget>[
+                  new Expanded(child: Text('Invia dati ordine per E-mail')),
+                  Switch(
+                    onChanged: (value) {
+                      user.updateNotifyEmail(value);
+                    },
+                    value: (snap.data.model.notifyEmail==null)?false:snap.data.model.notifyEmail,
+                  ),
+                ],
+              ),
+              Divider(
+                color: Colors.grey,
+              ),
+              Row(
+                children: <Widget>[
+                  new Expanded(child: Text('Invia dati ordine per SMS')),
+                  Switch(
+                    onChanged: (value) {
+                      user.updateNotifySms(value);
+                    },
+                    value: (snap.data.model.notifyEmail==null)?false:snap.data.model.notifySms,
+                  ),
+                ],
+              ),
+              Row(
+                children: <Widget>[
+                  new Expanded(child: Text('Notifiche App')),
+                  Switch(
+                    onChanged: (value) {
+                      user.updateNotifyApp(value);
+                    },
+                    value: (snap.data.model.notifyApp==null)?false:snap.data.model.notifyApp,
+                  ),
+                ],
+              ),
+              Row(
+                children: <Widget>[
+                  Text('RICEVI OFFERTE E NEWS TRAMITE'),
+                ],
+              ),
+              Row(
+                children: <Widget>[
+                  new Expanded(child: Text('E-mail')),
+                  Switch(
+                    onChanged: (value) {
+                      user.updateOffersEmail(value);
+                    },
+                    value: (snap.data.model.offersEmail==null)?false:snap.data.model.offersEmail,
+                  ),
+                ],
+              ),
+              Divider(
+                color: Colors.grey,
+              ),
+              Row(
+                children: <Widget>[
+                  new Expanded(child: Text('SMS')),
+                  Switch(
+                    onChanged: (value) {
+                      user.updateOffersSms(value);
+                    },
+                    value: (snap.data.model.offersSms==null)?false:snap.data.model.offersSms,
+                  ),
+                ],
+              ),
+              Row(
+                children: <Widget>[
+                  new Expanded(child: Text('Notifiche App')),
+                  Switch(
+                    onChanged: (value) {
+                      user.updateOffersApp(value);
+                    },
+                    value: (snap.data.model.offersApp==null)?false:snap.data.model.offersApp,
+                  ),
+                ],
+              ),
+            ].map((child) {
+              return Padding(
+                padding:
+                const EdgeInsets.symmetric(horizontal: SPACE * 2),
+                child: child,
+              );
+            }).toList(),
+        ),
+        ),
+      );
+    },
+    );
+  }
+}

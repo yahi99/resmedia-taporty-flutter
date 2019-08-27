@@ -46,6 +46,17 @@ class CalendarBloc implements Bloc {
     });
   }
 
+
+  //TODO : delete shift + cancel user inside free users list and if is present in occupied list decide what to do
+  void deleteShift(String startTime,String endTime,String day,List<String> users)async{
+    final user=UserBloc.of();
+    final restUser=await user.outFirebaseUser.first;
+    users.add(restUser.uid);
+    CloudFunctions.instance.getHttpsCallable(functionName: 'setShift').call({'startTime':startTime,'endTime':endTime,'day':day,
+      'uid':restUser.uid,'month':month(DateTime.tryParse(day).month),'users':users
+    });
+  }
+
   String month(int month){
     if(month==1) return'JANUARY';
     if(month==2) return'FEBRUARY';

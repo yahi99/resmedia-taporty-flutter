@@ -13,6 +13,8 @@ class TurnView extends StatelessWidget {
 
   TurnView({Key key, @required this.model}) : super(key: key);
   @override
+
+  //TODO bisogna decidere come fare la cancellazione del turno perchè se un driver è libero è semplice altrimenti bisogna assegnare un altro driver se disponibile
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Slidable(

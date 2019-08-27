@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:easy_blocs/easy_blocs.dart';
 import 'package:easy_route/easy_route.dart';
 import 'package:easy_widget/easy_widget.dart';
@@ -17,6 +19,7 @@ import 'package:mobile_app/drivers/model/ShiftModel.dart';
 import 'package:mobile_app/drivers/model/TurnModel.dart';
 import 'package:mobile_app/logic/bloc/OrdersBloc.dart';
 import 'package:mobile_app/logic/bloc/UserBloc.dart';
+import 'package:mobile_app/logic/database.dart';
 import 'package:mobile_app/model/OrderModel.dart';
 
 class HomeScreenDriver extends StatefulWidget implements WidgetRoute {
@@ -31,16 +34,9 @@ class HomeScreenDriver extends StatefulWidget implements WidgetRoute {
 class _HomeScreenDriverState extends State<HomeScreenDriver> {
   final DriverBloc _driverBloc = DriverBloc.of();
   DateTime date = DateTime.now();
-  var user;
-  var stream;
+  final StreamController<DateTime> dateStream=new StreamController<DateTime>();
   final CalendarBloc _calendarBloc=CalendarBloc.of();
-
-  final List<Widget> _tabs = [
-    OrdersTabDriver(),
-    TurnWorkTabDriver(),
-    CalendarTabDriver(),
-  ];
-
+  var user;
   @override
   void dispose() {
     _driverBloc.close();
@@ -52,7 +48,7 @@ class _HomeScreenDriverState extends State<HomeScreenDriver> {
     setState(() {
       date = now;
       _calendarBloc.setDate(now,);
-      stream=_calendarBloc.outCalendar;
+      //stream=_calendarBloc.outCalendar;
     });
   }
 
@@ -63,7 +59,7 @@ class _HomeScreenDriverState extends State<HomeScreenDriver> {
 
   @override
   void initState() {
-    stream=_calendarBloc.outCalendar;
+    //stream=_calendarBloc.outCalendar;
     setUser();
     super.initState();
     //final bloc=TurnBloc.of();
@@ -77,7 +73,7 @@ class _HomeScreenDriverState extends State<HomeScreenDriver> {
     //final timeBloc = TimeBloc.of();
     return DefaultPapyrusController(
       child: DefaultTabController(
-        length: _tabs.length,
+        length: 3,
         child: Scaffold(
           appBar: AppBar(
             leading: PapyrusBackIconButton(),
@@ -109,12 +105,16 @@ class _HomeScreenDriverState extends State<HomeScreenDriver> {
               return StreamBuilder<Map<StateCategory, List<DriverOrderModel>>>(
                 stream: orderBloc.outCategorizedOrders,
                 builder: (context, snap2) {
-                  return StreamBuilder<List<CalendarModel>>(
-                    stream: stream,
+                  return StreamBuilder<DateTime>(
+                    stream: dateStream.stream,
                     builder: (context, snap3) {
+                      return StreamBuilder<List<CalendarModel>>(
+                        stream:Database().getShifts(snap3.data),
+                          builder: (ctx,snap4){
                           if (!snap1.hasData ||
                               !snap2.hasData ||
-                              !snap3.hasData)
+                              !snap3.hasData||
+                          !snap4.hasData)
                             return Center(
                               child: CircularProgressIndicator(),
                             );
@@ -128,13 +128,15 @@ class _HomeScreenDriverState extends State<HomeScreenDriver> {
                                 model: snap1.data,
                               ),
                               CalendarTabDriver(
-                                model: snap3.data,
-                                callback: callback,
-                                date: date,
+                                model: snap4.data,
+                                //callback: callback,
+                                date: snap3.data,
                                 user: user,
                               ),
                             ],
                           );
+                          }
+                      );
                     },
                   );
                 },

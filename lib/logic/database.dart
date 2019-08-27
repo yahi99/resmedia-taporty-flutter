@@ -7,6 +7,7 @@ import 'package:easy_firebase/easy_firebase.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:mobile_app/data/collections.dart' as cl;
 import 'package:mobile_app/drivers/model/CalendarModel.dart';
 import 'package:mobile_app/drivers/model/OrderModel.dart';
@@ -49,16 +50,26 @@ class Database extends FirebaseDatabase with MixinFirestoreStripeProvider,Restau
         model.toJson()..[users.fcmToken] = await fbMs.getToken());
   }
 
-  Future<void> createOrder({@required String uid, @required Cart model,@required driver}) async {
+  Stream<List<UserOrderModel>> getUserOrders(String uid) {
+    final data=fs.collection(cl.USERS).document(uid).collection(cl.ORDERS).snapshots();
+    print('lol');
+    return data.map((query) {
+      return query.documents.map((snap) => UserOrderModel.fromFirebase(snap)).toList();
+    });
+  }
+
+  Future<void> createOrder({@required String uid, @required Cart model,@required String driver
+    ,@required Position userPos,@required String addressR}) async {
     await fs.collection(cl.RESTAURANTS).document(model.products.first.restaurantId).collection(cl.ORDERS).add(
         model.toJson()..['restaurantId']=model.products.first.restaurantId..['time']=new DateTime.now().toString()
-    ..['state']='In Accettazione'..['driver']=driver);
+    ..['state']='PENDING'..['driver']=driver);
     await fs.collection(cl.USERS).document(uid).collection(cl.ORDERS).add(
         model.toJson()..['restaurantId']=model.products.first.restaurantId..['time']=new DateTime.now().toString()
-          ..['state']='In Accettazione'..['driver']=driver..['uid']=uid);
+          ..['state']='PENDING'..['driver']=driver..['uid']=uid);
     await fs.collection(cl.USERS).document(driver).collection(cl.ORDERS).add(
-        model.toJson()..['restaurantId']=model.products.first.restaurantId..['time']=new DateTime.now().toString()
-          ..['state']='In Accettazione'..['uid']=uid);
+        model.toJson()..['titleS']=model.products.first.restaurantId..['timeR']=new DateTime.now().toString()
+          ..['state']='PENDING'..['titleS']=uid..['addressR']=addressR
+        ..['latR']=userPos.latitude..['lngR']=userPos.longitude);
   }
 
   /*Future<void> updateState({@required String uid, @required Cart model}) async {
@@ -147,8 +158,8 @@ class Database extends FirebaseDatabase with MixinFirestoreStripeProvider,Restau
     return CalendarModel.fromJson(res.data);
   }
 
-  Future<void> occupyDriver(String date,String time,List<String> users) async {
-    final res = await fs.collection(cl.DAYS).document(date).collection(cl.TIMES).document(time).updateData({'users':users});
+  Future<void> occupyDriver(String date,String time,List<String> free,List<String> occupied) async {
+    final res = await fs.collection(cl.DAYS).document(date).collection(cl.TIMES).document(time).updateData({'free':free,'occcupied':occupied});
     //final data=res.data;
     //return CalendarModel.fromJson(res.data);
   }

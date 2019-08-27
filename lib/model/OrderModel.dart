@@ -54,6 +54,29 @@ class RestaurantOrderModel extends OrderModel {
   String toString() => toJson().toString();
 }
 
+@JsonSerializable(anyMap: true, explicitToJson: true, includeIfNull: false)
+class UserOrderModel extends OrderModel {
+  final List<ProductCart> products;
+  final String time;
+  final StateCategory state;
+  UserOrderModel({String path,
+    @required this.products,
+    @required this.time,
+    @required this.state,
+  }) :
+        super(
+          path: path,
+          products: products
+      );
+
+  static UserOrderModel fromJson(Map json) => _$UserOrderModelFromJson(json);
+  static UserOrderModel fromFirebase(DocumentSnapshot snap) =>
+      FirebaseModel.fromFirebase(fromJson, snap);
+  Map<String, dynamic> toJson() => _$UserOrderModelToJson(this);
+  @required
+  String toString() => toJson().toString();
+}
+
 
 /*enum FoodCategory {
   APPETIZER, FIRST_COURSES, MAIN_COURSES, SEAFOOD_MENU, MEAT_MENU, SIDE_DISH, DESERT,

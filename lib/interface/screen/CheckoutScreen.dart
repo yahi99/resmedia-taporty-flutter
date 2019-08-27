@@ -82,7 +82,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               CartPage(model: widget.model),
               ShippingPage(user: widget.user,address: widget.description,),
               PaymentPage(),
-              ConfirmPage(model: widget.model),
+              ConfirmPage(model: widget.model,position:widget.position,description:widget.description),
             ],
           ),),
         ),

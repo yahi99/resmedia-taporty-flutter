@@ -4,6 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:geocoder/model.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:mobile_app/data/config.dart';
 import 'package:mobile_app/interface/page/CartPage.dart';
 import 'package:mobile_app/interface/screen/CheckoutScreen.dart';
@@ -16,10 +18,20 @@ import 'package:mobile_app/model/ProductModel.dart';
 import 'package:mobile_app/model/RestaurantModel.dart';
 import 'package:toast/toast.dart';
 
-class ConfirmPage extends StatelessWidget {
-  final RestaurantModel model;
 
-  ConfirmPage({Key key, @required this.model}) : super(key: key);
+class ConfirmPage extends StatefulWidget {
+  final RestaurantModel model;
+  final Position position;
+  final Address description;
+
+  ConfirmPage({Key key, @required this.model,
+  @required this.description,@required this.position}) : super(key: key);
+
+  @override
+  _ConfirmState createState() => _ConfirmState();
+}
+
+class _ConfirmState extends State<ConfirmPage>with AutomaticKeepAliveClientMixin {
 
   _showPaymentDialog(BuildContext context) {
     showDialog(
@@ -53,14 +65,7 @@ class ConfirmPage extends StatelessWidget {
           actions: <Widget>[
             FlatButton(
               onPressed: () {
-                /*var products=snapshot.data.products;
-                                  for(int i=0;i<products.length;i++){
-                                    cartBloc.inRemoveDrink(products.elementAt(i));
-                                  }*/
                 EasyRouter.popUntil(context,RestaurantScreen.ROUTE);
-                //EasyRouter.push(context,CheckoutScreen(model: model,));
-                //EasyRouter.popUntil(context, RestaurantScreen.ROUTE);
-                //TODO remove items in cart
               },
               textColor: cls.secondary,
               child: Text(
@@ -75,7 +80,8 @@ class ConfirmPage extends StatelessWidget {
 
   bool valid(BuildContext context){
     final state=MyInheritedWidget.of(context);
-    if(state.name.isEmpty || state.email.isEmpty || state.address.isEmpty || state.phone.isEmpty || state.cap.isEmpty)
+    print(state.time);
+    if(state.name==null || state.email==null || state.address==null || state.phone==null || state.cap==null || state.date==null || state.time==null)
       return false;
     return true;
   }
@@ -83,7 +89,7 @@ class ConfirmPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tt=Theme.of(context);
-    final restaurantBloc = RestaurantBloc.init(idRestaurant: model.id);
+    final restaurantBloc = RestaurantBloc.init(idRestaurant: widget.model.id);
     final cartBloc = CartBloc.of();
     //cartBloc.setSigner(model.id);
     final user = UserBloc.of();
@@ -109,7 +115,7 @@ class ConfirmPage extends StatelessWidget {
                   return ProductsFoodDrinkBuilder(
                     drinks: snapshot.data,
                     foods: snap.data,
-                    id: model.id,
+                    id: widget.model.id,
                   );
                 },
               );
@@ -130,7 +136,7 @@ class ConfirmPage extends StatelessWidget {
                         final state = MyInheritedWidget.of(context);
                         cartBloc.isAvailable(state.date, state.time).then((user){
                           if(user!=null){
-                            cartBloc.signer(model.id,user).then((isDone) {
+                            cartBloc.signer(widget.model.id,user,widget.position,widget.description.addressLine).then((isDone) {
                               print('ok');
                             }).catchError((error) {
                               print(error.toString());
@@ -142,6 +148,9 @@ class ConfirmPage extends StatelessWidget {
                         });
 
                       }
+                      else{
+                        Toast.show('Mancano dei dati.', context);
+                      }
                     },
                   ),
                 ),
@@ -150,4 +159,8 @@ class ConfirmPage extends StatelessWidget {
       },
     );
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }

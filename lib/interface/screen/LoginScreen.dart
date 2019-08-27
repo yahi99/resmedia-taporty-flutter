@@ -159,7 +159,7 @@ class _LoginScreenState extends State<LoginScreen> {
     };
   }
 
-  //TODO: Sistemare
+  //TODO: Sistemare login automatico e senza registrazione
   @override
   void initState() {
     /*final FirebaseAuth _fAuth = FirebaseAuth.instance;

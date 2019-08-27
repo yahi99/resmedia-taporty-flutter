@@ -15,15 +15,21 @@ import 'package:mobile_app/model/ProductModel.dart';
 import 'package:mobile_app/model/RestaurantModel.dart';
 import 'package:rxdart/rxdart.dart';
 
-class CartPage extends StatelessWidget {
+class CartPage extends StatefulWidget {
   final RestaurantModel model;
 
   CartPage({Key key, @required this.model}) : super(key: key);
 
   @override
+  _CartState createState() => _CartState();
+}
+
+class _CartState extends State<CartPage> with AutomaticKeepAliveClientMixin {
+
+  @override
   Widget build(BuildContext context) {
     final tt=Theme.of(context);
-    final restaurantBloc = RestaurantBloc.init(idRestaurant: model.id);
+    final restaurantBloc = RestaurantBloc.init(idRestaurant: widget.model.id);
     final cartBloc = CartBloc.of();
     final user=UserBloc.of();
     return StreamBuilder<FirebaseUser>(
@@ -54,7 +60,7 @@ class CartPage extends StatelessWidget {
                           return ProductsFoodDrinkBuilder(
                             drinks: snapshot.data,
                             foods: snap.data,
-                            id: model.id,
+                            id: widget.model.id,
                           );
                         },
                       );
@@ -82,6 +88,10 @@ class CartPage extends StatelessWidget {
     },
     );
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }
 
 class ProductsFoodDrinkBuilder extends StatelessWidget {

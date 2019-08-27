@@ -6,6 +6,7 @@ import 'package:mobile_app/data/config.dart';
 import 'package:mobile_app/drivers/interface/screen/ChangePasswordScreeen.dart';
 import 'package:mobile_app/drivers/interface/screen/EditScreen.dart';
 import 'package:mobile_app/drivers/interface/screen/LegalNotesScreen.dart';
+import 'package:mobile_app/drivers/interface/screen/OrderScreen.dart';
 import 'package:mobile_app/drivers/interface/screen/SettingsScreen.dart';
 import 'package:mobile_app/interface/screen/LoginScreen.dart';
 import 'package:mobile_app/logic/bloc/UserBloc.dart';
@@ -97,6 +98,17 @@ class AccountScreenDriver extends StatelessWidget implements WidgetRoute {
                     Text(
                       snap.data.model.email,
                       style: theme.textTheme.subhead,
+                    ),
+                    Row(
+                      children: <Widget>[
+                        Icon(Icons.insert_drive_file),
+                        FlatButton(
+                          child: Text('Lista ordini',style: theme.textTheme.subhead),
+                          onPressed: () => {
+                            EasyRouter.push(context, OrderListScreen())
+                          },
+                        ),
+                      ],
                     ),
                     Row(
                       children: <Widget>[

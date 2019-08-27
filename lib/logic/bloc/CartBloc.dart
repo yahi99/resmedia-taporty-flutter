@@ -6,6 +6,7 @@ import 'package:easy_blocs/easy_blocs.dart';
 import 'package:easy_firebase/easy_firebase.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/widgets.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:mobile_app/generated/provider.dart';
 import 'package:mobile_app/interface/screen/RestaurantScreen.dart';
 import 'package:mobile_app/logic/bloc/UserBloc.dart';
@@ -58,6 +59,8 @@ class CartBloc extends Bloc {
     _formHandler.dispose();
   }
 
+
+  //TODO quando faccio inRemove dà problemi e non cancella tutti gli elementi del carrello
   Future<Cart> inDeleteCart(String restaurantId) async {
     final food = await outFoodsCart.first;
     final drink = await outDrinksCart.first;
@@ -120,20 +123,22 @@ class CartBloc extends Bloc {
 
   Future<String> isAvailable(String date, String time)async{
     final model= await _db.getUsers(date,time);
-    if(model.users.length>1){
-      final temp=model.users;
+    if(model.free.length>1){
+      final temp=model.free;
       final user=temp.removeAt(1);
-      await _db.occupyDriver(date,time,temp);
+      final occ=model.occupied;
+      occ.add(user);
+      await _db.occupyDriver(date,time,temp,occ);
       return user;
     }
     return null;
   }
 
-  Future<bool> signer(String restaurantId,String driver) async {
+  Future<bool> signer(String restaurantId,String driver,Position userPos,String userAddress) async {
     final userBloc = UserBloc.of();
     final firebaseUser = await userBloc.outFirebaseUser.first;
     inDeleteCart(restaurantId).then((cart){
-      _db.createOrder(uid: firebaseUser.uid, model: cart,driver:driver);
+      _db.createOrder(uid: firebaseUser.uid, model: cart,driver:driver,userPos: userPos,addressR: userAddress);
       RestaurantScreen.isOrdered=true;
     });
 

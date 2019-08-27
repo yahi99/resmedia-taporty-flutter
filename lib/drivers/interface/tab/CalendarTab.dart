@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -11,13 +13,13 @@ import 'package:mobile_app/logic/bloc/UserBloc.dart';
 
 class CalendarTabDriver extends StatefulWidget {
   final List<CalendarModel> model;
-  final Function callback;
+  final StreamController<DateTime> dateStream;
   final date;
   final String user;
 
   CalendarTabDriver({
     @required this.model,
-    @required this.callback,
+    @required this.dateStream,
     @required this.date,
     @required this.user,
   });
@@ -45,13 +47,13 @@ class _CalendarState extends State<CalendarTabDriver> with AutomaticKeepAliveCli
 
   void change(DateTime now) {
     print(now.toIso8601String());
-    widget.callback(now);
+    widget.dateStream.add(now);
   }
 
   bool isPresent(CalendarModel day){
     //final user=UserBloc.of();
     //final str=await user.outFirebaseUser.first;
-    if(day.users.contains(widget.user)) return true;
+    if(day.free.contains(widget.user) && day.occupied.contains(widget.user)) return true;
     return false;
   }
 
@@ -81,14 +83,14 @@ class _CalendarState extends State<CalendarTabDriver> with AutomaticKeepAliveCli
               //currentDate: new DateTime.now(),
               onChanged: change,
             ),
-            /*new ListView.builder(
+            new ListView.builder(
                 shrinkWrap: true,
                 itemCount: widget.model.length,
                 itemBuilder: (ctx, index) {
                   if (!isPresent(widget.model.elementAt(index))) {
                     var temp = widget.model
                         .elementAt(index)
-                        .users;
+                        .free;
                     //temp.add(cb.user());
                     return Row(
                       mainAxisSize: MainAxisSize.min,
@@ -131,7 +133,7 @@ class _CalendarState extends State<CalendarTabDriver> with AutomaticKeepAliveCli
                     );
                   }
                   return Container();
-                }),*/
+                }),
           ],
         ),
       );

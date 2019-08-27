@@ -12,14 +12,15 @@ part 'CalendarModel.g.dart';
 @JsonSerializable(anyMap: true, explicitToJson: true, includeIfNull: false)
 class CalendarModel extends FirebaseModel {
   final String startTime,endTime,day;
-  final List<String> users;
+  final List<String> free;
+  final List<String> occupied;
   final bool isEmpty;
 
   CalendarModel({ String path,
     @required this.isEmpty,
     @required this.startTime,
     @required this.day,@required this.endTime,
-    @required this.users,
+    @required this.free,@required this.occupied,
   }):super(path);
 
   DateTime getDate(){

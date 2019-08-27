@@ -8,7 +8,14 @@ import 'package:mobile_app/interface/view/BottonButtonBar.dart';
 import 'package:mobile_app/interface/view/InputField.dart';
 import 'package:mobile_app/logic/bloc/UserBloc.dart';
 
-class PaymentPage extends StatelessWidget {
+class PaymentPage extends StatefulWidget {
+
+  @override
+  _PaymentState createState() => _PaymentState();
+
+}
+
+class _PaymentState extends State<PaymentPage> with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     var isValid=false;
@@ -238,6 +245,10 @@ class PaymentPage extends StatelessWidget {
     }
     );
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }
 
 /*

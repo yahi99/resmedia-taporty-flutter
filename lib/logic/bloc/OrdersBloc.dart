@@ -18,10 +18,14 @@ class OrdersBloc implements Bloc {
   dispose() {
     _restaurantsControl.close();
     _driverControl.close();
+    _userControl.close();
   }
 
   PublishSubject<List<RestaurantOrderModel>> _restaurantsControl;
   Stream<List<RestaurantOrderModel>> get outOrders => _restaurantsControl.stream;
+
+  PublishSubject<List<UserOrderModel>> _userControl;
+  Stream<List<UserOrderModel>> get outUserOrders => _userControl.stream;
 
   PublishSubject<List<DriverOrderModel>> _driverControl;
   Stream<List<DriverOrderModel>> get outDriverOrders => _driverControl.stream;
@@ -33,6 +37,16 @@ class OrdersBloc implements Bloc {
 
   void see(){
 
+  }
+
+  void setUserStream()async{
+    final user=UserBloc.of();
+    final restUser=await user.outFirebaseUser.first;
+    final restId= await _db.getRestaurantId(restUser.uid);
+    //final str=await _db.getUserOrders(restUser.uid).first;
+    //print('lol');
+    _userControl = PublishController.catchStream(source: _db.getUserOrders(restUser.uid));
+    _userControl.listen(print);
   }
 
   void setRestaurantStream() async{

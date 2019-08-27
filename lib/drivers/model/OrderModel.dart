@@ -12,22 +12,22 @@ part 'OrderModel.g.dart';
 @JsonSerializable(anyMap: true, explicitToJson: true, includeIfNull: false)
 class DriverOrderModel extends FirebaseModel {
   final String titleR,titleS, addressR,addressS, timeR,timeS;
-  final double latR,latS,lngS,lngR;
-  String id, time;
+  final double latR,lngR;
+  String id;
   StateCategory state;
 
   DriverOrderModel({ String path,
-    @required this.id, @required this.time,
+    @required this.id,
     @required this.titleR,@required this.titleS,
     @required this.addressS,@required this.addressR,
-    @required this.timeS,@required this.timeR,
-    @required this.latR,@required this.latS,
-    @required this.lngR,@required this.lngS,
+    this.timeS,@required this.timeR,
+    @required this.latR,
+    @required this.lngR,
     @required this.state,
   }):super(path);
 
-  List<LatLng> get positions => [new LatLng(latS,lngS), new LatLng(latR,lngR)];
-  List<SubjectModel> get subjects => [new SubjectModel(title: timeS,address: addressS,time: timeS,position: new LatLngModel(lat: latS, lng: lngS)),
+  List<LatLng> get positions => [new LatLng(latR,lngR)];
+  List<SubjectModel> get subjects => [
     new SubjectModel(title: timeR,address: addressR,time: timeR,position: new LatLngModel(lat: latR, lng: lngR))];
 
   static DriverOrderModel fromJson(Map json) => _$DriverOrderModelFromJson(json);

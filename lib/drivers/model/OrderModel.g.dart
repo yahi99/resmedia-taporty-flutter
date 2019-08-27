@@ -10,7 +10,6 @@ DriverOrderModel _$DriverOrderModelFromJson(Map json) {
   return DriverOrderModel(
       path: json['path'] as String,
       id: json['id'] as String,
-      time: json['time'] as String,
       titleR: json['titleR'] as String,
       titleS: json['titleS'] as String,
       addressS: json['addressS'] as String,
@@ -18,9 +17,7 @@ DriverOrderModel _$DriverOrderModelFromJson(Map json) {
       timeS: json['timeS'] as String,
       timeR: json['timeR'] as String,
       latR: (json['latR'] as num)?.toDouble(),
-      latS: (json['latS'] as num)?.toDouble(),
       lngR: (json['lngR'] as num)?.toDouble(),
-      lngS: (json['lngS'] as num)?.toDouble(),
       state: _$enumDecodeNullable(_$StateCategoryEnumMap, json['state']));
 }
 
@@ -41,11 +38,8 @@ Map<String, dynamic> _$DriverOrderModelToJson(DriverOrderModel instance) {
   writeNotNull('timeR', instance.timeR);
   writeNotNull('timeS', instance.timeS);
   writeNotNull('latR', instance.latR);
-  writeNotNull('latS', instance.latS);
-  writeNotNull('lngS', instance.lngS);
   writeNotNull('lngR', instance.lngR);
   writeNotNull('id', instance.id);
-  writeNotNull('time', instance.time);
   writeNotNull('state', _$StateCategoryEnumMap[instance.state]);
   return val;
 }

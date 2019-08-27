@@ -59,3 +59,30 @@ const _$StateCategoryEnumMap = <StateCategory, dynamic>{
   StateCategory.ACCEPTED: 'ACCEPTED',
   StateCategory.DONE: 'DONE'
 };
+
+UserOrderModel _$UserOrderModelFromJson(Map json) {
+  return UserOrderModel(
+      path: json['path'] as String,
+      products: (json['products'] as List)
+          ?.map((e) => e == null ? null : ProductCart.fromJson(e as Map))
+          ?.toList(),
+      time: json['time'] as String,
+      state: _$enumDecodeNullable(_$StateCategoryEnumMap, json['state']));
+}
+
+Map<String, dynamic> _$UserOrderModelToJson(UserOrderModel instance) {
+  final val = <String, dynamic>{};
+
+  void writeNotNull(String key, dynamic value) {
+    if (value != null) {
+      val[key] = value;
+    }
+  }
+
+  writeNotNull('path', instance.path);
+  writeNotNull(
+      'products', instance.products?.map((e) => e?.toJson())?.toList());
+  writeNotNull('time', instance.time);
+  writeNotNull('state', _$StateCategoryEnumMap[instance.state]);
+  return val;
+}

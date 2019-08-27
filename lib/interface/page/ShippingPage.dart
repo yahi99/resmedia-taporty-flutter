@@ -16,35 +16,50 @@ import 'package:mobile_app/logic/database.dart';
 import 'package:mobile_app/model/UserModel.dart';
 import 'package:toast/toast.dart';
 
-class ShippingPage extends StatelessWidget {
+class ShippingPage extends StatefulWidget {
   final UserModel user;
   final Address address;
 
   ShippingPage({@required this.user, @required this.address});
 
   @override
+  _ShippingState createState() => _ShippingState();
+}
+
+class _ShippingState extends State<ShippingPage>
+    with AutomaticKeepAliveClientMixin {
+  String toDate(DateTime date) {
+    return (date.day.toString() +
+        '/' +
+        date.month.toString() +
+        '/' +
+        date.year.toString());
+  }
+
+  @override
   Widget build(BuildContext context) {
     var dateStream = new StreamController<DateTime>();
     var timeStream = new StreamController<List<CalendarModel>>();
+    var dropStream = new StreamController<String>();
     //StreamController.broadcast();
     final theme = Theme.of(context);
     final tt = theme.textTheme;
     final TextEditingController _nameController = new TextEditingController();
-    final TextEditingController _lastNameController =
-        new TextEditingController();
+    final TextEditingController _dateController = new TextEditingController();
     final TextEditingController _emailController = new TextEditingController();
     final TextEditingController _addressController =
         new TextEditingController();
     final TextEditingController _phoneController = new TextEditingController();
     final TextEditingController _capController = new TextEditingController();
-    final name = user.nominative.split(' ');
-    _nameController.value = new TextEditingValue(text: user.nominative);
+    //final name = user.nominative.split(' ');
+    _nameController.value = new TextEditingValue(text: widget.user.nominative);
     //_lastNameController.value = new TextEditingValue(text: name[1]);
-    _emailController.value = new TextEditingValue(text: user.email);
+    _emailController.value = new TextEditingValue(text: widget.user.email);
     _addressController.value = new TextEditingValue(text: '');
     _phoneController.value =
-        new TextEditingValue(text: user.phoneNumber.toString());
-    _capController.value = new TextEditingValue(text: address.postalCode);
+        new TextEditingValue(text: widget.user.phoneNumber.toString());
+    _capController.value =
+        new TextEditingValue(text: widget.address.postalCode);
     DateTime date;
     String time;
     final _formKey = GlobalKey<FormState>();
@@ -118,6 +133,7 @@ class ShippingPage extends StatelessWidget {
                             return Column(
                               children: <Widget>[
                                 TextField(
+                                  controller: _dateController,
                                   key: _dateKey,
                                   onTap: () {
                                     showDatePicker(
@@ -129,33 +145,84 @@ class ShippingPage extends StatelessWidget {
                                       initialDate: DateTime.now(),
                                       lastDate: DateTime(2020),
                                     ).then((day) {
-                                      date = day;
-                                      dateStream.add(day);
+                                      if (day != null) {
+                                        date = day;
+                                        _dateController.value =
+                                            new TextEditingValue(
+                                                text: toDate(date));
+                                        dateStream.add(day);
+                                      }
                                     });
                                   },
                                 ),
-                                Text('Ora di consegna:'),
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Padding(
+                                      padding: EdgeInsets.only(
+                                          top: SPACE, bottom: SPACE),
+                                      child: Text('Ora di consegna:'),
+                                    ),
+                                  ],
+                                ),
                                 StreamBuilder<List<CalendarModel>>(
-                                  stream: (!sp.hasData)?timeStream.stream:Database().getAvailableShifts(sp.data),
+                                  stream: (!sp.hasData)
+                                      ? timeStream.stream
+                                      : Database().getAvailableShifts(sp.data),
                                   builder: (ctx, snap) {
                                     List<DropdownMenuItem> drop =
                                         new List<DropdownMenuItem>();
+                                    List<String> values = new List<String>();
                                     if (snap.hasData) {
+                                      //time=snap.data.elementAt(0).startTime;
+                                      if (snap.data.isNotEmpty) {
+                                        dropStream.add(
+                                            snap.data.elementAt(0).startTime);
+                                        time = snap.data.elementAt(0).startTime;
+                                      }
                                       for (int i = 0;
                                           i < snap.data.length;
                                           i++) {
+                                        values.add(
+                                            snap.data.elementAt(i).startTime);
                                         drop.add(DropdownMenuItem(
-                                            child: new Text(snap.data
-                                                .elementAt(i)
-                                                .startTime)));
+                                          child: new Text(
+                                              snap.data.elementAt(i).startTime),
+                                          value:
+                                              snap.data.elementAt(i).startTime,
+                                        ));
                                       }
                                     }
-                                    return DropdownButton(
-                                      key: _dropKey,
-                                      onChanged: (value) {
-                                        time = value;
+                                    return StreamBuilder<String>(
+                                      stream: dropStream.stream,
+                                      builder: (ctx, sp1) {
+                                        if (sp1.hasData) {
+                                          return Row(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: <Widget>[
+                                              DropdownButton(
+                                                key: _dropKey,
+                                                value: (time == null)
+                                                    ? values.elementAt(0)
+                                                    : sp1.data,
+                                                onChanged: (value) {
+                                                  print(value);
+                                                  time = value;
+                                                  dropStream.add(value);
+                                                },
+                                                items: drop,
+                                              ),
+                                            ],
+                                          );
+                                        } else {
+                                          return Column(
+                                            children: <Widget>[
+                                              Text(
+                                                  'Non ci sono turni disponibili in questo giorno.'),
+                                            ],
+                                          );
+                                        }
                                       },
-                                      items: drop,
                                     );
                                   },
                                 ),
@@ -220,7 +287,7 @@ class ShippingPage extends StatelessWidget {
                           style: Theme.of(context).textTheme.subtitle,
                         ),
                       ),
-                      Text(address.addressLine),
+                      Text(widget.address.addressLine),
                       Row(
                         children: <Widget>[
                           Expanded(
@@ -277,13 +344,16 @@ class ShippingPage extends StatelessWidget {
             ),
             onPressed: () {
               if (_formKey.currentState.validate()) {
+                print(date);
+                print(time);
                 if (date != null && time != null) {
                   final state = MyInheritedWidget.of(context);
-                  if (date != null) state.date = date.toIso8601String();
+                  state.date = date.toIso8601String();
+                  state.time = time;
                   state.address = _addressKey.currentState.toString();
-                  state.name = _phoneKey.currentState.toString();
+                  state.phone = _phoneKey.currentState.toString();
                   state.email = _emailKey.currentState.toString();
-                  state.address = _nameKey.currentState.toString();
+                  state.name = _nameKey.currentState.toString();
                   state.cap = _capKey.currentState.toString();
                   DefaultTabController.of(context).index += 1;
                 } else
@@ -293,5 +363,9 @@ class ShippingPage extends StatelessWidget {
           )),
     );
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }
 //                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25.0)),

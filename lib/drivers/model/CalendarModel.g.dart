@@ -13,7 +13,8 @@ CalendarModel _$CalendarModelFromJson(Map json) {
       startTime: json['startTime'] as String,
       day: json['day'] as String,
       endTime: json['endTime'] as String,
-      users: (json['users'] as List)?.map((e) => e as String)?.toList());
+      free: (json['free'] as List)?.map((e) => e as String)?.toList(),
+      occupied: (json['occupied'] as List)?.map((e) => e as String)?.toList());
 }
 
 Map<String, dynamic> _$CalendarModelToJson(CalendarModel instance) {
@@ -29,7 +30,8 @@ Map<String, dynamic> _$CalendarModelToJson(CalendarModel instance) {
   writeNotNull('startTime', instance.startTime);
   writeNotNull('endTime', instance.endTime);
   writeNotNull('day', instance.day);
-  writeNotNull('users', instance.users);
+  writeNotNull('free', instance.free);
+  writeNotNull('occupied', instance.occupied);
   writeNotNull('isEmpty', instance.isEmpty);
   return val;
 }

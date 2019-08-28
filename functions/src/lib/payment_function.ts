@@ -102,7 +102,8 @@ const setShift = functions.https.onCall(async (data, context) => {
   const endTime=data.endTime;
   const day=data.day;
   const month=data.month;
-  await fs.collection('days').doc(day).collection('times').doc(startTime).update({'users':users});
+  const isEmpty=data.isEmpty;
+  await fs.collection('days').doc(day).collection('times').doc(startTime).update({'users':users,'isEmpty':isEmpty});
   await fs.collection('users').doc(uid).collection('turns').doc(day).create({'startTime':startTime,'endTime':endTime,'day':day,'month':month});
   return {"documentId": "id",}
 });

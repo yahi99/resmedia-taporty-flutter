@@ -10,6 +10,7 @@ import 'package:mobile_app/drivers/logic/bloc/TimeBloc.dart';
 import 'package:mobile_app/drivers/model/CalendarModel.dart';
 import 'package:mobile_app/drivers/model/ShiftModel.dart';
 import 'package:mobile_app/logic/bloc/UserBloc.dart';
+import 'package:mobile_app/logic/database.dart';
 
 class CalendarTabDriver extends StatefulWidget {
   final List<CalendarModel> model;
@@ -28,18 +29,18 @@ class CalendarTabDriver extends StatefulWidget {
   _CalendarState createState() => _CalendarState();
 }
 
-class _CalendarState extends State<CalendarTabDriver> with AutomaticKeepAliveClientMixin {
-
-  final _calendarBloc=CalendarBloc.of();
+class _CalendarState extends State<CalendarTabDriver>
+    with AutomaticKeepAliveClientMixin {
+  final _calendarBloc = CalendarBloc.of();
 
   @override
-  void dispose(){
+  void dispose() {
     super.dispose();
     _calendarBloc.close();
   }
 
   @override
-  void initState(){
+  void initState() {
     //_calendarBloc.setDate(widget.date);
     super.initState();
     //print('lol');
@@ -50,10 +51,11 @@ class _CalendarState extends State<CalendarTabDriver> with AutomaticKeepAliveCli
     widget.dateStream.add(now);
   }
 
-  bool isPresent(CalendarModel day){
+  bool isPresent(CalendarModel day) {
     //final user=UserBloc.of();
     //final str=await user.outFirebaseUser.first;
-    if(day.free.contains(widget.user) && day.occupied.contains(widget.user)) return true;
+    if (day.free.contains(widget.user) || day.occupied.contains(widget.user))
+      return true;
     return false;
   }
 
@@ -66,77 +68,77 @@ class _CalendarState extends State<CalendarTabDriver> with AutomaticKeepAliveCli
     //if(widget.model.isNotEmpty && widget.model.first.day!=widget.date.toIso8601String()) widget.callback(widget.date);
     //final timeBloc=TimeBloc.of();
     //final date = (widget.model.isNotEmpty)?DateTime.tryParse(widget.model.first.day):DateTime.now();
-      return Container(
-        child: new Column(
-          children: <Widget>[
-            new MonthPicker(
-              selectedDate: widget.date,
-              firstDate: new DateTime(DateTime
-                  .now()
-                  .year, DateTime
-                  .now()
-                  .month, DateTime
-                  .now()
-                  .day - 1),
-              lastDate: new DateTime(2020),
-              //displayedMonth: new DateTime.now(),
-              //currentDate: new DateTime.now(),
-              onChanged: change,
+    return StreamBuilder<List<CalendarModel>>(
+        stream: Database().getShifts(widget.date),
+        builder: (ctx, snap4) {
+          if(!snap4.hasData) return Center(child:CircularProgressIndicator());
+          return Container(
+            child: new Column(
+              children: <Widget>[
+                new MonthPicker(
+                  selectedDate: widget.date,
+                  firstDate: new DateTime(DateTime.now().year,
+                      DateTime.now().month, DateTime.now().day - 1),
+                  lastDate: new DateTime(2020),
+                  //displayedMonth: new DateTime.now(),
+                  //currentDate: new DateTime.now(),
+                  onChanged: change,
+                ),
+              (snap4.data.isNotEmpty)?new ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: snap4.data.length,
+                        itemBuilder: (ctx, index) {
+                          if (!isPresent(snap4.data.elementAt(index))) {
+                            var temp = snap4.data.elementAt(index).free;
+                            //temp.add(cb.user());
+                            return Row(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                new Column(
+                                  children: <Widget>[
+                                    Text(
+                                        snap4.data.elementAt(index).startTime,
+                                        style: tt.body1),
+                                    Text(snap4.data.elementAt(index).endTime,
+                                        style: tt.body1),
+                                  ],
+                                ),
+                                VerticalDivider(
+                                  width: 2.0,
+                                  color: Colors.grey,
+                                ),
+                                FlatButton(
+                                    child: Text(
+                                      'Conferma',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        backgroundColor: Colors.grey,
+                                        color: Colors.black,
+                                        fontSize: 12,
+                                        fontFamily: 'Comfortaa',
+                                      ),
+                                    ),
+                                    onPressed: () => {
+                                          _calendarBloc.setShift(
+                                              snap4.data
+                                                  .elementAt(index)
+                                                  .startTime,
+                                              snap4.data
+                                                  .elementAt(index)
+                                                  .endTime,
+                                              widget.date.toIso8601String(),
+                                              temp)
+                                        }),
+                              ],
+                            );
+                          }
+                          return Container();
+                        }):Text('Non ci sono turni disponibili per questo giorno.'),
+              ],
             ),
-            new ListView.builder(
-                shrinkWrap: true,
-                itemCount: widget.model.length,
-                itemBuilder: (ctx, index) {
-                  if (!isPresent(widget.model.elementAt(index))) {
-                    var temp = widget.model
-                        .elementAt(index)
-                        .free;
-                    //temp.add(cb.user());
-                    return Row(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        new Column(
-                          children: <Widget>[
-                            Text(widget.model
-                                .elementAt(index)
-                                .startTime, style: tt.body1),
-                            Text(widget.model
-                                .elementAt(index)
-                                .endTime, style: tt.body1),
-                          ],
-                        ),
-                        VerticalDivider(
-                          width: 2.0,
-                          color: Colors.grey,
-                        ),
-                        FlatButton(
-                            child: Text('Conferma', style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              backgroundColor: Colors.grey,
-                              color: Colors.black,
-                              fontSize: 12,
-                              fontFamily: 'Comfortaa',
-                            ),),
-                            onPressed: () =>
-                            {
-                              _calendarBloc.setShift(widget.model
-                                  .elementAt(index)
-                                  .startTime, widget.model
-                                  .elementAt(index)
-                                  .endTime, widget.date.toIso8601String(),
-                                  temp
-                              )
-                            }
-                        ),
-                      ],
-                    );
-                  }
-                  return Container();
-                }),
-          ],
-        ),
-      );
+          );
+        });
     /*  margin: EdgeInsets.symmetric(horizontal: 16.0),
       child: CalendarCarousel<Event>(
         onDayPressed: (DateTime date){

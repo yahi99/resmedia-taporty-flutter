@@ -71,6 +71,7 @@ class _HomeScreenDriverState extends State<HomeScreenDriver> {
     final turnBloc = TurnBloc.of();
     final orderBloc = OrdersBloc.of();
     //final timeBloc = TimeBloc.of();
+    final calStream=new StreamController<List<CalendarModel>>();
     return DefaultPapyrusController(
       child: DefaultTabController(
         length: 3,
@@ -108,13 +109,8 @@ class _HomeScreenDriverState extends State<HomeScreenDriver> {
                   return StreamBuilder<DateTime>(
                     stream: dateStream.stream,
                     builder: (context, snap3) {
-                      return StreamBuilder<List<CalendarModel>>(
-                        stream:Database().getShifts(snap3.data),
-                          builder: (ctx,snap4){
                           if (!snap1.hasData ||
-                              !snap2.hasData ||
-                              !snap3.hasData||
-                          !snap4.hasData)
+                              !snap2.hasData)
                             return Center(
                               child: CircularProgressIndicator(),
                             );
@@ -128,15 +124,14 @@ class _HomeScreenDriverState extends State<HomeScreenDriver> {
                                 model: snap1.data,
                               ),
                               CalendarTabDriver(
-                                model: snap4.data,
+                                //model: (!snap4.hasData)?snap4.data:new List<CalendarModel>(),
                                 //callback: callback,
-                                date: snap3.data,
+                                date: (snap3.hasData)?snap3.data:new DateTime(DateTime.now().year,DateTime.now().month,DateTime.now().day),
                                 user: user,
+                                dateStream: dateStream,
                               ),
                             ],
                           );
-                          }
-                      );
                     },
                   );
                 },

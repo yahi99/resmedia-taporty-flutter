@@ -16,9 +16,9 @@ class OrdersBloc implements Bloc {
 
   @protected
   dispose() {
-    _restaurantsControl.close();
-    _driverControl.close();
-    _userControl.close();
+    if(_restaurantsControl!=null) _restaurantsControl.close();
+    if(_driverControl!=null) _driverControl.close();
+    if(_userControl!=null) _userControl.close();
   }
 
   PublishSubject<List<RestaurantOrderModel>> _restaurantsControl;
@@ -42,7 +42,7 @@ class OrdersBloc implements Bloc {
   void setUserStream()async{
     final user=UserBloc.of();
     final restUser=await user.outFirebaseUser.first;
-    final restId= await _db.getRestaurantId(restUser.uid);
+    //final restId= await _db.getRestaurantId(restUser.uid);
     //final str=await _db.getUserOrders(restUser.uid).first;
     //print('lol');
     _userControl = PublishController.catchStream(source: _db.getUserOrders(restUser.uid));

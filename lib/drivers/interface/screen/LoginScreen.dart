@@ -21,6 +21,7 @@ import 'package:mobile_app/interface/screen/GeolocalizationScreen.dart';
 import 'package:mobile_app/logic/bloc/OrdersBloc.dart';
 import 'package:mobile_app/logic/bloc/UserBloc.dart';
 import 'package:mobile_app/restaurant/screen/OrderListScreen.dart';
+import 'package:toast/toast.dart';
 //import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 //import 'package:firebase_auth/firebase_auth.dart';
 
@@ -76,8 +77,8 @@ class _LoginScreenState extends State<LoginScreen> {
     super.didChangeDependencies();
     _submitBloc.submitController.solver = (res) async {
       if (!res) return;
-      final user=(await _userBloc.outUser.first);
-      if(user.model.isDriver) {
+      //final user=(await _userBloc.outUser.first);
+      //if(user.model.isDriver!=null && user.model.isDriver) {
         final registrationLevel = await _userBloc.getRegistrationLevel();
         /*if (registrationLevel == RegistrationLevel.LV2)
         await EasyRouter.push(context, SignUpMoreScreen());*/
@@ -94,10 +95,15 @@ class _LoginScreenState extends State<LoginScreen> {
           await EasyRouter.pushAndRemoveAll(context, HomeScreenDriver());
         }
         else{
-          Scaffold.of(context).showSnackBar(SnackBar(content:Text('Utente non abilitato')));
-        }
+          //if(user!=null) _userBloc.logout();
+          Toast.show('Utente non abilitato', context);
       }
-    };
+      };
+      //else{
+       // if(user!=null) _userBloc.logout();
+     //   Toast.show('Utente non abilitato', context,duration: 3);
+    //  }
+    //};
   }
 
   void callback(){

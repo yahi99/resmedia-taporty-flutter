@@ -137,7 +137,7 @@ class _OrdersTabDriverState extends State<OrdersTabDriver> with TickerProviderSt
     super.dispose();
   }
 
-  //TODO mappe
+  //TODO mappe nel modello dell'ordine passo solamente le coordinate dell'utente quelle del ristorante vanno prese dal database
 
   @override
   Widget build(BuildContext context) {

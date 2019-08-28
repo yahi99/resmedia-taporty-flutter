@@ -9,6 +9,8 @@ import 'package:mobile_app/drivers/interface/screen/LegalNotesScreen.dart';
 import 'package:mobile_app/drivers/interface/screen/OrderScreen.dart';
 import 'package:mobile_app/drivers/interface/screen/SettingsScreen.dart';
 import 'package:mobile_app/interface/screen/LoginScreen.dart';
+import 'package:mobile_app/logic/bloc/CartBloc.dart';
+import 'package:mobile_app/logic/bloc/OrdersBloc.dart';
 import 'package:mobile_app/logic/bloc/UserBloc.dart';
 import 'package:mobile_app/model/UserModel.dart';
 import 'package:rxdart/rxdart.dart';
@@ -101,11 +103,12 @@ class AccountScreenDriver extends StatelessWidget implements WidgetRoute {
                     ),
                     Row(
                       children: <Widget>[
-                        Icon(Icons.insert_drive_file),
+                        Icon(Icons.shopping_cart),
                         FlatButton(
                           child: Text('Lista ordini',style: theme.textTheme.subhead),
-                          onPressed: () => {
-                            EasyRouter.push(context, OrderListScreen())
+                          onPressed: ()async {
+                            await OrdersBloc.of().setUserStream();
+                            EasyRouter.push(context, OrderListScreen());
                           },
                         ),
                       ],

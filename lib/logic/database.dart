@@ -159,7 +159,8 @@ class Database extends FirebaseDatabase with MixinFirestoreStripeProvider,Restau
   }
 
   Future<void> occupyDriver(String date,String time,List<String> free,List<String> occupied) async {
-    final res = await fs.collection(cl.DAYS).document(date).collection(cl.TIMES).document(time).updateData({'free':free,'occcupied':occupied});
+    if(free.length>1) await fs.collection(cl.DAYS).document(date).collection(cl.TIMES).document(time).updateData({'free':free,'occcupied':occupied});
+    else await fs.collection(cl.DAYS).document(date).collection(cl.TIMES).document(time).updateData({'free':free,'occcupied':occupied,'isEmpty':true});
     //final data=res.data;
     //return CalendarModel.fromJson(res.data);
   }

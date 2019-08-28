@@ -42,7 +42,7 @@ class CalendarBloc implements Bloc {
     final restUser=await user.outFirebaseUser.first;
     users.add(restUser.uid);
     CloudFunctions.instance.getHttpsCallable(functionName: 'setShift').call({'startTime':startTime,'endTime':endTime,'day':day,
-      'uid':restUser.uid,'month':month(DateTime.tryParse(day).month),'users':users
+      'uid':restUser.uid,'month':month(DateTime.tryParse(day).month),'free':users,'isEmpty':false
     });
   }
 

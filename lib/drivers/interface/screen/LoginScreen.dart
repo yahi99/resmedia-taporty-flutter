@@ -20,7 +20,7 @@ import 'package:mobile_app/interface/view/logo_view.dart';
 import 'package:mobile_app/interface/screen/GeolocalizationScreen.dart';
 import 'package:mobile_app/logic/bloc/OrdersBloc.dart';
 import 'package:mobile_app/logic/bloc/UserBloc.dart';
-import 'package:mobile_app/restaurant/screen/OrderListScreen.dart';
+import 'package:mobile_app/restaurant/page/OrdersPage.dart';
 import 'package:toast/toast.dart';
 //import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 //import 'package:firebase_auth/firebase_auth.dart';

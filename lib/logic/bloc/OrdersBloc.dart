@@ -53,9 +53,9 @@ class OrdersBloc implements Bloc {
     final user=UserBloc.of();
     final restUser=await user.outFirebaseUser.first;
     final restId= await _db.getRestaurantId(restUser.uid);
-    final str=await _db.getRestaurantOrders(restUser.uid, restId).first;
-    print('lol');
-    _restaurantsControl = PublishController.catchStream(source: _db.getRestaurantOrders(restUser.uid, restId));
+    //final str=await _db.getRestaurantOrders(restUser.uid, restId).first;
+    //print('lol');
+    _restaurantsControl = PublishController.catchStream(source: _db.getRestaurantOrders(restId));
     _restaurantsControl.listen(print);
   }
 

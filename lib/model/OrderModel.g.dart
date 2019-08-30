@@ -12,8 +12,12 @@ RestaurantOrderModel _$RestaurantOrderModelFromJson(Map json) {
       products: (json['products'] as List)
           ?.map((e) => e == null ? null : ProductCart.fromJson(e as Map))
           ?.toList(),
-      time: json['time'] as String,
-      state: _$enumDecodeNullable(_$StateCategoryEnumMap, json['state']));
+      driver: json['driver'] as String,
+      uid: json['uid'] as String,
+      timeR: json['timeR'] as String,
+      timeS: json['timeS'] as String,
+      state: _$enumDecodeNullable(_$StateCategoryEnumMap, json['state']),
+      startTime: json['startTime'] as String);
 }
 
 Map<String, dynamic> _$RestaurantOrderModelToJson(
@@ -29,8 +33,12 @@ Map<String, dynamic> _$RestaurantOrderModelToJson(
   writeNotNull('path', instance.path);
   writeNotNull(
       'products', instance.products?.map((e) => e?.toJson())?.toList());
-  writeNotNull('time', instance.time);
+  writeNotNull('timeR', instance.timeR);
+  writeNotNull('timeS', instance.timeS);
   writeNotNull('state', _$StateCategoryEnumMap[instance.state]);
+  writeNotNull('startTime', instance.startTime);
+  writeNotNull('driver', instance.driver);
+  writeNotNull('uid', instance.uid);
   return val;
 }
 
@@ -57,7 +65,8 @@ T _$enumDecodeNullable<T>(Map<T, dynamic> enumValues, dynamic source) {
 const _$StateCategoryEnumMap = <StateCategory, dynamic>{
   StateCategory.PENDING: 'PENDING',
   StateCategory.ACCEPTED: 'ACCEPTED',
-  StateCategory.DONE: 'DONE'
+  StateCategory.DONE: 'DONE',
+  StateCategory.DENIED: 'DENIED'
 };
 
 UserOrderModel _$UserOrderModelFromJson(Map json) {
@@ -66,7 +75,8 @@ UserOrderModel _$UserOrderModelFromJson(Map json) {
       products: (json['products'] as List)
           ?.map((e) => e == null ? null : ProductCart.fromJson(e as Map))
           ?.toList(),
-      time: json['time'] as String,
+      timeR: json['timeR'] as String,
+      timeS: json['timeS'] as String,
       state: _$enumDecodeNullable(_$StateCategoryEnumMap, json['state']));
 }
 
@@ -82,7 +92,8 @@ Map<String, dynamic> _$UserOrderModelToJson(UserOrderModel instance) {
   writeNotNull('path', instance.path);
   writeNotNull(
       'products', instance.products?.map((e) => e?.toJson())?.toList());
-  writeNotNull('time', instance.time);
+  writeNotNull('timeR', instance.timeR);
+  writeNotNull('timeS', instance.timeS);
   writeNotNull('state', _$StateCategoryEnumMap[instance.state]);
   return val;
 }

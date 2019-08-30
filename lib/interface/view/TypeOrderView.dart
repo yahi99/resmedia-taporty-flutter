@@ -3,6 +3,9 @@ import 'package:easy_blocs/easy_blocs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
+import 'package:mobile_app/drivers/model/CalendarModel.dart';
+import 'package:mobile_app/logic/bloc/UserBloc.dart';
+import 'package:mobile_app/logic/database.dart';
 import 'package:mobile_app/model/OrderModel.dart';
 import 'package:easy_route/easy_route.dart';
 import 'package:mobile_app/main.dart';
@@ -82,7 +85,7 @@ class TypeOrderView extends StatelessWidget {
                         else if (index == cart.products.length + 1)
                           return Column(
                             children: <Widget>[
-                              Text('Data Ordine: ' + model.time+'\nStato Ordine: ' + translateOrderCategory(model.state)),
+                              Text('Data Ordine: ' + model.timeR+'\nStato Ordine: ' + translateOrderCategory(model.state)),
                             ],
                           );
                         else {
@@ -94,21 +97,36 @@ class TypeOrderView extends StatelessWidget {
                                   .toString());
                         }
                       }),
-                  (model.state == 'In Accettazione')
+                  (model.state == 'PENDING')
                       ? new Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: <Widget>[
                             new RaisedButton(
                               child: Text('Accetta'),
-                              onPressed: () => {
-                                CloudFunctions.instance.getHttpsCallable(functionName: 'updateState').call({'state':'In Consegna','oid':model.id,'rid':model.products.first.restaurantId})
+                              onPressed: () =>{
+                                CloudFunctions.instance.getHttpsCallable(functionName: 'updateState').call({'state':'ACCEPTED',
+                                  'oid':model.id,'rid':model.products.first.restaurantId,'timeS':DateTime.now()
+                                ,'did':model.driver,'uid':model.uid})
                               },
                               color: Colors.green,
                             ),
                             new RaisedButton(
                               child: Text('Rifiuta'),
-                              onPressed: () => {
-                                CloudFunctions.instance.getHttpsCallable(functionName: 'updateState').call({'state':'Ordine Rifiutato','oid':model.id,'rid':model.products.first.restaurantId})
+                              onPressed: () async{
+                                DateTime temp=DateTime.tryParse(model.timeR);
+                                DateTime time=DateTime(temp.year,temp.month,temp.minute);
+                                String user=(await UserBloc.of().outUser.first).model.id;
+                                Database().getDriverCalModel(user, time.toIso8601String(), model.startTime).then((cal){
+                                  final occ=cal.occupied;
+                                  occ.remove(user);
+                                  final lib=cal.free;
+                                  lib.add(user);
+                                  CloudFunctions.instance.getHttpsCallable(functionName: 'updateState').call({'state':'DENIED','oid':model.id,
+                                    'rid':model.products.first.restaurantId,'free':lib,'occupied':occ,'isEmpty':false
+                                    ,'day':time.toIso8601String(),'startTime':cal.startTime,'did':model.driver,'uid':model.uid
+                                  ,'timeS':DateTime.now()});
+                                });
+
                               },
                               color: Colors.red,
                             ),
@@ -120,7 +138,7 @@ class TypeOrderView extends StatelessWidget {
               padding: EdgeInsets.all(4.0),
               decoration: new BoxDecoration(
                   border: new Border.all(
-                color: (model.state == 'In Accettazione')
+                color: (model.state == 'PENDING')
                     ? Colors.red
                     : Colors.black,
               )),

@@ -82,7 +82,7 @@ class TypeOrderView extends StatelessWidget {
                         else if (index == cart.products.length + 1)
                           return Column(
                             children: <Widget>[
-                              Text('Data Ordine: ' + model.time+'\nStato Ordine: ' + translateOrderCategory(model.state)),
+                              Text('Data Ordine: ' + model.timeR+'\nStato Ordine: ' + translateOrderCategory(model.state)),
                             ],
                           );
                         else {

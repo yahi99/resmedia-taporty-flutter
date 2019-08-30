@@ -41,7 +41,20 @@ const updateState = functions.https.onCall(async (data, context) => {
   const state=data.state;
   const rid=data.rid;
   const oid=data.oid;
-  await fs.collection('restaurants').doc(rid).collection('orders').doc(oid).update({'state':state});
+  const uid=data.uid;
+  const did=data.did;
+  const timeS=data.timeS;
+  await fs.collection('restaurants').doc(rid).collection('orders').doc(oid).update({'state':state,'timeS':timeS});
+  await fs.collection('users').doc(did).collection('orders').doc(oid).update({'state':state,'timeS':timeS});
+  await fs.collection('users').doc(uid).collection('orders').doc(oid).update({'state':state,'timeS':timeS});
+  if(state=='DENIED'){
+    const day=data.day;
+    const startTime=data.startTime;
+    const free=data.free;
+    const occupied=data.occupied;
+    const isEmpty=data.isEmpty;
+    await fs.collection('days').doc(day).collection('times').doc(startTime).update({'free':free,'occupied':occupied,'isEmpty':isEmpty});
+  }
   return {"documentId": "id",}
 });
 

@@ -58,15 +58,19 @@ class Database extends FirebaseDatabase with MixinFirestoreStripeProvider,Restau
     });
   }
 
+  Future<CalendarModel> getDriverCalModel(String uid,String day,String startTime)async{
+    return CalendarModel.fromFirebase(await fs.collection(cl.DAYS).document(day).collection(cl.TIMES).document(startTime).get());
+  }
+
   Future<void> createOrder({@required String uid, @required Cart model,@required String driver
-    ,@required Position userPos,@required String addressR}) async {
-    await fs.collection(cl.RESTAURANTS).document(model.products.first.restaurantId).collection(cl.ORDERS).add(
-        model.toJson()..['restaurantId']=model.products.first.restaurantId..['time']=new DateTime.now().toString()
-    ..['state']='PENDING'..['driver']=driver);
-    await fs.collection(cl.USERS).document(uid).collection(cl.ORDERS).add(
-        model.toJson()..['restaurantId']=model.products.first.restaurantId..['time']=new DateTime.now().toString()
+    ,@required Position userPos,@required String addressR,@required String startTime}) async {
+    final id=(await fs.collection(cl.RESTAURANTS).document(model.products.first.restaurantId).collection(cl.ORDERS).add(
+        model.toJson()..['restaurantId']=model.products.first.restaurantId..['timeR']=new DateTime.now().toString()
+    ..['state']='PENDING'..['driver']=driver..['startTime']=startTime..['uid']=uid)).documentID;
+    await fs.collection(cl.USERS).document(uid).collection(cl.ORDERS).document(id).setData(
+        model.toJson()..['restaurantId']=model.products.first.restaurantId..['timeR']=new DateTime.now().toString()
           ..['state']='PENDING'..['driver']=driver..['uid']=uid);
-    await fs.collection(cl.USERS).document(driver).collection(cl.ORDERS).add(
+    await fs.collection(cl.USERS).document(driver).collection(cl.ORDERS).document(id).setData(
         model.toJson()..['titleS']=model.products.first.restaurantId..['timeR']=new DateTime.now().toString()
           ..['state']='PENDING'..['titleS']=uid..['addressR']=addressR
         ..['latR']=userPos.latitude..['lngR']=userPos.longitude);
@@ -96,7 +100,7 @@ class Database extends FirebaseDatabase with MixinFirestoreStripeProvider,Restau
     return RestaurantModel.fromJson(res.data);
   }
 
-  Stream<List<RestaurantOrderModel>> getRestaurantOrders(String uid,String restaurantId) {
+  Stream<List<RestaurantOrderModel>> getRestaurantOrders(String restaurantId) {
     final data=fs.collection(cl.RESTAURANTS).document(restaurantId).collection(cl.ORDERS).snapshots();
     print('lol');
     return data.map((query) {
@@ -159,8 +163,8 @@ class Database extends FirebaseDatabase with MixinFirestoreStripeProvider,Restau
   }
 
   Future<void> occupyDriver(String date,String time,List<String> free,List<String> occupied) async {
-    if(free.length>1) await fs.collection(cl.DAYS).document(date).collection(cl.TIMES).document(time).updateData({'free':free,'occcupied':occupied});
-    else await fs.collection(cl.DAYS).document(date).collection(cl.TIMES).document(time).updateData({'free':free,'occcupied':occupied,'isEmpty':true});
+    if(free.length>1) await fs.collection(cl.DAYS).document(date).collection(cl.TIMES).document(time).updateData({'free':free,'occupied':occupied});
+    else await fs.collection(cl.DAYS).document(date).collection(cl.TIMES).document(time).updateData({'free':free,'occupied':occupied,'isEmpty':true});
     //final data=res.data;
     //return CalendarModel.fromJson(res.data);
   }

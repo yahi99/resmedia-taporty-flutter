@@ -13,7 +13,6 @@ class ProductView extends StatelessWidget {
   final ProductModel model;
   final CartControllerRule cartController;
   final String update;
-  var delete;
 
   ProductView({Key key, @required this.model, @required this.cartController,@required this.update})
       : super(key: key);

@@ -8,7 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobile_app/data/config.dart';
-import 'package:mobile_app/interface/screen/HomeScreen.dart';
+import 'package:mobile_app/logic/bloc/RestaurantBloc.dart';
+import 'package:mobile_app/restaurant/screen/HomeScreen.dart';
 import 'package:mobile_app/interface/screen/RestaurantListScreen.dart';
 import 'package:mobile_app/interface/screen/SignUpMoreScreen.dart';
 import 'package:mobile_app/interface/screen/SignUpScreen.dart';
@@ -16,7 +17,7 @@ import 'package:mobile_app/interface/view/logo_view.dart';
 import 'package:mobile_app/interface/screen/GeolocalizationScreen.dart';
 import 'package:mobile_app/logic/bloc/OrdersBloc.dart';
 import 'package:mobile_app/logic/bloc/UserBloc.dart';
-import 'package:mobile_app/restaurant/screen/OrderListScreen.dart';
+import 'package:mobile_app/restaurant/page/OrdersPage.dart';
 //import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 //import 'package:firebase_auth/firebase_auth.dart';
 
@@ -79,9 +80,16 @@ class _LoginScreenState extends State<LoginScreen> {
       if (registrationLevel == RegistrationLevel.COMPLETE) {
         final orderBloc=OrdersBloc.of();
         await orderBloc.setRestaurantStream();
-        await EasyRouter.pushAndRemoveAll(context, OrderListScreen());
+        String user=(await UserBloc.of().outUser.first).model.restaurantId;
+        final restaurantBloc = RestaurantBloc.init(idRestaurant: user);
+        await EasyRouter.pushAndRemoveAll(context, HomeScreen(restBloc:restaurantBloc));
       }
     };
+  }
+
+  @override
+  void initState(){
+    super.initState();
   }
 
   @override

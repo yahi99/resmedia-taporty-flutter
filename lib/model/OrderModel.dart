@@ -16,11 +16,13 @@ abstract class OrderModel extends FirebaseModel {
 }
 
 enum StateCategory {
-  PENDING, ACCEPTED, DONE
+  PENDING, ACCEPTED, DONE, DENIED
 }
 
 String translateOrderCategory(StateCategory category) {
   switch (category) {
+    case StateCategory.DENIED:
+      return "Ordine rifiutato";
     case StateCategory.PENDING:
       return "In Accettazione";
     case StateCategory.ACCEPTED:
@@ -34,12 +36,19 @@ String translateOrderCategory(StateCategory category) {
 @JsonSerializable(anyMap: true, explicitToJson: true, includeIfNull: false)
 class RestaurantOrderModel extends OrderModel {
   final List<ProductCart> products;
-  final String time;
+  final String timeR,timeS;
   final StateCategory state;
+  final String startTime;
+  final String driver;
+  final String uid;
   RestaurantOrderModel({String path,
     @required this.products,
-    @required this.time,
+    @required this.driver,
+    @required this.uid,
+    @required this.timeR,
+    @required this.timeS,
     @required this.state,
+    @required this.startTime,
   }) :
         super(
           path: path,
@@ -57,11 +66,12 @@ class RestaurantOrderModel extends OrderModel {
 @JsonSerializable(anyMap: true, explicitToJson: true, includeIfNull: false)
 class UserOrderModel extends OrderModel {
   final List<ProductCart> products;
-  final String time;
+  final String timeR,timeS;
   final StateCategory state;
   UserOrderModel({String path,
     @required this.products,
-    @required this.time,
+    @required this.timeR,
+    @required this.timeS,
     @required this.state,
   }) :
         super(

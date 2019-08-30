@@ -27,6 +27,11 @@ class CartPage extends StatefulWidget {
 class _CartState extends State<CartPage> with AutomaticKeepAliveClientMixin {
 
   @override
+  void dispose(){
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final tt=Theme.of(context);
     final restaurantBloc = RestaurantBloc.init(idRestaurant: widget.model.id);

@@ -59,8 +59,6 @@ class CartBloc extends Bloc {
     _formHandler.dispose();
   }
 
-
-  //TODO quando faccio inRemove dà problemi e non cancella tutti gli elementi del carrello
   Future<Cart> inDeleteCart(String restaurantId) async {
     final food = await outFoodsCart.first;
     final drink = await outDrinksCart.first;
@@ -71,7 +69,7 @@ class CartBloc extends Bloc {
       if (temp.elementAt(i).userId == firebaseUser.uid &&
           temp.elementAt(i).restaurantId == restaurantId) {
         products.add(temp.elementAt(i));
-        //_foodsCartController.inRemove(temp.elementAt(i).id, restaurantId, firebaseUser.uid);
+        _foodsCartController.inRemove(temp.elementAt(i).id, restaurantId, firebaseUser.uid);
       }
     }
     temp = drink.products;
@@ -79,7 +77,7 @@ class CartBloc extends Bloc {
       if (temp.elementAt(i).userId == firebaseUser.uid &&
           temp.elementAt(i).restaurantId == restaurantId) {
         products.add(temp.elementAt(i));
-        //_drinksCartController.inRemove(temp.elementAt(i).id, restaurantId, firebaseUser.uid);
+        _drinksCartController.inRemove(temp.elementAt(i).id, restaurantId, firebaseUser.uid);
       }
     }
     var cart = new Cart(products: products);
@@ -134,11 +132,11 @@ class CartBloc extends Bloc {
     return null;
   }
 
-  Future<bool> signer(String restaurantId,String driver,Position userPos,String userAddress) async {
+  Future<bool> signer(String restaurantId,String driver,Position userPos,String userAddress,String startTime) async {
     final userBloc = UserBloc.of();
     final firebaseUser = await userBloc.outFirebaseUser.first;
     inDeleteCart(restaurantId).then((cart){
-      _db.createOrder(uid: firebaseUser.uid, model: cart,driver:driver,userPos: userPos,addressR: userAddress);
+      _db.createOrder(uid: firebaseUser.uid, model: cart,driver:driver,userPos: userPos,addressR: userAddress,startTime: startTime);
       RestaurantScreen.isOrdered=true;
     });
 

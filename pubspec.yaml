@@ -32,6 +32,8 @@ dependencies:
 
   path_provider: any
 
+  image_picker: any
+
   easy_firebase:
     path: ../../plugins/easy_firebase
 

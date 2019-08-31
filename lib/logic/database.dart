@@ -62,6 +62,10 @@ class Database extends FirebaseDatabase with MixinFirestoreStripeProvider,Restau
     return CalendarModel.fromFirebase(await fs.collection(cl.DAYS).document(day).collection(cl.TIMES).document(startTime).get());
   }
 
+  Future<void> createRequestProduct(String id,String img,String category,String price,String quantity,String restaurantId,String cat)async{
+    await fs.collection('product_requests').document(id).setData({'img':img,'category':category,'price':price,'quantity':quantity,'restaurantId':restaurantId,'cat':cat});
+  }
+
   Future<void> createOrder({@required String uid, @required Cart model,@required String driver
     ,@required Position userPos,@required String addressR,@required String startTime}) async {
     final id=(await fs.collection(cl.RESTAURANTS).document(model.products.first.restaurantId).collection(cl.ORDERS).add(

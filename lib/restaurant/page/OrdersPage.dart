@@ -17,7 +17,7 @@ import 'package:easy_route/easy_route.dart';
 class OrdersPage extends StatefulWidget implements WidgetRoute {
   final list;
 
-  static const ROUTE = "OrderListScreen";
+  static const ROUTE = "OrdersPage";
   @override
   String get route => OrdersPage.ROUTE;
 
@@ -36,7 +36,6 @@ class OrdersPageState extends State<OrdersPage> {
   }
 
   void dispose() {
-    OrdersBloc.close();
     super.dispose();
   }
 

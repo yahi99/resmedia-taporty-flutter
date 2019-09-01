@@ -132,11 +132,11 @@ class CartBloc extends Bloc {
     return null;
   }
 
-  Future<bool> signer(String restaurantId,String driver,Position userPos,String userAddress,String startTime) async {
+  Future<bool> signer(String restaurantId,String driver,Position userPos,String userAddress,String startTime,String endTime) async {
     final userBloc = UserBloc.of();
-    final firebaseUser = await userBloc.outFirebaseUser.first;
+    final firebaseUser = await userBloc.outUser.first;
     inDeleteCart(restaurantId).then((cart){
-      _db.createOrder(uid: firebaseUser.uid, model: cart,driver:driver,userPos: userPos,addressR: userAddress,startTime: startTime);
+      _db.createOrder(uid: firebaseUser.model.id, model: cart,driver:driver,userPos: userPos,addressR: userAddress,startTime: startTime,nominative: firebaseUser.model.nominative,endTime: endTime);
       RestaurantScreen.isOrdered=true;
     });
 

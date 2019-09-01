@@ -93,7 +93,7 @@ class _MenuPageState extends State<MenuPage> {
   Future<String> uploadFile(String filePath) async {
     final ByteData bytes = await rootBundle.load(filePath);
     final Directory tempDir = Directory.systemTemp;
-    final String fileName = "file.jpg";
+    final String fileName = filePath.split('/').last;
     final File file = File('${tempDir.path}/$fileName');
     file.writeAsBytes(bytes.buffer.asInt8List(), mode: FileMode.write);
 

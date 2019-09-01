@@ -157,7 +157,8 @@ class _OrdersTabDriverState extends State<OrdersTabDriver> with TickerProviderSt
                 child: Text("Ordine N ", style: tt.subhead,),
               ),
             ),
-            Expanded(
+            _addControllers(child:Container()),
+            /*Expanded(
               child: PocketMapBuilder(
                 padding: const EdgeInsets.only(top: 16.0, right: 16.0, left: 16.0, bottom: 64.0),
                 builder: (context, onMapCreated) {
@@ -174,7 +175,7 @@ class _OrdersTabDriverState extends State<OrdersTabDriver> with TickerProviderSt
                   );
                 },
               ),
-            ),
+            ),*/
           ],
         ),
         upperLayer: Material(
@@ -188,18 +189,19 @@ class _OrdersTabDriverState extends State<OrdersTabDriver> with TickerProviderSt
     );
   }
 
-  /*Widget _addControllers({@required Widget child}) {
+  Widget _addControllers({@required Widget child}) {
     return RubberScrollController(
       controller: _scrollController,
       child: PrimaryRubberController(
         controller: _rubberController,
-        child: PrimaryGoogleMapsController(
+        child: Container(),
+        /*PrimaryGoogleMapsController(
           controller: _mapController,
           child: child,
-        ),
+        ),*/
       ),
     );
-  }*/
+  }
 
   @override
   // TODO: implement wantKeepAlive

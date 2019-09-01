@@ -9,6 +9,7 @@ import 'package:mobile_app/logic/database.dart';
 import 'package:mobile_app/model/OrderModel.dart';
 import 'package:easy_route/easy_route.dart';
 import 'package:mobile_app/main.dart';
+import 'package:mobile_app/restaurant/page/DetailOrderRestaurantPage.dart';
 import 'package:mobile_app/restaurant/update/update.dart';
 
 class TypeOrderView extends StatelessWidget {
@@ -19,10 +20,18 @@ class TypeOrderView extends StatelessWidget {
     this.model,
   }) : super(key: key);
 
+  int totalProducts(List<ProductCart> cart){
+    int sum=0;
+    for(int i=0;i<cart.length;i++){
+      sum+=cart.elementAt(i).countProducts;
+    }
+    return sum;
+  }
+
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
-    var textButtonTheme = theme.textTheme.title.copyWith(color: Colors.white);
+    var tt = theme.textTheme;
     /*final _restaurantsBloc = RestaurantsBloc.instance(model.id);
     return CacheStreamBuilder<List<RestaurantModel>>(
         stream: _restaurantsBloc.outRestaurants,
@@ -60,7 +69,10 @@ class TypeOrderView extends StatelessWidget {
     return Stack(
       alignment: Alignment.center,
       children: <Widget>[
-        Center(
+        GestureDetector(
+          onTap: (){
+            EasyRouter.push(context,DetailOrderRestaurantPage(model:model));
+          },
           child: ConstrainedBox(
             constraints: BoxConstraints(
               minWidth: 186,
@@ -68,8 +80,41 @@ class TypeOrderView extends StatelessWidget {
             ),
             child: new Container(
               child: new Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  ListView.builder(
+              Wrap(
+              runSpacing: 16.0,
+                children: <Widget>[
+                  Text('Cliente: ',style:tt.subtitle),
+                  Text(model.nominative),
+                  Text('Ora di consegna: ',style:tt.subtitle),
+    Text(model.endTime),
+                  Text('Numero di prodotti: ',style:tt.subtitle),
+    Text(totalProducts(model.products).toString()),
+                  Text('Prezzo totale: ',style:tt.subtitle),
+                      Text(
+                      cart
+                          .getTotalPrice(
+                              cart.products,
+                              cart.products.first.userId,
+                              cart.products.first.restaurantId)
+                          .toString() +
+                      ' euro'),
+                  Text('Stato dell\'ordine: ',style:tt.subtitle),
+    Text(translateOrderCategory(model.state)),
+                  Center(
+                    child:Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: RaisedButton(
+                        color: theme.colorScheme.secondaryVariant,
+                        onPressed: () {},
+                        child: Text("Chiama", style: tt.button,),
+                      ),
+                  ),
+                  ),
+                  ],
+              ),
+                  /*ListView.builder(
                       shrinkWrap: true,
                       itemCount: cart.products.length + 2,
                       itemBuilder: (BuildContext ctx, int index) {
@@ -133,14 +178,13 @@ class TypeOrderView extends StatelessWidget {
                           ],
                         )
                       : Container(),
+                      */
                 ],
               ),
               padding: EdgeInsets.all(4.0),
               decoration: new BoxDecoration(
                   border: new Border.all(
-                color: (model.state == 'PENDING')
-                    ? Colors.red
-                    : Colors.black,
+                color: (translateOrderCategory(model.state) == 'In Accettazione') ? Colors.red : Colors.black,
               )),
             ),
           ),

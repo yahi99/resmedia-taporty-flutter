@@ -16,11 +16,13 @@ abstract class OrderModel extends FirebaseModel {
 }
 
 enum StateCategory {
-  PENDING, ACCEPTED, DONE, DENIED
+  PENDING, ACCEPTED, DONE, DENIED,PICKED_UP
 }
 
 String translateOrderCategory(StateCategory category) {
   switch (category) {
+    case StateCategory.PICKED_UP:
+      return "Ritirato dal fattorino";
     case StateCategory.DENIED:
       return "Ordine rifiutato";
     case StateCategory.PENDING:
@@ -28,7 +30,7 @@ String translateOrderCategory(StateCategory category) {
     case StateCategory.ACCEPTED:
       return "In Consegna";
     case StateCategory.DONE:
-      return "Consegnata";
+      return "Consegnato";
     default: return "";
   }
 }
@@ -38,10 +40,14 @@ class RestaurantOrderModel extends OrderModel {
   final List<ProductCart> products;
   final String timeR,timeS;
   final StateCategory state;
-  final String startTime;
+  final String startTime,endTime;
   final String driver;
   final String uid;
+  final String nominative;
+  final String addressR;
   RestaurantOrderModel({String path,
+    @required this.addressR,
+    @required this.endTime,
     @required this.products,
     @required this.driver,
     @required this.uid,
@@ -49,6 +55,7 @@ class RestaurantOrderModel extends OrderModel {
     @required this.timeS,
     @required this.state,
     @required this.startTime,
+    @required this.nominative,
   }) :
         super(
           path: path,

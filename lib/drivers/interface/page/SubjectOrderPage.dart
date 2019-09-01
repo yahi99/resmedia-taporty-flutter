@@ -6,7 +6,11 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mobile_app/data/config.dart';
 import 'package:mobile_app/drivers/interface/tab/OrdersTab.dart';
 import 'package:mobile_app/drivers/interface/widget/GoogleMapsUI.dart';
+import 'package:mobile_app/drivers/model/OrderModel.dart';
 import 'package:mobile_app/drivers/model/SubjectModel.dart';
+import 'package:mobile_app/logic/bloc/UserBloc.dart';
+import 'package:mobile_app/logic/database.dart';
+import 'package:mobile_app/model/OrderModel.dart';
 
 
 class SubjectOrderPageDriver extends StatefulWidget implements WidgetRoute {
@@ -14,8 +18,9 @@ class SubjectOrderPageDriver extends StatefulWidget implements WidgetRoute {
   String get route => SubjectOrderPageDriver.ROUTE;
 
   final SubjectModel model;
+  final DriverOrderModel orderModel;
 
-  SubjectOrderPageDriver({Key key, @required this.model}) : super(key: key);
+  SubjectOrderPageDriver({Key key, @required this.model,@required this.orderModel}) : super(key: key);
 
   @override
   _SubjectOrderPageDriverState createState() => _SubjectOrderPageDriverState();
@@ -39,6 +44,51 @@ class _SubjectOrderPageDriverState extends State<SubjectOrderPageDriver> {
     if (isDeactivate) return;
     await PrimaryGoogleMapsController.of(context).future
       ..animateCamera(CameraUpdate.newLatLng(widget.model.toLatLng()));
+  }
+
+  void _askPermission(BuildContext context,String state)async{
+    showDialog(
+      context: context,
+      builder: (_context) {
+        final theme = Theme.of(context);
+        final cls = theme.colorScheme;
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(20))),
+          content: Wrap(
+            alignment: WrapAlignment.center,
+            runSpacing: SPACE * 2,
+            children: <Widget>[
+              Column(
+                children: <Widget>[
+                  Text(
+              (state=='PICKED_UP')?'Sei sicuro di avere ritirato il pacco?':'Sei sicuro di aver consegnato il pacco?'
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      IconButton(
+                        icon: Icon(Icons.close),
+                        onPressed: (){
+                          EasyRouter.pop(context);
+                        },
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.check),
+                        onPressed: ()async{
+                          EasyRouter.pop(context);
+                          Database().updateState(state,widget.orderModel.uid,widget.orderModel.id,widget.orderModel.restId,(await UserBloc.of().outUser.first).model.id);
+                        },
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
 
@@ -122,7 +172,9 @@ class _SubjectOrderPageDriverState extends State<SubjectOrderPageDriver> {
                   SizedBox(width: 16.0,),
                   Expanded(
                     child: RaisedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        _askPermission(context,'PICKED_UP');
+                      },
                       child: Text("Ritirato", style: tt.button,),
                     ),
                   ),

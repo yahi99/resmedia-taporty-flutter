@@ -9,6 +9,8 @@ part of 'OrderModel.dart';
 RestaurantOrderModel _$RestaurantOrderModelFromJson(Map json) {
   return RestaurantOrderModel(
       path: json['path'] as String,
+      addressR: json['addressR'] as String,
+      endTime: json['endTime'] as String,
       products: (json['products'] as List)
           ?.map((e) => e == null ? null : ProductCart.fromJson(e as Map))
           ?.toList(),
@@ -17,7 +19,8 @@ RestaurantOrderModel _$RestaurantOrderModelFromJson(Map json) {
       timeR: json['timeR'] as String,
       timeS: json['timeS'] as String,
       state: _$enumDecodeNullable(_$StateCategoryEnumMap, json['state']),
-      startTime: json['startTime'] as String);
+      startTime: json['startTime'] as String,
+      nominative: json['nominative'] as String);
 }
 
 Map<String, dynamic> _$RestaurantOrderModelToJson(
@@ -37,8 +40,11 @@ Map<String, dynamic> _$RestaurantOrderModelToJson(
   writeNotNull('timeS', instance.timeS);
   writeNotNull('state', _$StateCategoryEnumMap[instance.state]);
   writeNotNull('startTime', instance.startTime);
+  writeNotNull('endTime', instance.endTime);
   writeNotNull('driver', instance.driver);
   writeNotNull('uid', instance.uid);
+  writeNotNull('nominative', instance.nominative);
+  writeNotNull('addressR', instance.addressR);
   return val;
 }
 
@@ -66,7 +72,8 @@ const _$StateCategoryEnumMap = <StateCategory, dynamic>{
   StateCategory.PENDING: 'PENDING',
   StateCategory.ACCEPTED: 'ACCEPTED',
   StateCategory.DONE: 'DONE',
-  StateCategory.DENIED: 'DENIED'
+  StateCategory.DENIED: 'DENIED',
+  StateCategory.PICKED_UP: 'PICKED_UP'
 };
 
 UserOrderModel _$UserOrderModelFromJson(Map json) {

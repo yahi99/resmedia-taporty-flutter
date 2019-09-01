@@ -13,7 +13,7 @@ part 'OrderModel.g.dart';
 class DriverOrderModel extends FirebaseModel {
   final String titleR,titleS, addressR,addressS, timeR,timeS;
   final double latR,lngR;
-  String id;
+  String id,restId,uid;
   StateCategory state;
 
   DriverOrderModel({ String path,
@@ -24,6 +24,8 @@ class DriverOrderModel extends FirebaseModel {
     @required this.latR,
     @required this.lngR,
     @required this.state,
+    @required this.uid,
+    @required this.restId,
   }):super(path);
 
   List<LatLng> get positions => [new LatLng(latR,lngR)];

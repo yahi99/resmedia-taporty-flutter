@@ -36,6 +36,13 @@ class _ShippingState extends State<ShippingPage>
         date.year.toString());
   }
 
+  String getEnd(List<CalendarModel> models,String value){
+    for(int i=0;i<models.length;i++){
+      if(models.elementAt(i).id==value) return models.elementAt(i).endTime;
+    }
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     var dateStream = new StreamController<DateTime>();
@@ -61,7 +68,7 @@ class _ShippingState extends State<ShippingPage>
     _capController.value =
         new TextEditingValue(text: widget.address.postalCode);
     DateTime date;
-    String time;
+    String time,endTime;
     final _formKey = GlobalKey<FormState>();
     final _dropKey = GlobalKey();
     final _dateKey = GlobalKey();
@@ -208,6 +215,7 @@ class _ShippingState extends State<ShippingPage>
                                                 onChanged: (value) {
                                                   print(value);
                                                   time = value;
+                                                  endTime=getEnd(snap.data,value);
                                                   dropStream.add(value);
                                                 },
                                                 items: drop,
@@ -350,6 +358,7 @@ class _ShippingState extends State<ShippingPage>
                   final state = MyInheritedWidget.of(context);
                   state.date = date.toIso8601String();
                   state.time = time;
+                  state.endTime=endTime;
                   state.address = _addressKey.currentState.toString();
                   state.phone = _phoneKey.currentState.toString();
                   state.email = _emailKey.currentState.toString();

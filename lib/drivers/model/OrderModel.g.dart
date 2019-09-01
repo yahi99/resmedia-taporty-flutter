@@ -18,7 +18,9 @@ DriverOrderModel _$DriverOrderModelFromJson(Map json) {
       timeR: json['timeR'] as String,
       latR: (json['latR'] as num)?.toDouble(),
       lngR: (json['lngR'] as num)?.toDouble(),
-      state: _$enumDecodeNullable(_$StateCategoryEnumMap, json['state']));
+      state: _$enumDecodeNullable(_$StateCategoryEnumMap, json['state']),
+      uid: json['uid'] as String,
+      restId: json['restId'] as String);
 }
 
 Map<String, dynamic> _$DriverOrderModelToJson(DriverOrderModel instance) {
@@ -40,6 +42,8 @@ Map<String, dynamic> _$DriverOrderModelToJson(DriverOrderModel instance) {
   writeNotNull('latR', instance.latR);
   writeNotNull('lngR', instance.lngR);
   writeNotNull('id', instance.id);
+  writeNotNull('restId', instance.restId);
+  writeNotNull('uid', instance.uid);
   writeNotNull('state', _$StateCategoryEnumMap[instance.state]);
   return val;
 }
@@ -68,5 +72,6 @@ const _$StateCategoryEnumMap = <StateCategory, dynamic>{
   StateCategory.PENDING: 'PENDING',
   StateCategory.ACCEPTED: 'ACCEPTED',
   StateCategory.DONE: 'DONE',
-  StateCategory.DENIED: 'DENIED'
+  StateCategory.DENIED: 'DENIED',
+  StateCategory.PICKED_UP: 'PICKED_UP'
 };

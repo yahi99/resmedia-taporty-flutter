@@ -76,7 +76,7 @@ class _DetailOrderPageDriverState extends State<DetailOrderPageDriver> {
               children: <Widget>[
                 Text("DETTAGLIO ORDINE", style: tt.title,),
                 InkWell(
-                  onTap: () => EasyRouter.push(context, SubjectOrderPageDriver(model: sub[0],)),
+                  onTap: () => EasyRouter.push(context, SubjectOrderPageDriver(orderModel:widget.model,model: sub[0],)),
                   child: Order(
                     children: <Widget>[
                       SubjectVoid(model: sub[0],),
@@ -84,7 +84,7 @@ class _DetailOrderPageDriverState extends State<DetailOrderPageDriver> {
                   ),
                 ),
                 InkWell(
-                  onTap: () => EasyRouter.push(context, SubjectOrderPageDriver(model: sub[1],)),
+                  onTap: () => EasyRouter.push(context, SubjectOrderPageDriver(orderModel:widget.model,model: sub[1],)),
                   child: Order(
                     children: <Widget>[
                       SubjectVoid(model: sub[1], subject: Subject.RECEIVER,),

@@ -1,12 +1,71 @@
+import 'package:easy_route/easy_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:mobile_app/data/config.dart';
+import 'package:mobile_app/drivers/model/OrderModel.dart';
 import 'package:mobile_app/drivers/model/SubjectModel.dart';
+import 'package:mobile_app/logic/bloc/UserBloc.dart';
+import 'package:mobile_app/logic/database.dart';
 
 //visualizzazione cliente
 // ignore: must_be_immutable
-class ClientView extends StatelessWidget {
+class ClientView extends StatefulWidget {
 
-  SubjectModel client;
+  final DriverOrderModel orderModel;
+  final SubjectModel model;
+
+  ClientView({Key key, @required this.model,@required this.orderModel}) : super(key: key);
+
+  @override
+  _StateClientView createState() => _StateClientView();
+}
+
+class _StateClientView extends State<ClientView>{
+
+  void _askPermission(BuildContext context,String state)async{
+    showDialog(
+      context: context,
+      builder: (_context) {
+        final theme = Theme.of(context);
+        final cls = theme.colorScheme;
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(20))),
+          content: Wrap(
+            alignment: WrapAlignment.center,
+            runSpacing: SPACE * 2,
+            children: <Widget>[
+              Column(
+                children: <Widget>[
+                  Text(
+                      (state=='PICKED_UP')?'Sei sicuro di avere ritirato il pacco?':'Sei sicuro di aver consegnato il pacco?'
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      IconButton(
+                        icon: Icon(Icons.close),
+                        onPressed: (){
+                          EasyRouter.pop(context);
+                        },
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.check),
+                        onPressed: ()async{
+                          EasyRouter.pop(context);
+                          Database().updateState(state,widget.orderModel.uid,widget.orderModel.id,widget.orderModel.restId,(await UserBloc.of().outUser.first).model.id);
+                        },
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
 
 
   @override
@@ -25,8 +84,8 @@ var theme = Theme.of(context);
               alignment: Alignment.centerLeft,
               children: <Widget>[
                 new Text('Fornitore', style: new TextStyle(fontSize: 13, fontWeight: FontWeight.bold),),
-                new Text(client.title),
-                new Text(client.address)
+                new Text(widget.model.title),
+                new Text(widget.model.address)
               ],
             )
           ],
@@ -69,7 +128,7 @@ var theme = Theme.of(context);
               padding: const EdgeInsets.all(10.0),
               color:theme.secondaryHeaderColor,
               onPressed: () {
-              
+                _askPermission(context,'DONE');
               },
               child: Text(
                 'Consegnata',

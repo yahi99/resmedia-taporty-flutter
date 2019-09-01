@@ -110,7 +110,7 @@ class MyInheritedWidget extends InheritedWidget{
 
 class MyInheritedWidgetData{
 
-  String name,cap,email,phone,address,date,time;
+  String name,cap,email,phone,address,date,time,endTime;
 
   //final StreamController _streamController =StreamController.broadcast();
 

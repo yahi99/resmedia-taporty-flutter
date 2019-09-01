@@ -67,17 +67,17 @@ class Database extends FirebaseDatabase with MixinFirestoreStripeProvider,Restau
   }
 
   Future<void> createOrder({@required String uid, @required Cart model,@required String driver
-    ,@required Position userPos,@required String addressR,@required String startTime}) async {
+    ,@required Position userPos,@required String addressR,@required String startTime,@required String nominative,@required String endTime}) async {
     final id=(await fs.collection(cl.RESTAURANTS).document(model.products.first.restaurantId).collection(cl.ORDERS).add(
         model.toJson()..['restaurantId']=model.products.first.restaurantId..['timeR']=new DateTime.now().toString()
-    ..['state']='PENDING'..['driver']=driver..['startTime']=startTime..['uid']=uid)).documentID;
+    ..['state']='PENDING'..['driver']=driver..['startTime']=startTime..['uid']=uid..['nominative']=nominative..['endTime']=endTime..['addressR']=addressR)).documentID;
     await fs.collection(cl.USERS).document(uid).collection(cl.ORDERS).document(id).setData(
         model.toJson()..['restaurantId']=model.products.first.restaurantId..['timeR']=new DateTime.now().toString()
           ..['state']='PENDING'..['driver']=driver..['uid']=uid);
     await fs.collection(cl.USERS).document(driver).collection(cl.ORDERS).document(id).setData(
         model.toJson()..['titleS']=model.products.first.restaurantId..['timeR']=new DateTime.now().toString()
           ..['state']='PENDING'..['titleS']=uid..['addressR']=addressR
-        ..['latR']=userPos.latitude..['lngR']=userPos.longitude);
+        ..['latR']=userPos.latitude..['lngR']=userPos.longitude..['uid']=uid..['restId']=model.products.first.restaurantId);
   }
 
   /*Future<void> updateState({@required String uid, @required Cart model}) async {
@@ -158,6 +158,16 @@ class Database extends FirebaseDatabase with MixinFirestoreStripeProvider,Restau
     final res = await fs.collection(cl.USERS).document(uid).get();
     final data=res.data;
     return UserModel.fromJson(res.data).restaurantId;
+  }
+
+  Future<String> getUid(String uid)async{
+    return UserModel.fromFirebase(await fs.collection(cl.USERS).document(uid).get()).nominative;
+  }
+
+  Future<void> updateState(String state,String uid,String oid,String restId,String driverId)async{
+    await fs.collection(cl.USERS).document(uid).collection(cl.ORDERS).document(oid).updateData({'state':state});
+    await fs.collection(cl.RESTAURANTS).document(restId).collection(cl.ORDERS).document(oid).updateData({'state':state});
+    await fs.collection(cl.USERS).document(driverId).collection(cl.ORDERS).document(oid).updateData({'state':state});
   }
 
   Future<CalendarModel> getUsers(String date,String time) async {

@@ -136,7 +136,7 @@ class _ConfirmState extends State<ConfirmPage>with AutomaticKeepAliveClientMixin
                         final state = MyInheritedWidget.of(context);
                         cartBloc.isAvailable(state.date, state.time).then((user){
                           if(user!=null){
-                            cartBloc.signer(widget.model.id,user,widget.position,widget.description.addressLine,state.time).then((isDone) {
+                            cartBloc.signer(widget.model.id,user,widget.position,widget.description.addressLine,state.time,state.endTime).then((isDone) {
                               RestaurantScreen.isOrdered=false;
                               Future.delayed(
                                   Duration.zero, () => _showPaymentDialog(context));

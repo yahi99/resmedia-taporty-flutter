@@ -81,9 +81,12 @@ class RestaurantListScreen extends StatefulWidget implements WidgetRoute {
   final Position position;
   final bool isAnonymous;
 
-  RestaurantListScreen({Key key,
-  @required this.user,@required this.position,
-  @required this.isAnonymous}) : super(key: key);
+  RestaurantListScreen(
+      {Key key,
+      @required this.user,
+      @required this.position,
+      @required this.isAnonymous})
+      : super(key: key);
 
   @override
   _RestaurantListScreenState createState() => _RestaurantListScreenState();
@@ -106,14 +109,15 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final UserBloc userBloc=UserBloc.of();
+    final UserBloc userBloc = UserBloc.of();
     final RestaurantsBloc _restaurantsBloc = RestaurantsBloc.instance();
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        leading: IconButton(icon: Icon(Icons.exit_to_app),
-          onPressed: (){
-            userBloc.logout().then((onValue){
+        leading: IconButton(
+          icon: Icon(Icons.exit_to_app),
+          onPressed: () {
+            userBloc.logout().then((onValue) {
               EasyRouter.pushAndRemoveAll(context, LoginScreen());
             });
           },
@@ -122,12 +126,16 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
         backgroundColor: red,
         centerTitle: true,
         actions: <Widget>[
-          (widget.isAnonymous != null) ? (!widget.isAnonymous)?IconButton(
-            icon: Icon(Icons.account_circle),
-            onPressed: () {
-              EasyRouter.push(context, AccountScreenDriver());
-            },
-          ):Container(): Container(),
+          (widget.isAnonymous != null)
+              ? (!widget.isAnonymous)
+                  ? IconButton(
+                      icon: Icon(Icons.account_circle),
+                      onPressed: () {
+                        EasyRouter.push(context, AccountScreenDriver());
+                      },
+                    )
+                  : Container()
+              : Container(),
         ],
         bottom: SearchBar(
           trailing: IconButton(
@@ -136,9 +144,7 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
               FontAwesomeIcons.slidersH,
               color: Colors.white,
             ),
-            onPressed: () {
-              
-            },
+            onPressed: () {},
           ),
         ),
       ),
@@ -156,32 +162,34 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
                   children: snap.data.map<Widget>((_model) {
                     //final distance=new Distance();
                     var stream;
-                    if(_model.getPos()!=null && widget.position!=null){
-                      final LatLng start=_model.getPos();
-                      final LatLng end =LatLng(widget.position.latitude,widget.position.longitude);
-                      stream=userBloc.getDistance(start, end).asStream();
-                    }
+                    if (_model.getPos() != null && widget.position != null) {
+                      final LatLng start = _model.getPos();
+                      final LatLng end = LatLng(
+                          widget.position.latitude, widget.position.longitude);
+                      stream = userBloc.getDistance(start, end).asStream();
+                      // TODO: Rimuovere l'else che permette un comportamento scorretto.
+                    } else stream = userBloc.getMockDistance().asStream();
                     return StreamBuilder<double>(
-                    stream: stream,
-                      builder: (ctx,snap) {
-                      if(!snap.hasData) return Container();
-                      if(snap.data/1000<_model.km) {
-                        return InkWell(
-                          onTap: () =>
-                              EasyRouter.push(
+                        stream: stream,
+                        builder: (ctx, snap) {
+                          if (!snap.hasData) return Container();
+                          // TODO: Ripristinare a tempo debito.
+                          // if(snap.data/1000<_model.km) {
+                          if (true) {
+                            return InkWell(
+                              onTap: () => EasyRouter.push(
                                   context,
                                   RestaurantScreen(
-                                    position:widget.position,
+                                    position: widget.position,
                                     model: _model,
-                                  )),
-                          child: RestaurantView(
-                            model: _model,
-                          ),
-                        );
-                      }
-                      else return Container();
-                      }
-            );
+                                  ),),
+                              child: RestaurantView(
+                                model: _model,
+                              ),
+                            );
+                          } else
+                            return Container();
+                        });
                   }).toList(),
                 ),
               ),
@@ -192,7 +200,6 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
 }
 
 class RestaurantView extends StatelessWidget {
-
   final RestaurantModel model;
   const RestaurantView({
     Key key,

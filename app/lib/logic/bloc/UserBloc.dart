@@ -139,6 +139,10 @@ class UserBloc with MixinFirebaseUserManager implements Bloc {
     return (await Geolocator().distanceBetween(start.latitude,start.longitude,end.latitude,end.longitude));
   }
 
+  Future<double> getMockDistance() async {
+    return 3.0;
+  }
+
   factory UserBloc.of() => $Provider.of<UserBloc>();
   factory UserBloc.init({FirebaseNotificationFunctions notificationFunctions}) {
     final bloc = UserBloc.of();

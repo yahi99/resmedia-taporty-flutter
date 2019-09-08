@@ -122,12 +122,12 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
         backgroundColor: red,
         centerTitle: true,
         actions: <Widget>[
-          (!widget.isAnonymous)?IconButton(
+          (widget.isAnonymous != null) ? (!widget.isAnonymous)?IconButton(
             icon: Icon(Icons.account_circle),
             onPressed: () {
               EasyRouter.push(context, AccountScreenDriver());
             },
-          ):Container(),
+          ):Container(): Container(),
         ],
         bottom: SearchBar(
           trailing: IconButton(

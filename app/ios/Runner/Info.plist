@@ -8,11 +8,11 @@
 	<string>This application requires location services to work.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>This application requires location services to work.</string>
-	<key>FirebaseScreenReportingEnabled</key>
-	<false/>
 	<key>FIREBASE_ANALYTICS_COLLECTION_DEACTIVATED</key>
 	<true/>
 	<key>FIREBASE_ANALYTICS_COLLECTION_ENABLED</key>
+	<false/>
+	<key>FirebaseScreenReportingEnabled</key>
 	<false/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>

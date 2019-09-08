@@ -4,8 +4,8 @@ import 'package:easy_widget/easy_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:mobile_app/interface/screen/LoginScreen.dart';
 import 'package:mobile_app/drivers/model/SubjectModel.dart';
+import 'package:mobile_app/interface/screen/LoginScreen.dart';
 import 'package:mobile_app/logic/bloc/FlavourBloc.dart';
 
 /// flutter build --flavor development -t lib/main-dev.dart
@@ -13,9 +13,10 @@ import 'package:mobile_app/logic/bloc/FlavourBloc.dart';
 //const red = Color(0xFFd50000), s_red = Color(0xFF9b0000), // B71C1C
 //blue = Color(0xFF1565c0), blue_s = Color(0xFF003c8f); // 0F5DDB
 
-
-const red = Color(0xFFd50000), accent_red = Color(0xFFff5131), // B71C1C
-blue = Color(0xFF1565c0), accent_blue = Color(0xFF5e92f3); // 0F5DDB
+const red = Color(0xFFd50000),
+    accent_red = Color(0xFFff5131), // B71C1C
+    blue = Color(0xFF1565c0),
+    accent_blue = Color(0xFF5e92f3); // 0F5DDB
 const STRIPE_PUBLIC_KEY = "pk_test_bI6Z2I2jFP7Tfjfm0AvIyWV500cS2fKdCO";
 
 void main() {
@@ -28,9 +29,7 @@ void main() {
   ));
 }
 
-
-class MyApp extends StatefulWidget{
-
+class MyApp extends StatefulWidget {
   @override
   _MyAppState createState() => _MyAppState();
 }
@@ -53,15 +52,14 @@ class _MyAppState extends State<MyApp> {
         buttonColor: cls.primary,
         indicatorColor: Colors.white,
         dividerColor: Colors.grey,
-
         buttonTheme: ButtonThemeData(
           padding: const EdgeInsets.only(),
           buttonColor: cls.secondary,
           colorScheme: cls,
           textTheme: ButtonTextTheme.primary,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(32.0)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(32.0)),
         ),
-
         inputDecorationTheme: InputDecorationTheme(
           border: const OutlineInputBorder(
             borderRadius: const BorderRadius.all(const Radius.circular(32.0)),
@@ -70,7 +68,6 @@ class _MyAppState extends State<MyApp> {
           hintStyle: TextStyle(color: Colors.grey),
           fillColor: Colors.white70,
         ),
-
         textTheme: TextTheme(
           headline: TextStyle(
             fontWeight: FontWeight.bold,
@@ -119,8 +116,11 @@ class _MyAppState extends State<MyApp> {
         ),
       ),
       initialRoute: LoginScreen.ROUTE,
-      onGenerateRoute: EasyRouter.onGenerateRouteBuilder((_) => LoginScreen(), LoginScreen.ROUTE),
-      navigatorObservers: <NavigatorObserver>[ SwipeBackObserver(), ],
+      onGenerateRoute: EasyRouter.onGenerateRouteBuilder(
+          (_) => LoginScreen(), LoginScreen.ROUTE),
+      navigatorObservers: <NavigatorObserver>[
+        SwipeBackObserver(),
+      ],
     );
   }
 }

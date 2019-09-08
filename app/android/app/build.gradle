@@ -46,14 +46,14 @@ android {
     productFlavors {
         client {
             dimension "flavors"
-            applicationId "com.expample.mobile_app.client"
+            applicationId "it.resmedia.taporty.client"
             versionCode flutterVersionCode.toInteger()
             versionName flutterVersionName
         }
 
         driver {
             dimension "flavors"
-            applicationId "com.expample.mobile_app.driver"
+            applicationId "it.resmedia.taporty.driver"
             versionCode flutterVersionCode.toInteger()
             versionName flutterVersionName
         }

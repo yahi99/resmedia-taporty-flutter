@@ -80,7 +80,7 @@ class _GalleryPageState extends State<GalleryPage> {
 
             return PhotoViewGalleryPageOptions(
               imageProvider: widget.imgBuilder(index),
-              heroTag: DEFAULT_HERO_TAG + index.toString(),
+              // heroTag: DEFAULT_HERO_TAG + index.toString(),
               minScale: PhotoViewComputedScale.contained,
               maxScale: 4.0,
             );

@@ -4,8 +4,8 @@ import 'package:easy_widget/easy_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:mobile_app/drivers/interface/screen/LoginScreen.dart';
 import 'package:mobile_app/drivers/model/SubjectModel.dart';
-import 'package:mobile_app/interface/screen/LoginScreen.dart';
 import 'package:mobile_app/logic/bloc/FlavourBloc.dart';
 
 /// flutter build --flavor development -t lib/main-dev.dart
@@ -20,7 +20,8 @@ const red = Color(0xFFd50000),
 const STRIPE_PUBLIC_KEY = "pk_test_bI6Z2I2jFP7Tfjfm0AvIyWV500cS2fKdCO";
 
 void main() {
-  FlavorBloc.of().init(Flavor.CLIENT);
+  // TODO: Intervenire qui.
+  FlavorBloc.of().init(Flavor.DRIVER);
   runApp(RepositoryBuilder(
     backgroundTask: (context, sharedPreferences) async {
       final assetHandler = await AssetHandler.init(context);

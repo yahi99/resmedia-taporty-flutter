@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:easy_blocs/easy_blocs.dart';
 import 'package:easy_firebase/easy_firebase.dart';
 import 'package:easy_route/easy_route.dart';
@@ -250,10 +251,19 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             RaisedButton(
               color: Colors.white,
-              child: Text(
-                'Continua senza registrazione',
+              child: Container(
+                width: double.infinity,
+                child: Center(
+                  child: AutoSizeText(
+                    "Continua senza registrazione",
+                    maxLines: 1,
+                    minFontSize: 6.0,
+                  ),
+                ),
               ),
               onPressed: () {
+                Toast.show("Disponibile in futuro", context,
+                    duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
                 //_userBloc.inSignInAnonymously();
               },
             )

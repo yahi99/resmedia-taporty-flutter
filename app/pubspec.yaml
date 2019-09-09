@@ -45,6 +45,9 @@ dependencies:
 
   toast: ^0.1.5
 
+  # Fornisce il supporto per il testo scalabile.
+  auto_size_text: ^2.1.0
+
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2

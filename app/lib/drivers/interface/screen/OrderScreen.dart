@@ -78,8 +78,7 @@ class TypesRestaurantView extends StatelessWidget {
     }).toList()..insert(1, SizedBox(width: SPACE_CELL,),),
     );*/
     final orderBloc = OrdersBloc.of();
-    //orderBloc.setRestaurantStream();
-    print('lol');
+    // orderBloc.setRestaurantStream();
     return CacheStreamBuilder<List<UserOrderModel>>(
       stream: orderBloc.outUserOrders,
       builder: (context, snap) {

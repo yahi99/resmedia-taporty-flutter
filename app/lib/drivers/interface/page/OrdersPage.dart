@@ -1,3 +1,4 @@
+import 'package:easy_blocs/easy_blocs.dart';
 import 'package:easy_route/easy_route.dart';
 import 'package:easy_widget/easy_widget.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +8,7 @@ import 'package:resmedia_taporty_flutter/drivers/interface/sliver/SliverOrderVoi
 import 'package:resmedia_taporty_flutter/drivers/interface/tab/OrdersTab.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/view/OrderView.dart';
 import 'package:resmedia_taporty_flutter/drivers/model/OrderModel.dart';
+import 'package:resmedia_taporty_flutter/logic/bloc/OrdersBloc.dart';
 import 'package:resmedia_taporty_flutter/model/OrderModel.dart';
 
 /*class OrdersPageDriver extends StatefulWidget implements WidgetRoute {
@@ -137,49 +139,49 @@ class _OrdersPageDriverState extends State<OrdersPageDriver> {
 
   @override
   Widget build(BuildContext context) {
-    /*final orderBloc=OrdersBloc.of();
-    //orderBloc.setDriverStream();
-    print('lol');
-    return CacheStreamBuilder<Map<StateCategory,List<DriverOrderModel>>>(
+    final orderBloc = OrdersBloc.of();
+    orderBloc.setDriverStream();
+    return CacheStreamBuilder<Map<StateCategory, List<DriverOrderModel>>>(
         stream: orderBloc.outCategorizedOrders,
-        builder: (context, snap)
-    {
-      if (!snap.hasData) return Center(child: CircularProgressIndicator(),);
-      print(snap.hasData);*/
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const RubberConcierge(),
-      ),
-      body: CustomScrollView(
-        controller: RubberScrollController.of(context),
-        physics: NeverScrollableScrollPhysics(),
-        slivers: widget.model.keys.map<Widget>((nameGroup) {
-          final products = widget.model[nameGroup];
-          return SliverPadding(
-            padding:
-                const EdgeInsets.symmetric(vertical: 8.0, horizontal: SPACE),
-            sliver: SliverOrderVoid(
-              title: Text(translateOrderCategory(nameGroup)),
-              childCount: products.length,
-              builder: (_context, index) {
-                return InkWell(
-                  onTap: () => EasyRouter.push(
-                      _context,
-                      DetailOrderPageDriver(
-                        model: products[index],
-                      )),
-                  child: OrderView(
-                    model: products[index],
+        builder: (context, snap) {
+          if (!snap.hasData)
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          print(snap.hasData);
+          return Scaffold(
+            appBar: AppBar(
+              centerTitle: true,
+              title: const RubberConcierge(),
+            ),
+            body: CustomScrollView(
+              controller: RubberScrollController.of(context),
+              physics: NeverScrollableScrollPhysics(),
+              slivers: widget.model.keys.map<Widget>((nameGroup) {
+                final products = widget.model[nameGroup];
+                return SliverPadding(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 8.0, horizontal: SPACE),
+                  sliver: SliverOrderVoid(
+                    title: Text(translateOrderCategory(nameGroup)),
+                    childCount: products.length,
+                    builder: (_context, index) {
+                      return InkWell(
+                        onTap: () => EasyRouter.push(
+                            _context,
+                            DetailOrderPageDriver(
+                              model: products[index],
+                            )),
+                        child: OrderView(
+                          model: products[index],
+                        ),
+                      );
+                    },
                   ),
                 );
-              },
+              }).toList(),
             ),
           );
-        }).toList(),
-      ),
-    );
-    /*}
-    );*/
+        });
   }
 }

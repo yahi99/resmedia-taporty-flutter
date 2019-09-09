@@ -53,7 +53,8 @@ class _TaportyState extends State<Taporty> {
         indicatorColor: Colors.white,
         dividerColor: Colors.grey,
         buttonTheme: ButtonThemeData(
-          padding: const EdgeInsets.only(),
+          // Rimossa questa indicazione di padding che non prevedeva un padding ai pulsanti.
+          // padding: const EdgeInsets.only(),
           buttonColor: cls.secondary,
           colorScheme: cls,
           textTheme: ButtonTextTheme.primary,

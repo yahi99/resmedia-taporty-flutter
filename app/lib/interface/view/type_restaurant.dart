@@ -2,16 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
 
-import 'package:mobile_app/interface/screen/RestaurantListScreen.dart';
-import 'package:mobile_app/model/TypesRestaurantModel.dart';
+import 'package:resmedia_taporty_flutter/interface/screen/RestaurantListScreen.dart';
+import 'package:resmedia_taporty_flutter/model/TypesRestaurantModel.dart';
 import 'package:easy_route/easy_route.dart';
-
 
 class TypeRestaurantView extends StatelessWidget {
   final TypesRestaurantModel model;
 
-  const TypeRestaurantView({Key key, this.model,}) : super(key: key);
-
+  const TypeRestaurantView({
+    Key key,
+    this.model,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -52,10 +53,13 @@ class TypeRestaurantView extends StatelessWidget {
     );*/
     return Stack(
       alignment: Alignment.center,
-      children:<Widget>[
+      children: <Widget>[
         AspectRatio(
           aspectRatio: 2,
-          child: Image.asset(model.img, fit: BoxFit.fill,),
+          child: Image.asset(
+            model.img,
+            fit: BoxFit.fill,
+          ),
         ),
         Center(
           child: ConstrainedBox(
@@ -69,12 +73,14 @@ class TypeRestaurantView extends StatelessWidget {
                   RestaurantListScreen(
                     model: model,),);*/
               },
-              child: Text(model.id, style: textButtonTheme,),
+              child: Text(
+                model.id,
+                style: textButtonTheme,
+              ),
             ),
           ),
-
         ),
-    ],
+      ],
     );
   }
 }

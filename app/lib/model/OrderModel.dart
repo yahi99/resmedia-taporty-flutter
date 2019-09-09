@@ -1,23 +1,22 @@
-import 'package:easy_blocs/easy_blocs.dart';
-import 'package:meta/meta.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_blocs/easy_blocs.dart';
 import 'package:easy_firebase/easy_firebase.dart';
 import 'package:flutter/widgets.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:meta/meta.dart';
 
 part 'OrderModel.g.dart';
 
 abstract class OrderModel extends FirebaseModel {
   final List<ProductCart> products;
 
-  OrderModel({String path,
+  OrderModel({
+    String path,
     @required this.products,
   }) : super(path);
 }
 
-enum StateCategory {
-  PENDING, ACCEPTED, DONE, DENIED,PICKED_UP
-}
+enum StateCategory { PENDING, ACCEPTED, DONE, DENIED, PICKED_UP }
 
 String translateOrderCategory(StateCategory category) {
   switch (category) {
@@ -31,21 +30,24 @@ String translateOrderCategory(StateCategory category) {
       return "In Consegna";
     case StateCategory.DONE:
       return "Consegnato";
-    default: return "";
+    default:
+      return "";
   }
 }
 
 @JsonSerializable(anyMap: true, explicitToJson: true, includeIfNull: false)
 class RestaurantOrderModel extends OrderModel {
   final List<ProductCart> products;
-  final String timeR,timeS;
+  final String timeR, timeS;
   final StateCategory state;
-  final String startTime,endTime;
+  final String startTime, endTime;
   final String driver;
   final String uid;
   final String nominative;
   final String addressR;
-  RestaurantOrderModel({String path,
+
+  RestaurantOrderModel({
+    String path,
     @required this.addressR,
     @required this.endTime,
     @required this.products,
@@ -56,16 +58,16 @@ class RestaurantOrderModel extends OrderModel {
     @required this.state,
     @required this.startTime,
     @required this.nominative,
-  }) :
-        super(
-          path: path,
-          products: products
-      );
+  }) : super(path: path, products: products);
 
-  static RestaurantOrderModel fromJson(Map json) => _$RestaurantOrderModelFromJson(json);
+  static RestaurantOrderModel fromJson(Map json) =>
+      _$RestaurantOrderModelFromJson(json);
+
   static RestaurantOrderModel fromFirebase(DocumentSnapshot snap) =>
       FirebaseModel.fromFirebase(fromJson, snap);
+
   Map<String, dynamic> toJson() => _$RestaurantOrderModelToJson(this);
+
   @required
   String toString() => toJson().toString();
 }
@@ -73,27 +75,27 @@ class RestaurantOrderModel extends OrderModel {
 @JsonSerializable(anyMap: true, explicitToJson: true, includeIfNull: false)
 class UserOrderModel extends OrderModel {
   final List<ProductCart> products;
-  final String timeR,timeS;
+  final String timeR, timeS;
   final StateCategory state;
-  UserOrderModel({String path,
+
+  UserOrderModel({
+    String path,
     @required this.products,
     @required this.timeR,
     @required this.timeS,
     @required this.state,
-  }) :
-        super(
-          path: path,
-          products: products
-      );
+  }) : super(path: path, products: products);
 
   static UserOrderModel fromJson(Map json) => _$UserOrderModelFromJson(json);
+
   static UserOrderModel fromFirebase(DocumentSnapshot snap) =>
       FirebaseModel.fromFirebase(fromJson, snap);
+
   Map<String, dynamic> toJson() => _$UserOrderModelToJson(this);
+
   @required
   String toString() => toJson().toString();
 }
-
 
 /*enum FoodCategory {
   APPETIZER, FIRST_COURSES, MAIN_COURSES, SEAFOOD_MENU, MEAT_MENU, SIDE_DISH, DESERT,

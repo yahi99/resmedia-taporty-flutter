@@ -1,23 +1,22 @@
 import 'package:easy_route/easy_route.dart';
 import 'package:easy_widget/easy_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:mobile_app/data/config.dart';
-import 'package:mobile_app/drivers/interface/page/SubjectOrderPage.dart';
-import 'package:mobile_app/drivers/interface/tab/OrdersTab.dart';
-import 'package:mobile_app/drivers/interface/view/OrderView.dart';
-import 'package:mobile_app/drivers/interface/widget/GoogleMapsUI.dart';
-import 'package:mobile_app/drivers/interface/widget/Order.dart';
-import 'package:mobile_app/drivers/model/OrderModel.dart';
-
+import 'package:resmedia_taporty_flutter/data/config.dart';
+import 'package:resmedia_taporty_flutter/drivers/interface/page/SubjectOrderPage.dart';
+import 'package:resmedia_taporty_flutter/drivers/interface/tab/OrdersTab.dart';
+import 'package:resmedia_taporty_flutter/drivers/interface/view/OrderView.dart';
+import 'package:resmedia_taporty_flutter/drivers/interface/widget/Order.dart';
+import 'package:resmedia_taporty_flutter/drivers/model/OrderModel.dart';
 
 class DetailOrderPageDriver extends StatefulWidget implements WidgetRoute {
   static const ROUTE = "DetailOrderPageDriver";
+
   String get route => DetailOrderPageDriver.ROUTE;
 
   final DriverOrderModel model;
 
-  DetailOrderPageDriver({Key key,
+  DetailOrderPageDriver({
+    Key key,
     @required this.model,
   }) : super(key: key);
 
@@ -59,7 +58,7 @@ class _DetailOrderPageDriverState extends State<DetailOrderPageDriver> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final tt = theme.textTheme;
-    final sub=widget.model.subjects;
+    final sub = widget.model.subjects;
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -74,20 +73,38 @@ class _DetailOrderPageDriverState extends State<DetailOrderPageDriver> {
             child: Wrap(
               runSpacing: 16.0,
               children: <Widget>[
-                Text("DETTAGLIO ORDINE", style: tt.title,),
+                Text(
+                  "DETTAGLIO ORDINE",
+                  style: tt.title,
+                ),
                 InkWell(
-                  onTap: () => EasyRouter.push(context, SubjectOrderPageDriver(orderModel:widget.model,model: sub[0],)),
+                  onTap: () => EasyRouter.push(
+                      context,
+                      SubjectOrderPageDriver(
+                        orderModel: widget.model,
+                        model: sub[0],
+                      )),
                   child: Order(
                     children: <Widget>[
-                      SubjectVoid(model: sub[0],),
+                      SubjectVoid(
+                        model: sub[0],
+                      ),
                     ],
                   ),
                 ),
                 InkWell(
-                  onTap: () => EasyRouter.push(context, SubjectOrderPageDriver(orderModel:widget.model,model: sub[1],)),
+                  onTap: () => EasyRouter.push(
+                      context,
+                      SubjectOrderPageDriver(
+                        orderModel: widget.model,
+                        model: sub[1],
+                      )),
                   child: Order(
                     children: <Widget>[
-                      SubjectVoid(model: sub[1], subject: Subject.RECEIVER,),
+                      SubjectVoid(
+                        model: sub[1],
+                        subject: Subject.RECEIVER,
+                      ),
                     ],
                   ),
                 ),

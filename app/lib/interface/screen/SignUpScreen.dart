@@ -7,14 +7,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:mobile_app/data/config.dart';
-import 'package:mobile_app/interface/screen/SignUpMoreScreen.dart';
-import 'package:mobile_app/interface/view/logo_view.dart';
-import 'package:mobile_app/logic/bloc/UserBloc.dart';
-
+import 'package:resmedia_taporty_flutter/data/config.dart';
+import 'package:resmedia_taporty_flutter/interface/screen/SignUpMoreScreen.dart';
+import 'package:resmedia_taporty_flutter/interface/view/logo_view.dart';
+import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
 
 class SignUpScreen extends StatefulWidget implements WidgetRoute {
   static const ROUTE = "SignUpScreen";
+
   @override
   String get route => ROUTE;
 

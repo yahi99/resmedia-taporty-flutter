@@ -4,14 +4,15 @@ import 'package:easy_route/easy_route.dart';
 import 'package:easy_widget/easy_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:mobile_app/data/config.dart';
-import 'package:mobile_app/interface/view/logo_view.dart';
-import 'package:mobile_app/logic/bloc/UserBloc.dart';
-import 'package:mobile_app/model/UserModel.dart';
+import 'package:resmedia_taporty_flutter/data/config.dart';
+import 'package:resmedia_taporty_flutter/interface/view/logo_view.dart';
+import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
+import 'package:resmedia_taporty_flutter/model/UserModel.dart';
 import 'package:rxdart/rxdart.dart';
 
 class LegalNotesScreen extends StatefulWidget implements WidgetRoute {
   static const ROUTE = 'LegalNotesScreen';
+
   @override
   String get route => ROUTE;
 
@@ -32,9 +33,9 @@ class _LegalNotesState extends State<LegalNotesScreen> {
         title: Text("Account"),
       ),
       body: Padding(
-          padding: const EdgeInsets.only(top: SPACE * 2),
-      child:new ListView(
-        shrinkWrap: true,
+        padding: const EdgeInsets.only(top: SPACE * 2),
+        child: new ListView(
+          shrinkWrap: true,
           children: <Widget>[
             new Column(
               children: <Widget>[
@@ -125,13 +126,12 @@ class _LegalNotesState extends State<LegalNotesScreen> {
             ),
           ].map((child) {
             return Padding(
-              padding:
-              const EdgeInsets.symmetric(horizontal: SPACE * 2),
+              padding: const EdgeInsets.symmetric(horizontal: SPACE * 2),
               child: child,
             );
           }).toList(),
         ),
-        ),
+      ),
     );
   }
 }

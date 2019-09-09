@@ -1,11 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_firebase/easy_firebase.dart';
 import 'package:flutter/widgets.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
-import 'package:mobile_app/drivers/model/SubjectModel.dart';
-import 'package:mobile_app/model/OrderModel.dart';
 
 part 'ShiftModel.g.dart';
 
@@ -13,18 +10,23 @@ part 'ShiftModel.g.dart';
 class ShiftModel extends FirebaseModel {
   final List<String> users;
   final String startTime;
+
   //final List<bool> isOccupied;
 
-  ShiftModel({ String path,
+  ShiftModel({
+    String path,
     //@required this.isOccupied,
     @required this.users,
     @required this.startTime,
-  }):super(path);
+  }) : super(path);
 
   static ShiftModel fromJson(Map json) => _$ShiftModelFromJson(json);
+
   static ShiftModel fromFirebase(DocumentSnapshot snap) =>
       FirebaseModel.fromFirebase(fromJson, snap);
+
   Map<String, dynamic> toJson() => _$ShiftModelToJson(this);
+
   @required
   String toString() => toJson().toString();
 }

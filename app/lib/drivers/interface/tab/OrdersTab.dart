@@ -6,20 +6,18 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
-import 'package:mobile_app/data/config.dart';
-import 'package:mobile_app/drivers/interface/page/OrdersPage.dart';
-import 'package:mobile_app/drivers/interface/widget/GoogleMapsUI.dart';
-import 'package:mobile_app/drivers/logic/bloc/DriverBloc.dart';
-import 'package:mobile_app/drivers/model/SubjectModel.dart';
-import 'package:mobile_app/drivers/model/OrderModel.dart';
-import 'package:mobile_app/drivers/model/TurnModel.dart';
-import 'package:mobile_app/model/OrderModel.dart';
+import 'package:resmedia_taporty_flutter/data/config.dart';
+import 'package:resmedia_taporty_flutter/drivers/interface/page/OrdersPage.dart';
+import 'package:resmedia_taporty_flutter/drivers/interface/widget/GoogleMapsUI.dart';
+import 'package:resmedia_taporty_flutter/drivers/logic/bloc/DriverBloc.dart';
+import 'package:resmedia_taporty_flutter/drivers/model/SubjectModel.dart';
+import 'package:resmedia_taporty_flutter/drivers/model/OrderModel.dart';
+import 'package:resmedia_taporty_flutter/drivers/model/TurnModel.dart';
+import 'package:resmedia_taporty_flutter/model/OrderModel.dart';
 import 'package:pocket_map/pocket_map.dart';
 import 'package:rubber/rubber.dart';
 
-
-final house = LatLngModel(lat:45.386485, lng:11.895141);
-
+final house = LatLngModel(lat: 45.386485, lng: 11.895141);
 
 /*List<DriverOrderModel> currentOrder = [
   DriverOrderModel(
@@ -99,10 +97,8 @@ Map<String, List<OrderModel>> orders = {
   "ORDINI EVASI": sentOrder,
 };*/
 
-
 class OrdersTabDriver extends StatefulWidget {
-
-  final Map<StateCategory,List<DriverOrderModel>> model;
+  final Map<StateCategory, List<DriverOrderModel>> model;
 
   OrdersTabDriver({
     @required this.model,
@@ -112,7 +108,8 @@ class OrdersTabDriver extends StatefulWidget {
   _OrdersTabDriverState createState() => _OrdersTabDriverState();
 }
 
-class _OrdersTabDriverState extends State<OrdersTabDriver> with TickerProviderStateMixin,AutomaticKeepAliveClientMixin {
+class _OrdersTabDriverState extends State<OrdersTabDriver>
+    with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   final DriverBloc _driverBloc = DriverBloc.of();
   ScrollController _scrollController;
   RubberAnimationController _rubberController;
@@ -145,20 +142,24 @@ class _OrdersTabDriverState extends State<OrdersTabDriver> with TickerProviderSt
     final tt = Theme.of(context).textTheme;
 
     return RubberBottomSheet(
-        animationController: _rubberController,
-        scrollController: _scrollController,
-        lowerLayer: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Material(
-              elevation: 4.0,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: SPACE, vertical: 8.0),
-                child: Text("Ordine N ", style: tt.subhead,),
+      animationController: _rubberController,
+      scrollController: _scrollController,
+      lowerLayer: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Material(
+            elevation: 4.0,
+            child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: SPACE, vertical: 8.0),
+              child: Text(
+                "Ordine N ",
+                style: tt.subhead,
               ),
             ),
-            _addControllers(child:Container()),
-            /*Expanded(
+          ),
+          _addControllers(child: Container()),
+          /*Expanded(
               child: PocketMapBuilder(
                 padding: const EdgeInsets.only(top: 16.0, right: 16.0, left: 16.0, bottom: 64.0),
                 builder: (context, onMapCreated) {
@@ -176,16 +177,17 @@ class _OrdersTabDriverState extends State<OrdersTabDriver> with TickerProviderSt
                 },
               ),
             ),*/
-          ],
+        ],
+      ),
+      upperLayer: Material(
+        elevation: 16.0,
+        child: Navigator(
+          initialRoute: OrdersPageDriver.ROUTE,
+          onGenerateRoute: EasyRouter.onGenerateRouteBuilder(
+              (_) => OrdersPageDriver(model: widget.model),
+              OrdersPageDriver.ROUTE),
         ),
-        upperLayer: Material(
-          elevation: 16.0,
-          child: Navigator(
-            initialRoute: OrdersPageDriver.ROUTE,
-            onGenerateRoute: EasyRouter.onGenerateRouteBuilder(
-                    (_) => OrdersPageDriver(model:widget.model), OrdersPageDriver.ROUTE),
-          ),
-        ),
+      ),
     );
   }
 
@@ -210,15 +212,19 @@ class _OrdersTabDriverState extends State<OrdersTabDriver> with TickerProviderSt
 
 class RubberScrollController extends InheritedWidget {
   final ScrollController controller;
+
   const RubberScrollController({
     Key key,
     @required this.controller,
     @required Widget child,
-  }) : assert(controller != null), assert(child != null),
+  })  : assert(controller != null),
+        assert(child != null),
         super(key: key, child: child);
 
   static ScrollController of(BuildContext context) {
-    return (context.inheritFromWidgetOfExactType(RubberScrollController) as RubberScrollController)?.controller;
+    return (context.inheritFromWidgetOfExactType(RubberScrollController)
+            as RubberScrollController)
+        ?.controller;
   }
 
   @override
@@ -226,5 +232,3 @@ class RubberScrollController extends InheritedWidget {
     return true;
   }
 }
-
-

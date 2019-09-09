@@ -3,12 +3,10 @@ import 'dart:async';
 import 'package:dash/dash.dart';
 import 'package:easy_blocs/easy_blocs.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:mobile_app/logic/bloc/UserBloc.dart';
-import 'package:mobile_app/logic/database.dart';
-import 'package:mobile_app/model/UserModel.dart';
-
-import 'package:mobile_app/generated/provider.dart';
-
+import 'package:resmedia_taporty_flutter/generated/provider.dart';
+import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
+import 'package:resmedia_taporty_flutter/logic/database.dart';
+import 'package:resmedia_taporty_flutter/model/UserModel.dart';
 
 class SignUpMoreBloc implements Bloc {
   final Database _db = Database();
@@ -25,15 +23,19 @@ class SignUpMoreBloc implements Bloc {
   }
 
   AddressChecker _addressChecker;
+
   CheckerRule get outAddress => _addressChecker;
 
   NominativeChecker _nominativeChecker;
+
   CheckerRule get outNominative => _nominativeChecker;
 
   PhoneNumberChecker _phoneNumberChecker;
+
   CheckerRule get outPhoneNumber => _phoneNumberChecker;
 
   SubmitController _submitController;
+
   SubmitController get submitController => _submitController;
 
   Future<bool> _signer() async {
@@ -46,7 +48,8 @@ class SignUpMoreBloc implements Bloc {
     await userBloc.nextRegistrationLv(_db.createUser(
       uid: firebaseUser.uid,
       model: UserModel(
-        nominative: _nominativeChecker.data.value, email: firebaseUser.email,
+        nominative: _nominativeChecker.data.value,
+        email: firebaseUser.email,
         phoneNumber: _phoneNumberChecker.data.value,
       ),
     ));
@@ -58,8 +61,11 @@ class SignUpMoreBloc implements Bloc {
     _nominativeChecker = NominativeChecker(hand: _hand);
     _addressChecker = AddressChecker(hand: _hand);
     _phoneNumberChecker = PhoneNumberChecker(hand: _hand);
-    _submitController = SubmitController(onSubmit: _signer, handler: _formHandler, hand: _hand);
+    _submitController =
+        SubmitController(onSubmit: _signer, handler: _formHandler, hand: _hand);
   }
+
   factory SignUpMoreBloc.of() => $Provider.of<SignUpMoreBloc>();
+
   static void close() => $Provider.dispose<SignUpMoreBloc>();
 }

@@ -1,19 +1,12 @@
-import 'package:easy_blocs/easy_blocs.dart';
-import 'package:easy_widget/easy_widget.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:mobile_app/logic/bloc/CartBloc.dart';
-import 'package:mobile_app/logic/bloc/UserBloc.dart';
-import 'package:mobile_app/model/ProductModel.dart';
+import 'package:resmedia_taporty_flutter/model/ProductModel.dart';
 
 class ProductViewRestaurant extends StatelessWidget {
   final ProductModel model;
 
-  const ProductViewRestaurant(
-      {Key key,
-        @required this.model})
+  const ProductViewRestaurant({Key key, @required this.model})
       : super(key: key);
 
   @override
@@ -59,8 +52,7 @@ class ProductViewRestaurant extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Text(
-                          '${model.id.substring(0,
-                              (15 < model.id.length) ? 15 : model.id.length)}'),
+                          '${model.id.substring(0, (15 < model.id.length) ? 15 : model.id.length)}'),
                       Text('€ ${model.price}'),
                     ],
                   ),

@@ -1,32 +1,24 @@
-import 'dart:async';
-
 import 'package:easy_blocs/easy_blocs.dart';
 import 'package:easy_firebase/easy_firebase.dart';
 import 'package:easy_route/easy_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:mobile_app/data/config.dart';
-import 'package:mobile_app/drivers/interface/screen/HomeScreen.dart';
-import 'package:mobile_app/drivers/logic/bloc/CalendarBloc.dart';
-import 'package:mobile_app/drivers/logic/bloc/TimeBloc.dart';
-import 'package:mobile_app/drivers/logic/bloc/TurnBloc.dart';
-import 'package:mobile_app/interface/screen/HomeScreen.dart';
-import 'package:mobile_app/interface/screen/RestaurantListScreen.dart';
-import 'package:mobile_app/interface/screen/SignUpMoreScreen.dart';
-import 'package:mobile_app/interface/screen/SignUpScreen.dart';
-import 'package:mobile_app/interface/view/logo_view.dart';
-import 'package:mobile_app/interface/screen/GeolocalizationScreen.dart';
-import 'package:mobile_app/logic/bloc/OrdersBloc.dart';
-import 'package:mobile_app/logic/bloc/UserBloc.dart';
-import 'package:mobile_app/restaurant/page/OrdersPage.dart';
+import 'package:resmedia_taporty_flutter/data/config.dart';
+import 'package:resmedia_taporty_flutter/drivers/interface/screen/HomeScreen.dart';
+import 'package:resmedia_taporty_flutter/drivers/logic/bloc/CalendarBloc.dart';
+import 'package:resmedia_taporty_flutter/drivers/logic/bloc/TurnBloc.dart';
+import 'package:resmedia_taporty_flutter/interface/view/logo_view.dart';
+import 'package:resmedia_taporty_flutter/logic/bloc/OrdersBloc.dart';
+import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
 import 'package:toast/toast.dart';
+
 //import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 //import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginScreen extends StatefulWidget implements WidgetRoute {
   static const String ROUTE = "LoginScreen";
+
   String get route => ROUTE;
 
   @override
@@ -35,6 +27,7 @@ class LoginScreen extends StatefulWidget implements WidgetRoute {
 
 class _LoginScreenState extends State<LoginScreen> {
   static const ROUTE = "LoginScreen";
+
   String get route => ROUTE;
 
   //static final FacebookLogin facebookSignIn = new FacebookLogin();
@@ -44,7 +37,7 @@ class _LoginScreenState extends State<LoginScreen> {
   //end my code
 
   final FirebaseSignInBloc _submitBloc =
-  FirebaseSignInBloc.init(controller: UserBloc.of());
+      FirebaseSignInBloc.init(controller: UserBloc.of());
   final _userBloc = UserBloc.of();
 
   //StreamSubscription registrationLevelSub;
@@ -79,36 +72,33 @@ class _LoginScreenState extends State<LoginScreen> {
       if (!res) return;
       //final user=(await _userBloc.outUser.first);
       //if(user.model.isDriver!=null && user.model.isDriver) {
-        final registrationLevel = await _userBloc.getRegistrationLevel();
-        /*if (registrationLevel == RegistrationLevel.LV2)
+      final registrationLevel = await _userBloc.getRegistrationLevel();
+      /*if (registrationLevel == RegistrationLevel.LV2)
         await EasyRouter.push(context, SignUpMoreScreen());*/
-        if (registrationLevel == RegistrationLevel.COMPLETE) {
-          final orderBloc = OrdersBloc.of();
-          await orderBloc.setDriverStream();
-          final turnBloc = TurnBloc.of();
-          await turnBloc.setTurnStream();
-          final calendarBloc = CalendarBloc.of();
-          final date = DateTime.now();
-          await calendarBloc.setDate(DateTime(date.year, date.month, date.day));
-          //final timeBloc=TimeBloc.of();
-          //await timeBloc.setDay();
-          await EasyRouter.pushAndRemoveAll(context, HomeScreenDriver());
-        }
-        else{
-          //if(user!=null) _userBloc.logout();
-          Toast.show('Utente non abilitato', context);
+      if (registrationLevel == RegistrationLevel.COMPLETE) {
+        final orderBloc = OrdersBloc.of();
+        await orderBloc.setDriverStream();
+        final turnBloc = TurnBloc.of();
+        await turnBloc.setTurnStream();
+        final calendarBloc = CalendarBloc.of();
+        final date = DateTime.now();
+        await calendarBloc.setDate(DateTime(date.year, date.month, date.day));
+        //final timeBloc=TimeBloc.of();
+        //await timeBloc.setDay();
+        await EasyRouter.pushAndRemoveAll(context, HomeScreenDriver());
+      } else {
+        //if(user!=null) _userBloc.logout();
+        Toast.show('Utente non abilitato', context);
       }
-      };
-      //else{
-       // if(user!=null) _userBloc.logout();
-     //   Toast.show('Utente non abilitato', context,duration: 3);
+    };
+    //else{
+    // if(user!=null) _userBloc.logout();
+    //   Toast.show('Utente non abilitato', context,duration: 3);
     //  }
     //};
   }
 
-  void callback(){
-
-  }
+  void callback() {}
 
   @override
   void dispose() {

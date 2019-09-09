@@ -1,21 +1,18 @@
 import 'dart:async';
 
+import 'package:easy_route/easy_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
-import 'package:geocoder/geocoder.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_webservice/places.dart';
-import 'package:mobile_app/interface/screen/HomeScreen.dart';
-import 'package:mobile_app/interface/screen/RestaurantListScreen.dart';
-import 'package:mobile_app/interface/screen/RestaurantScreen.dart';
-import 'package:mobile_app/interface/view/logo_view.dart';
-import 'package:easy_route/easy_route.dart';
+import 'package:resmedia_taporty_flutter/interface/screen/RestaurantListScreen.dart';
+import 'package:resmedia_taporty_flutter/interface/view/logo_view.dart';
 import 'package:toast/toast.dart';
 
 class GeoLocScreen extends StatefulWidget implements WidgetRoute {
   static const ROUTE = "GeoLocScreen";
+
   @override
   String get route => GeoLocScreen.ROUTE;
 
@@ -32,13 +29,14 @@ class _GeoLocScreenState extends State<GeoLocScreen> {
 
   GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: _key);
 
-  TextEditingController _controller=new TextEditingController();
+  TextEditingController _controller = new TextEditingController();
 
   var isValid = false;
   Position pos;
   String address;
+
   // ignore: close_sinks
-  final geo=new StreamController<String>();
+  final geo = new StreamController<String>();
 
   void _focusNodePlaces() async {
     // show input autocomplete with selected mode
@@ -75,7 +73,8 @@ class _GeoLocScreenState extends State<GeoLocScreen> {
         builder: (ctx, snap) {
           print(snap.data);
           print(snap.hasData);
-          if(snap.hasData) _controller.value=TextEditingValue(text:snap.data);
+          if (snap.hasData)
+            _controller.value = TextEditingValue(text: snap.data);
           return LogoView(
               top: FittedBox(
                 fit: BoxFit.contain,
@@ -113,13 +112,10 @@ class _GeoLocScreenState extends State<GeoLocScreen> {
                               position: pos,
                               isAnonymous: false,
                             ));
-                      }
-                      else{
+                      } else {
                         Toast.show('Inserire un indirizzo valido', context);
                       }
-                    }
-                    ),
-
+                    }),
               ]);
         },
       ),

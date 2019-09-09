@@ -1,9 +1,8 @@
 import 'package:easy_firebase/easy_firebase.dart';
 
-
 class RestaurantsCollection extends FirebaseCollection {
   final id = 'restaurants';
-  final types='types';
+  final types = 'types';
 
   final $foods = const FoodsCollection();
   final $drinks = const DrinksCollection();
@@ -16,12 +15,12 @@ class FoodsCollection extends FirebaseCollection {
 
   const FoodsCollection();
 }
+
 class DrinksCollection extends FirebaseCollection {
   final id = 'drinks';
 
   const DrinksCollection();
 }
-
 
 class TablesCollection extends FirebaseCollection {
   final id = 'tables';

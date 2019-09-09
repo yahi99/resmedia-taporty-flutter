@@ -4,16 +4,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:geocoder/model.dart';
-import 'package:mobile_app/data/config.dart';
-import 'package:mobile_app/drivers/logic/bloc/CalendarBloc.dart';
-import 'package:mobile_app/drivers/model/CalendarModel.dart';
-import 'package:mobile_app/drivers/model/ShiftModel.dart';
-import 'package:mobile_app/interface/screen/CheckoutScreen.dart';
-import 'package:mobile_app/interface/view/BottonButtonBar.dart';
-import 'package:mobile_app/interface/view/InputField.dart';
-import 'package:mobile_app/logic/bloc/UserBloc.dart';
-import 'package:mobile_app/logic/database.dart';
-import 'package:mobile_app/model/UserModel.dart';
+import 'package:resmedia_taporty_flutter/data/config.dart';
+import 'package:resmedia_taporty_flutter/drivers/model/CalendarModel.dart';
+import 'package:resmedia_taporty_flutter/interface/screen/CheckoutScreen.dart';
+import 'package:resmedia_taporty_flutter/interface/view/BottonButtonBar.dart';
+import 'package:resmedia_taporty_flutter/interface/view/InputField.dart';
+import 'package:resmedia_taporty_flutter/logic/database.dart';
+import 'package:resmedia_taporty_flutter/model/UserModel.dart';
 import 'package:toast/toast.dart';
 
 class ShippingPage extends StatefulWidget {
@@ -36,9 +33,9 @@ class _ShippingState extends State<ShippingPage>
         date.year.toString());
   }
 
-  String getEnd(List<CalendarModel> models,String value){
-    for(int i=0;i<models.length;i++){
-      if(models.elementAt(i).id==value) return models.elementAt(i).endTime;
+  String getEnd(List<CalendarModel> models, String value) {
+    for (int i = 0; i < models.length; i++) {
+      if (models.elementAt(i).id == value) return models.elementAt(i).endTime;
     }
     return null;
   }
@@ -68,7 +65,7 @@ class _ShippingState extends State<ShippingPage>
     _capController.value =
         new TextEditingValue(text: widget.address.postalCode);
     DateTime date;
-    String time,endTime;
+    String time, endTime;
     final _formKey = GlobalKey<FormState>();
     final _dropKey = GlobalKey();
     final _dateKey = GlobalKey();
@@ -205,7 +202,8 @@ class _ShippingState extends State<ShippingPage>
                                       builder: (ctx, sp1) {
                                         if (sp1.hasData) {
                                           return Row(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: <Widget>[
                                               DropdownButton(
                                                 key: _dropKey,
@@ -215,7 +213,8 @@ class _ShippingState extends State<ShippingPage>
                                                 onChanged: (value) {
                                                   print(value);
                                                   time = value;
-                                                  endTime=getEnd(snap.data,value);
+                                                  endTime =
+                                                      getEnd(snap.data, value);
                                                   dropStream.add(value);
                                                 },
                                                 items: drop,
@@ -358,7 +357,7 @@ class _ShippingState extends State<ShippingPage>
                   final state = MyInheritedWidget.of(context);
                   state.date = date.toIso8601String();
                   state.time = time;
-                  state.endTime=endTime;
+                  state.endTime = endTime;
                   state.address = _addressKey.currentState.toString();
                   state.phone = _phoneKey.currentState.toString();
                   state.email = _emailKey.currentState.toString();

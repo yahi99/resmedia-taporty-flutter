@@ -4,15 +4,16 @@ import 'package:easy_widget/easy_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:mobile_app/data/config.dart';
-import 'package:mobile_app/drivers/interface/screen/ChangePasswordScreeen.dart';
-import 'package:mobile_app/drivers/interface/screen/LegalNotesScreen.dart';
-import 'package:mobile_app/logic/bloc/UserBloc.dart';
-import 'package:mobile_app/model/UserModel.dart';
+import 'package:resmedia_taporty_flutter/data/config.dart';
+import 'package:resmedia_taporty_flutter/drivers/interface/screen/ChangePasswordScreeen.dart';
+import 'package:resmedia_taporty_flutter/drivers/interface/screen/LegalNotesScreen.dart';
+import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
+import 'package:resmedia_taporty_flutter/model/UserModel.dart';
 import 'package:rxdart/rxdart.dart';
 
 class EditScreen extends StatefulWidget implements WidgetRoute {
   static const ROUTE = 'EditScreen';
+
   @override
   String get route => ROUTE;
 
@@ -21,19 +22,18 @@ class EditScreen extends StatefulWidget implements WidgetRoute {
 }
 
 class _EditState extends State<EditScreen> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("Account"),
       ),
-      body: SnackBarPage(),);
+      body: SnackBarPage(),
+    );
   }
 }
 
-class SnackBarPage extends StatelessWidget{
-
+class SnackBarPage extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
   final _passKey = GlobalKey<FormFieldState>();
   final _nameKey = GlobalKey<FormFieldState>();
@@ -78,88 +78,105 @@ class SnackBarPage extends StatelessWidget{
                   ),
                 ],
               ),
-              Padding(padding: EdgeInsets.only(top: 8.0),),
+              Padding(
+                padding: EdgeInsets.only(top: 8.0),
+              ),
               Text(snap.data.model.nominative),
               Text('Assisi'),
               const Divider(
                 color: Colors.grey,
               ),
-          Form(
-          key: _formKey,
-          child:Expanded(
-                child: ListViewSeparated(
-                  separator: const Divider(
-                    color: Colors.grey,
-                  ),
-                  children: <Widget>[
-                    TextFormField(
-                      key: _nameKey,
-                      initialValue:temp[1],
-                      style: theme.textTheme.subhead,
-                      validator: (value) {
-                        if (value.isEmpty) {
-                          return 'Campo invalido';
-                        }
-                        return null;
-                      },
+              Form(
+                key: _formKey,
+                child: Expanded(
+                  child: ListViewSeparated(
+                    separator: const Divider(
+                      color: Colors.grey,
                     ),
-                    TextFormField(
-                      key: _lastKey,
-                      initialValue:temp[0],
-                      style: theme.textTheme.subhead,
-                      validator: (value) {
-                        if (value.isEmpty) {
-                          return 'Campo invalido';
-                        }
-                        return null;
-                      },
-                    ),
-                    TextFormField(
-                      key: _passKey,
-                      initialValue:snap.data.model.email,
-                      style: theme.textTheme.subhead,
-                      validator: (value) {
-                        if (value.isEmpty) {
-                          return 'Campo invalido';
-                        }
-                        return null;
-                      },
-                    ),
-
-                    RaisedButton(
-                      onPressed: ()async{
-                          if(_formKey.currentState.validate()){
-                            snap.data.userFb.updateEmail(_passKey.currentState.value.toString()).then((_){
-                              user.updateNominative(_nameKey.currentState.value.toString()+' '+_lastKey.currentState.value.toString(),_passKey.currentState.value.toString());
-                              Scaffold.of(context).showSnackBar(SnackBar(content: Text('Cambiamenti eseguiti!'),));
-                            }).catchError((error){
+                    children: <Widget>[
+                      TextFormField(
+                        key: _nameKey,
+                        initialValue: temp[1],
+                        style: theme.textTheme.subhead,
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return 'Campo invalido';
+                          }
+                          return null;
+                        },
+                      ),
+                      TextFormField(
+                        key: _lastKey,
+                        initialValue: temp[0],
+                        style: theme.textTheme.subhead,
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return 'Campo invalido';
+                          }
+                          return null;
+                        },
+                      ),
+                      TextFormField(
+                        key: _passKey,
+                        initialValue: snap.data.model.email,
+                        style: theme.textTheme.subhead,
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return 'Campo invalido';
+                          }
+                          return null;
+                        },
+                      ),
+                      RaisedButton(
+                        onPressed: () async {
+                          if (_formKey.currentState.validate()) {
+                            snap.data.userFb
+                                .updateEmail(
+                                    _passKey.currentState.value.toString())
+                                .then((_) {
+                              user.updateNominative(
+                                  _nameKey.currentState.value.toString() +
+                                      ' ' +
+                                      _lastKey.currentState.value.toString(),
+                                  _passKey.currentState.value.toString());
+                              Scaffold.of(context).showSnackBar(SnackBar(
+                                content: Text('Cambiamenti eseguiti!'),
+                              ));
+                            }).catchError((error) {
                               print(error);
-                              if(error is PlatformException){
-                                if(error.code=='ERROR_INVALID_EMAIL'){
-                                  Scaffold.of(context).showSnackBar(SnackBar(content: Text('E-mail non valida'),));
+                              if (error is PlatformException) {
+                                if (error.code == 'ERROR_INVALID_EMAIL') {
+                                  Scaffold.of(context).showSnackBar(SnackBar(
+                                    content: Text('E-mail non valida'),
+                                  ));
                                 }
-                                if(error.code=='ERROR_REQUIRES_RECENT_LOGIN'){
+                                if (error.code ==
+                                    'ERROR_REQUIRES_RECENT_LOGIN') {
                                   snap.data.userFb.reload();
-                                  Scaffold.of(context).showSnackBar(SnackBar(content: Text('Rieffettua il login e riprova!'),));
+                                  Scaffold.of(context).showSnackBar(SnackBar(
+                                    content:
+                                        Text('Rieffettua il login e riprova!'),
+                                  ));
                                 }
-                              }
-                              else Scaffold.of(context).showSnackBar(SnackBar(content: Text('Ci sono stati degli errori'),));
+                              } else
+                                Scaffold.of(context).showSnackBar(SnackBar(
+                                  content: Text('Ci sono stati degli errori'),
+                                ));
                             });
-
                           }
                         },
-                      child: FittedText('Aggiorna dati'),
-                    ),
-                  ].map((child) {
-                    return Padding(
-                      padding:
-                      const EdgeInsets.symmetric(horizontal: SPACE * 2),
-                      child: child,
-                    );
-                  }).toList(),
+                        child: FittedText('Aggiorna dati'),
+                      ),
+                    ].map((child) {
+                      return Padding(
+                        padding:
+                            const EdgeInsets.symmetric(horizontal: SPACE * 2),
+                        child: child,
+                      );
+                    }).toList(),
+                  ),
                 ),
               ),
-          ),
             ],
           );
         },

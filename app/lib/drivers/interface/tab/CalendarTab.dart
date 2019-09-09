@@ -1,16 +1,10 @@
 import 'dart:async';
 
-import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-
-import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart';
-import 'package:mobile_app/drivers/logic/bloc/CalendarBloc.dart';
-import 'package:mobile_app/drivers/logic/bloc/TimeBloc.dart';
-import 'package:mobile_app/drivers/model/CalendarModel.dart';
-import 'package:mobile_app/drivers/model/ShiftModel.dart';
-import 'package:mobile_app/logic/bloc/UserBloc.dart';
-import 'package:mobile_app/logic/database.dart';
+import 'package:resmedia_taporty_flutter/drivers/logic/bloc/CalendarBloc.dart';
+import 'package:resmedia_taporty_flutter/drivers/model/CalendarModel.dart';
+import 'package:resmedia_taporty_flutter/logic/database.dart';
 
 class CalendarTabDriver extends StatefulWidget {
   final List<CalendarModel> model;
@@ -71,7 +65,7 @@ class _CalendarState extends State<CalendarTabDriver>
     return StreamBuilder<List<CalendarModel>>(
         stream: Database().getShifts(widget.date),
         builder: (ctx, snap4) {
-          if(!snap4.hasData) return Center(child:CircularProgressIndicator());
+          if (!snap4.hasData) return Center(child: CircularProgressIndicator());
           return Container(
             child: new Column(
               children: <Widget>[
@@ -84,7 +78,8 @@ class _CalendarState extends State<CalendarTabDriver>
                   //currentDate: new DateTime.now(),
                   onChanged: change,
                 ),
-              (snap4.data.isNotEmpty)?new ListView.builder(
+                (snap4.data.isNotEmpty)
+                    ? new ListView.builder(
                         shrinkWrap: true,
                         itemCount: snap4.data.length,
                         itemBuilder: (ctx, index) {
@@ -97,8 +92,7 @@ class _CalendarState extends State<CalendarTabDriver>
                               children: <Widget>[
                                 new Column(
                                   children: <Widget>[
-                                    Text(
-                                        snap4.data.elementAt(index).startTime,
+                                    Text(snap4.data.elementAt(index).startTime,
                                         style: tt.body1),
                                     Text(snap4.data.elementAt(index).endTime,
                                         style: tt.body1),
@@ -134,7 +128,8 @@ class _CalendarState extends State<CalendarTabDriver>
                             );
                           }
                           return Container();
-                        }):Text('Non ci sono turni disponibili per questo giorno.'),
+                        })
+                    : Text('Non ci sono turni disponibili per questo giorno.'),
               ],
             ),
           );

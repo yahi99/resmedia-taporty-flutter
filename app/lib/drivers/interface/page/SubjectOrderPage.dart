@@ -3,24 +3,25 @@ import 'package:easy_widget/easy_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:mobile_app/data/config.dart';
-import 'package:mobile_app/drivers/interface/tab/OrdersTab.dart';
-import 'package:mobile_app/drivers/interface/widget/GoogleMapsUI.dart';
-import 'package:mobile_app/drivers/model/OrderModel.dart';
-import 'package:mobile_app/drivers/model/SubjectModel.dart';
-import 'package:mobile_app/logic/bloc/UserBloc.dart';
-import 'package:mobile_app/logic/database.dart';
-import 'package:mobile_app/model/OrderModel.dart';
-
+import 'package:resmedia_taporty_flutter/data/config.dart';
+import 'package:resmedia_taporty_flutter/drivers/interface/tab/OrdersTab.dart';
+import 'package:resmedia_taporty_flutter/drivers/interface/widget/GoogleMapsUI.dart';
+import 'package:resmedia_taporty_flutter/drivers/model/OrderModel.dart';
+import 'package:resmedia_taporty_flutter/drivers/model/SubjectModel.dart';
+import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
+import 'package:resmedia_taporty_flutter/logic/database.dart';
 
 class SubjectOrderPageDriver extends StatefulWidget implements WidgetRoute {
   static const ROUTE = "SubjectOrderPageDriver";
+
   String get route => SubjectOrderPageDriver.ROUTE;
 
   final SubjectModel model;
   final DriverOrderModel orderModel;
 
-  SubjectOrderPageDriver({Key key, @required this.model,@required this.orderModel}) : super(key: key);
+  SubjectOrderPageDriver(
+      {Key key, @required this.model, @required this.orderModel})
+      : super(key: key);
 
   @override
   _SubjectOrderPageDriverState createState() => _SubjectOrderPageDriverState();
@@ -46,7 +47,7 @@ class _SubjectOrderPageDriverState extends State<SubjectOrderPageDriver> {
       ..animateCamera(CameraUpdate.newLatLng(widget.model.toLatLng()));
   }
 
-  void _askPermission(BuildContext context,String state)async{
+  void _askPermission(BuildContext context, String state) async {
     showDialog(
       context: context,
       builder: (_context) {
@@ -61,23 +62,28 @@ class _SubjectOrderPageDriverState extends State<SubjectOrderPageDriver> {
             children: <Widget>[
               Column(
                 children: <Widget>[
-                  Text(
-              (state=='PICKED_UP')?'Sei sicuro di avere ritirato il pacco?':'Sei sicuro di aver consegnato il pacco?'
-                  ),
+                  Text((state == 'PICKED_UP')
+                      ? 'Sei sicuro di avere ritirato il pacco?'
+                      : 'Sei sicuro di aver consegnato il pacco?'),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
                       IconButton(
                         icon: Icon(Icons.close),
-                        onPressed: (){
+                        onPressed: () {
                           EasyRouter.pop(context);
                         },
                       ),
                       IconButton(
                         icon: Icon(Icons.check),
-                        onPressed: ()async{
+                        onPressed: () async {
                           EasyRouter.pop(context);
-                          Database().updateState(state,widget.orderModel.uid,widget.orderModel.id,widget.orderModel.restId,(await UserBloc.of().outUser.first).model.id);
+                          Database().updateState(
+                              state,
+                              widget.orderModel.uid,
+                              widget.orderModel.id,
+                              widget.orderModel.restId,
+                              (await UserBloc.of().outUser.first).model.id);
                         },
                       ),
                     ],
@@ -90,7 +96,6 @@ class _SubjectOrderPageDriverState extends State<SubjectOrderPageDriver> {
       },
     );
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -107,9 +112,14 @@ class _SubjectOrderPageDriverState extends State<SubjectOrderPageDriver> {
         controller: RubberScrollController.of(context),
         physics: NeverScrollableScrollPhysics(),
         padding: const EdgeInsets.all(SPACE),
-        separator: const SizedBox(height: 8.0,),
+        separator: const SizedBox(
+          height: 8.0,
+        ),
         children: <Widget>[
-          Text("", style: tt.title,),
+          Text(
+            "",
+            style: tt.title,
+          ),
           Wrap(
             runSpacing: 8.0,
             children: <Widget>[
@@ -123,9 +133,18 @@ class _SubjectOrderPageDriverState extends State<SubjectOrderPageDriver> {
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Text(widget.model.title, style: tt.subtitle,),
-                          Text(widget.model.address, style: tt.subhead,),
-                          Text("${widget.model.time}", style: tt.subhead,),
+                          Text(
+                            widget.model.title,
+                            style: tt.subtitle,
+                          ),
+                          Text(
+                            widget.model.address,
+                            style: tt.subhead,
+                          ),
+                          Text(
+                            "${widget.model.time}",
+                            style: tt.subhead,
+                          ),
                         ],
                       ),
                     ),
@@ -135,7 +154,10 @@ class _SubjectOrderPageDriverState extends State<SubjectOrderPageDriver> {
                         child: RaisedButton(
                           color: cls.secondaryVariant,
                           onPressed: () {},
-                          child: Text("Chiama", style: tt.button,),
+                          child: Text(
+                            "Chiama",
+                            style: tt.button,
+                          ),
                         ),
                       ),
                     ),
@@ -148,9 +170,18 @@ class _SubjectOrderPageDriverState extends State<SubjectOrderPageDriver> {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text("Tempo di arrivo stimato", style: tt.subtitle,),
-                    Text(widget.model.address, style: tt.subhead,),
-                    Text("${widget.model.time}", style: tt.subhead,),
+                    Text(
+                      "Tempo di arrivo stimato",
+                      style: tt.subtitle,
+                    ),
+                    Text(
+                      widget.model.address,
+                      style: tt.subhead,
+                    ),
+                    Text(
+                      "${widget.model.time}",
+                      style: tt.subhead,
+                    ),
                   ],
                 ),
               ),
@@ -166,16 +197,24 @@ class _SubjectOrderPageDriverState extends State<SubjectOrderPageDriver> {
                     child: RaisedButton(
                       color: cls.secondaryVariant,
                       onPressed: () {},
-                      child: Text("Start", style: tt.button,),
+                      child: Text(
+                        "Start",
+                        style: tt.button,
+                      ),
                     ),
                   ),
-                  SizedBox(width: 16.0,),
+                  SizedBox(
+                    width: 16.0,
+                  ),
                   Expanded(
                     child: RaisedButton(
                       onPressed: () {
-                        _askPermission(context,'PICKED_UP');
+                        _askPermission(context, 'PICKED_UP');
                       },
-                      child: Text("Ritirato", style: tt.button,),
+                      child: Text(
+                        "Ritirato",
+                        style: tt.button,
+                      ),
                     ),
                   ),
                 ],
@@ -187,4 +226,3 @@ class _SubjectOrderPageDriverState extends State<SubjectOrderPageDriver> {
     );
   }
 }
-

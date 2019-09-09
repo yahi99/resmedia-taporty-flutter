@@ -2,39 +2,26 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:easy_blocs/easy_blocs.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:easy_route/easy_route.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:mobile_app/data/config.dart';
-import 'package:mobile_app/interface/page/CartPage.dart';
-import 'package:mobile_app/interface/view/CardListView.dart';
-import 'package:mobile_app/interface/view/TypeOrderView.dart';
-import 'package:mobile_app/interface/widget/SearchBar.dart';
-import 'package:mobile_app/logic/bloc/CartBloc.dart';
-import 'package:mobile_app/logic/bloc/OrdersBloc.dart';
-import 'package:mobile_app/logic/bloc/RestaurantBloc.dart';
-import 'package:mobile_app/logic/bloc/TypesRestaurantsBloc.dart';
-import 'package:mobile_app/logic/bloc/UserBloc.dart';
-import 'package:mobile_app/logic/database.dart';
-import 'package:mobile_app/main.dart';
-import 'package:mobile_app/interface/view/type_restaurant.dart';
-import 'package:mobile_app/model/OrderModel.dart';
-import 'package:mobile_app/model/ProductModel.dart';
-import 'package:mobile_app/model/TypesRestaurantModel.dart';
-import 'package:easy_route/easy_route.dart';
-import 'package:mobile_app/restaurant/view/ProductViewRestaurant.dart';
+import 'package:resmedia_taporty_flutter/data/config.dart';
+import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
+import 'package:resmedia_taporty_flutter/logic/database.dart';
+import 'package:resmedia_taporty_flutter/model/ProductModel.dart';
+import 'package:resmedia_taporty_flutter/restaurant/view/ProductViewRestaurant.dart';
 import 'package:toast/toast.dart';
 
 class MenuPage extends StatefulWidget implements WidgetRoute {
   final foods, drinks;
 
   static const ROUTE = "MenuPage";
+
   @override
   String get route => MenuPage.ROUTE;
 
@@ -60,23 +47,18 @@ class _MenuPageState extends State<MenuPage> {
   StreamController<String> _imgCtrl = StreamController<String>();
   final TextEditingController _imgTextController = new TextEditingController();
 
-  List<DropdownMenuItem> drop =
-  new List<DropdownMenuItem>();
+  List<DropdownMenuItem> drop = new List<DropdownMenuItem>();
 
   @override
   void initState() {
     super.initState();
     drop.add(DropdownMenuItem(
-      child: new Text(
-          values[0]),
-      value:
-      values[0],
+      child: new Text(values[0]),
+      value: values[0],
     ));
     drop.add(DropdownMenuItem(
-      child: new Text(
-          values[1]),
-      value:
-      values[1],
+      child: new Text(values[1]),
+      value: values[1],
     ));
   }
 
@@ -85,9 +67,11 @@ class _MenuPageState extends State<MenuPage> {
     super.dispose();
   }
 
-  String translate(String cat){
-    if(cat=='Cibo') return'foods';
-    else return 'drinks';
+  String translate(String cat) {
+    if (cat == 'Cibo')
+      return 'foods';
+    else
+      return 'drinks';
   }
 
   Future<String> uploadFile(String filePath) async {
@@ -124,23 +108,23 @@ class _MenuPageState extends State<MenuPage> {
                 child: new Column(
                   children: <Widget>[
                     Padding(
-                    child:TextFormField(
-                  key: _nameKey,
-                  decoration: InputDecoration(
-                    hintText: 'Nome Prodotto',
-                  ),
-                  validator: (value) {
-                    if (value.isEmpty) {
-                      return 'Campo invalido';
-                    } else if (value.length < 4)
-                      return 'Deve contenere almeno 4 caratteri';
-                    else if (value.length > 15)
-                      return "Massimo 15 caratteri";
-                    return null;
-                  },
-                ),
-            padding: EdgeInsets.only(bottom:SPACE*2),
-                ),
+                      child: TextFormField(
+                        key: _nameKey,
+                        decoration: InputDecoration(
+                          hintText: 'Nome Prodotto',
+                        ),
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return 'Campo invalido';
+                          } else if (value.length < 4)
+                            return 'Deve contenere almeno 4 caratteri';
+                          else if (value.length > 15)
+                            return "Massimo 15 caratteri";
+                          return null;
+                        },
+                      ),
+                      padding: EdgeInsets.only(bottom: SPACE * 2),
+                    ),
                     StreamBuilder<String>(
                       stream: _imgCtrl.stream,
                       builder: (ctx, img) {
@@ -151,35 +135,33 @@ class _MenuPageState extends State<MenuPage> {
                           _imgTextController.value =
                               new TextEditingValue(text: '');
                         return Padding(
-                            child:TextField(
-                              controller: _imgTextController,
-                              decoration: InputDecoration(hintText: 'Immagine'),
-                              onTap: () async {
-                                ImagePicker.pickImage(source: ImageSource.gallery)
-                                    .then((img) {
-                                  if (img != null) {
-                                    _tempPath = img.path;
-                                    _imgCtrl.add(_tempPath.split('/').last);
-                                  }
-                                  else{
+                          child: TextField(
+                            controller: _imgTextController,
+                            decoration: InputDecoration(hintText: 'Immagine'),
+                            onTap: () async {
+                              ImagePicker.pickImage(source: ImageSource.gallery)
+                                  .then((img) {
+                                if (img != null) {
+                                  _tempPath = img.path;
+                                  _imgCtrl.add(_tempPath.split('/').last);
+                                } else {
+                                  Toast.show(
+                                      'Devi scegliere un\'immagine!', context,
+                                      duration: 3);
+                                }
+                              }).catchError((error) {
+                                if (error is PlatformException) {
+                                  if (error.code == 'photo_access_denied')
                                     Toast.show(
-                                        'Devi scegliere un\'immagine!',
-                                        context,duration:3);
-                                  }
-                                }).catchError((error) {
-                                  if (error is PlatformException) {
-                                    if (error.code == 'photo_access_denied')
-                                      Toast.show(
-                                          'Devi garantire accesso alle immagini!',
-                                          context,duration:3);
-                                  }
-                                });
-                              },
-                            ),
-                            padding: EdgeInsets.only(bottom:SPACE*2),
+                                        'Devi garantire accesso alle immagini!',
+                                        context,
+                                        duration: 3);
+                                }
+                              });
+                            },
+                          ),
+                          padding: EdgeInsets.only(bottom: SPACE * 2),
                         );
-
-
                       },
                     ),
                     /*FlatButton(
@@ -188,76 +170,76 @@ class _MenuPageState extends State<MenuPage> {
                       uploadFile(_tempPath);
                     },
                   ),*/
-          Padding(
-            child:TextFormField(
-                      key: _quantityKey,
-                      decoration: InputDecoration(
-                        hintText: 'Quantità ordinabile',
-                      ),
-                      keyboardType: TextInputType.number,
-                      validator: (value) {
-                        int temp = int.tryParse(value);
-                        if (temp == null) {
-                          return 'Campo invalido inserire un numero!';
-                        }
-                        return null;
-                      },
-                    ),
-            padding: EdgeInsets.only(bottom:SPACE*2),
-          ),
                     Padding(
-                      child:TextFormField(
-                      key: _priceKey,
-                      decoration: InputDecoration(
-                        hintText: 'Prezzo',
+                      child: TextFormField(
+                        key: _quantityKey,
+                        decoration: InputDecoration(
+                          hintText: 'Quantità ordinabile',
+                        ),
+                        keyboardType: TextInputType.number,
+                        validator: (value) {
+                          int temp = int.tryParse(value);
+                          if (temp == null) {
+                            return 'Campo invalido inserire un numero!';
+                          }
+                          return null;
+                        },
                       ),
-                      validator: (value) {
-                        double temp = double.tryParse(value);
-                        if (temp != null) {
-                          return 'Campo invalido controllare che ci sia la virgola e non il punto!';
-                        }
-                        return null;
-                      },
-                    ),
-                      padding: EdgeInsets.only(bottom:SPACE*2),
+                      padding: EdgeInsets.only(bottom: SPACE * 2),
                     ),
                     Padding(
-                      child:TextFormField(
-                      key: _categoryKey,
-                      decoration: InputDecoration(
-                        hintText: 'Categoria',
+                      child: TextFormField(
+                        key: _priceKey,
+                        decoration: InputDecoration(
+                          hintText: 'Prezzo',
+                        ),
+                        validator: (value) {
+                          double temp = double.tryParse(value);
+                          if (temp != null) {
+                            return 'Campo invalido controllare che ci sia la virgola e non il punto!';
+                          }
+                          return null;
+                        },
                       ),
-                      validator: (value) {
-                        if (value.isEmpty) {
-                          return 'Campo invalido';
-                        }
-                        return null;
-                      },
+                      padding: EdgeInsets.only(bottom: SPACE * 2),
                     ),
-          padding: EdgeInsets.only(bottom:SPACE*2),
-        ),
+                    Padding(
+                      child: TextFormField(
+                        key: _categoryKey,
+                        decoration: InputDecoration(
+                          hintText: 'Categoria',
+                        ),
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return 'Campo invalido';
+                          }
+                          return null;
+                        },
+                      ),
+                      padding: EdgeInsets.only(bottom: SPACE * 2),
+                    ),
                     StreamBuilder<String>(
                       stream: dropStream.stream,
                       builder: (ctx, sp1) {
                         return Padding(
-                            child:Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            DropdownButton(
-                              key: _dropKey,
-                              value: (cat == null)
-                                  ? values.elementAt(0)
-                                  : sp1.data,
-                              onChanged: (value) {
-                                print(value);
-                                cat = value;
-                                dropStream.add(value);
-                              },
-                              items: drop,
-                            ),
-                          ],
-                        ),
-                          padding: EdgeInsets.only(bottom:SPACE*2),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              DropdownButton(
+                                key: _dropKey,
+                                value: (cat == null)
+                                    ? values.elementAt(0)
+                                    : sp1.data,
+                                onChanged: (value) {
+                                  print(value);
+                                  cat = value;
+                                  dropStream.add(value);
+                                },
+                                items: drop,
+                              ),
+                            ],
+                          ),
+                          padding: EdgeInsets.only(bottom: SPACE * 2),
                         );
                       },
                     ),
@@ -274,7 +256,8 @@ class _MenuPageState extends State<MenuPage> {
                                   _quantityKey.currentState.value.toString(),
                                   (await UserBloc.of().outUser.first)
                                       .model
-                                      .restaurantId,translate((cat==null)?values[0]:cat));
+                                      .restaurantId,
+                                  translate((cat == null) ? values[0] : cat));
                               Toast.show(
                                   'Richiesta inviata correttamente!', context);
                             });

@@ -2,7 +2,6 @@ import 'package:easy_blocs/easy_blocs.dart';
 import 'package:easy_route/easy_route.dart';
 import 'package:easy_widget/easy_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:resmedia_taporty_flutter/data/config.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/page/DetailOrderPage.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/sliver/SliverOrderVoid.dart';
@@ -11,8 +10,6 @@ import 'package:resmedia_taporty_flutter/drivers/interface/view/OrderView.dart';
 import 'package:resmedia_taporty_flutter/drivers/model/OrderModel.dart';
 import 'package:resmedia_taporty_flutter/logic/bloc/OrdersBloc.dart';
 import 'package:resmedia_taporty_flutter/model/OrderModel.dart';
-
-import '../widget/GoogleMapsUI.dart';
 
 /*class OrdersPageDriver extends StatefulWidget implements WidgetRoute {
   static const ROUTE = "OrdersPageDriver";
@@ -112,9 +109,11 @@ class _OrdersPageDriverState extends State<OrdersPageDriver> {
     isDeactivate = !isDeactivate;
   }
 
-
   //TODO: currentOrder dovrebbe essere la lista di DriverOrderModel su widget.model
   initMap(BuildContext context) async {
+    debugPrint(widget.model.values.toString());
+    return;
+    /*
     if (isDeactivate) return;
     await PrimaryGoogleMapsController.of(context).future
       ..setMarkers(currentOrder.map((order) {
@@ -122,12 +121,17 @@ class _OrdersPageDriverState extends State<OrdersPageDriver> {
           markerId: MarkerId(order.id),
           position: order.supplier.toLatLng(),
           infoWindow: InfoWindow(
-            title: "F. ${order.supplier.title}", snippet: "C. ${order.receiver.title}",
-            onTap: () => EasyRouter.push(context, DetailOrderPageDriver(model: order,)),
+            title: "F. ${order.supplier.title}",
+            snippet: "C. ${order.receiver.title}",
+            onTap: () => EasyRouter.push(
+                context,
+                DetailOrderPageDriver(
+                  model: order,
+                )),
           ),
         );
       }).toSet())
-      ..animateToCenter(currentOrder.map((order) => order.receiver.toLatLng()));
+      ..animateToCenter(currentOrder.map((order) => order.receiver.toLatLng()));*/
   }
 
   /*Map<String,List<RestaurantOrderModel>> getMap(List<RestaurantOrderModel> orders){

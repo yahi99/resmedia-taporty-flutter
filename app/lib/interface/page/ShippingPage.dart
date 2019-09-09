@@ -16,8 +16,10 @@ import 'package:toast/toast.dart';
 class ShippingPage extends StatefulWidget {
   final UserModel user;
   final Address address;
+  final TabController controller;
 
-  ShippingPage({@required this.user, @required this.address});
+  ShippingPage(
+      {@required this.user, @required this.address, @required this.controller});
 
   @override
   _ShippingState createState() => _ShippingState();
@@ -353,7 +355,9 @@ class _ShippingState extends State<ShippingPage>
               if (_formKey.currentState.validate()) {
                 print(date);
                 print(time);
-                if (date != null && time != null) {
+                // if (date != null && time != null) {
+                // TODO: Ripristinare il controllo su base oraria.
+                if (date != null) {
                   final state = MyInheritedWidget.of(context);
                   state.date = date.toIso8601String();
                   state.time = time;
@@ -363,7 +367,7 @@ class _ShippingState extends State<ShippingPage>
                   state.email = _emailKey.currentState.toString();
                   state.name = _nameKey.currentState.toString();
                   state.cap = _capKey.currentState.toString();
-                  DefaultTabController.of(context).index += 1;
+                  widget.controller.animateTo(widget.controller.index + 1);
                 } else
                   Toast.show('Dati Mancanti', context);
               }

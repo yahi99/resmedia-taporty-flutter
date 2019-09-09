@@ -1,14 +1,18 @@
 import 'package:easy_stripe/easy_stripe.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
 import 'package:resmedia_taporty_flutter/data/config.dart';
 import 'package:resmedia_taporty_flutter/interface/view/BottonButtonBar.dart';
 import 'package:resmedia_taporty_flutter/interface/view/InputField.dart';
 import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
 
 class PaymentPage extends StatefulWidget {
+  final TabController controller;
+
+  PaymentPage(this.controller);
+
   @override
   _PaymentState createState() => _PaymentState();
 }
@@ -234,7 +238,7 @@ class _PaymentState extends State<PaymentPage>
                   ),
                   onPressed: () {
                     if (isValid) {
-                      DefaultTabController.of(context).index += 1;
+                      widget.controller.animateTo(widget.controller.index + 1);
                     }
                   },
                 ),

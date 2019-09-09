@@ -21,13 +21,15 @@ class ConfirmPage extends StatefulWidget {
   final RestaurantModel model;
   final Position position;
   final Address description;
+  final TabController controller;
 
-  ConfirmPage(
-      {Key key,
-      @required this.model,
-      @required this.description,
-      @required this.position})
-      : super(key: key);
+  ConfirmPage({
+    Key key,
+    @required this.model,
+    @required this.description,
+    @required this.position,
+    @required this.controller,
+  }) : super(key: key);
 
   @override
   _ConfirmState createState() => _ConfirmState();

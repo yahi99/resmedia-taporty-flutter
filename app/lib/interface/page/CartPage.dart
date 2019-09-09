@@ -14,8 +14,10 @@ import 'package:resmedia_taporty_flutter/model/RestaurantModel.dart';
 
 class CartPage extends StatefulWidget {
   final RestaurantModel model;
+  final TabController controller;
 
-  CartPage({Key key, @required this.model}) : super(key: key);
+  CartPage({Key key, @required this.model, @required this.controller})
+      : super(key: key);
 
   @override
   _CartState createState() => _CartState();
@@ -75,7 +77,8 @@ class _CartState extends State<CartPage> with AutomaticKeepAliveClientMixin {
                         ),
                         color: tt.primaryColor,
                         onPressed: () {
-                          DefaultTabController.of(context).index += 1;
+                          widget.controller
+                              .animateTo(widget.controller.index + 1);
                         },
                       ),
                     ));

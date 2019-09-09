@@ -33,9 +33,13 @@ class CheckoutScreen extends StatefulWidget implements WidgetRoute {
   _CheckoutScreenState createState() => _CheckoutScreenState();
 }
 
-class _CheckoutScreenState extends State<CheckoutScreen> {
+class _CheckoutScreenState extends State<CheckoutScreen>
+    with TickerProviderStateMixin {
+  static TabController controller;
+
   @override
   void initState() {
+    controller = TabController(vsync: this, length: 4);
     super.initState();
   }
 
@@ -62,6 +66,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             )
           ],
           bottom: TabBar(
+            controller: controller,
+            onTap: (index) {
+              setState(() {
+                controller.index = controller.previousIndex;
+              });
+            },
             tabs: [
               Tab(
                 icon: Icon(
@@ -69,17 +79,20 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 ),
               ),
               Tab(
-                  icon: Icon(
-                Icons.location_on,
-              )),
+                icon: Icon(
+                  Icons.location_on,
+                ),
+              ),
               Tab(
-                  icon: Icon(
-                Icons.credit_card,
-              )),
+                icon: Icon(
+                  Icons.credit_card,
+                ),
+              ),
               Tab(
-                  icon: Icon(
-                Icons.flag,
-              )),
+                icon: Icon(
+                  Icons.flag,
+                ),
+              ),
             ],
           ),
         ),
@@ -95,18 +108,26 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           ),
           child: MyInheritedWidget(
             child: TabBarView(
+              controller: controller,
               physics: NeverScrollableScrollPhysics(),
               children: <Widget>[
-                CartPage(model: widget.model),
+                CartPage(
+                  model: widget.model,
+                  controller: controller,
+                ),
                 ShippingPage(
                   user: widget.user,
                   address: widget.description,
+                  controller: controller,
                 ),
-                PaymentPage(),
+                PaymentPage(controller,
+                ),
                 ConfirmPage(
-                    model: widget.model,
-                    position: widget.position,
-                    description: widget.description),
+                  model: widget.model,
+                  position: widget.position,
+                  description: widget.description,
+                  controller: controller,
+                ),
               ],
             ),
           ),

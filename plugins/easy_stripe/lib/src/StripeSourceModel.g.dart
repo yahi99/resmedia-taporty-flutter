@@ -36,11 +36,12 @@ Map<String, dynamic> _$StripeSourceModelToJson(StripeSourceModel instance) {
 
 StripeCardModel _$StripeCardModelFromJson(Map json) {
   return StripeCardModel(
-      StripeCardModel.brandFromJson(json['brand'] as String),
-      json['fingerprint'] as String,
-      json['last4'] as String,
-      json['exp_month'] as String,
-      json['exp_year'] as String);
+    StripeCardModel.brandFromJson(json['brand'] as String),
+    json['fingerprint'] as String,
+    json['last4'] as String,
+    json['exp_month'].toString(),
+    json['exp_year'].toString(),
+  );
 }
 
 Map<String, dynamic> _$StripeCardModelToJson(StripeCardModel instance) {

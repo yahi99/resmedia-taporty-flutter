@@ -2,6 +2,7 @@ import 'package:easy_route/easy_route.dart';
 import 'package:easy_widget/easy_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:resmedia_taporty_flutter/data/config.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/tab/OrdersTab.dart';
@@ -196,7 +197,14 @@ class _SubjectOrderPageDriverState extends State<SubjectOrderPageDriver> {
                   Expanded(
                     child: RaisedButton(
                       color: cls.secondaryVariant,
-                      onPressed: () {},
+                      onPressed: () async{
+                        //TODO: qui và modificata la mappa mettendo il percorso
+                        final userPos=widget.model.toLatLng();
+                        final restModel=(await Database().getPos(widget.orderModel.restId));
+                        final restPos=new LatLng(restModel.lat,restModel.lng);
+                        final driverPos=(await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.high));
+                        final driverLat=new LatLng(driverPos.longitude,driverPos.latitude);
+                      },
                       child: Text(
                         "Start",
                         style: tt.button,

@@ -258,6 +258,11 @@ class Database extends FirebaseDatabase
         .nominative;
   }
 
+  Future<RestaurantModel> getPos(String restId) async {
+    return RestaurantModel.fromFirebase(
+        await fs.collection(cl.RESTAURANTS).document(restId).get());
+  }
+
   Future<void> updateState(String state, String uid, String oid, String restId,
       String driverId) async {
     await fs

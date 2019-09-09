@@ -1,8 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-
-class SearchBar extends StatelessWidget implements PreferredSizeWidget{
+class SearchBar extends StatelessWidget implements PreferredSizeWidget {
   final Widget trailing;
 
   const SearchBar({Key key, this.trailing}) : super(key: key);
@@ -29,7 +28,6 @@ class SearchBar extends StatelessWidget implements PreferredSizeWidget{
     ];
     if (trailing != null) children.add(trailing);
 
-
     return SizedBox(
       height: preferredSize.height,
       child: Padding(
@@ -41,7 +39,9 @@ class SearchBar extends StatelessWidget implements PreferredSizeWidget{
     );
   }
 
-
   @override
-  Size get preferredSize => const Size(64, 64,);
+  Size get preferredSize => const Size(
+        64,
+        64,
+      );
 }

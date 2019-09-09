@@ -1,7 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:easy_widget/easy_widget.dart';
+import 'package:flutter/material.dart';
 import 'package:mobile_app/data/config.dart';
-
 
 class AccountPageDriver extends StatelessWidget {
   @override
@@ -15,30 +14,47 @@ class AccountPageDriver extends StatelessWidget {
           child: Stack(
             children: <Widget>[
               AspectRatio(
-                aspectRatio: 1+1/3*2,
-                child: Image.asset("assets/img/home/etnici.png", fit: BoxFit.cover,),
+                aspectRatio: 1 + 1 / 3 * 2,
+                child: Image.asset(
+                  "assets/img/home/etnici.png",
+                  fit: BoxFit.cover,
+                ),
               ),
             ],
           ),
         ),
-
-        const Divider(color: Colors.grey,),
+        const Divider(
+          color: Colors.grey,
+        ),
         Expanded(
           child: ListViewSeparated(
-            separator: const Divider(color: Colors.grey,),
+            separator: const Divider(
+              color: Colors.grey,
+            ),
             children: <Widget>[
-              Text("Cognome", style: theme.textTheme.headline,),
-              Text("Nome", style: theme.textTheme.headline,),
-              Text("Email", style: theme.textTheme.headline,)
+              Text(
+                "Cognome",
+                style: theme.textTheme.headline,
+              ),
+              Text(
+                "Nome",
+                style: theme.textTheme.headline,
+              ),
+              Text(
+                "Email",
+                style: theme.textTheme.headline,
+              )
             ].map((child) {
               return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: SPACE*2),
+                padding: const EdgeInsets.symmetric(horizontal: SPACE * 2),
                 child: child,
               );
             }).toList(),
           ),
         ),
-        const Divider(color: Colors.grey,),
+        const Divider(
+          color: Colors.grey,
+        ),
       ],
     );
   }

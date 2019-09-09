@@ -2,10 +2,99 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="92bd42da-a18d-434a-837e-4f141f1d94a5" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/data/collections.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/data/collections.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/data/config.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/data/config.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/data/img.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/data/img.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/drivers/interface/page/AccountPage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/drivers/interface/page/AccountPage.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/drivers/interface/page/ClientPage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/drivers/interface/page/ClientPage.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/drivers/interface/page/DetailOrderPage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/drivers/interface/page/DetailOrderPage.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/drivers/interface/page/OrdersPage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/drivers/interface/page/OrdersPage.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/drivers/interface/page/SubjectOrderPage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/drivers/interface/page/SubjectOrderPage.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/drivers/interface/screen/AccountScreen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/drivers/interface/screen/AccountScreen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/drivers/interface/screen/AccountScreenDriver.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/drivers/interface/screen/AccountScreenDriver.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/drivers/interface/screen/ChangePasswordScreeen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/drivers/interface/screen/ChangePasswordScreeen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/drivers/interface/screen/EditScreen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/drivers/interface/screen/EditScreen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/drivers/interface/screen/HomeScreen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/drivers/interface/screen/HomeScreen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/drivers/interface/screen/LegalNotesScreen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/drivers/interface/screen/LegalNotesScreen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/drivers/interface/screen/LoginScreen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/drivers/interface/screen/LoginScreen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/drivers/interface/screen/OrderScreen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/drivers/interface/screen/OrderScreen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/drivers/interface/screen/SettingsScreen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/drivers/interface/screen/SettingsScreen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/drivers/interface/sliver/SliverOrderVoid.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/drivers/interface/sliver/SliverOrderVoid.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/drivers/interface/tab/CalendarTab.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/drivers/interface/tab/CalendarTab.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/drivers/interface/tab/OrdersTab.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/drivers/interface/tab/OrdersTab.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/drivers/interface/tab/TurnWorkTab.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/drivers/interface/tab/TurnWorkTab.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/drivers/interface/view/ClientView.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/drivers/interface/view/ClientView.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/drivers/interface/view/OrderView.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/drivers/interface/view/OrderView.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/drivers/interface/view/SupplierView.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/drivers/interface/view/SupplierView.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/drivers/interface/view/TurnView.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/drivers/interface/view/TurnView.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/drivers/interface/view/TypeUserOrderView.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/drivers/interface/view/TypeUserOrderView.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/drivers/interface/widget/GoogleMapsNetwork.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/drivers/interface/widget/GoogleMapsNetwork.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/drivers/interface/widget/GoogleMapsUI.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/drivers/interface/widget/GoogleMapsUI.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/drivers/interface/widget/Order.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/drivers/interface/widget/Order.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/drivers/logic/bloc/CalendarBloc.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/drivers/logic/bloc/CalendarBloc.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/drivers/logic/bloc/DriverBloc.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/drivers/logic/bloc/DriverBloc.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/drivers/logic/bloc/TimeBloc.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/drivers/logic/bloc/TimeBloc.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/drivers/logic/bloc/TurnBloc.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/drivers/logic/bloc/TurnBloc.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/drivers/model/CalendarModel.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/drivers/model/CalendarModel.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/drivers/model/OrderModel.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/drivers/model/OrderModel.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/drivers/model/OrderModel.g.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/drivers/model/OrderModel.g.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/drivers/model/ShiftModel.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/drivers/model/ShiftModel.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/drivers/model/SubjectModel.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/drivers/model/SubjectModel.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/drivers/model/TurnModel.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/drivers/model/TurnModel.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/drivers/model/TurnModel.g.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/drivers/model/TurnModel.g.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/generated/i18n.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/generated/i18n.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/generated/provider.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/generated/provider.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/interface/page/CartPage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/interface/page/CartPage.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/interface/page/ConfirmPage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/interface/page/ConfirmPage.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/interface/page/MenuPages.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/interface/page/MenuPages.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/interface/page/PaymentPage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/interface/page/PaymentPage.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/interface/page/ShippingPage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/interface/page/ShippingPage.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/interface/screen/CheckoutScreen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/interface/screen/CheckoutScreen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/interface/screen/GeolocalizationScreen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/interface/screen/GeolocalizationScreen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/interface/screen/HomeScreen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/interface/screen/HomeScreen.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/interface/screen/LoginScreen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/interface/screen/LoginScreen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/interface/screen/RestaurantListScreen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/interface/screen/RestaurantListScreen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/interface/screen/RestaurantScreen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/interface/screen/RestaurantScreen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/interface/screen/SignUpMoreScreen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/interface/screen/SignUpMoreScreen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/interface/screen/SignUpScreen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/interface/screen/SignUpScreen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/interface/view/BottonButtonBar.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/interface/view/BottonButtonBar.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/interface/view/CardListView.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/interface/view/CardListView.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/interface/view/InputField.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/interface/view/InputField.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/interface/view/ProductView.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/interface/view/ProductView.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/interface/view/ProductViewCart.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/interface/view/ProductViewCart.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/interface/view/TypeOrderView.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/interface/view/TypeOrderView.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/interface/view/elements.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/interface/view/elements.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/interface/view/logo_view.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/interface/view/logo_view.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/interface/view/type_restaurant.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/interface/view/type_restaurant.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/interface/widget/SearchBar.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/interface/widget/SearchBar.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/logic/Collections.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/logic/Collections.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/logic/RestaurantDB.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/logic/RestaurantDB.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/logic/bloc/CartBloc.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/logic/bloc/CartBloc.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/logic/bloc/DrinkBloc.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/logic/bloc/DrinkBloc.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/logic/bloc/FlavourBloc.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/logic/bloc/FlavourBloc.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/logic/bloc/FoodBloc.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/logic/bloc/FoodBloc.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/logic/bloc/OrdersBloc.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/logic/bloc/OrdersBloc.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/logic/bloc/RestaurantBloc.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/logic/bloc/RestaurantBloc.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/logic/bloc/RestaurantsBloc.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/logic/bloc/RestaurantsBloc.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/logic/bloc/SignUpMoreBloc.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/logic/bloc/SignUpMoreBloc.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/logic/bloc/TypesRestaurantsBloc.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/logic/bloc/TypesRestaurantsBloc.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/logic/bloc/UserBloc.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/logic/bloc/UserBloc.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/logic/database.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/logic/database.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/main.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/model/OrderModel.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/model/OrderModel.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/model/OrderModel.g.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/model/OrderModel.g.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/model/ProductModel.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/model/ProductModel.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/model/ProductModel.g.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/model/ProductModel.g.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/model/RestaurantModel.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/model/RestaurantModel.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/model/TypesRestaurantModel.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/model/TypesRestaurantModel.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/model/UserModel.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/model/UserModel.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/restaurant/page/DetailOrderRestaurantPage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/restaurant/page/DetailOrderRestaurantPage.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/restaurant/page/MenuPage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/restaurant/page/MenuPage.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/restaurant/page/OrdersPage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/restaurant/page/OrdersPage.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/restaurant/screen/HomeScreen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/restaurant/screen/HomeScreen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/restaurant/screen/LoginScreen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/restaurant/screen/LoginScreen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/restaurant/update/update.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/restaurant/update/update.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/restaurant/view/ProductViewRestaurant.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/restaurant/view/ProductViewRestaurant.dart" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -23,7 +112,7 @@
         <entry file="file://$PROJECT_DIR$/lib/main.dart">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="-1649">
-              <caret line="23" column="36" selection-start-line="23" selection-start-column="36" selection-end-line="23" selection-end-column="36" />
+              <caret line="22" column="36" selection-start-line="22" selection-start-column="36" selection-end-line="22" selection-end-column="36" />
               <folding>
                 <element signature="e#0#44#0" expanded="true" />
               </folding>
@@ -35,7 +124,7 @@
         <entry file="file://$PROJECT_DIR$/lib/drivers/interface/screen/LoginScreen.dart">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="960">
-              <caret line="159" column="40" selection-start-line="159" selection-start-column="40" selection-end-line="159" selection-end-column="40" />
+              <caret line="149" column="40" selection-start-line="149" selection-start-column="40" selection-end-line="149" selection-end-column="40" />
             </state>
           </provider>
         </entry>
@@ -43,8 +132,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/lib/interface/screen/LoginScreen.dart">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="57">
-              <caret line="239" column="14" lean-forward="true" selection-start-line="239" selection-start-column="14" selection-end-line="239" selection-end-column="14" />
+            <state relative-caret-position="472">
+              <caret line="133" column="35" selection-start-line="133" selection-start-column="27" selection-end-line="133" selection-end-column="35" />
             </state>
           </provider>
         </entry>
@@ -91,7 +180,7 @@
         <entry file="file://$PROJECT_DIR$/lib/logic/bloc/RestaurantBloc.dart">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="399">
-              <caret line="28" column="18" selection-start-line="28" selection-start-column="18" selection-end-line="28" selection-end-column="18" />
+              <caret line="32" column="22" selection-start-line="32" selection-start-column="22" selection-end-line="32" selection-end-column="22" />
               <folding>
                 <element signature="e#0#20#0" expanded="true" />
               </folding>
@@ -122,6 +211,7 @@
       <find>geolocator</find>
       <find>flavor</find>
       <find>registrazione</find>
+      <find>nega</find>
     </findStrings>
     <dirStrings>
       <dir>$PROJECT_DIR$/lib</dir>
@@ -317,7 +407,7 @@
     <property name="dart.analysis.tool.window.force.activate" value="false" />
     <property name="io.flutter.reload.alreadyRun" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="settings.editor.selected.configurable" value="preferences.keymap" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
     <property name="show.migrate.to.gradle.popup" value="false" />
   </component>
   <component name="RunDashboard">
@@ -375,12 +465,12 @@
       <window_info anchor="bottom" id="Flutter Performance" order="5" side_tool="true" />
       <window_info anchor="bottom" id="Version Control" order="6" />
       <window_info anchor="bottom" id="Find" order="7" />
-      <window_info anchor="bottom" id="Messages" order="8" visible="true" weight="0.33461538" />
+      <window_info anchor="bottom" id="Messages" order="8" weight="0.33461538" />
       <window_info anchor="bottom" id="Terminal" order="9" weight="0.33365855" />
       <window_info anchor="right" id="Device File Explorer" side_tool="true" />
       <window_info anchor="right" id="Capture Analysis" order="0" />
       <window_info anchor="right" id="Theme Preview" order="1" />
-      <window_info active="true" anchor="right" id="Flutter Inspector" order="2" visible="true" weight="0.32960597" />
+      <window_info anchor="right" id="Flutter Inspector" order="2" visible="true" weight="0.32960597" />
       <window_info anchor="right" id="Flutter Outline" order="3" />
       <window_info anchor="right" id="Assistant" order="4" weight="0.24227902" />
       <window_info anchor="right" id="Palette&#9;" order="5" />
@@ -495,7 +585,7 @@
     <entry file="file://$PROJECT_DIR$/lib/logic/bloc/RestaurantBloc.dart">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="399">
-          <caret line="28" column="18" selection-start-line="28" selection-start-column="18" selection-end-line="28" selection-end-column="18" />
+          <caret line="32" column="22" selection-start-line="32" selection-start-column="22" selection-end-line="32" selection-end-column="22" />
           <folding>
             <element signature="e#0#20#0" expanded="true" />
           </folding>
@@ -517,14 +607,14 @@
     <entry file="file://$PROJECT_DIR$/lib/drivers/interface/screen/LoginScreen.dart">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="960">
-          <caret line="159" column="40" selection-start-line="159" selection-start-column="40" selection-end-line="159" selection-end-column="40" />
+          <caret line="149" column="40" selection-start-line="149" selection-start-column="40" selection-end-line="149" selection-end-column="40" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/main.dart">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-1649">
-          <caret line="23" column="36" selection-start-line="23" selection-start-column="36" selection-end-line="23" selection-end-column="36" />
+          <caret line="22" column="36" selection-start-line="22" selection-start-column="36" selection-end-line="22" selection-end-column="36" />
           <folding>
             <element signature="e#0#44#0" expanded="true" />
           </folding>
@@ -540,8 +630,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/interface/screen/LoginScreen.dart">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="57">
-          <caret line="239" column="14" lean-forward="true" selection-start-line="239" selection-start-column="14" selection-end-line="239" selection-end-column="14" />
+        <state relative-caret-position="472">
+          <caret line="133" column="35" selection-start-line="133" selection-start-column="27" selection-end-line="133" selection-end-column="35" />
         </state>
       </provider>
     </entry>

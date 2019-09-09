@@ -11,32 +11,37 @@ class SubjectModel {
   final LatLngModel position;
 
   SubjectModel({
-    @required this.title, @required this.address, @required this.time,
+    @required this.title,
+    @required this.address,
+    @required this.time,
     @required this.position,
   });
 
-  LatLng toLatLng(){
-    return LatLng(position.lat,position.lng);
+  LatLng toLatLng() {
+    return LatLng(position.lat, position.lng);
   }
 
-  factory SubjectModel.fromJson(Map<String,dynamic> json) => _$SubjectModelFromJson(json);
+  factory SubjectModel.fromJson(Map<String, dynamic> json) =>
+      _$SubjectModelFromJson(json);
 
-  Map<String,dynamic> toJson() => _$SubjectModelToJson(this);
+  Map<String, dynamic> toJson() => _$SubjectModelToJson(this);
 }
 
 @JsonSerializable()
 class LatLngModel {
-  final double lat,lng;
+  final double lat, lng;
 
-  LatLng toLatLng(){
-    return LatLng(lat,lng);
+  LatLng toLatLng() {
+    return LatLng(lat, lng);
   }
 
   LatLngModel({
-    @required this.lat, @required this.lng,
+    @required this.lat,
+    @required this.lng,
   });
 
-  factory LatLngModel.fromJson(Map<String,dynamic> json) => _$LatLngModelFromJson(json);
+  factory LatLngModel.fromJson(Map<String, dynamic> json) =>
+      _$LatLngModelFromJson(json);
 
-  Map<String,dynamic> toJson() => _$LatLngModelToJson(this);
+  Map<String, dynamic> toJson() => _$LatLngModelToJson(this);
 }

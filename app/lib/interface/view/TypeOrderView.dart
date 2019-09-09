@@ -1,16 +1,10 @@
-import 'package:cloud_functions/cloud_functions.dart';
 import 'package:easy_blocs/easy_blocs.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/widgets.dart';
-import 'package:mobile_app/drivers/model/CalendarModel.dart';
-import 'package:mobile_app/logic/bloc/UserBloc.dart';
-import 'package:mobile_app/logic/database.dart';
-import 'package:mobile_app/model/OrderModel.dart';
 import 'package:easy_route/easy_route.dart';
-import 'package:mobile_app/main.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:mobile_app/model/OrderModel.dart';
 import 'package:mobile_app/restaurant/page/DetailOrderRestaurantPage.dart';
-import 'package:mobile_app/restaurant/update/update.dart';
 
 class TypeOrderView extends StatelessWidget {
   final RestaurantOrderModel model;
@@ -20,10 +14,10 @@ class TypeOrderView extends StatelessWidget {
     this.model,
   }) : super(key: key);
 
-  int totalProducts(List<ProductCart> cart){
-    int sum=0;
-    for(int i=0;i<cart.length;i++){
-      sum+=cart.elementAt(i).countProducts;
+  int totalProducts(List<ProductCart> cart) {
+    int sum = 0;
+    for (int i = 0; i < cart.length; i++) {
+      sum += cart.elementAt(i).countProducts;
     }
     return sum;
   }
@@ -70,8 +64,8 @@ class TypeOrderView extends StatelessWidget {
       alignment: Alignment.center,
       children: <Widget>[
         GestureDetector(
-          onTap: (){
-            EasyRouter.push(context,DetailOrderRestaurantPage(model:model));
+          onTap: () {
+            EasyRouter.push(context, DetailOrderRestaurantPage(model: model));
           },
           child: ConstrainedBox(
             constraints: BoxConstraints(
@@ -82,38 +76,40 @@ class TypeOrderView extends StatelessWidget {
               child: new Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-              Wrap(
-              runSpacing: 16.0,
-                children: <Widget>[
-                  Text('Cliente: ',style:tt.subtitle),
-                  Text(model.nominative),
-                  Text('Ora di consegna: ',style:tt.subtitle),
-    Text(model.endTime),
-                  Text('Numero di prodotti: ',style:tt.subtitle),
-    Text(totalProducts(model.products).toString()),
-                  Text('Prezzo totale: ',style:tt.subtitle),
-                      Text(
-                      cart
-                          .getTotalPrice(
-                              cart.products,
-                              cart.products.first.userId,
-                              cart.products.first.restaurantId)
-                          .toString() +
-                      ' euro'),
-                  Text('Stato dell\'ordine: ',style:tt.subtitle),
-    Text(translateOrderCategory(model.state)),
-                  Center(
-                    child:Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: RaisedButton(
-                        color: theme.colorScheme.secondaryVariant,
-                        onPressed: () {},
-                        child: Text("Chiama", style: tt.button,),
+                  Wrap(
+                    runSpacing: 16.0,
+                    children: <Widget>[
+                      Text('Cliente: ', style: tt.subtitle),
+                      Text(model.nominative),
+                      Text('Ora di consegna: ', style: tt.subtitle),
+                      Text(model.endTime),
+                      Text('Numero di prodotti: ', style: tt.subtitle),
+                      Text(totalProducts(model.products).toString()),
+                      Text('Prezzo totale: ', style: tt.subtitle),
+                      Text(cart
+                              .getTotalPrice(
+                                  cart.products,
+                                  cart.products.first.userId,
+                                  cart.products.first.restaurantId)
+                              .toString() +
+                          ' euro'),
+                      Text('Stato dell\'ordine: ', style: tt.subtitle),
+                      Text(translateOrderCategory(model.state)),
+                      Center(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          child: RaisedButton(
+                            color: theme.colorScheme.secondaryVariant,
+                            onPressed: () {},
+                            child: Text(
+                              "Chiama",
+                              style: tt.button,
+                            ),
+                          ),
+                        ),
                       ),
+                    ],
                   ),
-                  ),
-                  ],
-              ),
                   /*ListView.builder(
                       shrinkWrap: true,
                       itemCount: cart.products.length + 2,
@@ -184,7 +180,10 @@ class TypeOrderView extends StatelessWidget {
               padding: EdgeInsets.all(4.0),
               decoration: new BoxDecoration(
                   border: new Border.all(
-                color: (translateOrderCategory(model.state) == 'In Accettazione') ? Colors.red : Colors.black,
+                color:
+                    (translateOrderCategory(model.state) == 'In Accettazione')
+                        ? Colors.red
+                        : Colors.black,
               )),
             ),
           ),

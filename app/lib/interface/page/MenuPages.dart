@@ -34,19 +34,20 @@ Map<String, List<ProductModel>> foods = {
 };*/
 
 class FoodsPage extends StatelessWidget {
-
   final RestaurantModel model;
 
   FoodsPage({Key key, @required this.model}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final restaurantBloc=RestaurantBloc.init(idRestaurant:model.id);
+    final restaurantBloc = RestaurantBloc.init(idRestaurant: model.id);
     return StreamBuilder<Map<FoodCategory, List<FoodModel>>>(
       stream: restaurantBloc.outCategorizedFoods,
       builder: (context, snapshot) {
         if (!snapshot.hasData)
-          return Center(child: CircularProgressIndicator(),);
+          return Center(
+            child: CircularProgressIndicator(),
+          );
 
         return ProductsFoodBuilder(foods: snapshot.data);
       },
@@ -80,27 +81,29 @@ class FoodsPage extends StatelessWidget {
 }*/
 
 class DrinksPage extends StatelessWidget {
-
   final RestaurantModel model;
 
   DrinksPage({Key key, @required this.model}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-
-    final restaurantBloc=RestaurantBloc.init(idRestaurant:model.id);
+    final restaurantBloc = RestaurantBloc.init(idRestaurant: model.id);
 
     return StreamBuilder<Map<DrinkCategory, List<DrinkModel>>>(
       stream: restaurantBloc.outCategorizedDrinks,
       builder: (context, snapshot) {
         if (!snapshot.hasData)
-          return Center(child: CircularProgressIndicator(),);
+          return Center(
+            child: CircularProgressIndicator(),
+          );
 
-        return ProductsDrinkBuilder(drinks: snapshot.data,);
+        return ProductsDrinkBuilder(
+          drinks: snapshot.data,
+        );
       },
     );
 
-      //ProductsBuilder(products: _drinks,);
+    //ProductsBuilder(products: _drinks,);
   }
 }
 
@@ -147,7 +150,6 @@ StreamBuilder<Map<DrinkCategory, List<DrinkModel>>>(
             ),
  */
 
-
 class ProductsDrinkBuilder extends StatelessWidget {
   final Map<DrinkCategory, List<DrinkModel>> drinks;
   final CartBloc cartBloc = CartBloc.of();
@@ -160,11 +162,13 @@ class ProductsDrinkBuilder extends StatelessWidget {
       children: drinks.map<Widget, List<Widget>>((nameGroup, products) {
         return MapEntry(
           Text(translateDrinkCategory(nameGroup)),
-          products.map((product) => ProductView(
-            update:null,
-            model: product,
-            cartController: cartBloc.drinksCartController,
-          )).toList(),
+          products
+              .map((product) => ProductView(
+                    update: null,
+                    model: product,
+                    cartController: cartBloc.drinksCartController,
+                  ))
+              .toList(),
         );
       }),
     );
@@ -179,28 +183,28 @@ class ProductsFoodBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return GroupsVoid(
       children: foods.map<Widget, List<Widget>>((nameGroup, products) {
         return MapEntry(
           Text(translateFoodCategory(nameGroup)),
-          products.map((product) => ProductView(
-            update:null,
-            model: product,
-            cartController: cartBloc.foodsCartController,
-          )).toList(),
+          products
+              .map((product) => ProductView(
+                    update: null,
+                    model: product,
+                    cartController: cartBloc.foodsCartController,
+                  ))
+              .toList(),
         );
       }),
     );
   }
 }
 
-
-
 class GroupsVoid extends StatelessWidget {
   final Map<Widget, List<Widget>> children;
 
-  GroupsVoid({Key key,
+  GroupsVoid({
+    Key key,
     @required this.children,
   }) : super(key: key);
 
@@ -214,7 +218,8 @@ class GroupsVoid extends StatelessWidget {
           header: Container(
             color: Colors.black12,
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
               child: DefaultTextStyle(
                 style: theme.textTheme.subtitle,
                 child: group,
@@ -222,7 +227,8 @@ class GroupsVoid extends StatelessWidget {
             ),
           ),
           sliver: SliverList(
-            delegate: SliverChildBuilderDelegate((context, index) {
+            delegate: SliverChildBuilderDelegate(
+              (context, index) {
                 return Padding(
                   padding: EdgeInsets.all(16.0),
                   child: products[index],
@@ -234,7 +240,5 @@ class GroupsVoid extends StatelessWidget {
         );
       }).toList(),
     );
-      
   }
 }
-

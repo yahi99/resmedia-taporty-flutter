@@ -4,7 +4,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:mobile_app/logic/bloc/CartBloc.dart';
 import 'package:mobile_app/logic/bloc/UserBloc.dart';
 import 'package:mobile_app/model/ProductModel.dart';
 
@@ -120,6 +119,7 @@ class ProductViewCart extends StatelessWidget {
 class CartButton extends StatelessWidget {
   final int val;
   final ProductModel model;
+
   const CartButton({Key key, this.val, this.model}) : super(key: key);
 
   @override

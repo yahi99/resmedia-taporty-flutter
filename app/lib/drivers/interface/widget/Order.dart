@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 class Order extends StatelessWidget {
   final List<Widget> children;
 
-  const Order({Key key,
+  const Order({
+    Key key,
     @required this.children,
   }) : super(key: key);
 
@@ -20,7 +21,3 @@ class Order extends StatelessWidget {
     );
   }
 }
-
-
-
-

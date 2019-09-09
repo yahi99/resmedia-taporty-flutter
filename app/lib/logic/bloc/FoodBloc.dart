@@ -5,7 +5,6 @@ import 'package:mobile_app/logic/database.dart';
 import 'package:mobile_app/model/ProductModel.dart';
 import 'package:rxdart/rxdart.dart';
 
-
 class FoodBloc implements Bloc {
   FoodBloc.instance();
 
@@ -19,10 +18,10 @@ class FoodBloc implements Bloc {
   }
 
   final BehaviorSubject<FoodModel> _foodControl = BehaviorSubject();
+
   Stream<FoodModel> get outFood => _foodControl.stream;
 
   static FoodBloc of() => $Provider.of<FoodBloc>();
+
   void close() => $Provider.dispose<FoodBloc>();
 }
-
-

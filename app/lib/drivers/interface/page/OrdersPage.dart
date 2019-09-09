@@ -1,18 +1,13 @@
-import 'package:easy_blocs/easy_blocs.dart';
 import 'package:easy_route/easy_route.dart';
 import 'package:easy_widget/easy_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mobile_app/data/config.dart';
 import 'package:mobile_app/drivers/interface/page/DetailOrderPage.dart';
 import 'package:mobile_app/drivers/interface/sliver/SliverOrderVoid.dart';
 import 'package:mobile_app/drivers/interface/tab/OrdersTab.dart';
 import 'package:mobile_app/drivers/interface/view/OrderView.dart';
-import 'package:mobile_app/drivers/interface/widget/GoogleMapsUI.dart';
 import 'package:mobile_app/drivers/model/OrderModel.dart';
-import 'package:mobile_app/logic/bloc/OrdersBloc.dart';
 import 'package:mobile_app/model/OrderModel.dart';
-
 
 /*class OrdersPageDriver extends StatefulWidget implements WidgetRoute {
   static const ROUTE = "OrdersPageDriver";
@@ -85,9 +80,10 @@ class _OrdersPageDriverState extends State<OrdersPageDriver> {
 
 class OrdersPageDriver extends StatefulWidget implements WidgetRoute {
   static const ROUTE = "OrdersPageDriver";
+
   String get route => OrdersPageDriver.ROUTE;
 
-  final Map<StateCategory,List<DriverOrderModel>> model;
+  final Map<StateCategory, List<DriverOrderModel>> model;
 
   OrdersPageDriver({
     @required this.model,
@@ -126,7 +122,7 @@ class _OrdersPageDriverState extends State<OrdersPageDriver> {
       }).toSet())
       ..animateToCenter(currentOrder.map((order) => order.receiver.toLatLng()));
   }*/
-  
+
   /*Map<String,List<RestaurantOrderModel>> getMap(List<RestaurantOrderModel> orders){
     Map<String,List<RestaurantOrderModel>> map= new Map<String,List<RestaurantOrderModel>>();
     for(int i=0;i<orders.length;i++){
@@ -141,7 +137,6 @@ class _OrdersPageDriverState extends State<OrdersPageDriver> {
 
   @override
   Widget build(BuildContext context) {
-
     /*final orderBloc=OrdersBloc.of();
     //orderBloc.setDriverStream();
     print('lol');
@@ -151,35 +146,39 @@ class _OrdersPageDriverState extends State<OrdersPageDriver> {
     {
       if (!snap.hasData) return Center(child: CircularProgressIndicator(),);
       print(snap.hasData);*/
-      return Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          title: const RubberConcierge(),
-        ),
-        body: CustomScrollView(
-          controller: RubberScrollController.of(context),
-          physics: NeverScrollableScrollPhysics(),
-          slivers: widget.model.keys.map<Widget>((nameGroup) {
-            final products = widget.model[nameGroup];
-            return SliverPadding(
-              padding: const EdgeInsets.symmetric(
-                  vertical: 8.0, horizontal: SPACE),
-              sliver: SliverOrderVoid(
-                title: Text(translateOrderCategory(nameGroup)),
-                childCount: products.length,
-                builder: (_context, index) {
-                  return InkWell(
-                    onTap: () =>
-                        EasyRouter.push(_context,
-                            DetailOrderPageDriver(model: products[index],)),
-                    child: OrderView(model: products[index],),
-                  );
-                },
-              ),
-            );
-          }).toList(),
-        ),
-      );
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        title: const RubberConcierge(),
+      ),
+      body: CustomScrollView(
+        controller: RubberScrollController.of(context),
+        physics: NeverScrollableScrollPhysics(),
+        slivers: widget.model.keys.map<Widget>((nameGroup) {
+          final products = widget.model[nameGroup];
+          return SliverPadding(
+            padding:
+                const EdgeInsets.symmetric(vertical: 8.0, horizontal: SPACE),
+            sliver: SliverOrderVoid(
+              title: Text(translateOrderCategory(nameGroup)),
+              childCount: products.length,
+              builder: (_context, index) {
+                return InkWell(
+                  onTap: () => EasyRouter.push(
+                      _context,
+                      DetailOrderPageDriver(
+                        model: products[index],
+                      )),
+                  child: OrderView(
+                    model: products[index],
+                  ),
+                );
+              },
+            ),
+          );
+        }).toList(),
+      ),
+    );
     /*}
     );*/
   }

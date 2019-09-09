@@ -1,6 +1,5 @@
 import 'package:easy_route/easy_route.dart';
 import 'package:easy_widget/easy_widget.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_app/data/config.dart';
 import 'package:mobile_app/drivers/interface/screen/ChangePasswordScreeen.dart';
@@ -9,14 +8,13 @@ import 'package:mobile_app/drivers/interface/screen/LegalNotesScreen.dart';
 import 'package:mobile_app/drivers/interface/screen/OrderScreen.dart';
 import 'package:mobile_app/drivers/interface/screen/SettingsScreen.dart';
 import 'package:mobile_app/interface/screen/LoginScreen.dart';
-import 'package:mobile_app/logic/bloc/CartBloc.dart';
 import 'package:mobile_app/logic/bloc/OrdersBloc.dart';
 import 'package:mobile_app/logic/bloc/UserBloc.dart';
 import 'package:mobile_app/model/UserModel.dart';
-import 'package:rxdart/rxdart.dart';
 
 class AccountScreenDriver extends StatelessWidget implements WidgetRoute {
   static const ROUTE = 'AccountScreenDriver';
+
   String get route => ROUTE;
 
   @override
@@ -26,18 +24,17 @@ class AccountScreenDriver extends StatelessWidget implements WidgetRoute {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        leading: IconButton(icon: Icon(Icons.exit_to_app),
-          onPressed: (){
-            user.logout().then((onValue){
+        leading: IconButton(
+          icon: Icon(Icons.exit_to_app),
+          onPressed: () {
+            user.logout().then((onValue) {
               EasyRouter.pushAndRemoveAll(context, LoginScreen());
             });
           },
         ),
         actions: <Widget>[
           IconButton(
-            onPressed: () => {
-              EasyRouter.push(context,EditScreen())
-            },
+            onPressed: () => {EasyRouter.push(context, EditScreen())},
             icon: Icon(Icons.mode_edit),
           )
         ],
@@ -54,30 +51,32 @@ class AccountScreenDriver extends StatelessWidget implements WidgetRoute {
           return Column(
             children: <Widget>[
               Stack(
-                  alignment: Alignment.topCenter,
-                  children: <Widget>[
-                    AspectRatio(
-                      aspectRatio: 3,
-                      child: Image.asset(
-                        "assets/img/home/etnici.png",
-                        fit: BoxFit.cover,
-                      ),
+                alignment: Alignment.topCenter,
+                children: <Widget>[
+                  AspectRatio(
+                    aspectRatio: 3,
+                    child: Image.asset(
+                      "assets/img/home/etnici.png",
+                      fit: BoxFit.cover,
                     ),
-                    Padding(
-                      padding: EdgeInsets.only(top: 25.0),
-                      child: new Container(
-                        width: 190.0,
-                        height: 190.0,
-                        decoration: new BoxDecoration(
-                            shape: BoxShape.circle,
-                            image: new DecorationImage(
-                                image: new AssetImage(
-                                    'assets/img/home/fotoprofilo.jpg'))),
-                      ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(top: 25.0),
+                    child: new Container(
+                      width: 190.0,
+                      height: 190.0,
+                      decoration: new BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: new DecorationImage(
+                              image: new AssetImage(
+                                  'assets/img/home/fotoprofilo.jpg'))),
                     ),
-                  ],
-                ),
-              Padding(padding: EdgeInsets.only(top: 8.0),),
+                  ),
+                ],
+              ),
+              Padding(
+                padding: EdgeInsets.only(top: 8.0),
+              ),
               Text(snap.data.model.nominative),
               Text('Assisi'),
               const Divider(
@@ -105,8 +104,9 @@ class AccountScreenDriver extends StatelessWidget implements WidgetRoute {
                       children: <Widget>[
                         Icon(Icons.shopping_cart),
                         FlatButton(
-                          child: Text('Lista ordini',style: theme.textTheme.subhead),
-                          onPressed: ()async {
+                          child: Text('Lista ordini',
+                              style: theme.textTheme.subhead),
+                          onPressed: () async {
                             await OrdersBloc.of().setUserStream();
                             EasyRouter.push(context, OrderListScreen());
                           },
@@ -117,10 +117,10 @@ class AccountScreenDriver extends StatelessWidget implements WidgetRoute {
                       children: <Widget>[
                         Icon(Icons.insert_drive_file),
                         FlatButton(
-                          child: Text('Note legali',style: theme.textTheme.subhead),
-                          onPressed: () => {
-                            EasyRouter.push(context, LegalNotesScreen())
-                          },
+                          child: Text('Note legali',
+                              style: theme.textTheme.subhead),
+                          onPressed: () =>
+                              {EasyRouter.push(context, LegalNotesScreen())},
                         ),
                       ],
                     ),
@@ -128,7 +128,8 @@ class AccountScreenDriver extends StatelessWidget implements WidgetRoute {
                       children: <Widget>[
                         Icon(Icons.lock_outline),
                         FlatButton(
-                          child: Text('Cambia password',style: theme.textTheme.subhead),
+                          child: Text('Cambia password',
+                              style: theme.textTheme.subhead),
                           onPressed: () => {
                             EasyRouter.push(context, ChangePasswordScreen())
                           },
@@ -139,10 +140,10 @@ class AccountScreenDriver extends StatelessWidget implements WidgetRoute {
                       children: <Widget>[
                         Icon(Icons.settings),
                         FlatButton(
-                          child: Text('Settings',style: theme.textTheme.subhead),
-                          onPressed: () => {
-                            EasyRouter.push(context, SettingsScreen())
-                          },
+                          child:
+                              Text('Settings', style: theme.textTheme.subhead),
+                          onPressed: () =>
+                              {EasyRouter.push(context, SettingsScreen())},
                         ),
                       ],
                     ),

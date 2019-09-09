@@ -1,24 +1,21 @@
 import 'package:easy_blocs/easy_blocs.dart';
-import 'package:flutter/material.dart';
+import 'package:easy_route/easy_route.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mobile_app/drivers/interface/screen/AccountScreen.dart';
 import 'package:mobile_app/interface/view/CardListView.dart';
+import 'package:mobile_app/interface/view/type_restaurant.dart';
 import 'package:mobile_app/interface/widget/SearchBar.dart';
 import 'package:mobile_app/logic/bloc/TypesRestaurantsBloc.dart';
-import 'package:mobile_app/logic/bloc/UserBloc.dart';
 import 'package:mobile_app/main.dart';
-import 'package:mobile_app/interface/view/type_restaurant.dart';
 import 'package:mobile_app/model/TypesRestaurantModel.dart';
-import 'package:easy_route/easy_route.dart';
-
 
 class HomeScreen extends StatefulWidget implements WidgetRoute {
-
   static const ROUTE = "HomeScreen";
+
   @override
   String get route => HomeScreen.ROUTE;
-
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -31,8 +28,6 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
   }
-
-
 
   void dispose() {
     TypesRestaurantBloc.close();
@@ -61,7 +56,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-
 /*final typesRestaurant = [
   TypeRestaurant(img: "assets/img/home/ristoranti.png", title: "Ristoranti", restaurants: restaurants),
   TypeRestaurant(img: "assets/img/home/fastfood.png", title: "FastFood", restaurants: fastFood),
@@ -87,24 +81,28 @@ class TypesRestaurantView extends StatelessWidget {
     child: RestaurantCellView(model: _model,)),);
     }).toList()..insert(1, SizedBox(width: SPACE_CELL,),),
     );*/
-    final TypesRestaurantBloc _typesRestaurantsBloc=TypesRestaurantBloc.of();
+    final TypesRestaurantBloc _typesRestaurantsBloc = TypesRestaurantBloc.of();
     return CacheStreamBuilder<List<TypesRestaurantModel>>(
-        stream: _typesRestaurantsBloc.outRestaurants,
-        builder: (context, snap)
-    {
-      if (!snap.hasData) return Center(child: CircularProgressIndicator(),);
-      print(snap.hasData);
-      return SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: CardListView(
-            children: snap.data.map<Widget>((_model) {
-              return TypeRestaurantView(model: _model,);
-            }).toList(),
+      stream: _typesRestaurantsBloc.outRestaurants,
+      builder: (context, snap) {
+        if (!snap.hasData)
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        print(snap.hasData);
+        return SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: CardListView(
+              children: snap.data.map<Widget>((_model) {
+                return TypeRestaurantView(
+                  model: _model,
+                );
+              }).toList(),
+            ),
           ),
-        ),
-      );
-    },
+        );
+      },
     );
   }
 }

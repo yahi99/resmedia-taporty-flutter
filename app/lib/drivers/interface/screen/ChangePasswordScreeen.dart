@@ -1,18 +1,15 @@
 import 'package:easy_blocs/easy_blocs.dart';
-import 'package:easy_firebase/easy_firebase.dart';
 import 'package:easy_route/easy_route.dart';
-import 'package:easy_widget/easy_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mobile_app/data/config.dart';
-import 'package:mobile_app/interface/view/logo_view.dart';
 import 'package:mobile_app/logic/bloc/UserBloc.dart';
 import 'package:mobile_app/model/UserModel.dart';
-import 'package:rxdart/rxdart.dart';
 
 class ChangePasswordScreen extends StatefulWidget implements WidgetRoute {
   static const ROUTE = 'ChangePasswordScreen';
+
   @override
   String get route => ROUTE;
 
@@ -133,7 +130,8 @@ class SnackBarPage extends StatelessWidget {
                             if (error is PlatformException) {
                               if (error.code == 'ERROR_WEAK_PASSWORD')
                                 Scaffold.of(context).showSnackBar(SnackBar(
-                                    content: Text('La password deve contenere almeno 6 caratteri')));
+                                    content: Text(
+                                        'La password deve contenere almeno 6 caratteri')));
                               else
                                 Scaffold.of(context).showSnackBar(SnackBar(
                                     content: Text(

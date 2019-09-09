@@ -3,18 +3,20 @@ import 'package:easy_widget/easy_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mobile_app/interface/screen/RestaurantScreen.dart';
-import 'package:mobile_app/logic/bloc/CartBloc.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:mobile_app/logic/bloc/UserBloc.dart';
 import 'package:mobile_app/model/ProductModel.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 
 class ProductView extends StatelessWidget {
   final ProductModel model;
   final CartControllerRule cartController;
   final String update;
 
-  ProductView({Key key, @required this.model, @required this.cartController,@required this.update})
+  ProductView(
+      {Key key,
+      @required this.model,
+      @required this.cartController,
+      @required this.update})
       : super(key: key);
 
   @override
@@ -22,67 +24,65 @@ class ProductView extends StatelessWidget {
     final theme = Theme.of(context);
     return Slidable(
       actionPane: SlidableDrawerActionPane(),
-        actionExtentRatio: 0.25,
-        secondaryActions: <Widget>[
-          IconSlideAction(
-            color: Colors.white10,
-            icon: Icons.close,
-            onTap: ()async{
-              final userId=(await UserBloc.of().outUser.first).model.id;
-              cartController.inRemove(model.id,model.restaurantId,userId);
-            },
-          ),
-        ],
-        child:DefaultTextStyle(
-      style: theme.textTheme.body1,
-      child: SizedBox(
-        height: 110,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Row(
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(4.0),
-                  child: AspectRatio(
-                    aspectRatio: 1,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(16.0),
-                      child: Image.asset(
-                        model.img,
-                        fit: BoxFit.fitHeight,
+      actionExtentRatio: 0.25,
+      secondaryActions: <Widget>[
+        IconSlideAction(
+          color: Colors.white10,
+          icon: Icons.close,
+          onTap: () async {
+            final userId = (await UserBloc.of().outUser.first).model.id;
+            cartController.inRemove(model.id, model.restaurantId, userId);
+          },
+        ),
+      ],
+      child: DefaultTextStyle(
+        style: theme.textTheme.body1,
+        child: SizedBox(
+          height: 110,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Row(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: AspectRatio(
+                      aspectRatio: 1,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(16.0),
+                        child: Image.asset(
+                          model.img,
+                          fit: BoxFit.fitHeight,
+                        ),
                       ),
                     ),
                   ),
-                ),
-                SizedBox(
-                  width: 16.0,
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text('${model.id.substring(0,(15<model.id.length)?15:model.id.length)}'),
-                    Text('€ ${model.price}'),
-                  ],
-                ),
-              ],
-            ),
-            CartStepperButton(
-              update:update,
-              model: model,
-              cartController: cartController,
-            ),
-          ],
+                  SizedBox(
+                    width: 16.0,
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(
+                          '${model.id.substring(0, (15 < model.id.length) ? 15 : model.id.length)}'),
+                      Text('€ ${model.price}'),
+                    ],
+                  ),
+                ],
+              ),
+              CartStepperButton(
+                update: update,
+                model: model,
+                cartController: cartController,
+              ),
+            ],
+          ),
         ),
       ),
-        ),
     );
   }
-
-
 }
-
 
 class CartStepperButton extends StatelessWidget {
   final CartController cartController;
@@ -90,7 +90,10 @@ class CartStepperButton extends StatelessWidget {
   final String update;
 
   const CartStepperButton(
-      {Key key, @required this.cartController, @required this.model,@required this.update})
+      {Key key,
+      @required this.cartController,
+      @required this.model,
+      @required this.update})
       : super(key: key);
 
   @override
@@ -99,30 +102,31 @@ class CartStepperButton extends StatelessWidget {
     return StreamBuilder<Cart>(
       stream: cartController.outCart,
       builder: (_, snapshot) {
-        if (!snapshot.hasData)
-          return const SizedBox();
+        if (!snapshot.hasData) return const SizedBox();
         final cart = snapshot.data;
         return CacheStreamBuilder<FirebaseUser>(
           stream: user.outFirebaseUser,
           builder: (context, snap) {
             if (!snap.hasData)
-              return Center(child: CircularProgressIndicator(),);
+              return Center(
+                child: CircularProgressIndicator(),
+              );
             print(snap.data.uid);
-            if(update!=null && update==model.restaurantId){
-              cartController.inRemove(model.id, model.restaurantId, snap.data.uid);
+            if (update != null && update == model.restaurantId) {
+              cartController.inRemove(
+                  model.id, model.restaurantId, snap.data.uid);
             }
             return StepperButton(
               direction: Axis.vertical,
-              child: Text('${cart
-                  .getProduct(
-                  model.id, model.restaurantId, snap.data.uid)
-                  ?.countProducts ?? 0}'),
-              onDecrease: () =>
-                  cartController.inDecrease(model.id, model.restaurantId,
-                      snap.data.uid),
-              onIncrement: () =>
-                  cartController.inIncrement(model.id, model.restaurantId,
-                      snap.data.uid,double.parse(model.price.replaceAll(',', '.'))),
+              child: Text(
+                  '${cart.getProduct(model.id, model.restaurantId, snap.data.uid)?.countProducts ?? 0}'),
+              onDecrease: () => cartController.inDecrease(
+                  model.id, model.restaurantId, snap.data.uid),
+              onIncrement: () => cartController.inIncrement(
+                  model.id,
+                  model.restaurantId,
+                  snap.data.uid,
+                  double.parse(model.price.replaceAll(',', '.'))),
             );
           },
         );
@@ -131,18 +135,19 @@ class CartStepperButton extends StatelessWidget {
   }
 }
 
-
-
 class CartButton extends StatelessWidget {
   final int val;
   final ProductModel model;
+
   const CartButton({Key key, this.val, this.model}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     //final cart = CartBloc();
-    final user=UserBloc.of();
-    var cartStorage=CartStorage(storage: InternalStorage.manager(versionManager: VersionManager("Drink")));
+    final user = UserBloc.of();
+    var cartStorage = CartStorage(
+        storage:
+            InternalStorage.manager(versionManager: VersionManager("Drink")));
     final cls = Theme.of(context).colorScheme;
     return Container(
       width: 40,
@@ -151,27 +156,39 @@ class CartButton extends StatelessWidget {
           color: cls.secondaryVariant),
       child: Column(
         children: <Widget>[
-      CacheStreamBuilder<FirebaseUser>(
-        stream: user.outFirebaseUser,
-        builder: (context, snap) {
-          if (!snap.hasData)
-            return Center(child: CircularProgressIndicator(),);
-          print(snap.hasData);
-          return Expanded(
-            child: IconButton(
-              icon: new Icon(Icons.add),
-              color: Colors.white,
-              onPressed: () {
-                //cart.inIncrementDrink(model);
-                List<ProductCart> temp=List<ProductCart>();
-                temp.add(ProductCart(id:model.id, restaurantId: model.restaurantId,userId:snap.data.uid ));
-                cartStorage=CartStorage(storage: InternalStorage.manager(versionManager: VersionManager("Drink")),products:temp);
-                cartStorage.increment(model.id,model.restaurantId,snap.data.uid,double.parse(model.price.replaceAll(',', '.')));
-              },
-            ),
-          );
-        },
-      ),
+          CacheStreamBuilder<FirebaseUser>(
+            stream: user.outFirebaseUser,
+            builder: (context, snap) {
+              if (!snap.hasData)
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              print(snap.hasData);
+              return Expanded(
+                child: IconButton(
+                  icon: new Icon(Icons.add),
+                  color: Colors.white,
+                  onPressed: () {
+                    //cart.inIncrementDrink(model);
+                    List<ProductCart> temp = List<ProductCart>();
+                    temp.add(ProductCart(
+                        id: model.id,
+                        restaurantId: model.restaurantId,
+                        userId: snap.data.uid));
+                    cartStorage = CartStorage(
+                        storage: InternalStorage.manager(
+                            versionManager: VersionManager("Drink")),
+                        products: temp);
+                    cartStorage.increment(
+                        model.id,
+                        model.restaurantId,
+                        snap.data.uid,
+                        double.parse(model.price.replaceAll(',', '.')));
+                  },
+                ),
+              );
+            },
+          ),
           Expanded(
             child: Container(
               color: Colors.white,

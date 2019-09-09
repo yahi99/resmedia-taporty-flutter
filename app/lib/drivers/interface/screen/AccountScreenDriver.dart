@@ -1,18 +1,13 @@
 import 'package:easy_route/easy_route.dart';
 import 'package:easy_widget/easy_widget.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_app/data/config.dart';
-import 'package:mobile_app/drivers/interface/screen/ChangePasswordScreeen.dart';
-import 'package:mobile_app/drivers/interface/screen/EditScreen.dart';
-import 'package:mobile_app/drivers/interface/screen/LegalNotesScreen.dart';
-import 'package:mobile_app/drivers/interface/screen/SettingsScreen.dart';
 import 'package:mobile_app/logic/bloc/UserBloc.dart';
 import 'package:mobile_app/model/UserModel.dart';
-import 'package:rxdart/rxdart.dart';
 
 class AccountScreenDriver extends StatelessWidget implements WidgetRoute {
   static const ROUTE = 'AccountScreenDriver';
+
   String get route => ROUTE;
 
   @override

@@ -4,7 +4,6 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:easy_blocs/easy_blocs.dart';
 import 'package:easy_firebase/easy_firebase.dart';
 import 'package:easy_route/easy_route.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,19 +11,20 @@ import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:mobile_app/data/config.dart';
-import 'package:mobile_app/interface/screen/HomeScreen.dart';
+import 'package:mobile_app/interface/screen/GeolocalizationScreen.dart';
 import 'package:mobile_app/interface/screen/RestaurantListScreen.dart';
 import 'package:mobile_app/interface/screen/SignUpMoreScreen.dart';
 import 'package:mobile_app/interface/screen/SignUpScreen.dart';
 import 'package:mobile_app/interface/view/logo_view.dart';
-import 'package:mobile_app/interface/screen/GeolocalizationScreen.dart';
 import 'package:mobile_app/logic/bloc/UserBloc.dart';
 import 'package:toast/toast.dart';
+
 //import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 //import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginScreen extends StatefulWidget implements WidgetRoute {
   static const String ROUTE = "LoginScreen";
+
   String get route => ROUTE;
 
   @override
@@ -33,6 +33,7 @@ class LoginScreen extends StatefulWidget implements WidgetRoute {
 
 class _LoginScreenState extends State<LoginScreen> {
   static const ROUTE = "LoginScreen";
+
   String get route => ROUTE;
 
   //static final FacebookLogin facebookSignIn = new FacebookLogin();
@@ -96,7 +97,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       RaisedButton(
                         onPressed: () {
                           EasyRouter.pushAndRemoveAll(
-                              context, GeoLocScreen(isAnonymous: isAnon));
+                            context,
+                            GeoLocScreen(isAnonymous: isAnon),
+                          );
                         },
                         textColor: Colors.black,
                         color: Colors.red,
@@ -111,17 +114,19 @@ class _LoginScreenState extends State<LoginScreen> {
                               .then((position) async {
                             print(position.toString());
                             await EasyRouter.pushAndRemoveAll(
-                                context,
-                                RestaurantListScreen(
-                                    isAnonymous: isAnon,
-                                    position: position,
-                                    user:
-                                        (await _userBloc.outUser.first).model));
-                          }).catchError((error) {
-                            if (error is PlatformException) {
-                              print(error.code);
-                            }
-                          });
+                              context,
+                              RestaurantListScreen(
+                                  isAnonymous: isAnon,
+                                  position: position,
+                                  user: (await _userBloc.outUser.first).model),
+                            );
+                          }).catchError(
+                            (error) {
+                              if (error is PlatformException) {
+                                print(error.code);
+                              }
+                            },
+                          );
                         },
                         color: Colors.green,
                         textColor: Colors.black,

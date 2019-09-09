@@ -12,6 +12,7 @@ import 'package:rxdart/rxdart.dart';
 
 class LegalNotesScreen extends StatefulWidget implements WidgetRoute {
   static const ROUTE = 'LegalNotesScreen';
+
   @override
   String get route => ROUTE;
 
@@ -32,9 +33,9 @@ class _LegalNotesState extends State<LegalNotesScreen> {
         title: Text("Account"),
       ),
       body: Padding(
-          padding: const EdgeInsets.only(top: SPACE * 2),
-      child:new ListView(
-        shrinkWrap: true,
+        padding: const EdgeInsets.only(top: SPACE * 2),
+        child: new ListView(
+          shrinkWrap: true,
           children: <Widget>[
             new Column(
               children: <Widget>[
@@ -125,13 +126,12 @@ class _LegalNotesState extends State<LegalNotesScreen> {
             ),
           ].map((child) {
             return Padding(
-              padding:
-              const EdgeInsets.symmetric(horizontal: SPACE * 2),
+              padding: const EdgeInsets.symmetric(horizontal: SPACE * 2),
               child: child,
             );
           }).toList(),
         ),
-        ),
+      ),
     );
   }
 }

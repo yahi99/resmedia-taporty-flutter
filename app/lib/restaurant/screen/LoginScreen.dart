@@ -1,28 +1,22 @@
-import 'dart:async';
-
 import 'package:easy_blocs/easy_blocs.dart';
 import 'package:easy_firebase/easy_firebase.dart';
 import 'package:easy_route/easy_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobile_app/data/config.dart';
-import 'package:mobile_app/logic/bloc/RestaurantBloc.dart';
-import 'package:mobile_app/restaurant/screen/HomeScreen.dart';
-import 'package:mobile_app/interface/screen/RestaurantListScreen.dart';
-import 'package:mobile_app/interface/screen/SignUpMoreScreen.dart';
-import 'package:mobile_app/interface/screen/SignUpScreen.dart';
 import 'package:mobile_app/interface/view/logo_view.dart';
-import 'package:mobile_app/interface/screen/GeolocalizationScreen.dart';
 import 'package:mobile_app/logic/bloc/OrdersBloc.dart';
+import 'package:mobile_app/logic/bloc/RestaurantBloc.dart';
 import 'package:mobile_app/logic/bloc/UserBloc.dart';
-import 'package:mobile_app/restaurant/page/OrdersPage.dart';
+import 'package:mobile_app/restaurant/screen/HomeScreen.dart';
+
 //import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 //import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginScreen extends StatefulWidget implements WidgetRoute {
   static const String ROUTE = "LoginScreen";
+
   String get route => ROUTE;
 
   @override
@@ -31,6 +25,7 @@ class LoginScreen extends StatefulWidget implements WidgetRoute {
 
 class _LoginScreenState extends State<LoginScreen> {
   static const ROUTE = "LoginScreen";
+
   String get route => ROUTE;
 
   //static final FacebookLogin facebookSignIn = new FacebookLogin();
@@ -40,7 +35,7 @@ class _LoginScreenState extends State<LoginScreen> {
   //end my code
 
   final FirebaseSignInBloc _submitBloc =
-  FirebaseSignInBloc.init(controller: UserBloc.of());
+      FirebaseSignInBloc.init(controller: UserBloc.of());
   final _userBloc = UserBloc.of();
 
   //StreamSubscription registrationLevelSub;
@@ -78,17 +73,18 @@ class _LoginScreenState extends State<LoginScreen> {
       /*if (registrationLevel == RegistrationLevel.LV2)
         await EasyRouter.push(context, SignUpMoreScreen());*/
       if (registrationLevel == RegistrationLevel.COMPLETE) {
-        final orderBloc=OrdersBloc.of();
+        final orderBloc = OrdersBloc.of();
         await orderBloc.setRestaurantStream();
-        String user=(await UserBloc.of().outUser.first).model.restaurantId;
+        String user = (await UserBloc.of().outUser.first).model.restaurantId;
         final restaurantBloc = RestaurantBloc.init(idRestaurant: user);
-        await EasyRouter.pushAndRemoveAll(context, HomeScreen(restBloc:restaurantBloc));
+        await EasyRouter.pushAndRemoveAll(
+            context, HomeScreen(restBloc: restaurantBloc));
       }
     };
   }
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
   }
 

@@ -76,6 +76,7 @@ final List<RestaurantModel> thai = [
 
 class RestaurantListScreen extends StatefulWidget implements WidgetRoute {
   static const ROUTE = 'RestaurantListScreen';
+
   String get route => ROUTE;
   final UserModel user;
   final Position position;
@@ -168,7 +169,8 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
                           widget.position.latitude, widget.position.longitude);
                       stream = userBloc.getDistance(start, end).asStream();
                       // TODO: Rimuovere l'else che permette un comportamento scorretto.
-                    } else stream = userBloc.getMockDistance().asStream();
+                    } else
+                      stream = userBloc.getMockDistance().asStream();
                     return StreamBuilder<double>(
                         stream: stream,
                         builder: (ctx, snap) {
@@ -178,11 +180,12 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
                           if (true) {
                             return InkWell(
                               onTap: () => EasyRouter.push(
-                                  context,
-                                  RestaurantScreen(
-                                    position: widget.position,
-                                    model: _model,
-                                  ),),
+                                context,
+                                RestaurantScreen(
+                                  position: widget.position,
+                                  model: _model,
+                                ),
+                              ),
                               child: RestaurantView(
                                 model: _model,
                               ),
@@ -201,6 +204,7 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
 
 class RestaurantView extends StatelessWidget {
   final RestaurantModel model;
+
   const RestaurantView({
     Key key,
     @required this.model,

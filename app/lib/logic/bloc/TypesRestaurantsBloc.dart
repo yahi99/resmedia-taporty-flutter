@@ -6,7 +6,6 @@ import 'package:mobile_app/logic/database.dart';
 import 'package:mobile_app/model/TypesRestaurantModel.dart';
 import 'package:rxdart/rxdart.dart';
 
-
 class TypesRestaurantBloc implements Bloc {
   final _db = Database();
 
@@ -16,12 +15,17 @@ class TypesRestaurantBloc implements Bloc {
   }
 
   PublishSubject<List<TypesRestaurantModel>> _restaurantsControl;
-  Stream<List<TypesRestaurantModel>> get outRestaurants => _restaurantsControl.stream;
+
+  Stream<List<TypesRestaurantModel>> get outRestaurants =>
+      _restaurantsControl.stream;
 
   TypesRestaurantBloc.instance() {
-    _restaurantsControl = PublishController.catchStream(source: _db.getTypesRestaurants());
+    _restaurantsControl =
+        PublishController.catchStream(source: _db.getTypesRestaurants());
     _restaurantsControl.listen(print);
   }
+
   factory TypesRestaurantBloc.of() => $Provider.of<TypesRestaurantBloc>();
+
   static void close() => $Provider.dispose<TypesRestaurantBloc>();
 }

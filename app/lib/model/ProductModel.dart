@@ -1,8 +1,8 @@
-import 'package:meta/meta.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_firebase/easy_firebase.dart';
 import 'package:flutter/widgets.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:meta/meta.dart';
 
 part 'ProductModel.g.dart';
 
@@ -12,7 +12,8 @@ abstract class ProductModel extends FirebaseModel {
   final String price;
   final String restaurantId;
 
-  ProductModel({String path,
+  ProductModel({
+    String path,
     @required this.title,
     @required this.img,
     @required this.price,
@@ -20,37 +21,40 @@ abstract class ProductModel extends FirebaseModel {
   }) : super(path);
 }
 
-
 @JsonSerializable(anyMap: true, explicitToJson: true, includeIfNull: false)
 class FoodModel extends ProductModel {
   final String img;
   final FoodCategory category;
   final String restaurantId;
 
-  FoodModel({String path,
-    this.img,String price,
-    this.category,
-    this.restaurantId
-  }) :
-        super(
-        path: path,
-        price: price,
-        restaurantId : restaurantId,
-      );
+  FoodModel(
+      {String path, this.img, String price, this.category, this.restaurantId})
+      : super(
+          path: path,
+          price: price,
+          restaurantId: restaurantId,
+        );
 
   static FoodModel fromJson(Map json) => _$FoodModelFromJson(json);
+
   static FoodModel fromFirebase(DocumentSnapshot snap) =>
       FirebaseModel.fromFirebase(fromJson, snap);
+
   Map<String, dynamic> toJson() => _$FoodModelToJson(this);
+
   @required
   String toString() => toJson().toString();
 }
 
-
 enum FoodCategory {
-  APPETIZER, FIRST_COURSES, MAIN_COURSES, SEAFOOD_MENU, MEAT_MENU, SIDE_DISH, DESERT,
+  APPETIZER,
+  FIRST_COURSES,
+  MAIN_COURSES,
+  SEAFOOD_MENU,
+  MEAT_MENU,
+  SIDE_DISH,
+  DESERT,
 }
-
 
 String translateFoodCategory(FoodCategory category) {
   switch (category) {
@@ -68,10 +72,10 @@ String translateFoodCategory(FoodCategory category) {
       return "Contorni";
     case FoodCategory.DESERT:
       return "Desert";
-    default: return "";
+    default:
+      return "";
   }
 }
-
 
 @JsonSerializable(anyMap: true, explicitToJson: true, includeIfNull: false)
 class DrinkModel extends ProductModel {
@@ -79,27 +83,26 @@ class DrinkModel extends ProductModel {
   final String img;
   final String restaurantId;
 
-  DrinkModel({String path, this.category, this.img,
-    String price, this.restaurantId
-  }) : super(
-    path: path,
-    price: price,
-    restaurantId:restaurantId,
-  );
+  DrinkModel(
+      {String path, this.category, this.img, String price, this.restaurantId})
+      : super(
+          path: path,
+          price: price,
+          restaurantId: restaurantId,
+        );
 
   static DrinkModel fromJson(Map json) => _$DrinkModelFromJson(json);
+
   static DrinkModel fromFirebase(DocumentSnapshot snap) =>
       FirebaseModel.fromFirebase(fromJson, snap);
+
   Map<String, dynamic> toJson() => _$DrinkModelToJson(this);
 
   @required
   String toString() => toJson().toString();
 }
 
-
-enum DrinkCategory {
-  DRINK, WINE, ALCOHOLIC, COFFEE
-}
+enum DrinkCategory { DRINK, WINE, ALCOHOLIC, COFFEE }
 
 String translateDrinkCategory(DrinkCategory category) {
   switch (category) {
@@ -111,6 +114,7 @@ String translateDrinkCategory(DrinkCategory category) {
       return "Alcolici";
     case DrinkCategory.COFFEE:
       return "Caffetteria";
-    default: return "";
+    default:
+      return "";
   }
 }

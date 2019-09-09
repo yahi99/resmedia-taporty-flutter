@@ -6,8 +6,11 @@ class SliverOrderVoid extends StatelessWidget {
   final int childCount;
   final IndexedWidgetBuilder builder;
 
-  const SliverOrderVoid({Key key,
-    @required this.title, @required this.childCount, @required this.builder,
+  const SliverOrderVoid({
+    Key key,
+    @required this.title,
+    @required this.childCount,
+    @required this.builder,
   }) : super(key: key);
 
   @override
@@ -15,8 +18,10 @@ class SliverOrderVoid extends StatelessWidget {
     final theme = Theme.of(context);
     return SliverList(
       delegate: SliverListSeparatorDelegate.childrenBuilder(
-        childCount: childCount+1,
-        separator: const SizedBox(height: 16.0,),
+        childCount: childCount + 1,
+        separator: const SizedBox(
+          height: 16.0,
+        ),
         builder: (context, index) {
           if (index == 0) {
             return Padding(
@@ -27,7 +32,7 @@ class SliverOrderVoid extends StatelessWidget {
               ),
             );
           }
-          return builder(context, index-1);
+          return builder(context, index - 1);
         },
       ),
     );

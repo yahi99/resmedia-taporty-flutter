@@ -3,15 +3,15 @@ import 'dart:convert';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 
-
 class NetworkUtil {
-  static final BASE_URL = "https://maps.googleapis.com/maps/api/directions/json?";
+  static final BASE_URL =
+      "https://maps.googleapis.com/maps/api/directions/json?";
 
   static NetworkUtil _instance;
 
   factory NetworkUtil(String googleMapsKey) {
     assert(googleMapsKey != null);
-    return _instance??(_instance=NetworkUtil._(googleMapsKey));
+    return _instance ?? (_instance = NetworkUtil._(googleMapsKey));
   }
 
   NetworkUtil._(this._key);
@@ -19,7 +19,7 @@ class NetworkUtil {
   final String _key;
 
   String _getUrl(String url) {
-    return BASE_URL+url+"&key=$_key";
+    return BASE_URL + url + "&key=$_key";
   }
 
   Future<http.Response> _get(url) async => await http.get(_getUrl(url));
@@ -27,7 +27,8 @@ class NetworkUtil {
   posToStr(LatLng position) => """${position.latitude},${position.longitude}""";
 
   Future<List<LatLng>> getPosToPos(LatLng departure, LatLng arrival) async {
-    final url = """origin=${posToStr(departure)}&destination=${posToStr(arrival)}""";
+    final url =
+        """origin=${posToStr(departure)}&destination=${posToStr(arrival)}""";
 
     final response = await _get(url);
     String res = response.body;
@@ -49,6 +50,8 @@ class NetworkUtil {
   }
 
   List<LatLng> parseSteps(final responseBody) {
-    return responseBody.map<LatLng>((json) => LatLng(json[0], json[1])).toList();
+    return responseBody
+        .map<LatLng>((json) => LatLng(json[0], json[1]))
+        .toList();
   }
 }

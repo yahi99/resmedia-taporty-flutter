@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:mobile_app/drivers/model/SubjectModel.dart';
+
 part 'UserModel.g.dart';
 
 @JsonSerializable(anyMap: true, explicitToJson: true)
@@ -27,7 +28,8 @@ class UserModel extends UserFirebaseModel {
   final bool isDriver;
 
   UserModel({
-    String path, String fcmToken,
+    String path,
+    String fcmToken,
     this.lat,
     this.lng,
     this.isDriver,
@@ -43,17 +45,17 @@ class UserModel extends UserFirebaseModel {
     this.offersSms,
   }) : super(path: path, fcmToken: fcmToken);
 
-  LatLng getPos(){
-    return (lat!=null && lng!=null)?LatLng(lat, lng):null;
+  LatLng getPos() {
+    return (lat != null && lng != null) ? LatLng(lat, lng) : null;
   }
 
   static UserModel fromJson(Map json) => _$UserModelFromJson(json);
+
   static UserModel fromFirebase(DocumentSnapshot snap) =>
       FirebaseModel.fromFirebase(fromJson, snap);
 
   Map<String, dynamic> toJson() => _$UserModelToJson(this);
 }
-
 
 class User extends UserBase<UserModel> {
   User(FirebaseUser userFb, UserModel model) : super(userFb, model);

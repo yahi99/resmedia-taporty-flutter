@@ -5,7 +5,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mobile_app/interface/screen/LoginScreen.dart';
-import 'package:mobile_app/drivers/model/SubjectModel.dart';
 import 'package:mobile_app/logic/bloc/FlavourBloc.dart';
 
 /// flutter build --flavor development -t lib/main-dev.dart

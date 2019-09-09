@@ -1,22 +1,15 @@
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:easy_blocs/easy_blocs.dart';
 import 'package:easy_route/easy_route.dart';
-import 'package:easy_widget/easy_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mobile_app/data/config.dart';
-import 'package:mobile_app/drivers/interface/page/SubjectOrderPage.dart';
-import 'package:mobile_app/drivers/interface/tab/OrdersTab.dart';
-import 'package:mobile_app/drivers/interface/view/OrderView.dart';
-import 'package:mobile_app/drivers/interface/widget/GoogleMapsUI.dart';
-import 'package:mobile_app/drivers/interface/widget/Order.dart';
-import 'package:mobile_app/drivers/model/OrderModel.dart';
 import 'package:mobile_app/logic/bloc/UserBloc.dart';
 import 'package:mobile_app/logic/database.dart';
 import 'package:mobile_app/model/OrderModel.dart';
 
 class DetailOrderRestaurantPage extends StatefulWidget implements WidgetRoute {
   static const ROUTE = "DetailOrderPageDriver";
+
   String get route => DetailOrderRestaurantPage.ROUTE;
 
   final RestaurantOrderModel model;
@@ -74,95 +67,99 @@ class _DetailOrderRestaurantPageState extends State<DetailOrderRestaurantPage> {
           Padding(
             padding: const EdgeInsets.all(SPACE),
             child: Column(
-              children:<Widget>[
-                Wrap(
-              runSpacing: 16.0,
               children: <Widget>[
-                Text(
-                  "DETTAGLIO ORDINE",
-                  style: tt.title,
+                Wrap(
+                  runSpacing: 16.0,
+                  children: <Widget>[
+                    Text(
+                      "DETTAGLIO ORDINE",
+                      style: tt.title,
+                    ),
+                    Text('Inidirizzo cliente: ', style: tt.subtitle),
+                    Text(widget.model.addressR),
+                    Text('Prodotti: ', style: tt.subtitle),
+                    ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: cart.products.length,
+                        itemBuilder: (BuildContext ctx, int index) {
+                          return Text(cart.products.elementAt(index).id +
+                              ' x' +
+                              cart.products
+                                  .elementAt(index)
+                                  .countProducts
+                                  .toString());
+                        }),
+                    (translateOrderCategory(widget.model.state) ==
+                            'In Accettazione')
+                        ? new Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: <Widget>[
+                              new RaisedButton(
+                                child: Text('Accetta'),
+                                onPressed: () => {
+                                  CloudFunctions.instance
+                                      .getHttpsCallable(
+                                          functionName: 'updateState')
+                                      .call({
+                                    'state': 'ACCEPTED',
+                                    'oid': widget.model.id,
+                                    'rid': widget
+                                        .model.products.first.restaurantId,
+                                    'timeS': DateTime.now(),
+                                    'did': widget.model.driver,
+                                    'uid': widget.model.uid
+                                  })
+                                },
+                                color: Colors.green,
+                              ),
+                              new RaisedButton(
+                                child: Text('Rifiuta'),
+                                onPressed: () async {
+                                  DateTime temp =
+                                      DateTime.tryParse(widget.model.timeR);
+                                  DateTime time = DateTime(
+                                      temp.year, temp.month, temp.minute);
+                                  String user =
+                                      (await UserBloc.of().outUser.first)
+                                          .model
+                                          .id;
+                                  Database()
+                                      .getDriverCalModel(
+                                          user,
+                                          time.toIso8601String(),
+                                          widget.model.startTime)
+                                      .then((cal) {
+                                    final occ = cal.occupied;
+                                    occ.remove(user);
+                                    final lib = cal.free;
+                                    lib.add(user);
+                                    CloudFunctions.instance
+                                        .getHttpsCallable(
+                                            functionName: 'updateState')
+                                        .call({
+                                      'state': 'DENIED',
+                                      'oid': widget.model.id,
+                                      'rid': widget
+                                          .model.products.first.restaurantId,
+                                      'free': lib,
+                                      'occupied': occ,
+                                      'isEmpty': false,
+                                      'day': time.toIso8601String(),
+                                      'startTime': cal.startTime,
+                                      'did': widget.model.driver,
+                                      'uid': widget.model.uid,
+                                      'timeS': DateTime.now()
+                                    });
+                                  });
+                                },
+                                color: Colors.red,
+                              ),
+                            ],
+                          )
+                        : Container(),
+                  ],
                 ),
-                Text('Inidirizzo cliente: ', style: tt.subtitle),
-                Text(widget.model.addressR),
-                Text('Prodotti: ', style: tt.subtitle),
-                ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: cart.products.length,
-                    itemBuilder: (BuildContext ctx, int index) {
-                      return Text(cart.products.elementAt(index).id +
-                          ' x' +
-                          cart.products
-                              .elementAt(index)
-                              .countProducts
-                              .toString());
-                    }),
-                (translateOrderCategory(widget.model.state) ==
-                        'In Accettazione')
-                    ? new Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: <Widget>[
-                          new RaisedButton(
-                            child: Text('Accetta'),
-                            onPressed: () => {
-                              CloudFunctions.instance
-                                  .getHttpsCallable(functionName: 'updateState')
-                                  .call({
-                                'state': 'ACCEPTED',
-                                'oid': widget.model.id,
-                                'rid': widget.model.products.first.restaurantId,
-                                'timeS': DateTime.now(),
-                                'did': widget.model.driver,
-                                'uid': widget.model.uid
-                              })
-                            },
-                            color: Colors.green,
-                          ),
-                          new RaisedButton(
-                            child: Text('Rifiuta'),
-                            onPressed: () async {
-                              DateTime temp =
-                                  DateTime.tryParse(widget.model.timeR);
-                              DateTime time =
-                                  DateTime(temp.year, temp.month, temp.minute);
-                              String user =
-                                  (await UserBloc.of().outUser.first).model.id;
-                              Database()
-                                  .getDriverCalModel(
-                                      user,
-                                      time.toIso8601String(),
-                                      widget.model.startTime)
-                                  .then((cal) {
-                                final occ = cal.occupied;
-                                occ.remove(user);
-                                final lib = cal.free;
-                                lib.add(user);
-                                CloudFunctions.instance
-                                    .getHttpsCallable(
-                                        functionName: 'updateState')
-                                    .call({
-                                  'state': 'DENIED',
-                                  'oid': widget.model.id,
-                                  'rid':
-                                      widget.model.products.first.restaurantId,
-                                  'free': lib,
-                                  'occupied': occ,
-                                  'isEmpty': false,
-                                  'day': time.toIso8601String(),
-                                  'startTime': cal.startTime,
-                                  'did': widget.model.driver,
-                                  'uid': widget.model.uid,
-                                  'timeS': DateTime.now()
-                                });
-                              });
-                            },
-                            color: Colors.red,
-                          ),
-                        ],
-                      )
-                    : Container(),
               ],
-            ),
-            ],
             ),
           ),
         ],

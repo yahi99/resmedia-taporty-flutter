@@ -12,9 +12,9 @@ import 'package:mobile_app/interface/screen/SignUpMoreScreen.dart';
 import 'package:mobile_app/interface/view/logo_view.dart';
 import 'package:mobile_app/logic/bloc/UserBloc.dart';
 
-
 class SignUpScreen extends StatefulWidget implements WidgetRoute {
   static const ROUTE = "SignUpScreen";
+
   @override
   String get route => ROUTE;
 

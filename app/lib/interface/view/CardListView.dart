@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 
-
 class CardListView extends StatelessWidget {
   final List<Widget> children;
 
-  const CardListView({Key key, @required this.children}) : assert(children != null), super(key: key);
+  const CardListView({Key key, @required this.children})
+      : assert(children != null),
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {

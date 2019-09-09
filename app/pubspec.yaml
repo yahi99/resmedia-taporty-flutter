@@ -1,0 +1,131 @@
+name: resmedia_taporty_flutter
+description: Mobile app for Taporty
+
+# The following defines the version and build number for your application.
+# A version number is three numbers separated by dots, like 1.2.43
+# followed by an optional build number separated by a +.
+# Both the version and the builder number may be overridden in flutter
+# build by specifying --build-name and --build-number, respectively.
+# In Android, build-name is used as versionName while build-number used as versionCode.
+# Read more about Android versioning at https://developer.android.com/studio/publish/versioning
+# In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
+# Read more about iOS versioning at
+# https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
+version: 1.0.1+2
+
+environment:
+  sdk: ">=2.2.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  http: any
+
+  flutter_svg: ^0.12.0
+
+  flutter_calendar_carousel: any
+
+  json_annotation: any
+
+  flutter_google_places: any
+
+  path_provider: any
+
+  image_picker: any
+
+  easy_firebase:
+    path: ../plugins/easy_firebase
+
+  intl: ^0.15.7
+
+  geolocator: ^5.1.3
+
+  geocoder: any
+
+  toast: ^0.1.5
+
+  # Fornisce il supporto per il testo scalabile.
+  auto_size_text: ^2.1.0
+
+  # The following adds the Cupertino Icons font to your application.
+  # Use with the CupertinoIcons class for iOS style icons.
+  cupertino_icons: ^0.1.2
+  font_awesome_flutter: ^8.4.0
+
+  # https://github.com/letsar/flutter_sticky_header
+  flutter_sticky_header: ^0.4.0
+
+  google_maps_webservice: any
+
+  google_maps_flutter: any
+
+  flutter_slidable: any
+
+  cloud_functions: any
+
+  cloud_firestore: any
+  firebase_storage: any
+
+  firebase_auth: ^0.11.1
+
+  datetime_picker_formfield: ^0.2.0
+
+
+  rubber: any
+
+  easy_blocs:
+    path: ../plugins/easy_blocs
+
+  easy_route:
+    path: ../plugins/easy_route
+  easy_widget:
+    path: ../plugins/easy_widget
+  easy_stripe:
+    path: ../plugins/easy_stripe
+
+  pocket_map:
+    path: ../plugins/pocket_map
+
+  dash: any
+  rxdart: any
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  
+  # QUesto comando è sia per json che per dash per tutti quelli che dipendono da questo plugin
+  build_runner: ^1.1.3 # flutter packages pub run build_runner build --delete-conflicting-outputs
+
+  json_serializable: ^2.0.0
+  dash_generator: ^0.5.3
+  
+
+# For information on the generic Dart part of this file, see the
+# following page: https://www.dartlang.org/tools/pub/pubspec
+
+# The following section is specific to Flutter.
+flutter:
+  assets:
+    - assets/img/
+    - assets/img/home/
+    - assets/img/drink/
+    - assets/img/food/
+  
+
+  # The following line ensures that the Material Icons font is
+  # included with your application, so that you can use the icons in
+  # the material Icons class.
+  uses-material-design: true
+  fonts:
+    - family: Comfortaa
+      fonts:
+         - asset: fonts/Comfortaa-Regular.ttf
+  #   - family: Trajan Pro
+  #     fonts:
+  #       - asset: fonts/TrajanPro.ttf
+  #       - asset: fonts/TrajanPro_Bold.ttf
+  #         weight: 700
+  #
+  # For details regarding fonts from package dependencies,
+  # see https://flutter.dev/custom-fonts/#from-packages

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:mobile_app/drivers/model/SubjectModel.dart';
+import 'package:resmedia_taporty_flutter/drivers/model/SubjectModel.dart';
 
 //view per 'imprenditore
 

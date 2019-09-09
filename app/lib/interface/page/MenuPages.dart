@@ -1,12 +1,12 @@
 import 'package:easy_blocs/easy_blocs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
-import 'package:mobile_app/interface/screen/RestaurantScreen.dart';
-import 'package:mobile_app/interface/view/ProductView.dart';
-import 'package:mobile_app/logic/bloc/CartBloc.dart';
-import 'package:mobile_app/logic/bloc/RestaurantBloc.dart';
-import 'package:mobile_app/model/ProductModel.dart';
-import 'package:mobile_app/model/RestaurantModel.dart';
+import 'package:resmedia_taporty_flutter/interface/screen/RestaurantScreen.dart';
+import 'package:resmedia_taporty_flutter/interface/view/ProductView.dart';
+import 'package:resmedia_taporty_flutter/logic/bloc/CartBloc.dart';
+import 'package:resmedia_taporty_flutter/logic/bloc/RestaurantBloc.dart';
+import 'package:resmedia_taporty_flutter/model/ProductModel.dart';
+import 'package:resmedia_taporty_flutter/model/RestaurantModel.dart';
 import 'package:rxdart/rxdart.dart';
 
 /*List<ProductModel> products = [

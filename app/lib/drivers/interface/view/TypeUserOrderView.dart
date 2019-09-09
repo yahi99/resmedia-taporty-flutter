@@ -2,7 +2,7 @@ import 'package:easy_blocs/easy_blocs.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:mobile_app/model/OrderModel.dart';
+import 'package:resmedia_taporty_flutter/model/OrderModel.dart';
 
 class TypeOrderView extends StatelessWidget {
   final UserOrderModel model;

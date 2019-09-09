@@ -2,8 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:mobile_app/drivers/interface/widget/Order.dart';
-import 'package:mobile_app/drivers/model/TurnModel.dart';
+import 'package:resmedia_taporty_flutter/drivers/interface/widget/Order.dart';
+import 'package:resmedia_taporty_flutter/drivers/model/TurnModel.dart';
 
 class TurnView extends StatelessWidget {
   final TurnModel model;

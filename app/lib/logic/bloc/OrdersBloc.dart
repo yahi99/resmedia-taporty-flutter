@@ -2,10 +2,10 @@ import 'package:dash/dash.dart';
 import 'package:easy_blocs/easy_blocs.dart';
 import 'package:easy_firebase/easy_firebase.dart';
 import 'package:meta/meta.dart';
-import 'package:mobile_app/drivers/model/OrderModel.dart';
-import 'package:mobile_app/generated/provider.dart';
-import 'package:mobile_app/logic/database.dart';
-import 'package:mobile_app/model/OrderModel.dart';
+import 'package:resmedia_taporty_flutter/drivers/model/OrderModel.dart';
+import 'package:resmedia_taporty_flutter/generated/provider.dart';
+import 'package:resmedia_taporty_flutter/logic/database.dart';
+import 'package:resmedia_taporty_flutter/model/OrderModel.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'UserBloc.dart';

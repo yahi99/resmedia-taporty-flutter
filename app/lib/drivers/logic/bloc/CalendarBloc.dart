@@ -2,10 +2,10 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:dash/dash.dart';
 import 'package:easy_blocs/easy_blocs.dart';
 import 'package:meta/meta.dart';
-import 'package:mobile_app/drivers/model/CalendarModel.dart';
-import 'package:mobile_app/generated/provider.dart';
-import 'package:mobile_app/logic/bloc/UserBloc.dart';
-import 'package:mobile_app/logic/database.dart';
+import 'package:resmedia_taporty_flutter/drivers/model/CalendarModel.dart';
+import 'package:resmedia_taporty_flutter/generated/provider.dart';
+import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
+import 'package:resmedia_taporty_flutter/logic/database.dart';
 import 'package:rxdart/rxdart.dart';
 
 class CalendarBloc implements Bloc {

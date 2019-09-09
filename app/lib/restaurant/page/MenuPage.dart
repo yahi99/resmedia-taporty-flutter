@@ -10,11 +10,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:mobile_app/data/config.dart';
-import 'package:mobile_app/logic/bloc/UserBloc.dart';
-import 'package:mobile_app/logic/database.dart';
-import 'package:mobile_app/model/ProductModel.dart';
-import 'package:mobile_app/restaurant/view/ProductViewRestaurant.dart';
+import 'package:resmedia_taporty_flutter/data/config.dart';
+import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
+import 'package:resmedia_taporty_flutter/logic/database.dart';
+import 'package:resmedia_taporty_flutter/model/ProductModel.dart';
+import 'package:resmedia_taporty_flutter/restaurant/view/ProductViewRestaurant.dart';
 import 'package:toast/toast.dart';
 
 class MenuPage extends StatefulWidget implements WidgetRoute {

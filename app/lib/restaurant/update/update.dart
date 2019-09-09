@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/services.dart';
-import 'package:mobile_app/main.dart';
+import 'package:resmedia_taporty_flutter/main.dart';
 
 class UpdateState {
   static const MethodChannel _channel = const MethodChannel('update');

@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_webservice/places.dart';
-import 'package:mobile_app/interface/screen/RestaurantListScreen.dart';
-import 'package:mobile_app/interface/view/logo_view.dart';
+import 'package:resmedia_taporty_flutter/interface/screen/RestaurantListScreen.dart';
+import 'package:resmedia_taporty_flutter/interface/view/logo_view.dart';
 import 'package:toast/toast.dart';
 
 class GeoLocScreen extends StatefulWidget implements WidgetRoute {

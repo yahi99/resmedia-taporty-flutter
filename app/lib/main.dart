@@ -4,8 +4,8 @@ import 'package:easy_widget/easy_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:mobile_app/interface/screen/LoginScreen.dart';
-import 'package:mobile_app/logic/bloc/FlavourBloc.dart';
+import 'package:resmedia_taporty_flutter/drivers/interface/screen/LoginScreen.dart';
+import 'package:resmedia_taporty_flutter/logic/bloc/FlavourBloc.dart';
 
 /// flutter build --flavor development -t lib/main-dev.dart
 
@@ -25,16 +25,16 @@ void main() {
     backgroundTask: (context, sharedPreferences) async {
       final assetHandler = await AssetHandler.init(context);
     },
-    builder: (_) => MyApp(),
+    builder: (_) => Taporty(),
   ));
 }
 
-class MyApp extends StatefulWidget {
+class Taporty extends StatefulWidget {
   @override
-  _MyAppState createState() => _MyAppState();
+  _TaportyState createState() => _TaportyState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _TaportyState extends State<Taporty> {
   @override
   Widget build(BuildContext context) {
     final cls = ColorScheme.light(

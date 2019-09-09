@@ -2,16 +2,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:mobile_app/data/config.dart';
-import 'package:mobile_app/drivers/interface/screen/AccountScreen.dart';
-import 'package:mobile_app/interface/page/InfoRestaurantPage.dart';
-import 'package:mobile_app/interface/page/MenuPages.dart';
-import 'package:mobile_app/interface/screen/CheckoutScreen.dart';
-import 'package:mobile_app/logic/bloc/CartBloc.dart';
-import 'package:mobile_app/logic/bloc/UserBloc.dart';
-import 'package:mobile_app/model/RestaurantModel.dart';
+import 'package:resmedia_taporty_flutter/data/config.dart';
+import 'package:resmedia_taporty_flutter/drivers/interface/screen/AccountScreen.dart';
+import 'package:resmedia_taporty_flutter/interface/page/InfoRestaurantPage.dart';
+import 'package:resmedia_taporty_flutter/interface/page/MenuPages.dart';
+import 'package:resmedia_taporty_flutter/interface/screen/CheckoutScreen.dart';
+import 'package:resmedia_taporty_flutter/logic/bloc/CartBloc.dart';
+import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
+import 'package:resmedia_taporty_flutter/model/RestaurantModel.dart';
 import 'package:easy_route/easy_route.dart';
-import 'package:mobile_app/logic/bloc/RestaurantBloc.dart';
+import 'package:resmedia_taporty_flutter/logic/bloc/RestaurantBloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class RestaurantScreen extends StatefulWidget implements WidgetRoute {

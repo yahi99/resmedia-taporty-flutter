@@ -3,14 +3,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoder/model.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:mobile_app/drivers/interface/screen/AccountScreen.dart';
-import 'package:mobile_app/interface/page/CartPage.dart';
-import 'package:mobile_app/interface/page/ConfirmPage.dart';
-import 'package:mobile_app/interface/page/PaymentPage.dart';
-import 'package:mobile_app/interface/page/ShippingPage.dart';
-import 'package:mobile_app/main.dart';
-import 'package:mobile_app/model/RestaurantModel.dart';
-import 'package:mobile_app/model/UserModel.dart';
+import 'package:resmedia_taporty_flutter/drivers/interface/screen/AccountScreen.dart';
+import 'package:resmedia_taporty_flutter/interface/page/CartPage.dart';
+import 'package:resmedia_taporty_flutter/interface/page/ConfirmPage.dart';
+import 'package:resmedia_taporty_flutter/interface/page/PaymentPage.dart';
+import 'package:resmedia_taporty_flutter/interface/page/ShippingPage.dart';
+import 'package:resmedia_taporty_flutter/main.dart';
+import 'package:resmedia_taporty_flutter/model/RestaurantModel.dart';
+import 'package:resmedia_taporty_flutter/model/UserModel.dart';
 
 class CheckoutScreen extends StatefulWidget implements WidgetRoute {
   static const String ROUTE = "ProductsScreen";

@@ -3,14 +3,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
-import 'package:mobile_app/interface/screen/RestaurantScreen.dart';
-import 'package:mobile_app/interface/view/BottonButtonBar.dart';
-import 'package:mobile_app/interface/view/ProductViewCart.dart';
-import 'package:mobile_app/logic/bloc/CartBloc.dart';
-import 'package:mobile_app/logic/bloc/RestaurantBloc.dart';
-import 'package:mobile_app/logic/bloc/UserBloc.dart';
-import 'package:mobile_app/model/ProductModel.dart';
-import 'package:mobile_app/model/RestaurantModel.dart';
+import 'package:resmedia_taporty_flutter/interface/screen/RestaurantScreen.dart';
+import 'package:resmedia_taporty_flutter/interface/view/BottonButtonBar.dart';
+import 'package:resmedia_taporty_flutter/interface/view/ProductViewCart.dart';
+import 'package:resmedia_taporty_flutter/logic/bloc/CartBloc.dart';
+import 'package:resmedia_taporty_flutter/logic/bloc/RestaurantBloc.dart';
+import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
+import 'package:resmedia_taporty_flutter/model/ProductModel.dart';
+import 'package:resmedia_taporty_flutter/model/RestaurantModel.dart';
 
 class CartPage extends StatefulWidget {
   final RestaurantModel model;

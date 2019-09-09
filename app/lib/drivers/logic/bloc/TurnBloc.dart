@@ -3,10 +3,10 @@ import 'package:easy_firebase/easy_firebase.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:meta/meta.dart';
 import 'package:dash/dash.dart';
-import 'package:mobile_app/drivers/model/TurnModel.dart';
-import 'package:mobile_app/generated/provider.dart';
-import 'package:mobile_app/logic/bloc/UserBloc.dart';
-import 'package:mobile_app/logic/database.dart';
+import 'package:resmedia_taporty_flutter/drivers/model/TurnModel.dart';
+import 'package:resmedia_taporty_flutter/generated/provider.dart';
+import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
+import 'package:resmedia_taporty_flutter/logic/database.dart';
 import 'package:rxdart/rxdart.dart';
 
 class TurnBloc implements Bloc {

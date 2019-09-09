@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:mobile_app/drivers/logic/bloc/CalendarBloc.dart';
-import 'package:mobile_app/drivers/model/CalendarModel.dart';
-import 'package:mobile_app/logic/database.dart';
+import 'package:resmedia_taporty_flutter/drivers/logic/bloc/CalendarBloc.dart';
+import 'package:resmedia_taporty_flutter/drivers/model/CalendarModel.dart';
+import 'package:resmedia_taporty_flutter/logic/database.dart';
 
 class CalendarTabDriver extends StatefulWidget {
   final List<CalendarModel> model;

@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/services.dart';
-import 'package:mobile_app/data/config.dart';
-import 'package:mobile_app/interface/view/BottonButtonBar.dart';
-import 'package:mobile_app/interface/view/InputField.dart';
-import 'package:mobile_app/logic/bloc/UserBloc.dart';
+import 'package:resmedia_taporty_flutter/data/config.dart';
+import 'package:resmedia_taporty_flutter/interface/view/BottonButtonBar.dart';
+import 'package:resmedia_taporty_flutter/interface/view/InputField.dart';
+import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
 
 class PaymentPage extends StatefulWidget {
   @override

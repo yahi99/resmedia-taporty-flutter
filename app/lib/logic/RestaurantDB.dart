@@ -1,8 +1,8 @@
 import 'package:easy_firebase/easy_firebase.dart';
-import 'package:mobile_app/logic/Collections.dart';
-import 'package:mobile_app/model/ProductModel.dart';
-import 'package:mobile_app/model/RestaurantModel.dart';
-import 'package:mobile_app/model/TypesRestaurantModel.dart';
+import 'package:resmedia_taporty_flutter/logic/Collections.dart';
+import 'package:resmedia_taporty_flutter/model/ProductModel.dart';
+import 'package:resmedia_taporty_flutter/model/RestaurantModel.dart';
+import 'package:resmedia_taporty_flutter/model/TypesRestaurantModel.dart';
 
 mixin RestaurantDb implements FirebaseDatabase {
   RestaurantsCollection get restaurants;

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_app/data/config.dart';
-import 'package:mobile_app/data/img.dart';
+import 'package:resmedia_taporty_flutter/data/config.dart';
+import 'package:resmedia_taporty_flutter/data/img.dart';
 
 class LogoView extends StatelessWidget {
   final Widget top;

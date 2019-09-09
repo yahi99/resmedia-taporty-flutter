@@ -3,21 +3,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:mobile_app/drivers/interface/screen/AccountScreen.dart';
-import 'package:mobile_app/interface/screen/LoginScreen.dart';
-import 'package:mobile_app/interface/screen/RestaurantScreen.dart';
-import 'package:mobile_app/interface/view/CardListView.dart';
-import 'package:mobile_app/interface/widget/SearchBar.dart';
-import 'package:mobile_app/logic/bloc/RestaurantsBloc.dart';
-import 'package:mobile_app/logic/bloc/UserBloc.dart';
-import 'package:mobile_app/main.dart';
-import 'package:mobile_app/interface/screen/HomeScreen.dart';
+import 'package:resmedia_taporty_flutter/drivers/interface/screen/AccountScreen.dart';
+import 'package:resmedia_taporty_flutter/interface/screen/LoginScreen.dart';
+import 'package:resmedia_taporty_flutter/interface/screen/RestaurantScreen.dart';
+import 'package:resmedia_taporty_flutter/interface/view/CardListView.dart';
+import 'package:resmedia_taporty_flutter/interface/widget/SearchBar.dart';
+import 'package:resmedia_taporty_flutter/logic/bloc/RestaurantsBloc.dart';
+import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
+import 'package:resmedia_taporty_flutter/main.dart';
+import 'package:resmedia_taporty_flutter/interface/screen/HomeScreen.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:mobile_app/model/RestaurantModel.dart';
+import 'package:resmedia_taporty_flutter/model/RestaurantModel.dart';
 import 'package:easy_route/easy_route.dart';
 import 'package:meta/meta.dart';
-import 'package:mobile_app/model/TypesRestaurantModel.dart';
-import 'package:mobile_app/model/UserModel.dart';
+import 'package:resmedia_taporty_flutter/model/TypesRestaurantModel.dart';
+import 'package:resmedia_taporty_flutter/model/UserModel.dart';
 
 /*final List<RestaurantModel> restaurants = [
   RestaurantModel(title: 'PRIMO PIATTO', img:'assets/img/home/ristoranti.png'),

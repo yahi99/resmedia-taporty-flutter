@@ -3,13 +3,13 @@ import 'package:easy_widget/easy_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:mobile_app/data/config.dart';
-import 'package:mobile_app/drivers/interface/tab/OrdersTab.dart';
-import 'package:mobile_app/drivers/interface/widget/GoogleMapsUI.dart';
-import 'package:mobile_app/drivers/model/OrderModel.dart';
-import 'package:mobile_app/drivers/model/SubjectModel.dart';
-import 'package:mobile_app/logic/bloc/UserBloc.dart';
-import 'package:mobile_app/logic/database.dart';
+import 'package:resmedia_taporty_flutter/data/config.dart';
+import 'package:resmedia_taporty_flutter/drivers/interface/tab/OrdersTab.dart';
+import 'package:resmedia_taporty_flutter/drivers/interface/widget/GoogleMapsUI.dart';
+import 'package:resmedia_taporty_flutter/drivers/model/OrderModel.dart';
+import 'package:resmedia_taporty_flutter/drivers/model/SubjectModel.dart';
+import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
+import 'package:resmedia_taporty_flutter/logic/database.dart';
 
 class SubjectOrderPageDriver extends StatefulWidget implements WidgetRoute {
   static const ROUTE = "SubjectOrderPageDriver";

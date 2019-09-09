@@ -1,5 +1,5 @@
 import 'package:dash/dash.dart';
-import 'package:mobile_app/generated/provider.dart';
+import 'package:resmedia_taporty_flutter/generated/provider.dart';
 
 class FlavorBloc implements Bloc {
   Flavor flavor;

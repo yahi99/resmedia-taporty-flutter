@@ -3,8 +3,8 @@ import 'package:easy_route/easy_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:mobile_app/model/OrderModel.dart';
-import 'package:mobile_app/restaurant/page/DetailOrderRestaurantPage.dart';
+import 'package:resmedia_taporty_flutter/model/OrderModel.dart';
+import 'package:resmedia_taporty_flutter/restaurant/page/DetailOrderRestaurantPage.dart';
 
 class TypeOrderView extends StatelessWidget {
   final RestaurantOrderModel model;

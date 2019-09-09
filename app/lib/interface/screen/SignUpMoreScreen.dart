@@ -4,11 +4,11 @@ import 'package:easy_blocs/easy_blocs.dart';
 import 'package:easy_route/easy_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mobile_app/data/config.dart';
-import 'package:mobile_app/interface/screen/RestaurantListScreen.dart';
-import 'package:mobile_app/interface/view/logo_view.dart';
-import 'package:mobile_app/logic/bloc/SignUpMoreBloc.dart';
-import 'package:mobile_app/logic/bloc/UserBloc.dart';
+import 'package:resmedia_taporty_flutter/data/config.dart';
+import 'package:resmedia_taporty_flutter/interface/screen/RestaurantListScreen.dart';
+import 'package:resmedia_taporty_flutter/interface/view/logo_view.dart';
+import 'package:resmedia_taporty_flutter/logic/bloc/SignUpMoreBloc.dart';
+import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
 
 class SignUpMoreScreen extends StatefulWidget implements WidgetRoute {
   static const ROUTE = "SignUpMoreScreen";

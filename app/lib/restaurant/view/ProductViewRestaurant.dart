@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:mobile_app/model/ProductModel.dart';
+import 'package:resmedia_taporty_flutter/model/ProductModel.dart';
 
 class ProductViewRestaurant extends StatelessWidget {
   final ProductModel model;

@@ -1,8 +1,8 @@
 import 'package:dash/dash.dart';
 import 'package:easy_blocs/easy_blocs.dart';
 import 'package:meta/meta.dart';
-import 'package:mobile_app/model/RestaurantModel.dart';
-import 'package:mobile_app/generated/provider.dart';
+import 'package:resmedia_taporty_flutter/model/RestaurantModel.dart';
+import 'package:resmedia_taporty_flutter/generated/provider.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../database.dart';

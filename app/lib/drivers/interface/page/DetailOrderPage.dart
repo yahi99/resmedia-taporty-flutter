@@ -1,12 +1,12 @@
 import 'package:easy_route/easy_route.dart';
 import 'package:easy_widget/easy_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:mobile_app/data/config.dart';
-import 'package:mobile_app/drivers/interface/page/SubjectOrderPage.dart';
-import 'package:mobile_app/drivers/interface/tab/OrdersTab.dart';
-import 'package:mobile_app/drivers/interface/view/OrderView.dart';
-import 'package:mobile_app/drivers/interface/widget/Order.dart';
-import 'package:mobile_app/drivers/model/OrderModel.dart';
+import 'package:resmedia_taporty_flutter/data/config.dart';
+import 'package:resmedia_taporty_flutter/drivers/interface/page/SubjectOrderPage.dart';
+import 'package:resmedia_taporty_flutter/drivers/interface/tab/OrdersTab.dart';
+import 'package:resmedia_taporty_flutter/drivers/interface/view/OrderView.dart';
+import 'package:resmedia_taporty_flutter/drivers/interface/widget/Order.dart';
+import 'package:resmedia_taporty_flutter/drivers/model/OrderModel.dart';
 
 class DetailOrderPageDriver extends StatefulWidget implements WidgetRoute {
   static const ROUTE = "DetailOrderPageDriver";

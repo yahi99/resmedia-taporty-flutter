@@ -10,16 +10,16 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:mobile_app/data/collections.dart' as cl;
-import 'package:mobile_app/drivers/model/CalendarModel.dart';
-import 'package:mobile_app/drivers/model/OrderModel.dart';
-import 'package:mobile_app/drivers/model/ShiftModel.dart';
-import 'package:mobile_app/drivers/model/TurnModel.dart';
-import 'package:mobile_app/logic/Collections.dart';
-import 'package:mobile_app/logic/RestaurantDB.dart';
-import 'package:mobile_app/model/OrderModel.dart';
-import 'package:mobile_app/model/RestaurantModel.dart';
-import 'package:mobile_app/model/UserModel.dart';
+import 'package:resmedia_taporty_flutter/data/collections.dart' as cl;
+import 'package:resmedia_taporty_flutter/drivers/model/CalendarModel.dart';
+import 'package:resmedia_taporty_flutter/drivers/model/OrderModel.dart';
+import 'package:resmedia_taporty_flutter/drivers/model/ShiftModel.dart';
+import 'package:resmedia_taporty_flutter/drivers/model/TurnModel.dart';
+import 'package:resmedia_taporty_flutter/logic/Collections.dart';
+import 'package:resmedia_taporty_flutter/logic/RestaurantDB.dart';
+import 'package:resmedia_taporty_flutter/model/OrderModel.dart';
+import 'package:resmedia_taporty_flutter/model/RestaurantModel.dart';
+import 'package:resmedia_taporty_flutter/model/UserModel.dart';
 
 class Database extends FirebaseDatabase
     with MixinFirestoreStripeProvider, RestaurantDb, StripeProviderRule {

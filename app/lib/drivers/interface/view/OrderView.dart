@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:mobile_app/drivers/interface/widget/Order.dart';
-import 'package:mobile_app/drivers/model/OrderModel.dart';
-import 'package:mobile_app/drivers/model/SubjectModel.dart';
+import 'package:resmedia_taporty_flutter/drivers/interface/widget/Order.dart';
+import 'package:resmedia_taporty_flutter/drivers/model/OrderModel.dart';
+import 'package:resmedia_taporty_flutter/drivers/model/SubjectModel.dart';
 
 class OrderView extends StatelessWidget {
   final DriverOrderModel model;

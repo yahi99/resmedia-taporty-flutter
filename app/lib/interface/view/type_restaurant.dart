@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
 
-import 'package:mobile_app/interface/screen/RestaurantListScreen.dart';
-import 'package:mobile_app/model/TypesRestaurantModel.dart';
+import 'package:resmedia_taporty_flutter/interface/screen/RestaurantListScreen.dart';
+import 'package:resmedia_taporty_flutter/model/TypesRestaurantModel.dart';
 import 'package:easy_route/easy_route.dart';
 
 class TypeRestaurantView extends StatelessWidget {

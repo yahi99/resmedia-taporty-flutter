@@ -6,11 +6,11 @@ import 'package:easy_blocs/easy_blocs.dart';
 import 'package:easy_firebase/easy_firebase.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:mobile_app/generated/provider.dart';
-import 'package:mobile_app/interface/screen/RestaurantScreen.dart';
-import 'package:mobile_app/logic/bloc/UserBloc.dart';
-import 'package:mobile_app/logic/database.dart';
-import 'package:mobile_app/model/ProductModel.dart';
+import 'package:resmedia_taporty_flutter/generated/provider.dart';
+import 'package:resmedia_taporty_flutter/interface/screen/RestaurantScreen.dart';
+import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
+import 'package:resmedia_taporty_flutter/logic/database.dart';
+import 'package:resmedia_taporty_flutter/model/ProductModel.dart';
 import 'package:rxdart/rxdart.dart';
 
 /// Uso sconsigliato, implementa in un tuo Bloc il [CartFirestore]

@@ -1,7 +1,7 @@
 import 'package:dash/dash.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:meta/meta.dart';
-import 'package:mobile_app/generated/provider.dart';
+import 'package:resmedia_taporty_flutter/generated/provider.dart';
 import 'package:rxdart/rxdart.dart';
 
 class DriverBloc implements Bloc {

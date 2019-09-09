@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:mobile_app/data/config.dart';
-import 'package:mobile_app/model/RestaurantModel.dart';
+import 'package:resmedia_taporty_flutter/data/config.dart';
+import 'package:resmedia_taporty_flutter/model/RestaurantModel.dart';
 
 class InfoRestaurantPage extends StatelessWidget {
   final RestaurantModel model;

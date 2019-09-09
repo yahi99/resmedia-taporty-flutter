@@ -3,10 +3,10 @@ import 'dart:async';
 import 'package:dash/dash.dart';
 import 'package:easy_blocs/easy_blocs.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:mobile_app/generated/provider.dart';
-import 'package:mobile_app/logic/bloc/UserBloc.dart';
-import 'package:mobile_app/logic/database.dart';
-import 'package:mobile_app/model/UserModel.dart';
+import 'package:resmedia_taporty_flutter/generated/provider.dart';
+import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
+import 'package:resmedia_taporty_flutter/logic/database.dart';
+import 'package:resmedia_taporty_flutter/model/UserModel.dart';
 
 class SignUpMoreBloc implements Bloc {
   final Database _db = Database();

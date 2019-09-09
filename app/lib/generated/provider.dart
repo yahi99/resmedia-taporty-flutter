@@ -1,18 +1,18 @@
 import 'package:dash/dash.dart';
 import 'package:easy_blocs/easy_blocs.dart';
-import 'package:mobile_app/drivers/logic/bloc/CalendarBloc.dart';
-import 'package:mobile_app/drivers/logic/bloc/TimeBloc.dart';
-import 'package:mobile_app/drivers/logic/bloc/TurnBloc.dart';
-import 'package:mobile_app/logic/bloc/CartBloc.dart';
-import 'package:mobile_app/logic/bloc/DrinkBloc.dart';
-import 'package:mobile_app/logic/bloc/FlavourBloc.dart';
-import 'package:mobile_app/logic/bloc/FoodBloc.dart';
-import 'package:mobile_app/logic/bloc/OrdersBloc.dart';
-import 'package:mobile_app/logic/bloc/RestaurantBloc.dart';
-import 'package:mobile_app/logic/bloc/RestaurantsBloc.dart';
-import 'package:mobile_app/logic/bloc/SignUpMoreBloc.dart';
-import 'package:mobile_app/logic/bloc/TypesRestaurantsBloc.dart';
-import 'package:mobile_app/logic/bloc/UserBloc.dart';
+import 'package:resmedia_taporty_flutter/drivers/logic/bloc/CalendarBloc.dart';
+import 'package:resmedia_taporty_flutter/drivers/logic/bloc/TimeBloc.dart';
+import 'package:resmedia_taporty_flutter/drivers/logic/bloc/TurnBloc.dart';
+import 'package:resmedia_taporty_flutter/logic/bloc/CartBloc.dart';
+import 'package:resmedia_taporty_flutter/logic/bloc/DrinkBloc.dart';
+import 'package:resmedia_taporty_flutter/logic/bloc/FlavourBloc.dart';
+import 'package:resmedia_taporty_flutter/logic/bloc/FoodBloc.dart';
+import 'package:resmedia_taporty_flutter/logic/bloc/OrdersBloc.dart';
+import 'package:resmedia_taporty_flutter/logic/bloc/RestaurantBloc.dart';
+import 'package:resmedia_taporty_flutter/logic/bloc/RestaurantsBloc.dart';
+import 'package:resmedia_taporty_flutter/logic/bloc/SignUpMoreBloc.dart';
+import 'package:resmedia_taporty_flutter/logic/bloc/TypesRestaurantsBloc.dart';
+import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
 
 part 'provider.g.dart';
 

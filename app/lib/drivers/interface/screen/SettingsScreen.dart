@@ -1,8 +1,8 @@
 import 'package:easy_route/easy_route.dart';
 import 'package:flutter/material.dart';
-import 'package:mobile_app/data/config.dart';
-import 'package:mobile_app/logic/bloc/UserBloc.dart';
-import 'package:mobile_app/model/UserModel.dart';
+import 'package:resmedia_taporty_flutter/data/config.dart';
+import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
+import 'package:resmedia_taporty_flutter/model/UserModel.dart';
 
 class SettingsScreen extends StatefulWidget implements WidgetRoute {
   static const ROUTE = 'SettingsScreen';

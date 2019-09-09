@@ -3,13 +3,13 @@ import 'package:easy_route/easy_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:mobile_app/drivers/interface/screen/AccountScreen.dart';
-import 'package:mobile_app/interface/view/CardListView.dart';
-import 'package:mobile_app/interface/view/type_restaurant.dart';
-import 'package:mobile_app/interface/widget/SearchBar.dart';
-import 'package:mobile_app/logic/bloc/TypesRestaurantsBloc.dart';
-import 'package:mobile_app/main.dart';
-import 'package:mobile_app/model/TypesRestaurantModel.dart';
+import 'package:resmedia_taporty_flutter/drivers/interface/screen/AccountScreen.dart';
+import 'package:resmedia_taporty_flutter/interface/view/CardListView.dart';
+import 'package:resmedia_taporty_flutter/interface/view/type_restaurant.dart';
+import 'package:resmedia_taporty_flutter/interface/widget/SearchBar.dart';
+import 'package:resmedia_taporty_flutter/logic/bloc/TypesRestaurantsBloc.dart';
+import 'package:resmedia_taporty_flutter/main.dart';
+import 'package:resmedia_taporty_flutter/model/TypesRestaurantModel.dart';
 
 class HomeScreen extends StatefulWidget implements WidgetRoute {
   static const ROUTE = "HomeScreen";

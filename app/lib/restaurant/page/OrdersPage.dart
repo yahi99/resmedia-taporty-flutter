@@ -2,8 +2,8 @@ import 'package:easy_route/easy_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:mobile_app/interface/view/CardListView.dart';
-import 'package:mobile_app/interface/view/TypeOrderView.dart';
+import 'package:resmedia_taporty_flutter/interface/view/CardListView.dart';
+import 'package:resmedia_taporty_flutter/interface/view/TypeOrderView.dart';
 
 class OrdersPage extends StatefulWidget implements WidgetRoute {
   final list;

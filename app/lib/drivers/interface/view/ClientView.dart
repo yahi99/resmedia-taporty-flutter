@@ -1,11 +1,11 @@
 import 'package:easy_route/easy_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:mobile_app/data/config.dart';
-import 'package:mobile_app/drivers/model/OrderModel.dart';
-import 'package:mobile_app/drivers/model/SubjectModel.dart';
-import 'package:mobile_app/logic/bloc/UserBloc.dart';
-import 'package:mobile_app/logic/database.dart';
+import 'package:resmedia_taporty_flutter/data/config.dart';
+import 'package:resmedia_taporty_flutter/drivers/model/OrderModel.dart';
+import 'package:resmedia_taporty_flutter/drivers/model/SubjectModel.dart';
+import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
+import 'package:resmedia_taporty_flutter/logic/database.dart';
 
 //visualizzazione cliente
 // ignore: must_be_immutable

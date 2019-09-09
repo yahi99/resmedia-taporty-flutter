@@ -1,6 +1,6 @@
 import 'package:easy_widget/easy_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:mobile_app/data/config.dart';
+import 'package:resmedia_taporty_flutter/data/config.dart';
 
 class AccountPageDriver extends StatelessWidget {
   @override

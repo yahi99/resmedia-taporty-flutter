@@ -5,16 +5,16 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geocoder/model.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:mobile_app/data/config.dart';
-import 'package:mobile_app/interface/page/CartPage.dart';
-import 'package:mobile_app/interface/screen/CheckoutScreen.dart';
-import 'package:mobile_app/interface/screen/RestaurantScreen.dart';
-import 'package:mobile_app/interface/view/BottonButtonBar.dart';
-import 'package:mobile_app/logic/bloc/CartBloc.dart';
-import 'package:mobile_app/logic/bloc/RestaurantBloc.dart';
-import 'package:mobile_app/logic/bloc/UserBloc.dart';
-import 'package:mobile_app/model/ProductModel.dart';
-import 'package:mobile_app/model/RestaurantModel.dart';
+import 'package:resmedia_taporty_flutter/data/config.dart';
+import 'package:resmedia_taporty_flutter/interface/page/CartPage.dart';
+import 'package:resmedia_taporty_flutter/interface/screen/CheckoutScreen.dart';
+import 'package:resmedia_taporty_flutter/interface/screen/RestaurantScreen.dart';
+import 'package:resmedia_taporty_flutter/interface/view/BottonButtonBar.dart';
+import 'package:resmedia_taporty_flutter/logic/bloc/CartBloc.dart';
+import 'package:resmedia_taporty_flutter/logic/bloc/RestaurantBloc.dart';
+import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
+import 'package:resmedia_taporty_flutter/model/ProductModel.dart';
+import 'package:resmedia_taporty_flutter/model/RestaurantModel.dart';
 import 'package:toast/toast.dart';
 
 class ConfirmPage extends StatefulWidget {

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:mobile_app/data/config.dart';
-import 'package:mobile_app/drivers/interface/sliver/SliverOrderVoid.dart';
-import 'package:mobile_app/drivers/interface/view/TurnView.dart';
-import 'package:mobile_app/drivers/logic/bloc/TurnBloc.dart';
-import 'package:mobile_app/drivers/model/TurnModel.dart';
+import 'package:resmedia_taporty_flutter/data/config.dart';
+import 'package:resmedia_taporty_flutter/drivers/interface/sliver/SliverOrderVoid.dart';
+import 'package:resmedia_taporty_flutter/drivers/interface/view/TurnView.dart';
+import 'package:resmedia_taporty_flutter/drivers/logic/bloc/TurnBloc.dart';
+import 'package:resmedia_taporty_flutter/drivers/model/TurnModel.dart';
 
 class TurnWorkTabDriver extends StatefulWidget {
   final Map<MonthCategory, List<TurnModel>> model;

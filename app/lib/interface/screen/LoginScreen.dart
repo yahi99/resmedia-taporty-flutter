@@ -10,13 +10,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:mobile_app/data/config.dart';
-import 'package:mobile_app/interface/screen/GeolocalizationScreen.dart';
-import 'package:mobile_app/interface/screen/RestaurantListScreen.dart';
-import 'package:mobile_app/interface/screen/SignUpMoreScreen.dart';
-import 'package:mobile_app/interface/screen/SignUpScreen.dart';
-import 'package:mobile_app/interface/view/logo_view.dart';
-import 'package:mobile_app/logic/bloc/UserBloc.dart';
+import 'package:resmedia_taporty_flutter/data/config.dart';
+import 'package:resmedia_taporty_flutter/interface/screen/GeolocalizationScreen.dart';
+import 'package:resmedia_taporty_flutter/interface/screen/RestaurantListScreen.dart';
+import 'package:resmedia_taporty_flutter/interface/screen/SignUpMoreScreen.dart';
+import 'package:resmedia_taporty_flutter/interface/screen/SignUpScreen.dart';
+import 'package:resmedia_taporty_flutter/interface/view/logo_view.dart';
+import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
 import 'package:toast/toast.dart';
 
 //import 'package:flutter_facebook_login/flutter_facebook_login.dart';
@@ -199,8 +199,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final cls = theme.colorScheme;
     return Material(
       child: Form(
         key: _submitBloc.formKey,
@@ -271,7 +269,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
                 //_userBloc.inSignInAnonymously();
               },
-            )
+            ),
           ],
         ),
       ),

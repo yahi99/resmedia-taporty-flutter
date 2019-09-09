@@ -3,11 +3,11 @@ import 'package:easy_route/easy_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:mobile_app/drivers/interface/view/TypeUserOrderView.dart';
-import 'package:mobile_app/interface/view/CardListView.dart';
-import 'package:mobile_app/logic/bloc/OrdersBloc.dart';
-import 'package:mobile_app/main.dart';
-import 'package:mobile_app/model/OrderModel.dart';
+import 'package:resmedia_taporty_flutter/drivers/interface/view/TypeUserOrderView.dart';
+import 'package:resmedia_taporty_flutter/interface/view/CardListView.dart';
+import 'package:resmedia_taporty_flutter/logic/bloc/OrdersBloc.dart';
+import 'package:resmedia_taporty_flutter/main.dart';
+import 'package:resmedia_taporty_flutter/model/OrderModel.dart';
 
 class OrderListScreen extends StatefulWidget implements WidgetRoute {
   static const ROUTE = "OrderListScreen";

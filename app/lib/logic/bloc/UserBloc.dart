@@ -7,9 +7,9 @@ import 'package:easy_stripe/easy_stripe.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:meta/meta.dart';
-import 'package:mobile_app/generated/provider.dart';
-import 'package:mobile_app/main.dart';
-import 'package:mobile_app/model/UserModel.dart';
+import 'package:resmedia_taporty_flutter/generated/provider.dart';
+import 'package:resmedia_taporty_flutter/main.dart';
+import 'package:resmedia_taporty_flutter/model/UserModel.dart';
 import 'package:rxdart/rxdart.dart';
 
 import '../database.dart';

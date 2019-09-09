@@ -4,10 +4,10 @@ import 'package:dash/dash.dart';
 import 'package:easy_blocs/easy_blocs.dart';
 import 'package:easy_firebase/easy_firebase.dart';
 import 'package:flutter/widgets.dart';
-import 'package:mobile_app/generated/provider.dart';
-import 'package:mobile_app/logic/database.dart';
-import 'package:mobile_app/model/ProductModel.dart';
-import 'package:mobile_app/model/RestaurantModel.dart';
+import 'package:resmedia_taporty_flutter/generated/provider.dart';
+import 'package:resmedia_taporty_flutter/logic/database.dart';
+import 'package:resmedia_taporty_flutter/model/ProductModel.dart';
+import 'package:resmedia_taporty_flutter/model/RestaurantModel.dart';
 import 'package:rxdart/rxdart.dart';
 
 class RestaurantBloc implements Bloc {

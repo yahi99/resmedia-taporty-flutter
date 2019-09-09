@@ -9,6 +9,7 @@ import 'package:easy_stripe/easy_stripe.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/cupertino.dart' as prefix0;
 import 'package:geolocator/geolocator.dart';
 import 'package:resmedia_taporty_flutter/data/collections.dart' as cl;
 import 'package:resmedia_taporty_flutter/drivers/model/CalendarModel.dart';
@@ -219,16 +220,23 @@ class Database extends FirebaseDatabase
     });
   }
 
-  Stream<List<CalendarModel>> getAvailableShifts(DateTime now) {
+  Future<Stream<List<CalendarModel>>> getAvailableShifts(DateTime now) async {
     //final temp=.replaceAll(' ', 'T');
     final data = fs
         .collection(cl.DAYS)
-        .document(now.toIso8601String())
+    // Questa riga incasinata è la correzione di come si tentava di recuperare gli orari prima: tu facevi la ricerca di un documento che era il formato iso della stringa del momento.nn
+    // Il nome del documento sul database è il formato iso della stringa del giorno alle 00:00.
+    /// NON SAREBBE MEGLIO ORGANIZZARE IL TUTTO SOLO NOMINANDO IL DOCUMENTO PER IL GIORNO?
+        .document(
+            "${now.year}-${now.month < 10 ? "0" + now.month.toString() : now.month}-${now.day < 10 ? "0" + now.day.toString() : now.day}T00:00.000")
         .collection(cl.TIMES)
         .where('isEmpty', isEqualTo: false)
         .snapshots();
-    print('lol');
+
+    // TODO: Qui non funziona.
+
     return data.map((query) {
+      debugPrint(query.documents.toString());
       return query.documents
           .map((snap) => CalendarModel.fromFirebase(snap))
           .toList();

@@ -176,6 +176,7 @@ class _ShippingState extends State<ShippingPage>
                                       ? timeStream.stream
                                       : Database().getAvailableShifts(sp.data),
                                   builder: (ctx, snap) {
+                                    debugPrint("Qui siamo nel builder.");
                                     List<DropdownMenuItem> drop =
                                         new List<DropdownMenuItem>();
                                     List<String> values = new List<String>();
@@ -355,9 +356,7 @@ class _ShippingState extends State<ShippingPage>
               if (_formKey.currentState.validate()) {
                 print(date);
                 print(time);
-                // if (date != null && time != null) {
-                // TODO: Ripristinare il controllo su base oraria.
-                if (date != null) {
+                if (date != null && time != null) {
                   final state = MyInheritedWidget.of(context);
                   state.date = date.toIso8601String();
                   state.time = time;

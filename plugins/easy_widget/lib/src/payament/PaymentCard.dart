@@ -22,7 +22,7 @@ const STRING_OF_PAYMENT_CARD = <BrandOfPaymentCard, String> {
   "Diners Club": BrandOfPaymentCard.dinersClub,
   "Discover": BrandOfPaymentCard.discover,
   "JCB": BrandOfPaymentCard.JCB,
-  "Mastercard": BrandOfPaymentCard.mastercard,
+  "MasterCard": BrandOfPaymentCard.mastercard,
   "UnionPay": BrandOfPaymentCard.unionPay,
   "Visa": BrandOfPaymentCard.visa,
 };
@@ -57,7 +57,10 @@ class PaymentCard extends StatelessWidget {
     final theme = Theme.of(context);
     final tt = theme.textTheme;
 
-    final assetFile = AssetHandler().getFolder(assetFolder).getFileByEnum(type);
+    // final assetFile = AssetHandler().getFolder(assetFolder).getFileByEnum(type);
+
+    final assetFile =
+        type == null ? null : AssetHandler().getFolder(assetFolder).getFileByEnum(type);
 
     return Row(
       children: <Widget>[

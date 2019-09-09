@@ -250,7 +250,3 @@ class _PaymentState extends State<PaymentPage>
   // TODO: implement wantKeepAlive
   bool get wantKeepAlive => true;
 }
-
-/*
-
- */

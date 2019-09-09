@@ -147,19 +147,20 @@ class _ConfirmState extends State<ConfirmPage>
                       if (user != null) {
                         cartBloc
                             .signer(
-                                widget.model.id,
-                                user,
-                                widget.position,
-                                widget.description.addressLine,
-                                state.time,
-                                state.endTime)
+                          widget.model.id,
+                          user,
+                          widget.position,
+                          widget.description.addressLine,
+                          state.time,
+                          state.endTime,
+                        )
                             .then((isDone) {
                           RestaurantScreen.isOrdered = false;
                           Future.delayed(
                               Duration.zero, () => _showPaymentDialog(context));
                           print('ok');
                         }).catchError((error) {
-                          print(error.toString());
+                          print(error.toString() + "*");
                         });
                       } else {
                         Toast.show(

@@ -111,7 +111,7 @@ class _OrdersPageDriverState extends State<OrdersPageDriver> {
 
   //TODO: currentOrder dovrebbe essere la lista di DriverOrderModel su widget.model
   initMap(BuildContext context) async {
-    debugPrint(widget.model.values.toString());
+    debugPrint("\n\n" + widget.model.values.toString() + "\n***");
     return;
     /*
     if (isDeactivate) return;

@@ -2,6 +2,7 @@ import 'package:easy_blocs/easy_blocs.dart';
 import 'package:easy_route/easy_route.dart';
 import 'package:easy_widget/easy_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:resmedia_taporty_flutter/data/config.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/page/DetailOrderPage.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/sliver/SliverOrderVoid.dart';
@@ -10,6 +11,8 @@ import 'package:resmedia_taporty_flutter/drivers/interface/view/OrderView.dart';
 import 'package:resmedia_taporty_flutter/drivers/model/OrderModel.dart';
 import 'package:resmedia_taporty_flutter/logic/bloc/OrdersBloc.dart';
 import 'package:resmedia_taporty_flutter/model/OrderModel.dart';
+
+import '../widget/GoogleMapsUI.dart';
 
 /*class OrdersPageDriver extends StatefulWidget implements WidgetRoute {
   static const ROUTE = "OrdersPageDriver";
@@ -109,7 +112,9 @@ class _OrdersPageDriverState extends State<OrdersPageDriver> {
     isDeactivate = !isDeactivate;
   }
 
-  /*initMap(BuildContext context) async {
+
+  //TODO: currentOrder dovrebbe essere la lista di DriverOrderModel su widget.model
+  initMap(BuildContext context) async {
     if (isDeactivate) return;
     await PrimaryGoogleMapsController.of(context).future
       ..setMarkers(currentOrder.map((order) {
@@ -123,7 +128,7 @@ class _OrdersPageDriverState extends State<OrdersPageDriver> {
         );
       }).toSet())
       ..animateToCenter(currentOrder.map((order) => order.receiver.toLatLng()));
-  }*/
+  }
 
   /*Map<String,List<RestaurantOrderModel>> getMap(List<RestaurantOrderModel> orders){
     Map<String,List<RestaurantOrderModel>> map= new Map<String,List<RestaurantOrderModel>>();

@@ -19,6 +19,8 @@ import 'package:rubber/rubber.dart';
 
 final house = LatLngModel(lat: 45.386485, lng: 11.895141);
 
+
+//TODO:questo è currentOrder tutti i dati sono in widget.model su SubjectOrderPage
 /*List<DriverOrderModel> currentOrder = [
   DriverOrderModel(
     supplier: SubjectModel(
@@ -158,7 +160,13 @@ class _OrdersTabDriverState extends State<OrdersTabDriver>
               ),
             ),
           ),
-          _addControllers(child: Container()),
+          //TODO:_addControllers() con figlio le mappe se non metti _addControllers da errori
+          Container(
+            height: 200.0,
+            decoration: new BoxDecoration(
+              color: Colors.green,
+            ),
+          ),
           /*Expanded(
               child: PocketMapBuilder(
                 padding: const EdgeInsets.only(top: 16.0, right: 16.0, left: 16.0, bottom: 64.0),

@@ -258,6 +258,19 @@
               <item name="lib" type="462c0819:PsiDirectoryNode" />
               <item name="drivers" type="462c0819:PsiDirectoryNode" />
               <item name="interface" type="462c0819:PsiDirectoryNode" />
+              <item name="screen" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="app" type="b2602c69:ProjectViewProjectNode" />
+              <item name="app" type="462c0819:PsiDirectoryNode" />
+              <item name="lib" type="462c0819:PsiDirectoryNode" />
+              <item name="interface" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="app" type="b2602c69:ProjectViewProjectNode" />
+              <item name="app" type="462c0819:PsiDirectoryNode" />
+              <item name="lib" type="462c0819:PsiDirectoryNode" />
+              <item name="interface" type="462c0819:PsiDirectoryNode" />
               <item name="page" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -312,7 +325,7 @@
     <property name="android.sdk.path" value="$USER_HOME$/Android/Sdk" />
     <property name="dart.analysis.tool.window.force.activate" value="false" />
     <property name="io.flutter.reload.alreadyRun" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../Flutter/flutter/bin/cache/dart-sdk" />
+    <property name="last_opened_file_path" value="$USER_HOME$/Flutter/flutter/bin/cache/dart-sdk" />
     <property name="settings.editor.selected.configurable" value="dart.settings" />
     <property name="show.migrate.to.gradle.popup" value="false" />
   </component>
@@ -529,7 +542,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/Flutter/flutter/packages/flutter/lib/src/widgets/async.dart" />
     <entry file="file://$PROJECT_DIR$/lib/logic/bloc/CartBloc.dart">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1740">
@@ -623,13 +635,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../../../Flutter/flutter/packages/flutter/lib/src/widgets/async.dart">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3210">
-          <caret line="222" column="10" selection-start-line="222" selection-start-column="10" selection-end-line="222" selection-end-column="10" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$USER_HOME$/Flutter/flutter/packages/flutter/lib/src/widgets/async.dart" />
     <entry file="file://$PROJECT_DIR$/lib/drivers/interface/tab/OrdersTab.dart">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-359">
@@ -737,14 +743,14 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/interface/page/ConfirmPage.dart">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="650">
+        <state relative-caret-position="1920">
           <caret line="145" column="37" selection-start-line="145" selection-start-column="37" selection-end-line="145" selection-end-column="37" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/interface/screen/RestaurantListScreen.dart">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="650">
+        <state relative-caret-position="2265">
           <caret line="170" column="25" selection-start-line="170" selection-start-column="25" selection-end-line="170" selection-end-column="25" />
           <folding>
             <element signature="e#0#44#0" expanded="true" />
@@ -817,7 +823,7 @@
         <state relative-caret-position="1425">
           <caret line="109" column="25" selection-start-line="109" selection-start-column="25" selection-end-line="109" selection-end-column="25" />
           <folding>
-            <element signature="e#0#40#0" expanded="true" />
+            <element signature="e#0#20#0" expanded="true" />
           </folding>
         </state>
       </provider>

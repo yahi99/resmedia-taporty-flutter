@@ -154,7 +154,7 @@ class _OrdersPageDriverState extends State<OrdersPageDriver> {
       ),
       body: CustomScrollView(
         //controller: RubberScrollController.of(context),
-        physics: NeverScrollableScrollPhysics(),
+        //physics: NeverScrollableScrollPhysics(),
         shrinkWrap: true,
         slivers: widget.model.keys.map<Widget>((nameGroup) {
           final products = widget.model[nameGroup];

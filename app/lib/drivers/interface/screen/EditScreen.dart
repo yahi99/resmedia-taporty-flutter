@@ -92,18 +92,7 @@ class SnackBarPage extends StatelessWidget {
                     children: <Widget>[
                       TextFormField(
                         key: _nameKey,
-                        initialValue: temp[1],
-                        style: theme.textTheme.subhead,
-                        validator: (value) {
-                          if (value.isEmpty) {
-                            return 'Campo invalido';
-                          }
-                          return null;
-                        },
-                      ),
-                      TextFormField(
-                        key: _lastKey,
-                        initialValue: temp[0],
+                        initialValue: snap.data.model.nominative,
                         style: theme.textTheme.subhead,
                         validator: (value) {
                           if (value.isEmpty) {
@@ -131,9 +120,7 @@ class SnackBarPage extends StatelessWidget {
                                     _passKey.currentState.value.toString())
                                 .then((_) {
                               user.updateNominative(
-                                  _nameKey.currentState.value.toString() +
-                                      ' ' +
-                                      _lastKey.currentState.value.toString(),
+                                  _nameKey.currentState.value.toString(),
                                   _passKey.currentState.value.toString());
                               Scaffold.of(context).showSnackBar(SnackBar(
                                 content: Text('Cambiamenti eseguiti!'),

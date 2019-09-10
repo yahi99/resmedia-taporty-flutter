@@ -65,7 +65,12 @@ class _DetailOrderPageDriverState extends State<DetailOrderPageDriver> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const RubberConcierge(),
+        automaticallyImplyLeading: true,
+        leading: IconButton(icon:Icon(Icons.arrow_back),
+        onPressed: (){
+          EasyRouter.pop(context);
+        },),
+        //title: const RubberConcierge(),
       ),
       body: ListView(
         //controller: RubberScrollController.of(context),

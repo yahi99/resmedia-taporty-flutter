@@ -120,9 +120,7 @@ class SnackBarPage extends StatelessWidget {
                                     _passKey.currentState.value.toString())
                                 .then((_) {
                               user.updateNominative(
-                                  _nameKey.currentState.value.toString() +
-                                      ' ' +
-                                      _lastKey.currentState.value.toString(),
+                                  _nameKey.currentState.value.toString(),
                                   _passKey.currentState.value.toString());
                               Scaffold.of(context).showSnackBar(SnackBar(
                                 content: Text('Cambiamenti eseguiti!'),

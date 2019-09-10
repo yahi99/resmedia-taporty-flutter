@@ -34,6 +34,10 @@ class AccountScreenDriver extends StatelessWidget implements WidgetRoute {
         ),
         actions: <Widget>[
           IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () => Navigator.pop(context),
+          ),
+          IconButton(
             onPressed: () => {EasyRouter.push(context, EditScreen())},
             icon: Icon(Icons.mode_edit),
           )

@@ -93,11 +93,7 @@ class AccountScreenDriver extends StatelessWidget implements WidgetRoute {
                   ),
                   children: <Widget>[
                     Text(
-                      temp[1],
-                      style: theme.textTheme.subhead,
-                    ),
-                    Text(
-                      temp[0],
+                      snap.data.model.nominative,
                       style: theme.textTheme.subhead,
                     ),
                     Text(

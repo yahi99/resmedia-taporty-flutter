@@ -92,18 +92,7 @@ class SnackBarPage extends StatelessWidget {
                     children: <Widget>[
                       TextFormField(
                         key: _nameKey,
-                        initialValue: temp[1],
-                        style: theme.textTheme.subhead,
-                        validator: (value) {
-                          if (value.isEmpty) {
-                            return 'Campo invalido';
-                          }
-                          return null;
-                        },
-                      ),
-                      TextFormField(
-                        key: _lastKey,
-                        initialValue: temp[0],
+                        initialValue: snap.data.model.nominative,
                         style: theme.textTheme.subhead,
                         validator: (value) {
                           if (value.isEmpty) {

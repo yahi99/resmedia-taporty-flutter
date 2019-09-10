@@ -33,7 +33,7 @@ const addPaymentSource = functions.https.onCall(async (data, context) => {
   mapResponse.token = token
   await fs.collection('stripe_customers').doc(context.auth!.uid)
           .collection("sources").doc(fingerPrint)
-          .create(response);
+          .set(response);
   return {"documentId": fingerPrint,}
 });
 

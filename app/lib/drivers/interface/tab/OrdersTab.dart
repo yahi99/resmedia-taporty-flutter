@@ -8,11 +8,13 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:resmedia_taporty_flutter/data/config.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/page/OrdersPage.dart';
+import 'package:resmedia_taporty_flutter/drivers/interface/view/OrderView.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/widget/GoogleMapsUI.dart';
 import 'package:resmedia_taporty_flutter/drivers/logic/bloc/DriverBloc.dart';
 import 'package:resmedia_taporty_flutter/drivers/model/SubjectModel.dart';
 import 'package:resmedia_taporty_flutter/drivers/model/OrderModel.dart';
 import 'package:resmedia_taporty_flutter/drivers/model/TurnModel.dart';
+import 'package:resmedia_taporty_flutter/interface/page/MenuPages.dart';
 import 'package:resmedia_taporty_flutter/model/OrderModel.dart';
 import 'package:pocket_map/pocket_map.dart';
 import 'package:rubber/rubber.dart';
@@ -20,7 +22,6 @@ import 'package:rubber/rubber.dart';
 final house = LatLngModel(lat: 45.386485, lng: 11.895141);
 
 
-//TODO:questo è currentOrder tutti i dati sono in widget.model su SubjectOrderPage
 /*List<DriverOrderModel> currentOrder = [
   DriverOrderModel(
     supplier: SubjectModel(
@@ -136,8 +137,6 @@ class _OrdersTabDriverState extends State<OrdersTabDriver>
     super.dispose();
   }
 
-  //TODO mappe nel modello dell'ordine passo solamente le coordinate dell'utente quelle del ristorante vanno prese dal database
-
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -160,13 +159,33 @@ class _OrdersTabDriverState extends State<OrdersTabDriver>
               ),
             ),
           ),
-          //TODO:_addControllers() con figlio le mappe se non metti _addControllers da errori
-          Container(
+          OrdersPageDriver(
+            model:widget.model
+          ),
+
+          /*GroupsVoid(
+            children:widget.model.map<Widget, List<Widget>>((nameGroup, products) {
+                return MapEntry(
+                  Text(translateOrderCategory(nameGroup)),
+                  products
+                      .map((product) => InkWell(
+                    onTap: () {
+                      EasyRouter.push(context,OrdersPageDriver());
+                    },
+                      child:OrderView(
+                    model: product,
+                  )))
+                      .toList(),
+                );
+              }),
+          ),*/
+
+          /*Container(
             height: 200.0,
             decoration: new BoxDecoration(
               color: Colors.green,
             ),
-          ),
+          ),*/
           /*Expanded(
               child: PocketMapBuilder(
                 padding: const EdgeInsets.only(top: 16.0, right: 16.0, left: 16.0, bottom: 64.0),

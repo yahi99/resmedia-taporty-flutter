@@ -109,7 +109,6 @@ class _OrdersPageDriverState extends State<OrdersPageDriver> {
     isDeactivate = !isDeactivate;
   }
 
-  //TODO: currentOrder dovrebbe essere la lista di DriverOrderModel su widget.model
   initMap(BuildContext context) async {
     debugPrint("\n\n" + widget.model.values.toString() + "\n***");
     return;
@@ -148,49 +147,39 @@ class _OrdersPageDriverState extends State<OrdersPageDriver> {
 
   @override
   Widget build(BuildContext context) {
-    final orderBloc = OrdersBloc.of();
-    orderBloc.setDriverStream();
-    return CacheStreamBuilder<Map<StateCategory, List<DriverOrderModel>>>(
-        stream: orderBloc.outCategorizedOrders,
-        builder: (context, snap) {
-          if (!snap.hasData)
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          print(snap.hasData);
-          return Scaffold(
-            appBar: AppBar(
-              centerTitle: true,
-              title: const RubberConcierge(),
-            ),
-            body: CustomScrollView(
-              controller: RubberScrollController.of(context),
-              physics: NeverScrollableScrollPhysics(),
-              slivers: widget.model.keys.map<Widget>((nameGroup) {
-                final products = widget.model[nameGroup];
-                return SliverPadding(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 8.0, horizontal: SPACE),
-                  sliver: SliverOrderVoid(
-                    title: Text(translateOrderCategory(nameGroup)),
-                    childCount: products.length,
-                    builder: (_context, index) {
-                      return InkWell(
-                        onTap: () => EasyRouter.push(
-                            _context,
-                            DetailOrderPageDriver(
-                              model: products[index],
-                            )),
-                        child: OrderView(
-                          model: products[index],
-                        ),
-                      );
-                    },
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        title: const RubberConcierge(),
+      ),
+      body: CustomScrollView(
+        //controller: RubberScrollController.of(context),
+        physics: NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        slivers: widget.model.keys.map<Widget>((nameGroup) {
+          final products = widget.model[nameGroup];
+          return SliverPadding(
+            padding:
+                const EdgeInsets.symmetric(vertical: 8.0, horizontal: SPACE),
+            sliver: SliverOrderVoid(
+              title: Text(translateOrderCategory(nameGroup)),
+              childCount: products.length,
+              builder: (_context, index) {
+                return InkWell(
+                  onTap: () => EasyRouter.push(
+                      _context,
+                      DetailOrderPageDriver(
+                        model: products[index],
+                      )),
+                  child: OrderView(
+                    model: products[index],
                   ),
                 );
-              }).toList(),
+              },
             ),
           );
-        });
+        }).toList(),
+      ),
+    );
   }
 }

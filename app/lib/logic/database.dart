@@ -220,15 +220,17 @@ class Database extends FirebaseDatabase
     });
   }
 
-  Future<Stream<List<CalendarModel>>> getAvailableShifts(DateTime now) async {
+  /*Stream<List<CalendarModel>> getAvailableShifts(DateTime now) {
     //final temp=.replaceAll(' ', 'T');
+    final datas="${now.year}-${now.month < 10 ? "0" + now.month.toString() : now.month}-${now.day < 10 ? "0" + now.day.toString() : now.day}T00:00:00.000";
+    print(datas);
     final data = fs
         .collection(cl.DAYS)
     // Questa riga incasinata è la correzione di come si tentava di recuperare gli orari prima: tu facevi la ricerca di un documento che era il formato iso della stringa del momento.nn
     // Il nome del documento sul database è il formato iso della stringa del giorno alle 00:00.
     /// NON SAREBBE MEGLIO ORGANIZZARE IL TUTTO SOLO NOMINANDO IL DOCUMENTO PER IL GIORNO?
         .document(
-            "${now.year}-${now.month < 10 ? "0" + now.month.toString() : now.month}-${now.day < 10 ? "0" + now.day.toString() : now.day}T00:00.000")
+            "${now.year}-${now.month < 10 ? "0" + now.month.toString() : now.month}-${now.day < 10 ? "0" + now.day.toString() : now.day}T00:00:00.000")
         .collection(cl.TIMES)
         .where('isEmpty', isEqualTo: false)
         .snapshots();
@@ -240,6 +242,16 @@ class Database extends FirebaseDatabase
       return query.documents
           .map((snap) => CalendarModel.fromFirebase(snap))
           .toList();
+    });
+  }*/
+
+  Stream<List<CalendarModel>> getAvailableShifts(DateTime now) {
+    //final temp=.replaceAll(' ', 'T');
+    final datas=now.toIso8601String();
+    final data=fs.collection(cl.DAYS).document(now.toIso8601String()).collection(cl.TIMES).where('isEmpty',isEqualTo:false).snapshots();
+    print('lol');
+    return data.map((query) {
+      return query.documents.map((snap) => CalendarModel.fromFirebase(snap)).toList();
     });
   }
 

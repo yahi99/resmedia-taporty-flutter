@@ -14,7 +14,7 @@ class SubjectModel {
     @required this.title,
     @required this.address,
     @required this.time,
-    @required this.position,
+    this.position,
   });
 
   LatLng toLatLng() {

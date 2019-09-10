@@ -20,7 +20,8 @@ DriverOrderModel _$DriverOrderModelFromJson(Map json) {
       lngR: (json['lngR'] as num)?.toDouble(),
       state: _$enumDecodeNullable(_$StateCategoryEnumMap, json['state']),
       uid: json['uid'] as String,
-      restId: json['restId'] as String);
+      restId: json['restId'] as String)
+    ..nominative = json['nominative'] as String;
 }
 
 Map<String, dynamic> _$DriverOrderModelToJson(DriverOrderModel instance) {
@@ -44,6 +45,7 @@ Map<String, dynamic> _$DriverOrderModelToJson(DriverOrderModel instance) {
   writeNotNull('id', instance.id);
   writeNotNull('restId', instance.restId);
   writeNotNull('uid', instance.uid);
+  writeNotNull('nominative', instance.nominative);
   writeNotNull('state', _$StateCategoryEnumMap[instance.state]);
   return val;
 }

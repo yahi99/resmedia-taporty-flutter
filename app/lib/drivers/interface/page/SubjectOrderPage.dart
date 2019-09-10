@@ -110,7 +110,7 @@ class _SubjectOrderPageDriverState extends State<SubjectOrderPageDriver> {
         title: RubberConcierge(),
       ),
       body: ListViewSeparated(
-        controller: RubberScrollController.of(context),
+        //controller: RubberScrollController.of(context),
         physics: NeverScrollableScrollPhysics(),
         padding: const EdgeInsets.all(SPACE),
         separator: const SizedBox(
@@ -139,18 +139,17 @@ class _SubjectOrderPageDriverState extends State<SubjectOrderPageDriver> {
                             style: tt.subtitle,
                           ),
                           Text(
-                            widget.model.address,
+                            "${(widget.model.address.length>28)?widget.model.address.substring(0,28)+'\n'+widget.model.address.substring(28):widget.model.address}",
                             style: tt.subhead,
                           ),
                           Text(
-                            "${widget.model.time}",
+                            "${(widget.model.time.length>10)?widget.model.time.substring(0,10)+'\n'+widget.model.time.substring(10):widget.model.time}",
                             style: tt.subhead,
                           ),
                         ],
                       ),
                     ),
-                    Expanded(
-                      child: Padding(
+                    /*Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
                         child: RaisedButton(
                           color: cls.secondaryVariant,
@@ -160,8 +159,7 @@ class _SubjectOrderPageDriverState extends State<SubjectOrderPageDriver> {
                             style: tt.button,
                           ),
                         ),
-                      ),
-                    ),
+                      ),*/
                   ],
                 ),
               ),
@@ -176,11 +174,11 @@ class _SubjectOrderPageDriverState extends State<SubjectOrderPageDriver> {
                       style: tt.subtitle,
                     ),
                     Text(
-                      widget.model.address,
+                      "${(widget.model.address.length>30)?widget.model.address.substring(0,28)+'\n'+widget.model.address.substring(28):widget.model.address}",
                       style: tt.subhead,
                     ),
                     Text(
-                      "${widget.model.time}",
+                      widget.model.time,
                       style: tt.subhead,
                     ),
                   ],
@@ -217,7 +215,7 @@ class _SubjectOrderPageDriverState extends State<SubjectOrderPageDriver> {
                   Expanded(
                     child: RaisedButton(
                       onPressed: () {
-                        _askPermission(context, 'PICKED_UP');
+                        //_askPermission(context, 'PICKED_UP');
                       },
                       child: Text(
                         "Ritirato",
@@ -228,7 +226,13 @@ class _SubjectOrderPageDriverState extends State<SubjectOrderPageDriver> {
                 ],
               ),
             ),
-          )
+          ),
+          Container(
+            height: 200.0,
+            decoration: new BoxDecoration(
+              color: Colors.green,
+            ),
+          ),
         ],
       ),
     );

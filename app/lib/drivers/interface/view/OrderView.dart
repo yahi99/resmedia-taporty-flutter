@@ -77,9 +77,10 @@ class SubjectVoid extends StatelessWidget {
                 "${model.title}",
                 style: tt.subtitle,
               ),
-              Text(
-                "${model.address}",
+              Flexible(child:Text(
+                "${(model.address.length>30)?model.address.substring(0,28)+'\n'+model.address.substring(28):model.address}",
                 style: tt.body1,
+              ),
               ),
             ],
           ),

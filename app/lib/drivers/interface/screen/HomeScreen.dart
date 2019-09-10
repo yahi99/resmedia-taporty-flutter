@@ -4,6 +4,7 @@ import 'package:easy_route/easy_route.dart';
 import 'package:easy_widget/easy_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:resmedia_taporty_flutter/drivers/interface/page/OrdersPage.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/screen/AccountScreenDriver.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/tab/CalendarTab.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/tab/OrdersTab.dart';
@@ -117,7 +118,7 @@ class _HomeScreenDriverState extends State<HomeScreenDriver> {
                       return TabBarView(
                         physics: const NeverScrollableScrollPhysics(),
                         children: <Widget>[
-                          OrdersTabDriver(
+                          OrdersPageDriver(
                             model: snap2.data,
                           ),
                           TurnWorkTabDriver(

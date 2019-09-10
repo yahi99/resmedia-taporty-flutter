@@ -33,7 +33,6 @@ class _DetailOrderPageDriverState extends State<DetailOrderPageDriver> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    //TODO: va inizializzata la mappa
     //initMap(context);
   }
 
@@ -69,7 +68,7 @@ class _DetailOrderPageDriverState extends State<DetailOrderPageDriver> {
         title: const RubberConcierge(),
       ),
       body: ListView(
-        controller: RubberScrollController.of(context),
+        //controller: RubberScrollController.of(context),
         physics: NeverScrollableScrollPhysics(),
         children: <Widget>[
           Padding(

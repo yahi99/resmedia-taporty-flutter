@@ -5,12 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:resmedia_taporty_flutter/data/config.dart';
-import 'package:resmedia_taporty_flutter/drivers/interface/tab/OrdersTab.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/widget/GoogleMapsUI.dart';
 import 'package:resmedia_taporty_flutter/drivers/model/OrderModel.dart';
 import 'package:resmedia_taporty_flutter/drivers/model/SubjectModel.dart';
 import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
 import 'package:resmedia_taporty_flutter/logic/database.dart';
+import 'package:resmedia_taporty_flutter/utility/google_maps_widget.dart';
+import 'package:toast/toast.dart';
 
 class SubjectOrderPageDriver extends StatefulWidget implements WidgetRoute {
   static const ROUTE = "SubjectOrderPageDriver";
@@ -104,6 +105,7 @@ class _SubjectOrderPageDriverState extends State<SubjectOrderPageDriver> {
     final tt = theme.textTheme;
     final cls = theme.colorScheme;
 
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -139,11 +141,11 @@ class _SubjectOrderPageDriverState extends State<SubjectOrderPageDriver> {
                             style: tt.subtitle,
                           ),
                           Text(
-                            "${(widget.model.address.length>28)?widget.model.address.substring(0,28)+'\n'+widget.model.address.substring(28):widget.model.address}",
+                            "${(widget.model.address.length > 28) ? widget.model.address.substring(0, 28) + '\n' + widget.model.address.substring(28) : widget.model.address}",
                             style: tt.subhead,
                           ),
                           Text(
-                            "${(widget.model.time.length>10)?widget.model.time.substring(0,10)+'\n'+widget.model.time.substring(10):widget.model.time}",
+                            "${(widget.model.time.length > 10) ? widget.model.time.substring(0, 10) + '\n' + widget.model.time.substring(10) : widget.model.time}",
                             style: tt.subhead,
                           ),
                         ],
@@ -174,7 +176,7 @@ class _SubjectOrderPageDriverState extends State<SubjectOrderPageDriver> {
                       style: tt.subtitle,
                     ),
                     Text(
-                      "${(widget.model.address.length>30)?widget.model.address.substring(0,28)+'\n'+widget.model.address.substring(28):widget.model.address}",
+                      "${(widget.model.address.length > 30) ? widget.model.address.substring(0, 28) + '\n' + widget.model.address.substring(28) : widget.model.address}",
                       style: tt.subhead,
                     ),
                     Text(
@@ -195,13 +197,18 @@ class _SubjectOrderPageDriverState extends State<SubjectOrderPageDriver> {
                   Expanded(
                     child: RaisedButton(
                       color: cls.secondaryVariant,
-                      onPressed: () async{
+                      onPressed: () async {
                         //TODO: qui và modificata la mappa mettendo il percorso
-                        final userPos=widget.model.toLatLng();
-                        final restModel=(await Database().getPos(widget.orderModel.restId));
-                        final restPos=new LatLng(restModel.lat,restModel.lng);
-                        final driverPos=(await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.high));
-                        final driverLat=new LatLng(driverPos.longitude,driverPos.latitude);
+                        final restModel =
+                            (await Database().getPos(widget.orderModel.restId));
+                        final restPos = LatLng(restModel.lat, restModel.lng);
+                        final driverPos = (await Geolocator()
+                            .getCurrentPosition(
+                                desiredAccuracy: LocationAccuracy.high));
+                        final driverLat =
+                            LatLng(driverPos.latitude, driverPos.longitude);
+
+                        routeBloc.getRouteTo(driverLat, restPos, context);
                       },
                       child: Text(
                         "Start",
@@ -229,9 +236,7 @@ class _SubjectOrderPageDriverState extends State<SubjectOrderPageDriver> {
           ),
           Container(
             height: 200.0,
-            decoration: new BoxDecoration(
-              color: Colors.green,
-            ),
+            child: GoogleMapsWidget(),
           ),
         ],
       ),

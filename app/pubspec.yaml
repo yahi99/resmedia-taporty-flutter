@@ -48,6 +48,12 @@ dependencies:
   # Fornisce il supporto per il testo scalabile.
   auto_size_text: ^2.1.0
 
+  # Fornisce il supporto per le mappe di Google.
+  google_maps_flutter: ^0.5.21
+
+  # Fornisce il supporto per la geolocalizzazione.
+  location: ^2.3.5
+
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
@@ -57,8 +63,6 @@ dependencies:
   flutter_sticky_header: ^0.4.0
 
   google_maps_webservice: any
-
-  google_maps_flutter: any
 
   flutter_slidable: any
 

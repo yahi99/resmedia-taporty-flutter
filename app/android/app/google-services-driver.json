@@ -8,12 +8,20 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:84538476825:android:d2c6680d385bb73139dd88",
+        "mobilesdk_app_id": "1:84538476825:android:f9d610715905c0b7",
         "android_client_info": {
-          "package_name": "it.resmedia.taporty.client"
+          "package_name": "com.expample.rm_taporty"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "84538476825-7fp4n5qi8705a7mdctb2ak80dg96el8c.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.expample.rm_taporty",
+            "certificate_hash": "e300ffcccfcf09e647c45b4218741f86b8a3c6da"
+          }
+        },
         {
           "client_id": "84538476825-1r0ma4t1g54gr5j95vk1b3e356pursm1.apps.googleusercontent.com",
           "client_type": 3
@@ -44,9 +52,9 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:84538476825:android:012073fd486d488b39dd88",
+        "mobilesdk_app_id": "1:84538476825:android:d2c6680d385bb73139dd88",
         "android_client_info": {
-          "package_name": "it.resmedia.taporty.driver"
+          "package_name": "it.resmedia.taporty.client"
         }
       },
       "oauth_client": [

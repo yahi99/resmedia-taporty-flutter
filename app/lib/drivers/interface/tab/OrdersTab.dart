@@ -142,9 +142,6 @@ class _OrdersTabDriverState extends State<OrdersTabDriver>
     super.build(context);
     final tt = Theme.of(context).textTheme;
 
-
-    debugPrint("\n\n" + widget.model.values.toString() + "\n***");
-
     return RubberBottomSheet(
       animationController: _rubberController,
       scrollController: _scrollController,

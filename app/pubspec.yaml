@@ -103,6 +103,9 @@ dev_dependencies:
 
   json_serializable: ^2.0.0
   dash_generator: ^0.5.3
+
+  # Fornisce il supporto per le icone nel launcher.
+  flutter_launcher_icons: ^0.7.3
   
 
 # For information on the generic Dart part of this file, see the
@@ -133,3 +136,11 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
+flutter_icons:
+  #  image_path: "assets/images/icon-128x128.png"
+  image_path: "assets/ic_launcher.png"
+  image_path_ios: "assets/ic_launcher-ios.jpg"
+  #  image_path_ios: "assets/images/icon-710x599-ios.png"
+  ios: true
+  android: true # can specify file name here e.g. "ic_launcher"

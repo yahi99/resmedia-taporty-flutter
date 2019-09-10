@@ -109,7 +109,12 @@ class _SubjectOrderPageDriverState extends State<SubjectOrderPageDriver> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: RubberConcierge(),
+        automaticallyImplyLeading: true,
+        leading: IconButton(icon:Icon(Icons.arrow_back),
+          onPressed: (){
+            EasyRouter.pop(context);
+          },),
+        //title: const RubberConcierge(),
       ),
       body: ListViewSeparated(
         //controller: RubberScrollController.of(context),

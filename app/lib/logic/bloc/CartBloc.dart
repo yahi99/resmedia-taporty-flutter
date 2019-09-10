@@ -5,6 +5,7 @@ import 'package:dash/dash.dart';
 import 'package:easy_blocs/easy_blocs.dart';
 import 'package:easy_firebase/easy_firebase.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:geocoder/geocoder.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:resmedia_taporty_flutter/generated/provider.dart';
 import 'package:resmedia_taporty_flutter/interface/screen/RestaurantScreen.dart';
@@ -144,7 +145,7 @@ class CartBloc extends Bloc {
       String userAddress, String startTime, String endTime) async {
     final userBloc = UserBloc.of();
     final firebaseUser = await userBloc.outUser.first;
-    inDeleteCart(restaurantId).then((cart) {
+    inDeleteCart(restaurantId).then((cart) async {
       _db.createOrder(
           uid: firebaseUser.model.id,
           model: cart,
@@ -153,7 +154,8 @@ class CartBloc extends Bloc {
           addressR: userAddress,
           startTime: startTime,
           nominative: firebaseUser.model.nominative,
-          endTime: endTime);
+          endTime: endTime,
+          restAdd: (await Geocoder.local.findAddressesFromCoordinates((await Database().getPosition(restaurantId)))).first.addressLine);
       RestaurantScreen.isOrdered = true;
     });
 

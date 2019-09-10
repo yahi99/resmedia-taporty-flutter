@@ -10,7 +10,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/cupertino.dart' as prefix0;
+import 'package:geocoder/model.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:resmedia_taporty_flutter/data/collections.dart' as cl;
 import 'package:resmedia_taporty_flutter/drivers/model/CalendarModel.dart';
 import 'package:resmedia_taporty_flutter/drivers/model/OrderModel.dart';
@@ -79,6 +81,10 @@ class Database extends FirebaseDatabase
         .document(startTime)
         .get());
   }
+  Future<Coordinates> getPosition(String restId)async{
+    final model=RestaurantModel.fromFirebase(await fs.collection(cl.RESTAURANTS).document(restId).get());
+    return Coordinates(model.lat,model.lng);
+  }
 
   Future<void> createRequestProduct(String id, String img, String category,
       String price, String quantity, String restaurantId, String cat) async {
@@ -100,7 +106,8 @@ class Database extends FirebaseDatabase
       @required String addressR,
       @required String startTime,
       @required String nominative,
-      @required String endTime}) async {
+      @required String endTime,
+      @required String restAdd}) async {
     final id = (await fs
             .collection(cl.RESTAURANTS)
             .document(model.products.first.restaurantId)
@@ -135,6 +142,8 @@ class Database extends FirebaseDatabase
         .setData(model.toJson()
           ..['titleS'] = model.products.first.restaurantId
           ..['timeR'] = new DateTime.now().toString()
+          ..['nominative']=nominative
+          ..['addressS']=restAdd
           ..['state'] = 'PENDING'
           ..['titleS'] = uid
           ..['addressR'] = addressR

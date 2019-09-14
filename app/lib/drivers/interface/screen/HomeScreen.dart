@@ -7,7 +7,6 @@ import 'package:flutter/widgets.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/page/OrdersPage.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/screen/AccountScreenDriver.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/tab/CalendarTab.dart';
-import 'package:resmedia_taporty_flutter/drivers/interface/tab/OrdersTab.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/tab/TurnWorkTab.dart';
 import 'package:resmedia_taporty_flutter/drivers/logic/bloc/CalendarBloc.dart';
 import 'package:resmedia_taporty_flutter/drivers/logic/bloc/DriverBloc.dart';
@@ -32,8 +31,7 @@ class HomeScreenDriver extends StatefulWidget implements WidgetRoute {
 class _HomeScreenDriverState extends State<HomeScreenDriver> {
   final DriverBloc _driverBloc = DriverBloc.of();
   DateTime date = DateTime.now();
-  final StreamController<DateTime> dateStream =
-      StreamController<DateTime>();
+  final StreamController<DateTime> dateStream = StreamController<DateTime>();
   final CalendarBloc _calendarBloc = CalendarBloc.of();
   var user;
 

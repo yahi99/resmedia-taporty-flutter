@@ -4,23 +4,16 @@ import 'package:easy_route/easy_route.dart';
 import 'package:easy_widget/easy_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:intl/intl.dart';
+import 'package:pocket_map/pocket_map.dart';
 import 'package:resmedia_taporty_flutter/data/config.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/page/OrdersPage.dart';
-import 'package:resmedia_taporty_flutter/drivers/interface/view/OrderView.dart';
-import 'package:resmedia_taporty_flutter/drivers/interface/widget/GoogleMapsUI.dart';
 import 'package:resmedia_taporty_flutter/drivers/logic/bloc/DriverBloc.dart';
-import 'package:resmedia_taporty_flutter/drivers/model/SubjectModel.dart';
 import 'package:resmedia_taporty_flutter/drivers/model/OrderModel.dart';
-import 'package:resmedia_taporty_flutter/drivers/model/TurnModel.dart';
-import 'package:resmedia_taporty_flutter/interface/page/MenuPages.dart';
+import 'package:resmedia_taporty_flutter/drivers/model/SubjectModel.dart';
 import 'package:resmedia_taporty_flutter/model/OrderModel.dart';
-import 'package:pocket_map/pocket_map.dart';
 import 'package:rubber/rubber.dart';
 
 final house = LatLngModel(lat: 45.386485, lng: 11.895141);
-
 
 /*List<DriverOrderModel> currentOrder = [
   DriverOrderModel(
@@ -159,9 +152,7 @@ class _OrdersTabDriverState extends State<OrdersTabDriver>
               ),
             ),
           ),
-          OrdersPageDriver(
-            model:widget.model
-          ),
+          OrdersPageDriver(model: widget.model),
 
           /*GroupsVoid(
             children:widget.model.map<Widget, List<Widget>>((nameGroup, products) {

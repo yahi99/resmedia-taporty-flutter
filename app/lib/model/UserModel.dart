@@ -3,7 +3,6 @@ import 'package:easy_firebase/easy_firebase.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:resmedia_taporty_flutter/drivers/model/SubjectModel.dart';
 
 part 'UserModel.g.dart';
 

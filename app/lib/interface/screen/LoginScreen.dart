@@ -258,8 +258,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return FutureBuilder(
       future: getUser(),
-      builder:
-          (BuildContext context, AsyncSnapshot<dynamic> userSnapshot) {
+      builder: (BuildContext context, AsyncSnapshot<dynamic> userSnapshot) {
         if (userSnapshot.hasData) {
           if (userSnapshot.data is bool)
             return Material(

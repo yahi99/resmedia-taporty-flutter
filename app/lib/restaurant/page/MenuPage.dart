@@ -132,8 +132,7 @@ class _MenuPageState extends State<MenuPage> {
                           _imgTextController.value =
                               TextEditingValue(text: img.data);
                         else
-                          _imgTextController.value =
-                              TextEditingValue(text: '');
+                          _imgTextController.value = TextEditingValue(text: '');
                         return Padding(
                           child: TextField(
                             controller: _imgTextController,

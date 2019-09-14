@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
 import 'package:resmedia_taporty_flutter/model/ProductModel.dart';
-import 'package:vibration/vibration.dart';
 
 class ProductViewCart extends StatelessWidget {
   final CartController cartController;
@@ -151,7 +150,6 @@ class CartButton extends StatelessWidget {
                   icon: Icon(Icons.add),
                   color: Colors.white,
                   onPressed: () {
-
                     //cart.inIncrementDrink(model);
                     List<ProductCart> temp = List<ProductCart>();
                     temp.add(ProductCart(

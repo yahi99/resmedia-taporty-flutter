@@ -3,6 +3,7 @@ import 'package:easy_firebase/easy_firebase.dart';
 import 'package:flutter/widgets.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
+
 part 'TypesRestaurantModel.g.dart';
 
 const String IMG_PATH = 'img_path', TITLE = 'title';

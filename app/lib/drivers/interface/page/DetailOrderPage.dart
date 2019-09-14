@@ -1,10 +1,8 @@
 import 'package:easy_route/easy_route.dart';
-import 'package:easy_widget/easy_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:resmedia_taporty_flutter/data/config.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/page/SubjectOrderPage.dart';
-import 'package:resmedia_taporty_flutter/drivers/interface/tab/OrdersTab.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/view/OrderView.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/widget/Order.dart';
 import 'package:resmedia_taporty_flutter/drivers/model/OrderModel.dart';
@@ -44,17 +42,21 @@ class _DetailOrderPageDriverState extends State<DetailOrderPageDriver> {
   initMap(BuildContext context) async {
     if (isDeactivate) return;
     await PrimaryGoogleMapsController.of(context).future
-    ..setMarkers(widget.model.subjects.map((subject) {
-      return Marker(
-        markerId: MarkerId(subject.title),
-        position: subject.toLatLng(),
-        infoWindow: InfoWindow(
-          title: subject.title,
-          onTap: () => EasyRouter.push(context, SubjectOrderPageDriver(model: subject,)),
-        ),
-      );
-    }).toSet())
-    ..animateToCenter(widget.model.positions);
+      ..setMarkers(widget.model.subjects.map((subject) {
+        return Marker(
+          markerId: MarkerId(subject.title),
+          position: subject.toLatLng(),
+          infoWindow: InfoWindow(
+            title: subject.title,
+            onTap: () => EasyRouter.push(
+                context,
+                SubjectOrderPageDriver(
+                  model: subject,
+                )),
+          ),
+        );
+      }).toSet())
+      ..animateToCenter(widget.model.positions);
   }
 
   @override
@@ -66,10 +68,12 @@ class _DetailOrderPageDriverState extends State<DetailOrderPageDriver> {
       appBar: AppBar(
         centerTitle: true,
         automaticallyImplyLeading: true,
-        leading: IconButton(icon:Icon(Icons.arrow_back),
-        onPressed: (){
-          EasyRouter.pop(context);
-        },),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            EasyRouter.pop(context);
+          },
+        ),
         //title: const RubberConcierge(),
       ),
       body: ListView(

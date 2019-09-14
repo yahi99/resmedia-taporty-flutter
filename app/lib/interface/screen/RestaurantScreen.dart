@@ -1,3 +1,4 @@
+import 'package:easy_route/easy_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoder/geocoder.dart';
@@ -7,12 +8,9 @@ import 'package:resmedia_taporty_flutter/drivers/interface/screen/AccountScreen.
 import 'package:resmedia_taporty_flutter/interface/page/InfoRestaurantPage.dart';
 import 'package:resmedia_taporty_flutter/interface/page/MenuPages.dart';
 import 'package:resmedia_taporty_flutter/interface/screen/CheckoutScreen.dart';
-import 'package:resmedia_taporty_flutter/logic/bloc/CartBloc.dart';
+import 'package:resmedia_taporty_flutter/logic/bloc/RestaurantBloc.dart';
 import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
 import 'package:resmedia_taporty_flutter/model/RestaurantModel.dart';
-import 'package:easy_route/easy_route.dart';
-import 'package:resmedia_taporty_flutter/logic/bloc/RestaurantBloc.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class RestaurantScreen extends StatefulWidget implements WidgetRoute {
   static const ROUTE = 'RestaurantScreen';

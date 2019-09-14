@@ -1,14 +1,6 @@
-import 'package:easy_blocs/easy_blocs.dart';
-import 'package:easy_firebase/easy_firebase.dart';
 import 'package:easy_route/easy_route.dart';
-import 'package:easy_widget/easy_widget.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:resmedia_taporty_flutter/data/config.dart';
-import 'package:resmedia_taporty_flutter/interface/view/logo_view.dart';
-import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
-import 'package:resmedia_taporty_flutter/model/UserModel.dart';
-import 'package:rxdart/rxdart.dart';
 
 class LegalNotesScreen extends StatefulWidget implements WidgetRoute {
   static const ROUTE = 'LegalNotesScreen';

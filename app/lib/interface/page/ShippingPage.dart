@@ -53,8 +53,7 @@ class _ShippingState extends State<ShippingPage>
     final TextEditingController _nameController = TextEditingController();
     final TextEditingController _dateController = TextEditingController();
     final TextEditingController _emailController = TextEditingController();
-    final TextEditingController _addressController =
-        TextEditingController();
+    final TextEditingController _addressController = TextEditingController();
     final TextEditingController _phoneController = TextEditingController();
     final TextEditingController _capController = TextEditingController();
     //final name = user.nominative.split(' ');
@@ -64,8 +63,7 @@ class _ShippingState extends State<ShippingPage>
     _addressController.value = TextEditingValue(text: '');
     _phoneController.value =
         TextEditingValue(text: widget.user.phoneNumber.toString());
-    _capController.value =
-        TextEditingValue(text: widget.address.postalCode);
+    _capController.value = TextEditingValue(text: widget.address.postalCode);
     DateTime date;
     String time, endTime;
     final _formKey = GlobalKey<FormState>();

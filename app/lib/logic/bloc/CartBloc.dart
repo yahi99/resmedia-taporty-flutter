@@ -155,7 +155,10 @@ class CartBloc extends Bloc {
           startTime: startTime,
           nominative: firebaseUser.model.nominative,
           endTime: endTime,
-          restAdd: (await Geocoder.local.findAddressesFromCoordinates((await Database().getPosition(restaurantId)))).first.addressLine);
+          restAdd: (await Geocoder.local.findAddressesFromCoordinates(
+                  (await Database().getPosition(restaurantId))))
+              .first
+              .addressLine);
       RestaurantScreen.isOrdered = true;
     });
 

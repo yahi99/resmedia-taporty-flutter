@@ -11,7 +11,6 @@ import 'package:resmedia_taporty_flutter/drivers/model/SubjectModel.dart';
 import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
 import 'package:resmedia_taporty_flutter/logic/database.dart';
 import 'package:resmedia_taporty_flutter/utility/google_maps_widget.dart';
-import 'package:toast/toast.dart';
 
 class SubjectOrderPageDriver extends StatefulWidget implements WidgetRoute {
   static const ROUTE = "SubjectOrderPageDriver";
@@ -105,15 +104,16 @@ class _SubjectOrderPageDriverState extends State<SubjectOrderPageDriver> {
     final tt = theme.textTheme;
     final cls = theme.colorScheme;
 
-
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         automaticallyImplyLeading: true,
-        leading: IconButton(icon:Icon(Icons.arrow_back),
-          onPressed: (){
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
             EasyRouter.pop(context);
-          },),
+          },
+        ),
         //title: const RubberConcierge(),
       ),
       body: ListViewSeparated(

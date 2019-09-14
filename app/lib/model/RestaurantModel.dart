@@ -3,6 +3,7 @@ import 'package:easy_firebase/easy_firebase.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
+
 part 'RestaurantModel.g.dart';
 
 const RULES = 'rules';

@@ -9,10 +9,8 @@ import 'package:easy_stripe/easy_stripe.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/cupertino.dart' as prefix0;
 import 'package:geocoder/model.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:resmedia_taporty_flutter/data/collections.dart' as cl;
 import 'package:resmedia_taporty_flutter/drivers/model/CalendarModel.dart';
 import 'package:resmedia_taporty_flutter/drivers/model/OrderModel.dart';
@@ -81,9 +79,11 @@ class Database extends FirebaseDatabase
         .document(startTime)
         .get());
   }
-  Future<Coordinates> getPosition(String restId)async{
-    final model=RestaurantModel.fromFirebase(await fs.collection(cl.RESTAURANTS).document(restId).get());
-    return Coordinates(model.lat,model.lng);
+
+  Future<Coordinates> getPosition(String restId) async {
+    final model = RestaurantModel.fromFirebase(
+        await fs.collection(cl.RESTAURANTS).document(restId).get());
+    return Coordinates(model.lat, model.lng);
   }
 
   Future<void> createRequestProduct(String id, String img, String category,
@@ -142,8 +142,8 @@ class Database extends FirebaseDatabase
         .setData(model.toJson()
           ..['titleS'] = model.products.first.restaurantId
           ..['timeR'] = DateTime.now().toString()
-          ..['nominative']=nominative
-          ..['addressS']=restAdd
+          ..['nominative'] = nominative
+          ..['addressS'] = restAdd
           ..['state'] = 'PENDING'
           ..['titleS'] = uid
           ..['addressR'] = addressR
@@ -256,11 +256,18 @@ class Database extends FirebaseDatabase
 
   Stream<List<CalendarModel>> getAvailableShifts(DateTime now) {
     //final temp=.replaceAll(' ', 'T');
-    final datas=now.toIso8601String();
-    final data=fs.collection(cl.DAYS).document(now.toIso8601String()).collection(cl.TIMES).where('isEmpty',isEqualTo:false).snapshots();
+    final datas = now.toIso8601String();
+    final data = fs
+        .collection(cl.DAYS)
+        .document(now.toIso8601String())
+        .collection(cl.TIMES)
+        .where('isEmpty', isEqualTo: false)
+        .snapshots();
     print('lol');
     return data.map((query) {
-      return query.documents.map((snap) => CalendarModel.fromFirebase(snap)).toList();
+      return query.documents
+          .map((snap) => CalendarModel.fromFirebase(snap))
+          .toList();
     });
   }
 

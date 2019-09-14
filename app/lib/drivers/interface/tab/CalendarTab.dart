@@ -71,8 +71,8 @@ class _CalendarState extends State<CalendarTabDriver>
               children: <Widget>[
                 MonthPicker(
                   selectedDate: widget.date,
-                  firstDate: DateTime(DateTime.now().year,
-                      DateTime.now().month, DateTime.now().day - 1),
+                  firstDate: DateTime(DateTime.now().year, DateTime.now().month,
+                      DateTime.now().day - 1),
                   lastDate: DateTime(2020),
                   //displayedMonth: DateTime.now(),
                   //currentDate: DateTime.now(),

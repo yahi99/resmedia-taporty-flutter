@@ -25,8 +25,7 @@ class SupplierView extends StatelessWidget {
               children: <Widget>[
                 Text(
                   'Fornitore',
-                  style:
-                      TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
                 ),
                 Text(supplier.title),
                 Text(supplier.address)

@@ -72,8 +72,7 @@ class AccountScreenDriver extends StatelessWidget implements WidgetRoute {
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         image: DecorationImage(
-                          image:
-                              AssetImage('assets/img/home/fotoprofilo.jpg'),
+                          image: AssetImage('assets/img/home/fotoprofilo.jpg'),
                         ),
                       ),
                     ),

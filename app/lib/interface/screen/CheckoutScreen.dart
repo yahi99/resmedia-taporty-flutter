@@ -120,7 +120,8 @@ class _CheckoutScreenState extends State<CheckoutScreen>
                   address: widget.description,
                   controller: controller,
                 ),
-                PaymentPage(controller,
+                PaymentPage(
+                  controller,
                 ),
                 ConfirmPage(
                   model: widget.model,

@@ -45,6 +45,7 @@ class _TaportyState extends State<Taporty> {
     );
 
     return MaterialApp(
+      title: "Taporty",
       theme: ThemeData(
         colorScheme: cls,
         primaryColor: cls.primary,

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
 import 'package:resmedia_taporty_flutter/model/ProductModel.dart';
+import 'package:vibration/vibration.dart';
 
 class ProductView extends StatelessWidget {
   final ProductModel model;
@@ -120,13 +121,19 @@ class CartStepperButton extends StatelessWidget {
               direction: Axis.vertical,
               child: Text(
                   '${cart.getProduct(model.id, model.restaurantId, snap.data.uid)?.countProducts ?? 0}'),
-              onDecrease: () => cartController.inDecrease(
-                  model.id, model.restaurantId, snap.data.uid),
-              onIncrement: () => cartController.inIncrement(
-                  model.id,
-                  model.restaurantId,
-                  snap.data.uid,
-                  double.parse(model.price.replaceAll(',', '.'))),
+              onDecrease: () {
+                Vibration.vibrate(duration: 65);
+                cartController.inDecrease(
+                    model.id, model.restaurantId, snap.data.uid);
+              },
+              onIncrement: () {
+                Vibration.vibrate(duration: 65);
+                cartController.inIncrement(
+                    model.id,
+                    model.restaurantId,
+                    snap.data.uid,
+                    double.parse(model.price.replaceAll(',', '.')));
+              },
             );
           },
         );

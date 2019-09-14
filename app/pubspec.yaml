@@ -60,6 +60,9 @@ dependencies:
   # Fornisce il supporto per le immagini salvate nella cache.
   cached_network_image: ^1.1.1
 
+  # Fornisce il supporto per l'utilizzo della vibrazione.
+  vibration: ^1.2.1
+
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2

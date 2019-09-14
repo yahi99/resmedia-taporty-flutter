@@ -4,6 +4,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:easy_blocs/easy_blocs.dart';
 import 'package:easy_firebase/easy_firebase.dart';
 import 'package:easy_route/easy_route.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -159,16 +160,19 @@ class _LoginScreenState extends State<LoginScreen> {
             PermissionStatus.granted)
           _showPositionDialog(context, true);
         else
-          Geolocator().getCurrentPosition().then((position) async {
-            print(position.toString());
-            await EasyRouter.pushAndRemoveAll(
-              context,
-              RestaurantListScreen(
-                  isAnonymous: isAnon,
-                  position: position,
-                  user: (await _userBloc.outUser.first).model),
-            );
-          }).catchError(
+          Geolocator()
+              .getCurrentPosition()
+              .then(
+                (position) async => await EasyRouter.pushAndRemoveAll(
+                  context,
+                  RestaurantListScreen(
+                    isAnonymous: isAnon,
+                    position: position,
+                    user: (await _userBloc.outUser.first).model,
+                  ),
+                ),
+              )
+              .catchError(
             (error) {
               if (error is PlatformException) {
                 print(error.code);
@@ -185,16 +189,19 @@ class _LoginScreenState extends State<LoginScreen> {
               PermissionStatus.granted)
             _showPositionDialog(context, false);
           else
-            Geolocator().getCurrentPosition().then((position) async {
-              print(position.toString());
-              await EasyRouter.pushAndRemoveAll(
-                context,
-                RestaurantListScreen(
-                    isAnonymous: isAnon,
-                    position: position,
-                    user: (await _userBloc.outUser.first).model),
-              );
-            }).catchError(
+            Geolocator()
+                .getCurrentPosition()
+                .then(
+                  (position) async => await EasyRouter.pushAndRemoveAll(
+                    context,
+                    RestaurantListScreen(
+                      isAnonymous: isAnon,
+                      position: position,
+                      user: (await _userBloc.outUser.first).model,
+                    ),
+                  ),
+                )
+                .catchError(
               (error) {
                 if (error is PlatformException) {
                   print(error.code);
@@ -240,80 +247,116 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: Form(
-        key: _submitBloc.formKey,
-        child: LogoView(
-          top: FittedBox(
-            fit: BoxFit.contain,
-            child: Icon(
-              Icons.lock_outline,
-              color: Colors.white,
-            ),
-          ),
-          children: [
-            EmailField(
-              checker: _submitBloc.emailChecker,
-            ),
-            SizedBox(
-              height: SPACE,
-            ),
-            PasswordField(
-              checker: _submitBloc.passwordChecker,
-            ),
-            Row(
-              children: <Widget>[
-                Expanded(
-                  child: RaisedButton(
-                    onPressed: () {
-                      EasyRouter.push(context, SignUpScreen());
-                    },
-                    child: FittedText('Sign up'),
+    return FutureBuilder(
+      future: FirebaseAuth.instance.currentUser(),
+      builder:
+          (BuildContext context, AsyncSnapshot<FirebaseUser> userSnapshot) {
+        if (userSnapshot.hasData) {
+          if (userSnapshot.data == null)
+            return Material(
+              child: Form(
+                key: _submitBloc.formKey,
+                child: LogoView(
+                  top: FittedBox(
+                    fit: BoxFit.contain,
+                    child: Icon(
+                      Icons.lock_outline,
+                      color: Colors.white,
+                    ),
                   ),
-                ),
-                SizedBox(
-                  width: SPACE,
-                ),
-                Expanded(
-                  child: SubmitButton.raised(
-                    controller: _submitBloc.submitController,
-                    child: FittedText('Login'),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(
-              height: SPACE * 3,
-            ),
-            RaisedButton.icon(
-              onPressed: () {
-                Toast.show('Disponibile in futuro', context,
-                    duration: 3, gravity: Toast.BOTTOM);
-              },
-              icon: Icon(FontAwesomeIcons.facebookF),
-              label: Text('Login with Facebook'),
-            ),
-            RaisedButton(
-              color: Colors.white,
-              child: Container(
-                width: double.infinity,
-                child: Center(
-                  child: AutoSizeText(
-                    "Continua senza registrazione",
-                    maxLines: 1,
-                    minFontSize: 6.0,
-                  ),
+                  children: [
+                    EmailField(
+                      checker: _submitBloc.emailChecker,
+                    ),
+                    SizedBox(
+                      height: SPACE,
+                    ),
+                    PasswordField(
+                      checker: _submitBloc.passwordChecker,
+                    ),
+                    Row(
+                      children: <Widget>[
+                        Expanded(
+                          child: RaisedButton(
+                            onPressed: () {
+                              EasyRouter.push(context, SignUpScreen());
+                            },
+                            child: FittedText('Sign up'),
+                          ),
+                        ),
+                        SizedBox(
+                          width: SPACE,
+                        ),
+                        Expanded(
+                          child: SubmitButton.raised(
+                            controller: _submitBloc.submitController,
+                            child: FittedText('Login'),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: SPACE * 3,
+                    ),
+                    RaisedButton.icon(
+                      onPressed: () {
+                        Toast.show('Disponibile in futuro', context,
+                            duration: 3, gravity: Toast.BOTTOM);
+                      },
+                      icon: Icon(FontAwesomeIcons.facebookF),
+                      label: Text('Login with Facebook'),
+                    ),
+                    RaisedButton(
+                      color: Colors.white,
+                      child: Container(
+                        width: double.infinity,
+                        child: Center(
+                          child: AutoSizeText(
+                            "Continua senza registrazione",
+                            maxLines: 1,
+                            minFontSize: 6.0,
+                          ),
+                        ),
+                      ),
+                      onPressed: () {
+                        Toast.show("Disponibile in futuro", context,
+                            duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+                        //_userBloc.inSignInAnonymously();
+                      },
+                    ),
+                  ],
                 ),
               ),
-              onPressed: () {
-                Toast.show("Disponibile in futuro", context,
-                    duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
-                //_userBloc.inSignInAnonymously();
-              },
-            ),
-          ],
-        ),
-      ),
+            );
+
+          Geolocator()
+              .getCurrentPosition()
+              .then(
+                (position) async => await EasyRouter.pushAndRemoveAll(
+                  context,
+                  RestaurantListScreen(
+                    isAnonymous: userSnapshot.data.isAnonymous,
+                    position: position,
+                    user: (await _userBloc.outUser.first).model,
+                  ),
+                ),
+              )
+              .catchError(
+            (error) {
+              if (error is PlatformException) {
+                print(error.code);
+              }
+            },
+          );
+        }
+        return Container(
+          child: Center(
+            child: CircularProgressIndicator(),
+          ),
+          width: double.infinity,
+          height: double.infinity,
+        );
+      },
     );
   }
 }

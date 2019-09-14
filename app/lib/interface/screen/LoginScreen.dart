@@ -245,14 +245,23 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
+  getUser() async {
+    FirebaseUser currentUser = await FirebaseAuth.instance.currentUser();
+
+    if (currentUser == null)
+      return true;
+    else
+      return currentUser;
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: FirebaseAuth.instance.currentUser(),
+      future: getUser(),
       builder:
-          (BuildContext context, AsyncSnapshot<FirebaseUser> userSnapshot) {
+          (BuildContext context, AsyncSnapshot<dynamic> userSnapshot) {
         if (userSnapshot.hasData) {
-          if (userSnapshot.data == null)
+          if (userSnapshot.data is bool)
             return Material(
               child: Form(
                 key: _submitBloc.formKey,
@@ -349,6 +358,7 @@ class _LoginScreenState extends State<LoginScreen> {
             },
           );
         }
+
         return Container(
           child: Center(
             child: CircularProgressIndicator(),

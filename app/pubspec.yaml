@@ -54,6 +54,12 @@ dependencies:
   # Fornisce il supporto per la geolocalizzazione.
   location: ^2.3.5
 
+  # Ci consente di controllare la disponibilità dei permessi.
+  permission_handler: ^3.2.2
+
+  # Fornisce il supporto per le immagini salvate nella cache.
+  cached_network_image: ^1.1.1
+
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2

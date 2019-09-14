@@ -10,6 +10,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:resmedia_taporty_flutter/data/config.dart';
 import 'package:resmedia_taporty_flutter/interface/screen/GeolocalizationScreen.dart';
 import 'package:resmedia_taporty_flutter/interface/screen/RestaurantListScreen.dart';
@@ -101,7 +102,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             GeoLocScreen(isAnonymous: isAnon),
                           );
                         },
-                        textColor: Colors.black,
+                        textColor: Colors.white,
                         color: Colors.red,
                         child: Text(
                           "Nega",
@@ -129,7 +130,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           );
                         },
                         color: Colors.green,
-                        textColor: Colors.black,
+                        textColor: Colors.white,
                         child: Text(
                           "Consenti",
                         ),
@@ -152,14 +153,54 @@ class _LoginScreenState extends State<LoginScreen> {
       if (!res) return;
       bool isAnonymous = (await _userBloc.outFirebaseUser.first).isAnonymous;
       bool isAnon = (isAnonymous != null) ? isAnonymous : false;
-      if (isAnon)
-        _showPositionDialog(context, true);
-      else {
+      if (isAnon) {
+        if ((await PermissionHandler()
+                .checkPermissionStatus(PermissionGroup.location)) !=
+            PermissionStatus.granted)
+          _showPositionDialog(context, true);
+        else
+          Geolocator().getCurrentPosition().then((position) async {
+            print(position.toString());
+            await EasyRouter.pushAndRemoveAll(
+              context,
+              RestaurantListScreen(
+                  isAnonymous: isAnon,
+                  position: position,
+                  user: (await _userBloc.outUser.first).model),
+            );
+          }).catchError(
+            (error) {
+              if (error is PlatformException) {
+                print(error.code);
+              }
+            },
+          );
+      } else {
         final registrationLevel = await _userBloc.getRegistrationLevel();
         if (registrationLevel == RegistrationLevel.LV2)
           await EasyRouter.push(context, SignUpMoreScreen());
         if (registrationLevel == RegistrationLevel.COMPLETE) {
-          _showPositionDialog(context, false);
+          if ((await PermissionHandler()
+                  .checkPermissionStatus(PermissionGroup.location)) !=
+              PermissionStatus.granted)
+            _showPositionDialog(context, false);
+          else
+            Geolocator().getCurrentPosition().then((position) async {
+              print(position.toString());
+              await EasyRouter.pushAndRemoveAll(
+                context,
+                RestaurantListScreen(
+                    isAnonymous: isAnon,
+                    position: position,
+                    user: (await _userBloc.outUser.first).model),
+              );
+            }).catchError(
+              (error) {
+                if (error is PlatformException) {
+                  print(error.code);
+                }
+              },
+            );
         }
       }
     };

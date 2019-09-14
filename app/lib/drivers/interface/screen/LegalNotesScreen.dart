@@ -34,19 +34,19 @@ class _LegalNotesState extends State<LegalNotesScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.only(top: SPACE * 2),
-        child: new ListView(
+        child: ListView(
           shrinkWrap: true,
           children: <Widget>[
-            new Column(
+            Column(
               children: <Widget>[
-                new Row(
+                Row(
                   //mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
-                    new Expanded(
-                      child: new Text('Termini e condizioni'),
+                    Expanded(
+                      child: Text('Termini e condizioni'),
                     ),
-                    new IconButton(
-                        icon: new Icon((!conditions)
+                    IconButton(
+                        icon: Icon((!conditions)
                             ? Icons.keyboard_arrow_down
                             : Icons.keyboard_arrow_up),
                         onPressed: () {
@@ -57,25 +57,25 @@ class _LegalNotesState extends State<LegalNotesScreen> {
                         }),
                   ],
                 ),
-                new AnimatedContainer(
+                AnimatedContainer(
                   alignment: Alignment.topLeft,
                   curve: Curves.easeInOut,
                   duration: const Duration(milliseconds: 500),
-                  child: new Text('Termini e condizioni'),
+                  child: Text('Termini e condizioni'),
                   height: (!conditions) ? 0.0 : 20.0,
                 ),
               ],
             ),
-            new Column(
+            Column(
               children: <Widget>[
-                new Row(
+                Row(
                   //mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
-                    new Expanded(
-                      child: new Text('Privacy Policy'),
+                    Expanded(
+                      child: Text('Privacy Policy'),
                     ),
-                    new IconButton(
-                        icon: new Icon((!privacy)
+                    IconButton(
+                        icon: Icon((!privacy)
                             ? Icons.keyboard_arrow_down
                             : Icons.keyboard_arrow_up),
                         onPressed: () {
@@ -86,25 +86,25 @@ class _LegalNotesState extends State<LegalNotesScreen> {
                         }),
                   ],
                 ),
-                new AnimatedContainer(
+                AnimatedContainer(
                   alignment: Alignment.topLeft,
                   curve: Curves.easeInOut,
                   duration: const Duration(milliseconds: 500),
-                  child: new Text('Privacy Policy'),
+                  child: Text('Privacy Policy'),
                   height: (!privacy) ? 0.0 : 20.0,
                 ),
               ],
             ),
-            new Column(
+            Column(
               children: <Widget>[
-                new Row(
+                Row(
                   //mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
-                    new Expanded(
-                      child: new Text('Cookies Policy'),
+                    Expanded(
+                      child: Text('Cookies Policy'),
                     ),
-                    new IconButton(
-                        icon: new Icon((!cookie)
+                    IconButton(
+                        icon: Icon((!cookie)
                             ? Icons.keyboard_arrow_down
                             : Icons.keyboard_arrow_up),
                         onPressed: () {
@@ -115,11 +115,11 @@ class _LegalNotesState extends State<LegalNotesScreen> {
                         }),
                   ],
                 ),
-                new AnimatedContainer(
+                AnimatedContainer(
                   alignment: Alignment.topLeft,
                   curve: Curves.easeInOut,
                   duration: const Duration(milliseconds: 500),
-                  child: new Text('Cookies Policy'),
+                  child: Text('Cookies Policy'),
                   height: (!cookie) ? 0.0 : 20.0,
                 ),
               ],

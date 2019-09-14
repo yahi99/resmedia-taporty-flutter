@@ -67,19 +67,19 @@ class _CalendarState extends State<CalendarTabDriver>
         builder: (ctx, snap4) {
           if (!snap4.hasData) return Center(child: CircularProgressIndicator());
           return Container(
-            child: new Column(
+            child: Column(
               children: <Widget>[
-                new MonthPicker(
+                MonthPicker(
                   selectedDate: widget.date,
-                  firstDate: new DateTime(DateTime.now().year,
+                  firstDate: DateTime(DateTime.now().year,
                       DateTime.now().month, DateTime.now().day - 1),
-                  lastDate: new DateTime(2020),
-                  //displayedMonth: new DateTime.now(),
-                  //currentDate: new DateTime.now(),
+                  lastDate: DateTime(2020),
+                  //displayedMonth: DateTime.now(),
+                  //currentDate: DateTime.now(),
                   onChanged: change,
                 ),
                 (snap4.data.isNotEmpty)
-                    ? new ListView.builder(
+                    ? ListView.builder(
                         shrinkWrap: true,
                         itemCount: snap4.data.length,
                         itemBuilder: (ctx, index) {
@@ -90,7 +90,7 @@ class _CalendarState extends State<CalendarTabDriver>
                               mainAxisSize: MainAxisSize.min,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
-                                new Column(
+                                Column(
                                   children: <Widget>[
                                     Text(snap4.data.elementAt(index).startTime,
                                         style: tt.body1),

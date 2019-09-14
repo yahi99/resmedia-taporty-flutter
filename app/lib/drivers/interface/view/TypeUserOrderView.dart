@@ -49,7 +49,7 @@ class TypeOrderView extends StatelessWidget {
           );
         }
     );*/
-    final cart = new Cart(products: model.products);
+    final cart = Cart(products: model.products);
     return Stack(
       alignment: Alignment.center,
       children: <Widget>[
@@ -59,8 +59,8 @@ class TypeOrderView extends StatelessWidget {
               minWidth: 186,
               minHeight: 48,
             ),
-            child: new Container(
-              child: new Column(
+            child: Container(
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text('Prodotti: ', style: theme.textTheme.subtitle),
@@ -108,8 +108,8 @@ class TypeOrderView extends StatelessWidget {
                 ],
               ),
               padding: EdgeInsets.all(4.0),
-              decoration: new BoxDecoration(
-                  border: new Border.all(
+              decoration: BoxDecoration(
+                  border: Border.all(
                 color: (translateOrderCategory(model.state) == 'In Consegna')
                     ? Colors.red
                     : Colors.black,

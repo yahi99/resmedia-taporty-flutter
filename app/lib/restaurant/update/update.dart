@@ -6,7 +6,7 @@ import 'package:resmedia_taporty_flutter/main.dart';
 class UpdateState {
   static const MethodChannel _channel = const MethodChannel('update');
 
-  /// opens the stripe dialog to add a new card
+  /// opens the stripe dialog to add a card
   /// if the source has been successfully added the card token will be returned
   static Future<String> updateState() async {
     setPublishableKey(STRIPE_PUBLIC_KEY);

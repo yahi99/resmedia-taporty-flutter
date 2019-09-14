@@ -150,12 +150,12 @@ class ProductsFoodDrinkBuilder extends StatelessWidget {
                             ));
                           }
                         }
-                        Cart carrello = new Cart(products: prod);
+                        Cart carrello = Cart(products: prod);
                         list.add(
-                          new Container(
+                          Container(
                             color: Colors.white10,
                             child: Center(
-                              child: new Text(
+                              child: Text(
                                 'Prezzo totale: ' +
                                     (carrello
                                         .getTotalPrice(carrello.products,

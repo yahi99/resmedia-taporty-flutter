@@ -79,22 +79,22 @@ class _StateClientView extends State<ClientView> {
 
     return Row(children: <Widget>[
       Text('Ordine N°'),
-      new Column(
+      Column(
         children: <Widget>[
-          new Stack(
+          Stack(
             alignment: Alignment.centerLeft,
             children: <Widget>[
-              new Text(
+              Text(
                 'Fornitore',
-                style: new TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
               ),
-              new Text(widget.model.title),
-              new Text(widget.model.address)
+              Text(widget.model.title),
+              Text(widget.model.address)
             ],
           )
         ],
       ),
-      new Column(
+      Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           RaisedButton(

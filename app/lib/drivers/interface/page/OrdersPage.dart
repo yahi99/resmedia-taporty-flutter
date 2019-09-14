@@ -134,7 +134,7 @@ class _OrdersPageDriverState extends State<OrdersPageDriver> {
   }
 
   /*Map<String,List<RestaurantOrderModel>> getMap(List<RestaurantOrderModel> orders){
-    Map<String,List<RestaurantOrderModel>> map= new Map<String,List<RestaurantOrderModel>>();
+    Map<String,List<RestaurantOrderModel>> map= Map<String,List<RestaurantOrderModel>>();
     for(int i=0;i<orders.length;i++){
       final key=orders.elementAt(i).state;
       if(map.containsKey(key)){

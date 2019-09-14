@@ -161,7 +161,7 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
                 padding: const EdgeInsets.all(16.0),
                 child: CardListView(
                   children: snap.data.map<Widget>((_model) {
-                    //final distance=new Distance();
+                    //final distance=Distance();
                     var stream;
                     if (_model.getPos() != null && widget.position != null) {
                       final LatLng start = _model.getPos();

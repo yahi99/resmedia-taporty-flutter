@@ -62,13 +62,13 @@ class SnackBarPage extends StatelessWidget {
                   ),
                   Padding(
                     padding: EdgeInsets.only(top: 25.0),
-                    child: new Container(
+                    child: Container(
                       width: 190.0,
                       height: 190.0,
-                      decoration: new BoxDecoration(
+                      decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          image: new DecorationImage(
-                              image: new AssetImage(
+                          image: DecorationImage(
+                              image: AssetImage(
                                   'assets/img/home/fotoprofilo.jpg'))),
                     ),
                   ),

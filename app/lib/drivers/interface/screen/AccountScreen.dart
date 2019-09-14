@@ -66,14 +66,16 @@ class AccountScreenDriver extends StatelessWidget implements WidgetRoute {
                   ),
                   Padding(
                     padding: EdgeInsets.only(top: 25.0),
-                    child: new Container(
+                    child: Container(
                       width: 190.0,
                       height: 190.0,
-                      decoration: new BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: new DecorationImage(
-                              image: new AssetImage(
-                                  'assets/img/home/fotoprofilo.jpg'))),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: DecorationImage(
+                          image:
+                              AssetImage('assets/img/home/fotoprofilo.jpg'),
+                        ),
+                      ),
                     ),
                   ),
                 ],

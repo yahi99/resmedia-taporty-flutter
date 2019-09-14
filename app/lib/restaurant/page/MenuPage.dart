@@ -40,24 +40,24 @@ class _MenuPageState extends State<MenuPage> {
   final _priceKey = GlobalKey<FormFieldState>();
   final _imageKey = GlobalKey<FormFieldState>();
   final _dropKey = GlobalKey();
-  final StreamController<String> dropStream = new StreamController<String>();
+  final StreamController<String> dropStream = StreamController<String>();
 
   String _path, _tempPath, cat;
   final values = ['Cibo', 'Bevande'];
   StreamController<String> _imgCtrl = StreamController<String>();
-  final TextEditingController _imgTextController = new TextEditingController();
+  final TextEditingController _imgTextController = TextEditingController();
 
-  List<DropdownMenuItem> drop = new List<DropdownMenuItem>();
+  List<DropdownMenuItem> drop = List<DropdownMenuItem>();
 
   @override
   void initState() {
     super.initState();
     drop.add(DropdownMenuItem(
-      child: new Text(values[0]),
+      child: Text(values[0]),
       value: values[0],
     ));
     drop.add(DropdownMenuItem(
-      child: new Text(values[1]),
+      child: Text(values[1]),
       value: values[1],
     ));
   }
@@ -103,9 +103,9 @@ class _MenuPageState extends State<MenuPage> {
             alignment: WrapAlignment.center,
             runSpacing: SPACE * 2,
             children: <Widget>[
-              new Form(
+              Form(
                 key: _formKey,
-                child: new Column(
+                child: Column(
                   children: <Widget>[
                     Padding(
                       child: TextFormField(
@@ -130,10 +130,10 @@ class _MenuPageState extends State<MenuPage> {
                       builder: (ctx, img) {
                         if (img.hasData)
                           _imgTextController.value =
-                              new TextEditingValue(text: img.data);
+                              TextEditingValue(text: img.data);
                         else
                           _imgTextController.value =
-                              new TextEditingValue(text: '');
+                              TextEditingValue(text: '');
                         return Padding(
                           child: TextField(
                             controller: _imgTextController,

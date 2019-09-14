@@ -36,7 +36,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   String get route => ROUTE;
 
-  //static final FacebookLogin facebookSignIn = new FacebookLogin();
+  //static final FacebookLogin facebookSignIn = FacebookLogin();
 
   //my code
   //final FirebaseAuth _fAuth = FirebaseAuth.instance;
@@ -49,7 +49,7 @@ class _LoginScreenState extends State<LoginScreen> {
   StreamSubscription registrationLevelSub;
 
   /*void _signIn(BuildContext context) async {
-    var facebookLogin=new FacebookLogin();
+    var facebookLogin=FacebookLogin();
     var result= await facebookLogin.logInWithReadPermissions(['email','public_profile']);
     FirebaseUser firebaseUser;
     switch(result.status){
@@ -84,7 +84,7 @@ class _LoginScreenState extends State<LoginScreen> {
             alignment: WrapAlignment.center,
             runSpacing: SPACE * 2,
             children: <Widget>[
-              new Column(
+              Column(
                 children: <Widget>[
                   Text(
                     "Utilizza posizione corrente?",

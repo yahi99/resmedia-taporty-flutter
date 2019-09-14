@@ -32,17 +32,17 @@ class DriverOrderModel extends FirebaseModel {
     @required this.restId,
   }) : super(path);
 
-  List<LatLng> get positions => [new LatLng(latR, lngR)];
+  List<LatLng> get positions => [LatLng(latR, lngR)];
 
   List<SubjectModel> get subjects => [
-  new SubjectModel(
+  SubjectModel(
   title: restId,
   address: addressS,
-  time: (timeS!=null)?timeS:'Ordine non accettato',),new SubjectModel(
+  time: (timeS!=null)?timeS:'Ordine non accettato',),SubjectModel(
         title: nominative,
         address: addressR,
         time: timeR,
-        position: new LatLngModel(lat: latR, lng: lngR))
+        position: LatLngModel(lat: latR, lng: lngR))
       ];
 
   static DriverOrderModel fromJson(Map json) =>

@@ -166,7 +166,7 @@ class CartButton extends StatelessWidget {
               print(snap.hasData);
               return Expanded(
                 child: IconButton(
-                  icon: new Icon(Icons.add),
+                  icon: Icon(Icons.add),
                   color: Colors.white,
                   onPressed: () {
                     //cart.inIncrementDrink(model);
@@ -201,7 +201,7 @@ class CartButton extends StatelessWidget {
           ),
           Expanded(
             child: IconButton(
-              icon: new Icon(Icons.remove),
+              icon: Icon(Icons.remove),
               color: Colors.white,
               onPressed: () {
                 //cart.inIncrementDrink(model);

@@ -55,7 +55,7 @@ class TurnVoid extends StatelessWidget {
       //crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Padding(
-          child: new Column(
+          child: Column(
             children: <Widget>[
               Text(model.startTime, style: tt.body1),
               Text(model.endTime, style: tt.body1),

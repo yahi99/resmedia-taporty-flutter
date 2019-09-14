@@ -58,7 +58,7 @@ class _DetailOrderRestaurantPageState extends State<DetailOrderRestaurantPage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final tt = theme.textTheme;
-    final cart = new Cart(products: widget.model.products);
+    final cart = Cart(products: widget.model.products);
     return Scaffold(
       appBar: AppBar(),
       body: ListView(
@@ -91,10 +91,10 @@ class _DetailOrderRestaurantPageState extends State<DetailOrderRestaurantPage> {
                         }),
                     (translateOrderCategory(widget.model.state) ==
                             'In Accettazione')
-                        ? new Row(
+                        ? Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: <Widget>[
-                              new RaisedButton(
+                              RaisedButton(
                                 child: Text('Accetta'),
                                 onPressed: () => {
                                   CloudFunctions.instance
@@ -112,7 +112,7 @@ class _DetailOrderRestaurantPageState extends State<DetailOrderRestaurantPage> {
                                 },
                                 color: Colors.green,
                               ),
-                              new RaisedButton(
+                              RaisedButton(
                                 child: Text('Rifiuta'),
                                 onPressed: () async {
                                   DateTime temp =

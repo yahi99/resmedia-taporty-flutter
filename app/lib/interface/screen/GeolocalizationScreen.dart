@@ -29,14 +29,14 @@ class _GeoLocScreenState extends State<GeoLocScreen> {
 
   GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: _key);
 
-  TextEditingController _controller = new TextEditingController();
+  TextEditingController _controller = TextEditingController();
 
   var isValid = false;
   Position pos;
   String address;
 
   // ignore: close_sinks
-  final geo = new StreamController<String>();
+  final geo = StreamController<String>();
 
   void _focusNodePlaces() async {
     // show input autocomplete with selected mode

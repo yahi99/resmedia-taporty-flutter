@@ -59,7 +59,7 @@ class TypeOrderView extends StatelessWidget {
           );
         }
     );*/
-    final cart = new Cart(products: model.products);
+    final cart = Cart(products: model.products);
     return Stack(
       alignment: Alignment.center,
       children: <Widget>[
@@ -72,8 +72,8 @@ class TypeOrderView extends StatelessWidget {
               minWidth: 186,
               minHeight: 48,
             ),
-            child: new Container(
-              child: new Column(
+            child: Container(
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Wrap(
@@ -139,10 +139,10 @@ class TypeOrderView extends StatelessWidget {
                         }
                       }),
                   (model.state == 'PENDING')
-                      ? new Row(
+                      ? Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: <Widget>[
-                            new RaisedButton(
+                            RaisedButton(
                               child: Text('Accetta'),
                               onPressed: () =>{
                                 CloudFunctions.instance.getHttpsCallable(functionName: 'updateState').call({'state':'ACCEPTED',
@@ -151,7 +151,7 @@ class TypeOrderView extends StatelessWidget {
                               },
                               color: Colors.green,
                             ),
-                            new RaisedButton(
+                            RaisedButton(
                               child: Text('Rifiuta'),
                               onPressed: () async{
                                 DateTime temp=DateTime.tryParse(model.timeR);
@@ -178,8 +178,8 @@ class TypeOrderView extends StatelessWidget {
                 ],
               ),
               padding: EdgeInsets.all(4.0),
-              decoration: new BoxDecoration(
-                  border: new Border.all(
+              decoration: BoxDecoration(
+                  border: Border.all(
                 color:
                     (translateOrderCategory(model.state) == 'In Accettazione')
                         ? Colors.red

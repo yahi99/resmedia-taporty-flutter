@@ -132,7 +132,7 @@ class _ConfirmState extends State<ConfirmPage>
           ),
           bottomNavigationBar: BottomButtonBar(
             color: Colors.white10,
-            child: new Container(
+            child: Container(
               color: tt.primaryColor,
               child: FlatButton(
                 child: Text(

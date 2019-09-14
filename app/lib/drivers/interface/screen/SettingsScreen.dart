@@ -43,7 +43,7 @@ class _SettingsState extends State<SettingsScreen> {
                 ),
                 Row(
                   children: <Widget>[
-                    new Expanded(child: Text('Invia dati ordine per E-mail')),
+                    Expanded(child: Text('Invia dati ordine per E-mail')),
                     Switch(
                       onChanged: (value) {
                         user.updateNotifyEmail(value);
@@ -59,7 +59,7 @@ class _SettingsState extends State<SettingsScreen> {
                 ),
                 Row(
                   children: <Widget>[
-                    new Expanded(child: Text('Invia dati ordine per SMS')),
+                    Expanded(child: Text('Invia dati ordine per SMS')),
                     Switch(
                       onChanged: (value) {
                         user.updateNotifySms(value);
@@ -72,7 +72,7 @@ class _SettingsState extends State<SettingsScreen> {
                 ),
                 Row(
                   children: <Widget>[
-                    new Expanded(child: Text('Notifiche App')),
+                    Expanded(child: Text('Notifiche App')),
                     Switch(
                       onChanged: (value) {
                         user.updateNotifyApp(value);
@@ -90,7 +90,7 @@ class _SettingsState extends State<SettingsScreen> {
                 ),
                 Row(
                   children: <Widget>[
-                    new Expanded(child: Text('E-mail')),
+                    Expanded(child: Text('E-mail')),
                     Switch(
                       onChanged: (value) {
                         user.updateOffersEmail(value);
@@ -106,7 +106,7 @@ class _SettingsState extends State<SettingsScreen> {
                 ),
                 Row(
                   children: <Widget>[
-                    new Expanded(child: Text('SMS')),
+                    Expanded(child: Text('SMS')),
                     Switch(
                       onChanged: (value) {
                         user.updateOffersSms(value);
@@ -119,7 +119,7 @@ class _SettingsState extends State<SettingsScreen> {
                 ),
                 Row(
                   children: <Widget>[
-                    new Expanded(child: Text('Notifiche App')),
+                    Expanded(child: Text('Notifiche App')),
                     Switch(
                       onChanged: (value) {
                         user.updateOffersApp(value);

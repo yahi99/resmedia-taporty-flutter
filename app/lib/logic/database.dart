@@ -114,7 +114,7 @@ class Database extends FirebaseDatabase
             .collection(cl.ORDERS)
             .add(model.toJson()
               ..['restaurantId'] = model.products.first.restaurantId
-              ..['timeR'] = new DateTime.now().toString()
+              ..['timeR'] = DateTime.now().toString()
               ..['state'] = 'PENDING'
               ..['driver'] = driver
               ..['startTime'] = startTime
@@ -130,7 +130,7 @@ class Database extends FirebaseDatabase
         .document(id)
         .setData(model.toJson()
           ..['restaurantId'] = model.products.first.restaurantId
-          ..['timeR'] = new DateTime.now().toString()
+          ..['timeR'] = DateTime.now().toString()
           ..['state'] = 'PENDING'
           ..['driver'] = driver
           ..['uid'] = uid);
@@ -141,7 +141,7 @@ class Database extends FirebaseDatabase
         .document(id)
         .setData(model.toJson()
           ..['titleS'] = model.products.first.restaurantId
-          ..['timeR'] = new DateTime.now().toString()
+          ..['timeR'] = DateTime.now().toString()
           ..['nominative']=nominative
           ..['addressS']=restAdd
           ..['state'] = 'PENDING'
@@ -156,7 +156,7 @@ class Database extends FirebaseDatabase
   /*Future<void> updateState({@required String uid, @required Cart model}) async {
     final old=fs.collection(cl.RESTAURANTS).document(model.products.first.restaurantId).collection(cl.ORDERS).document('id').get();
     await fs.collection(cl.RESTAURANTS).document(model.products.first.restaurantId).collection(cl.ORDERS).document('id').updateData(data).add(
-        model.toJson()..['restaurantId']=model.products.first.restaurantId..['time']=new DateTime.now().toString()
+        model.toJson()..['restaurantId']=model.products.first.restaurantId..['time']=DateTime.now().toString()
           ..['state']='In Accettazione');
   }*/
 

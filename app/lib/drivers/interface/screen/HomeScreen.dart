@@ -33,7 +33,7 @@ class _HomeScreenDriverState extends State<HomeScreenDriver> {
   final DriverBloc _driverBloc = DriverBloc.of();
   DateTime date = DateTime.now();
   final StreamController<DateTime> dateStream =
-      new StreamController<DateTime>();
+      StreamController<DateTime>();
   final CalendarBloc _calendarBloc = CalendarBloc.of();
   var user;
 
@@ -73,7 +73,7 @@ class _HomeScreenDriverState extends State<HomeScreenDriver> {
     final turnBloc = TurnBloc.of();
     final orderBloc = OrdersBloc.of();
     //final timeBloc = TimeBloc.of();
-    final calStream = new StreamController<List<CalendarModel>>();
+    final calStream = StreamController<List<CalendarModel>>();
     return DefaultPapyrusController(
       child: DefaultTabController(
         length: 3,
@@ -125,11 +125,11 @@ class _HomeScreenDriverState extends State<HomeScreenDriver> {
                             model: snap1.data,
                           ),
                           CalendarTabDriver(
-                            //model: (!snap4.hasData)?snap4.data:new List<CalendarModel>(),
+                            //model: (!snap4.hasData)?snap4.data:List<CalendarModel>(),
                             //callback: callback,
                             date: (snap3.hasData)
                                 ? snap3.data
-                                : new DateTime(DateTime.now().year,
+                                : DateTime(DateTime.now().year,
                                     DateTime.now().month, DateTime.now().day),
                             user: user,
                             dateStream: dateStream,

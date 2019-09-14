@@ -82,12 +82,12 @@ class InfoRestaurantPage extends StatelessWidget {
           builder: (BuildContext context,
               AsyncSnapshot<QuerySnapshot> snapshot) {
             if (snapshot.hasError)
-              return new Text('Error: ${snapshot.error}');
+              return Text('Error: ${snapshot.error}');
             switch (snapshot.connectionState) {
               case ConnectionState.waiting:
-                return new Text('Loading...');
+                return Text('Loading...');
               default:
-                return new ListView(
+                return ListView(
                   children: snapshot.data.documents
                       .map((DocumentSnapshot document) {
                     return Stack(

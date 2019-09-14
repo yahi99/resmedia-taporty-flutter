@@ -68,7 +68,7 @@ class AccountPageDriver extends StatelessWidget {
 //            image: AssetImage('assetName'),
 //            fit: BoxFit.cover,
 //          ),
-//        boxShadow: [new BoxShadow(color: Colors.black, blurRadius: 0.0)],
+//        boxShadow: [BoxShadow(color: Colors.black, blurRadius: 0.0)],
 //        ),
 //        child: Column(
 //          children: <Widget>[

@@ -39,7 +39,7 @@ class GeneratedLocalizationsDelegate
 
   LocaleResolutionCallback resolution({Locale fallback}) {
     return (Locale locale, Iterable<Locale> supported) {
-      final Locale languageLocale = new Locale(locale.languageCode, "");
+      final Locale languageLocale = Locale(locale.languageCode, "");
       if (supported.contains(locale))
         return locale;
       else if (supported.contains(languageLocale))
@@ -56,10 +56,10 @@ class GeneratedLocalizationsDelegate
     final String lang = getLang(locale);
     switch (lang) {
       case "en":
-        return new SynchronousFuture<WidgetsLocalizations>(const en());
+        return SynchronousFuture<WidgetsLocalizations>(const en());
 
       default:
-        return new SynchronousFuture<WidgetsLocalizations>(const S());
+        return SynchronousFuture<WidgetsLocalizations>(const S());
     }
   }
 

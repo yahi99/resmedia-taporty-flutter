@@ -25,31 +25,31 @@ class _PaymentState extends State<PaymentPage>
     final theme = Theme.of(context);
     final tt = theme.textTheme;
     var userBloc = UserBloc.of();
-    final TextEditingController _last4 = new TextEditingController();
-    final TextEditingController _month = new TextEditingController();
-    final TextEditingController _year = new TextEditingController();
-    final TextEditingController _name = new TextEditingController();
-    final TextEditingController _lastName = new TextEditingController();
-    _last4.value = new TextEditingValue(text: '');
-    _month.value = new TextEditingValue(text: '');
-    _year.value = new TextEditingValue(text: '');
-    _name.value = new TextEditingValue(text: '');
-    _lastName.value = new TextEditingValue(text: '');
+    final TextEditingController _last4 = TextEditingController();
+    final TextEditingController _month = TextEditingController();
+    final TextEditingController _year = TextEditingController();
+    final TextEditingController _name = TextEditingController();
+    final TextEditingController _lastName = TextEditingController();
+    _last4.value = TextEditingValue(text: '');
+    _month.value = TextEditingValue(text: '');
+    _year.value = TextEditingValue(text: '');
+    _name.value = TextEditingValue(text: '');
+    _lastName.value = TextEditingValue(text: '');
     return StreamBuilder<StripeSourceModel>(
         stream: userBloc.stripeManager.outCard,
         builder: (ctx, snap) {
           if (snap.hasData) {
             isValid = true;
-            _last4.value = new TextEditingValue(text: snap.data.card.last4);
+            _last4.value = TextEditingValue(text: snap.data.card.last4);
             _month.value =
-                new TextEditingValue(text: snap.data.card.exp_month.toString());
+                TextEditingValue(text: snap.data.card.exp_month.toString());
             _year.value =
-                new TextEditingValue(text: snap.data.card.exp_year.toString());
+                TextEditingValue(text: snap.data.card.exp_year.toString());
             if (snap.data.card.name != null) {
               var temp = snap.data.card.name.split(' ');
               if (temp.length == 2) {
-                _name.value = new TextEditingValue(text: temp[0]);
-                _lastName.value = new TextEditingValue(text: temp[1]);
+                _name.value = TextEditingValue(text: temp[0]);
+                _lastName.value = TextEditingValue(text: temp[1]);
               }
             }
           }

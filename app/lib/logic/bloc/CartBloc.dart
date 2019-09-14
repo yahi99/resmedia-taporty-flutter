@@ -71,7 +71,7 @@ class CartBloc extends Bloc {
     final drink = await outDrinksCart.first;
     final firebaseUser = await user.outFirebaseUser.first;
     var temp = food.products;
-    List<ProductCart> products = new List<ProductCart>();
+    List<ProductCart> products = List<ProductCart>();
     for (int i = 0; i < temp.length; i++) {
       if (temp.elementAt(i).userId == firebaseUser.uid &&
           temp.elementAt(i).restaurantId == restaurantId) {
@@ -89,7 +89,7 @@ class CartBloc extends Bloc {
             temp.elementAt(i).id, restaurantId, firebaseUser.uid);
       }
     }
-    var cart = new Cart(products: products);
+    var cart = Cart(products: products);
     return cart;
   }
 

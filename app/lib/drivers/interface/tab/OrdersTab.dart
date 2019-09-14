@@ -182,7 +182,7 @@ class _OrdersTabDriverState extends State<OrdersTabDriver>
 
           /*Container(
             height: 200.0,
-            decoration: new BoxDecoration(
+            decoration: BoxDecoration(
               color: Colors.green,
             ),
           ),*/

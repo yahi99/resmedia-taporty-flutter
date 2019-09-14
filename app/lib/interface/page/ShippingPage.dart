@@ -44,28 +44,28 @@ class _ShippingState extends State<ShippingPage>
 
   @override
   Widget build(BuildContext context) {
-    var dateStream = new StreamController<DateTime>();
-    var timeStream = new StreamController<List<CalendarModel>>();
-    var dropStream = new StreamController<String>();
+    var dateStream = StreamController<DateTime>();
+    var timeStream = StreamController<List<CalendarModel>>();
+    var dropStream = StreamController<String>();
     //StreamController.broadcast();
     final theme = Theme.of(context);
     final tt = theme.textTheme;
-    final TextEditingController _nameController = new TextEditingController();
-    final TextEditingController _dateController = new TextEditingController();
-    final TextEditingController _emailController = new TextEditingController();
+    final TextEditingController _nameController = TextEditingController();
+    final TextEditingController _dateController = TextEditingController();
+    final TextEditingController _emailController = TextEditingController();
     final TextEditingController _addressController =
-        new TextEditingController();
-    final TextEditingController _phoneController = new TextEditingController();
-    final TextEditingController _capController = new TextEditingController();
+        TextEditingController();
+    final TextEditingController _phoneController = TextEditingController();
+    final TextEditingController _capController = TextEditingController();
     //final name = user.nominative.split(' ');
-    _nameController.value = new TextEditingValue(text: widget.user.nominative);
-    //_lastNameController.value = new TextEditingValue(text: name[1]);
-    _emailController.value = new TextEditingValue(text: widget.user.email);
-    _addressController.value = new TextEditingValue(text: '');
+    _nameController.value = TextEditingValue(text: widget.user.nominative);
+    //_lastNameController.value = TextEditingValue(text: name[1]);
+    _emailController.value = TextEditingValue(text: widget.user.email);
+    _addressController.value = TextEditingValue(text: '');
     _phoneController.value =
-        new TextEditingValue(text: widget.user.phoneNumber.toString());
+        TextEditingValue(text: widget.user.phoneNumber.toString());
     _capController.value =
-        new TextEditingValue(text: widget.address.postalCode);
+        TextEditingValue(text: widget.address.postalCode);
     DateTime date;
     String time, endTime;
     final _formKey = GlobalKey<FormState>();
@@ -154,7 +154,7 @@ class _ShippingState extends State<ShippingPage>
                                       if (day != null) {
                                         date = day;
                                         _dateController.value =
-                                            new TextEditingValue(
+                                            TextEditingValue(
                                                 text: toDate(date));
                                         dateStream.add(day);
                                       }
@@ -178,8 +178,8 @@ class _ShippingState extends State<ShippingPage>
                                   builder: (ctx, snap) {
                                     debugPrint("Qui siamo nel builder.");
                                     List<DropdownMenuItem> drop =
-                                        new List<DropdownMenuItem>();
-                                    List<String> values = new List<String>();
+                                        List<DropdownMenuItem>();
+                                    List<String> values = List<String>();
                                     if (snap.hasData) {
                                       //time=snap.data.elementAt(0).startTime;
                                       if (snap.data.isNotEmpty) {
@@ -193,7 +193,7 @@ class _ShippingState extends State<ShippingPage>
                                         values.add(
                                             snap.data.elementAt(i).startTime);
                                         drop.add(DropdownMenuItem(
-                                          child: new Text(
+                                          child: Text(
                                               snap.data.elementAt(i).startTime),
                                           value:
                                               snap.data.elementAt(i).startTime,

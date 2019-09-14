@@ -353,6 +353,7 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Center(
             child: CircularProgressIndicator(),
           ),
+          color: Colors.white,
           width: double.infinity,
           height: double.infinity,
         );

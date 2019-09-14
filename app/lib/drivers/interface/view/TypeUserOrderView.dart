@@ -65,6 +65,7 @@ class TypeOrderView extends StatelessWidget {
                 children: <Widget>[
                   Text('Prodotti: ', style: theme.textTheme.subtitle),
                   ListView.builder(
+                      physics: NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
                       itemCount: cart.products.length + 2,
                       itemBuilder: (BuildContext ctx, int index) {

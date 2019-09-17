@@ -79,6 +79,11 @@ class $Provider extends Provider {
           return BlocCache.getBlocInstance(
               "TimeBloc", () => TimeBloc.instance());
         }
+      case RequestsBloc:
+        {
+          return BlocCache.getBlocInstance(
+              "RequestsBloc", () => RequestsBloc.instance());
+        }
     }
     return null;
   }
@@ -153,6 +158,11 @@ class $Provider extends Provider {
       case TimeBloc:
         {
           BlocCache.dispose("TimeBloc");
+          break;
+        }
+      case RequestsBloc:
+        {
+          BlocCache.dispose("RequestsBloc");
           break;
         }
     }

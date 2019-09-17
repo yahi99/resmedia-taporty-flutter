@@ -99,6 +99,18 @@ class Database extends FirebaseDatabase
     });
   }
 
+  Future<void> addProduct(ProductRequestModel model)async{
+    await fs.collection(cl.RESTAURANTS).document(model.restaurantId).collection(model.cat).document(model.id).setData({
+      'img':model.img,
+      'category':model.category,
+      'price':model.price,
+      'number':model.quantity,
+      'restaurantId':model.restaurantId,
+    });
+    await fs.collection('food_categories').document(model.category).setData({'translation':model.category});
+    await fs.collection('product_requests').document(model.id).delete();
+  }
+
   Future<bool> addShift(String startTime,String endTime,String day,String number)async{
     final id=await fs.collection('days').document(day).collection('times').where('startTime',isEqualTo: startTime).limit(1).getDocuments();
     if(id.documents.length==1) return true;

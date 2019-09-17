@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:easy_route/easy_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:resmedia_taporty_flutter/control/interface/screen/ProductRequestsScreen.dart';
 import 'package:resmedia_taporty_flutter/control/interface/screen/TurnScreen.dart';
 import 'package:resmedia_taporty_flutter/drivers/logic/bloc/CalendarBloc.dart';
 import 'package:resmedia_taporty_flutter/drivers/logic/bloc/DriverBloc.dart';
@@ -48,6 +49,7 @@ class _HomeScreenPanelState extends State<HomeScreenPanel> {
         ],
       ),
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           FlatButton(
             child: Text('  Aggiungi Turni Fattorini  '),
@@ -58,7 +60,7 @@ class _HomeScreenPanelState extends State<HomeScreenPanel> {
           FlatButton(
             child: Text('  Richieste Prodotti  '),
             onPressed: (){
-              //EasyRouter.push(context, ProductRequestsScreen());
+              EasyRouter.push(context, ProductRequestsScreen());
             },
           ),
         ],

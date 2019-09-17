@@ -1,8 +1,13 @@
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_blocs/easy_blocs.dart';
 import 'package:easy_route/easy_route.dart';
 import 'package:easy_widget/easy_widget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:resmedia_taporty_flutter/data/config.dart';
 import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
 import 'package:resmedia_taporty_flutter/model/UserModel.dart';
@@ -65,11 +70,59 @@ class SnackBarPage extends StatelessWidget {
                     child: Container(
                       width: 190.0,
                       height: 190.0,
-                      decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: DecorationImage(
-                              image: AssetImage(
-                                  'assets/img/home/fotoprofilo.jpg'))),
+                      child: Stack(
+                        children: <Widget>[
+                          Container(
+                            width: double.infinity,
+                            height: double.infinity,
+                            child: CircleAvatar(
+                              backgroundImage: snap.data.userFb.photoUrl != null
+                                  ? CachedNetworkImageProvider(
+                                  snap.data.userFb.photoUrl)
+                                  : Container(
+                                child: Center(
+                                  child: AutoSizeText(
+                                      "Nessun'immagine del profilo selezionata",
+                                      textAlign: TextAlign.center),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Align(
+                            alignment: AlignmentDirectional.bottomEnd,
+                            child: IconButton(
+                              icon: Icon(Icons.add_a_photo),
+                              onPressed: () async {
+                                FirebaseUser currentUser =
+                                    await FirebaseAuth.instance.currentUser();
+
+                                StorageReference ref = FirebaseStorage.instance
+                                    .ref()
+                                    .child("profileImages")
+                                    .child(currentUser.email.toUpperCase());
+
+                                (await ref
+                                        .putFile(await ImagePicker.pickImage(
+                                            source: ImageSource.gallery))
+                                        .onComplete)
+                                    .ref
+                                    .getDownloadURL()
+                                    .then(
+                                  (downloadUrl) {
+                                    debugPrint(downloadUrl);
+
+                                    UserUpdateInfo userUpdateInfo =
+                                        UserUpdateInfo();
+                                    userUpdateInfo.photoUrl = downloadUrl;
+
+                                    currentUser.updateProfile(userUpdateInfo);
+                                  },
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ],

@@ -1,3 +1,5 @@
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_route/easy_route.dart';
 import 'package:easy_widget/easy_widget.dart';
 import 'package:flutter/material.dart';
@@ -69,10 +71,20 @@ class AccountScreenDriver extends StatelessWidget implements WidgetRoute {
                     child: Container(
                       width: 190.0,
                       height: 190.0,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        image: DecorationImage(
-                          image: AssetImage('assets/img/home/fotoprofilo.jpg'),
+                      child: Container(
+                        width: double.infinity,
+                        height: double.infinity,
+                        child: CircleAvatar(
+                          backgroundImage: snap.data.userFb.photoUrl != null
+                              ? CachedNetworkImageProvider(
+                                  snap.data.userFb.photoUrl)
+                              : Container(
+                                  child: Center(
+                                    child: AutoSizeText(
+                                        "Nessun'immagine del profilo selezionata",
+                                        textAlign: TextAlign.center),
+                                  ),
+                                ),
                         ),
                       ),
                     ),

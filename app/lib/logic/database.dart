@@ -11,6 +11,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:geocoder/model.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:resmedia_taporty_flutter/control/model/ProductRequestModel.dart';
 import 'package:resmedia_taporty_flutter/data/collections.dart' as cl;
 import 'package:resmedia_taporty_flutter/drivers/model/CalendarModel.dart';
 import 'package:resmedia_taporty_flutter/drivers/model/OrderModel.dart';
@@ -96,6 +97,22 @@ class Database extends FirebaseDatabase
       'restaurantId': restaurantId,
       'cat': cat
     });
+  }
+
+  Future<bool> addShift(String startTime,String endTime,String day,String number)async{
+    final id=await fs.collection('days').document(day).collection('times').where('startTime',isEqualTo: startTime).limit(1).getDocuments();
+    if(id.documents.length==1) return true;
+    await fs.collection('days').document(day).setData({});
+    fs.collection('days').document(day).collection('times').document(startTime).setData({
+      'startTime':startTime,
+      'endTime':endTime,
+      'day':day,
+      'number':number,
+      'isEmpty':true,
+      'free':[''] ,
+      'occupied':[''],
+    });
+    return false;
   }
 
   Future<void> createOrder(
@@ -278,6 +295,16 @@ class Database extends FirebaseDatabase
     return data.map((query) {
       return query.documents
           .map((snap) => DriverOrderModel.fromFirebase(snap))
+          .toList();
+    });
+  }
+
+  Stream<List<ProductRequestModel>> getRequests() {
+    final data =
+    fs.collection('product_requests').snapshots();
+    return data.map((query) {
+      return query.documents
+          .map((snap) => ProductRequestModel.fromFirebase(snap))
           .toList();
     });
   }

@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:easy_route/easy_route.dart';
 import 'package:easy_widget/easy_widget.dart';
 import 'package:flutter/material.dart';

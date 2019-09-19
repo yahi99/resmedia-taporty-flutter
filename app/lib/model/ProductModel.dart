@@ -11,9 +11,11 @@ abstract class ProductModel extends FirebaseModel {
   String img;
   final String price;
   final String restaurantId;
+  final String number;
 
   ProductModel({
     String path,
+    this.number,
     @required this.title,
     @required this.img,
     @required this.price,
@@ -26,13 +28,15 @@ class FoodModel extends ProductModel {
   final String img;
   final FoodCategory category;
   final String restaurantId;
+  final String number;
 
   FoodModel(
-      {String path, this.img, String price, this.category, this.restaurantId})
+      {String path, this.img, String price, this.category, this.restaurantId,this.number})
       : super(
           path: path,
           price: price,
           restaurantId: restaurantId,
+          number:number,
         );
 
   static FoodModel fromJson(Map json) => _$FoodModelFromJson(json);
@@ -82,13 +86,15 @@ class DrinkModel extends ProductModel {
   final DrinkCategory category;
   final String img;
   final String restaurantId;
+  final String number;
 
   DrinkModel(
-      {String path, this.category, this.img, String price, this.restaurantId})
+      {String path, this.category, this.img, String price, this.restaurantId,this.number})
       : super(
           path: path,
           price: price,
           restaurantId: restaurantId,
+          number:number,
         );
 
   static DrinkModel fromJson(Map json) => _$DrinkModelFromJson(json);

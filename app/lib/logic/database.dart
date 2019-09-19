@@ -107,7 +107,7 @@ class Database extends FirebaseDatabase
       'number':model.quantity,
       'restaurantId':model.restaurantId,
     });
-    await fs.collection('food_categories').document(model.category).setData({'translation':model.category});
+    //await fs.collection('food_categories').document(model.category).setData({'translation':model.category});
     await fs.collection('product_requests').document(model.id).delete();
   }
 

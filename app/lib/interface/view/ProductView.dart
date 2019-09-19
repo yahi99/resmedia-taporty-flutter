@@ -1,6 +1,10 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:easy_blocs/easy_blocs.dart';
 import 'package:easy_widget/easy_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -12,6 +16,7 @@ class ProductView extends StatelessWidget {
   final ProductModel model;
   final CartControllerRule cartController;
   final String update;
+  final StreamController<String> imgStream=new StreamController.broadcast();
 
   ProductView(
       {Key key,
@@ -20,9 +25,23 @@ class ProductView extends StatelessWidget {
       @required this.update})
       : super(key: key);
 
+  Future<Null> downloadFile(String httpPath)async{
+    final RegExp regExp=RegExp('([^?/]*\.(jpg))');
+    final String fileName=regExp.stringMatch(httpPath);
+    final Directory tempDir= Directory.systemTemp;
+    final File file=File('${tempDir.path}/$fileName');
+    final StorageReference ref=FirebaseStorage.instance.ref().child(fileName);
+    final StorageFileDownloadTask downloadTask=ref.writeToFile(file);
+    final int byteNumber=(await downloadTask.future).totalByteCount;
+    print(byteNumber);
+    //put the file into the stream
+    imgStream.add(file.path);
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    if(model.number!=null) downloadFile(model.img);
     return Slidable(
       actionPane: SlidableDrawerActionPane(),
       actionExtentRatio: 0.25,
@@ -51,9 +70,19 @@ class ProductView extends StatelessWidget {
                       aspectRatio: 1,
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(16.0),
-                        child: Image.asset(
-                          model.img,
-                          fit: BoxFit.fitHeight,
+                        child: StreamBuilder(
+                          stream: imgStream.stream,
+                          builder: (context,snap){
+                            if(model.number==null) return Image.asset(
+                              model.img,
+                              fit: BoxFit.fitHeight,
+                            );
+                            if(!snap.hasData) return Center(child:CircularProgressIndicator());
+                            return Image.asset(
+                              snap.data,
+                              fit: BoxFit.fitHeight,
+                            );
+                          },
                         ),
                       ),
                     ),

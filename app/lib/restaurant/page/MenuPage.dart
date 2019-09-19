@@ -40,14 +40,19 @@ class _MenuPageState extends State<MenuPage> {
   final _priceKey = GlobalKey<FormFieldState>();
   final _imageKey = GlobalKey<FormFieldState>();
   final _dropKey = GlobalKey();
-  final StreamController<String> dropStream = StreamController<String>();
+  final _dropCatKey=GlobalKey();
 
-  String _path, _tempPath, cat;
+  String _path, _tempPath, cat,category;
+  List<DropdownMenuItem> dropMenu;
   final values = ['Cibo', 'Bevande'];
-  StreamController<String> _imgCtrl = StreamController<String>();
+  final drinks = ['Vino','Caffetteria','Alcolici','Bevande'];
+  final foods = ['Antipasti','Primi Piatti','Secondi Piatti','Menu di Mare','Menu di Terra','Contorni','Desert'];
+
   final TextEditingController _imgTextController = TextEditingController();
 
   List<DropdownMenuItem> drop = List<DropdownMenuItem>();
+  List<DropdownMenuItem> dropFoods = List<DropdownMenuItem>();
+  List<DropdownMenuItem> dropDrinks = List<DropdownMenuItem>();
 
   @override
   void initState() {
@@ -60,6 +65,19 @@ class _MenuPageState extends State<MenuPage> {
       child: Text(values[1]),
       value: values[1],
     ));
+    for(int i=0;i<drinks.length;i++){
+      dropDrinks.add(DropdownMenuItem(
+        child: Text(drinks[i]),
+        value: drinks[i],
+      ));
+    }
+    for(int i=0;i<foods.length;i++){
+      dropFoods.add(DropdownMenuItem(
+        child: Text(foods[i]),
+        value: foods[i],
+      ));
+    }
+    dropMenu=dropFoods;
   }
 
   @override
@@ -73,6 +91,19 @@ class _MenuPageState extends State<MenuPage> {
     else
       return 'drinks';
   }
+  String translateCat(String cat){
+    if(cat=='Vino') return 'WINE';
+    else if(cat=='Caffetteria') return 'COFFEE';
+    else if(cat=='Alcolici') return 'ALCOHOLIC';
+    else if(cat=='Bevande') return 'DRINK';
+    else if(cat=='Antipasti') return 'APPETIZER';
+    else if(cat=='Primi Piatti') return 'FIRST_COURSES';
+    else if(cat=='Secondi Piatti') return 'MAIN_COURSES';
+    else if(cat=='Menu di Mare') return 'SEAFOOD_MENU';
+    else if(cat=='Menu di Terra') return 'MEAT_MENU';
+    else if(cat=='Contorni') return 'SIDE_DISH';
+    return 'DESERT';
+  }
 
   Future<String> uploadFile(String filePath) async {
     final ByteData bytes = await rootBundle.load(filePath);
@@ -85,12 +116,16 @@ class _MenuPageState extends State<MenuPage> {
     final StorageUploadTask task = ref.putFile(file);
     final Uri downloadUrl = (await task.onComplete).uploadSessionUri;
 
-    _path = downloadUrl.toString();
+    //_path = downloadUrl.toString();
+    _path=(await ref.getDownloadURL());
     print(_path);
     return _path;
   }
 
   void _addProduct(BuildContext context) {
+    final StreamController<String> dropStream = StreamController<String>.broadcast();
+    final StreamController<String> dropCatStream = StreamController<String>.broadcast();
+    final StreamController<String> _imgCtrl = StreamController<String>.broadcast();
     showDialog(
       context: context,
       builder: (_context) {
@@ -202,7 +237,7 @@ class _MenuPageState extends State<MenuPage> {
                       ),
                       padding: EdgeInsets.only(bottom: SPACE * 2),
                     ),
-                    Padding(
+                    /*Padding(
                       child: TextFormField(
                         key: _categoryKey,
                         decoration: InputDecoration(
@@ -216,7 +251,7 @@ class _MenuPageState extends State<MenuPage> {
                         },
                       ),
                       padding: EdgeInsets.only(bottom: SPACE * 2),
-                    ),
+                    ),*/
                     StreamBuilder<String>(
                       stream: dropStream.stream,
                       builder: (ctx, sp1) {
@@ -233,8 +268,64 @@ class _MenuPageState extends State<MenuPage> {
                                   print(value);
                                   cat = value;
                                   dropStream.add(value);
+                                  if(value=='Cibo'){
+                                    category=foods.elementAt(0);
+                                    dropMenu=dropFoods;
+                                    dropCatStream.add(foods.elementAt(0));
+                                  }
+                                  else {
+                                    category=drinks.elementAt(0);
+                                    dropMenu=dropDrinks;
+                                    dropCatStream.add(drinks.elementAt(0));
+                                  }
                                 },
                                 items: drop,
+                              ),
+                            ],
+                          ),
+                          padding: EdgeInsets.only(bottom: SPACE * 2),
+                        );
+                      },
+                    ),
+                    StreamBuilder<String>(
+                      stream: dropCatStream.stream,
+                      builder: (ctx, sp1) {
+                        /*if(category==null || category=='Cibo')
+                        return Padding(
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              DropdownButton(
+                                key: _dropCatKey,
+                                value: (category == null || !sp1.hasData)
+                                    ? drinks.elementAt(0)
+                                    : sp1.data,
+                                onChanged: (value) {
+                                  print(value);
+                                  category = value;
+                                  dropCatStream.add(value);
+                                },
+                                items: dropFoods,
+                              ),
+                            ],
+                          ),
+                          padding: EdgeInsets.only(bottom: SPACE * 2),
+                        );*/
+                        return Padding(
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              DropdownButton(
+                                key: _dropCatKey,
+                                value: (category == null || !sp1.hasData)
+                                    ? foods.elementAt(0)
+                                    : sp1.data,
+                                onChanged: (value) {
+                                  print(value);
+                                  category = value;
+                                  dropCatStream.add(value);
+                                },
+                                items: dropMenu,
                               ),
                             ],
                           ),
@@ -250,7 +341,7 @@ class _MenuPageState extends State<MenuPage> {
                               Database().createRequestProduct(
                                   _nameKey.currentState.value.toString(),
                                   path,
-                                  _categoryKey.currentState.value.toString(),
+                                  translateCat((category==null)?foods[0]:category),
                                   _priceKey.currentState.value.toString(),
                                   _quantityKey.currentState.value.toString(),
                                   (await UserBloc.of().outUser.first)

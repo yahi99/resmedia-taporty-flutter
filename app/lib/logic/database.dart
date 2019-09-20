@@ -62,7 +62,7 @@ class Database extends FirebaseDatabase
 
   Stream<List<UserOrderModel>> getUserOrders(String uid) {
     final data =
-        fs.collection(cl.USERS).document(uid).collection(cl.ORDERS).snapshots();
+        fs.collection(cl.USERS).document(uid).collection('user_orders').snapshots();
     print('lol');
     return data.map((query) {
       return query.documents
@@ -140,7 +140,7 @@ class Database extends FirebaseDatabase
     final id = (await fs
             .collection(cl.RESTAURANTS)
             .document(model.products.first.restaurantId)
-            .collection(cl.ORDERS)
+            .collection('restaurant_orders')
             .add(model.toJson()
               ..['restaurantId'] = model.products.first.restaurantId
               ..['timeR'] = DateTime.now().toString()
@@ -155,7 +155,7 @@ class Database extends FirebaseDatabase
     await fs
         .collection(cl.USERS)
         .document(uid)
-        .collection(cl.ORDERS)
+        .collection('user_orders')
         .document(id)
         .setData(model.toJson()
           ..['restaurantId'] = model.products.first.restaurantId
@@ -166,7 +166,7 @@ class Database extends FirebaseDatabase
     await fs
         .collection(cl.USERS)
         .document(driver)
-        .collection(cl.ORDERS)
+        .collection('driver_orders')
         .document(id)
         .setData(model.toJson()
           ..['titleS'] = model.products.first.restaurantId
@@ -211,7 +211,7 @@ class Database extends FirebaseDatabase
     final data = fs
         .collection(cl.RESTAURANTS)
         .document(restaurantId)
-        .collection(cl.ORDERS)
+        .collection('restaurant_orders')
         .snapshots();
     print('lol');
     return data.map((query) {
@@ -302,7 +302,7 @@ class Database extends FirebaseDatabase
 
   Stream<List<DriverOrderModel>> getDriverOrders(String uid) {
     final data =
-        fs.collection(cl.USERS).document(uid).collection(cl.ORDERS).snapshots();
+        fs.collection(cl.USERS).document(uid).collection('driver_orders').snapshots();
     print('lol');
     return data.map((query) {
       return query.documents
@@ -343,19 +343,19 @@ class Database extends FirebaseDatabase
     await fs
         .collection(cl.USERS)
         .document(uid)
-        .collection(cl.ORDERS)
+        .collection('user_orders')
         .document(oid)
         .updateData({'state': state});
     await fs
         .collection(cl.RESTAURANTS)
         .document(restId)
-        .collection(cl.ORDERS)
+        .collection('restaurant_orders')
         .document(oid)
         .updateData({'state': state});
     await fs
         .collection(cl.USERS)
         .document(driverId)
-        .collection(cl.ORDERS)
+        .collection('driver_orders')
         .document(oid)
         .updateData({'state': state});
   }

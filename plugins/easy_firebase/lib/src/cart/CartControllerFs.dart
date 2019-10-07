@@ -49,8 +49,8 @@ class CartFsController with MixinCartControllerFs implements CartFsManager, Cart
   }
 
   @override
-  Future<bool> inIncrement(String id,String restaurantId,String userId,double price) async {
-    return _cart.increment(id,restaurantId,userId,price);
+  Future<bool> inIncrement(String id,String restaurantId,String userId,double price,String category) async {
+    return _cart.increment(id,restaurantId,userId,price,category);
   }
 
   @override
@@ -68,7 +68,7 @@ class CartFsController with MixinCartControllerFs implements CartFsManager, Cart
 /// Aggiunge delle ottimizzazioni per il CartController se è l'unico
 mixin MixinCartControllerFs implements CartFsManager {
   Future<bool> inIncrementFs(ProductCart model) {
-    return inIncrement(model.id,model.restaurantId,model.userId,model.price);
+    return inIncrement(model.id,model.restaurantId,model.userId,model.price,model.category);
   }
 
   Future<bool> inDecreaseFs(ProductCart model) {

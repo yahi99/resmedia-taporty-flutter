@@ -6,7 +6,7 @@ import { fs } from './firebase';
 // tslint:disable-next-line: no-use-before-declare
 export { createStripeCustomer, cleanupUser, createStripeCharge, addPaymentSource, updateState, setShift,updateUser,updateOffersEmail,updateOffersSms,updateOffersApp,updateNotifySms,updateNotifyApp,updateNotifyEmail  }
 const stripe = new Stripe(functions.config().stripe.token);
-const currency = 'EUR'
+const currency = 'EUR';
 
 const createStripeCustomer = functions.auth.user().onCreate(async (user, context) => {
   const customer = await stripe.customers.create({email: user.email});
@@ -44,10 +44,10 @@ const updateState = functions.https.onCall(async (data, context) => {
   const uid=data.uid;
   const did=data.did;
   const timeS=data.timeS;
-  await fs.collection('restaurants').doc(rid).collection('orders').doc(oid).update({'state':state,'timeS':timeS});
-  await fs.collection('users').doc(did).collection('orders').doc(oid).update({'state':state,'timeS':timeS});
-  await fs.collection('users').doc(uid).collection('orders').doc(oid).update({'state':state,'timeS':timeS});
-  if(state=='DENIED'){
+  await fs.collection('restaurants').doc(rid).collection('restaurant_orders').doc(oid).update({'state':state,'timeS':timeS});
+  await fs.collection('users').doc(did).collection('driver_orders').doc(oid).update({'state':state,'timeS':timeS});
+  await fs.collection('users').doc(uid).collection('user_orders').doc(oid).update({'state':state,'timeS':timeS});
+  if(state==='DENIED'){
     const day=data.day;
     const startTime=data.startTime;
     const free=data.free;
@@ -122,7 +122,36 @@ const setShift = functions.https.onCall(async (data, context) => {
 });
 
 
-//Creazione pagamento
+const createStripeCharge = functions.https.onCall(async (data, context) => {
+  try {
+    const foodIds = data.foodIds;
+    const drinkIds = data.drinkIds;
+    const restaurantId=data.restaurantId;
+    const uid=data.uid;
+    const customerRef=fs.collection('stripe_customers').doc(uid)
+    const customerData=(await customerRef.get()).data();
+    const customer = customerData!.customer_id;
+    console.log(customer);
+    const idempotencyKey=uid;
+    console.log(uid);
+    const amount = ((await calculatePrice(foodIds,'foods',restaurantId))+(await calculatePrice(drinkIds,'drinks',restaurantId)))*100;
+    //const idempotencyKey = context.params.id;
+    const charge: Stripe.charges.IChargeCreationOptions = {amount, currency, customer};
+    console.log(data.fingerprint);
+    charge.source=data.fingerprint;
+    const response = await stripe.charges.create(charge, {idempotency_key: idempotencyKey});
+    return customerRef.collection('charges').add(response);
+    console.log(amount);
+    return
+  } catch(error) {
+    console.log(error);
+    return
+    //await snap.ref.set({error: userFacingMessage(error)}, { merge: true });
+    //return reportError(error, {user: context.params.userId});
+  }
+});
+
+/*//Creazione pagamento
 const createStripeCharge = functions.firestore
 .document('stripe_customers/{userId}/charges/{id}')
 .onCreate(async (snap, context) => {
@@ -145,3 +174,14 @@ const createStripeCharge = functions.firestore
     //return reportError(error, {user: context.params.userId});
   }
 });
+*/
+
+async function calculatePrice(products: string [],collectionId: string,restaurantId:string): Promise<number>{
+  let price = 0
+  for(const entry of products){
+    const product=(await(fs.collection('restaurants').doc(restaurantId).collection(collectionId).doc(entry)).get()).data()
+    //console.log(product.price)
+    price +=product?parseInt(product.price,10):0
+  }
+  return price
+}

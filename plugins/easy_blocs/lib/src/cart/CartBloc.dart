@@ -24,8 +24,8 @@ class BasicCartBloc implements Bloc {
   CacheSubject<Cart> _cartControl = CacheSubject();
   Stream<Cart> get outCart => _cartControl.stream;
 
-  Future<bool> inIncrement(String id,String restaurantId,String userId,double price) async {
-    return _save(_cart.increment(id,restaurantId,userId,price));
+  Future<bool> inIncrement(String id,String restaurantId,String userId,double price,String category) async {
+    return _save(_cart.increment(id,restaurantId,userId,price,category));
   }
 
   Future<bool> inDecrease(String id,String restaurantId,String userId) async {

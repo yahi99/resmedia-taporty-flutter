@@ -96,19 +96,37 @@ class _DetailOrderRestaurantPageState extends State<DetailOrderRestaurantPage> {
                             children: <Widget>[
                               RaisedButton(
                                 child: Text('Accetta'),
-                                onPressed: () => {
-                                  CloudFunctions.instance
-                                      .getHttpsCallable(
-                                          functionName: 'updateState')
-                                      .call({
-                                    'state': 'ACCEPTED',
-                                    'oid': widget.model.id,
-                                    'rid': widget
-                                        .model.products.first.restaurantId,
-                                    'timeS': DateTime.now(),
-                                    'did': widget.model.driver,
-                                    'uid': widget.model.uid
-                                  })
+                                onPressed: () {
+                                  List <String> foodIds=new List<String>();
+                                  List <String> drinkIds=new List<String>();
+                                  for(int i=0;i<widget.model.products.length;i++){
+                                    if(widget.model.products.elementAt(i).category=='foods'){
+                                      for(int j=0;j<widget.model.products.elementAt(i).countProducts;j++) foodIds.add(widget.model.products.elementAt(i).id);
+                                    }
+                                    else{
+                                      for(int j=0;j<widget.model.products.elementAt(i).countProducts;j++) drinkIds.add(widget.model.products.elementAt(i).id);
+                                    }
+                                  }
+                                  CloudFunctions.instance.getHttpsCallable(functionName: 'createStripeCharge').call({
+                                    'foodIds':foodIds,
+                                    'drinkIds':drinkIds,
+                                    'restaurantId':widget.model.products.first.restaurantId,
+                                    'uid':widget.model.uid,
+                                    'stripe_customer':widget.model.stripe_customer
+                                  }).then((isDone){
+                                    CloudFunctions.instance
+                                        .getHttpsCallable(
+                                        functionName: 'updateState')
+                                        .call({
+                                      'state': 'ACCEPTED',
+                                      'oid': widget.model.id,
+                                      'rid': widget
+                                          .model.products.first.restaurantId,
+                                      'timeS': DateTime.now().toIso8601String(),
+                                      'did': widget.model.driver,
+                                      'uid': widget.model.uid
+                                    });
+                                  });
                                 },
                                 color: Colors.green,
                               ),
@@ -148,7 +166,7 @@ class _DetailOrderRestaurantPageState extends State<DetailOrderRestaurantPage> {
                                       'startTime': cal.startTime,
                                       'did': widget.model.driver,
                                       'uid': widget.model.uid,
-                                      'timeS': DateTime.now()
+                                      'timeS': DateTime.now().toIso8601String()
                                     });
                                   });
                                 },

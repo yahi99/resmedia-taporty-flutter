@@ -9,6 +9,7 @@ part of 'OrderModel.dart';
 RestaurantOrderModel _$RestaurantOrderModelFromJson(Map json) {
   return RestaurantOrderModel(
       path: json['path'] as String,
+      stripe_customer: json['stripe_customer'] as String,
       addressR: json['addressR'] as String,
       endTime: json['endTime'] as String,
       products: (json['products'] as List)
@@ -45,6 +46,7 @@ Map<String, dynamic> _$RestaurantOrderModelToJson(
   writeNotNull('uid', instance.uid);
   writeNotNull('nominative', instance.nominative);
   writeNotNull('addressR', instance.addressR);
+  writeNotNull('stripe_customer', instance.stripe_customer);
   return val;
 }
 

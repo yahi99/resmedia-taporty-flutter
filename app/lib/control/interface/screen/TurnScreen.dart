@@ -230,7 +230,9 @@ class _TurnScreenPanelState extends State<TurnScreen> {
           FlatButton(
             child: Text('Aggiungi Turno'),
             onPressed: (){
-              if(time!=null && hour!=null && date!=null && _quantityKey.currentState.validate()){
+              if(date!=null && _quantityKey.currentState.validate()){
+                if(time==null) time=startTime.elementAt(0);
+                if(hour==null) hour=hours.elementAt(0);
                 Database().addShift(hour+':'+time, ((time=='45')?hours.elementAt(hours.indexOf(hour)+1):hour)+':'+endTime.elementAt(startTime.indexOf(time)), date.toIso8601String(), _quantityKey.currentState.value).then((isPresent){
                   if(isPresent){
                     Toast.show('Orario già presente!', context,duration: 3);

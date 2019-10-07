@@ -11,8 +11,10 @@ class ProductCartFirebase extends PartialDocumentModel implements ProductCart {
   final String restaurantId;
   final String userId;
   final double price;
+  final String category;
+  final bool delete;
 
-  ProductCartFirebase({String id, this.countProducts,this.restaurantId, this.userId,this.price}) : super(id);
+  ProductCartFirebase({String id, this.countProducts,this.delete,this.restaurantId, this.userId,this.price,this.category}) : super(id);
 
   ProductCart decrease() {
     return copyWith(countProducts: countProducts-1);
@@ -20,6 +22,18 @@ class ProductCartFirebase extends PartialDocumentModel implements ProductCart {
 
   ProductCart increment() {
     return copyWith(countProducts: countProducts+1);
+  }
+
+  ProductCartFirebase deleteItem(bool delete){
+    return ProductCartFirebase(
+        id: id,
+        restaurantId:restaurantId,
+        countProducts: countProducts,
+        userId: userId,
+        price: price,
+        category: category,
+        delete: delete
+    );
   }
 
   @override
@@ -30,6 +44,8 @@ class ProductCartFirebase extends PartialDocumentModel implements ProductCart {
       countProducts: countProducts,
       userId: userId,
       price: price,
+      category: category,
+      delete: delete
     );
   }
 

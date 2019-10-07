@@ -164,6 +164,7 @@ class ProductsDrinkBuilder extends StatelessWidget {
                     update: null,
                     model: product,
                     cartController: cartBloc.drinksCartController,
+                    category: 'drinks',
                   ))
               .toList(),
         );
@@ -189,6 +190,7 @@ class ProductsFoodBuilder extends StatelessWidget {
                     update: null,
                     model: product,
                     cartController: cartBloc.foodsCartController,
+                    category: 'foods',
                   ))
               .toList(),
         );

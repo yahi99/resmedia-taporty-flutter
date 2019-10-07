@@ -165,6 +165,18 @@ class GoogleMapExtController implements GoogleMapController {
     // TODO: implement setMapStyle
     return null;
   }
+
+  @override
+  Future<LatLng> getLatLng(ScreenCoordinate screenCoordinate) {
+    // TODO: implement getLatLng
+    return null;
+  }
+
+  @override
+  Future<ScreenCoordinate> getScreenCoordinate(LatLng latLng) {
+    // TODO: implement getScreenCoordinate
+    return null;
+  }
 }
 
 LatLng centerPos(Iterable<LatLng> positions) {

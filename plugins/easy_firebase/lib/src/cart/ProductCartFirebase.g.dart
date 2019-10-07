@@ -8,11 +8,14 @@ part of 'ProductCartFirebase.dart';
 
 ProductCartFirebase _$ProductCartFirebaseFromJson(Map json) {
   return ProductCartFirebase(
-      id: json['id'] as String,
-      countProducts: json['countProducts'] as int,
-      restaurantId: json['restaurantId'] as String,
-      userId: json['userId'] as String,
-      price: (json['price'] as num)?.toDouble());
+    id: json['id'] as String,
+    countProducts: json['countProducts'] as int,
+    delete: json['delete'] as bool,
+    restaurantId: json['restaurantId'] as String,
+    userId: json['userId'] as String,
+    price: (json['price'] as num)?.toDouble(),
+    category: json['category'] as String,
+  );
 }
 
 Map<String, dynamic> _$ProductCartFirebaseToJson(ProductCartFirebase instance) {
@@ -29,5 +32,7 @@ Map<String, dynamic> _$ProductCartFirebaseToJson(ProductCartFirebase instance) {
   writeNotNull('restaurantId', instance.restaurantId);
   writeNotNull('userId', instance.userId);
   writeNotNull('price', instance.price);
+  writeNotNull('category', instance.category);
+  writeNotNull('delete', instance.delete);
   return val;
 }

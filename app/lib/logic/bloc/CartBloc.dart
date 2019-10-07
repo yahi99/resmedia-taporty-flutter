@@ -71,29 +71,42 @@ class CartBloc extends Bloc {
     final drink = await outDrinksCart.first;
     final firebaseUser = await user.outFirebaseUser.first;
     var temp = food.products;
+    Cart cart=Cart(products: temp);
     List<ProductCart> products = List<ProductCart>();
+    List<ProductCart> foods = List<ProductCart>();
+    List<ProductCart> drinks = List<ProductCart>();
     for (int i = 0; i < temp.length; i++) {
       if (temp.elementAt(i).userId == firebaseUser.uid &&
           temp.elementAt(i).restaurantId == restaurantId) {
         products.add(temp.elementAt(i));
-        _foodsCartController.inRemove(
-            temp.elementAt(i).id, restaurantId, firebaseUser.uid);
+        foods.add(temp.elementAt(i));
+        //cart.delete(temp.elementAt(i).id,temp.elementAt(i).restaurantId,firebaseUser.uid);
+        //temp.elementAt(i).deleteItem(true);
+        //await _foodsCartController.inRemove(temp.elementAt(i).id, restaurantId, firebaseUser.uid);
       }
     }
     temp = drink.products;
+    cart=Cart(products: temp);
     for (int i = 0; i < temp.length; i++) {
       if (temp.elementAt(i).userId == firebaseUser.uid &&
           temp.elementAt(i).restaurantId == restaurantId) {
         products.add(temp.elementAt(i));
-        _drinksCartController.inRemove(
-            temp.elementAt(i).id, restaurantId, firebaseUser.uid);
+        drinks.add(temp.elementAt(i));
+        //cartDrink.delete(tempDrink.elementAt(i).id,tempDrink.elementAt(i).restaurantId,firebaseUser.uid);
+        //temp.elementAt(i).deleteItem(true);
+        //await _drinksCartController.inRemove(temp.elementAt(i).id, restaurantId, firebaseUser.uid);
       }
     }
-    var cart = Cart(products: products);
-    return cart;
+    for(int i=0;i<drinks.length;i++){
+      _drinksCartController.inRemove(drinks.elementAt(i).id, restaurantId, firebaseUser.uid);
+    }
+    for(int i=0;i<foods.length;i++){
+      _foodsCartController.inRemove(foods.elementAt(i).id, restaurantId, firebaseUser.uid);
+    }
+    return Cart(products: products);
   }
 
-  Future<void> inIncrementDrink(ProductModel model) async {
+  /*Future<void> inIncrementDrink(ProductModel model) async {
     return CacheStreamBuilder<FirebaseUser>(
         stream: user.outFirebaseUser,
         builder: (context, snap) {
@@ -102,7 +115,7 @@ class CartBloc extends Bloc {
                 snap.data.uid, double.parse(model.price));
           }
         });
-  }
+  }*/
 
   /*Future<void> inRemoveDrink(ProductModel model) async {
     return CacheStreamBuilder<FirebaseUser>(
@@ -142,7 +155,7 @@ class CartBloc extends Bloc {
   }
 
   Future<bool> signer(String restaurantId, String driver, Position userPos,
-      String userAddress, String startTime, String endTime) async {
+      String userAddress, String startTime, String endTime,String fingerprint) async {
     final userBloc = UserBloc.of();
     final firebaseUser = await userBloc.outUser.first;
     inDeleteCart(restaurantId).then((cart) async {
@@ -155,6 +168,7 @@ class CartBloc extends Bloc {
           startTime: startTime,
           nominative: firebaseUser.model.nominative,
           endTime: endTime,
+          fingerprint:fingerprint,
           restAdd: (await Geocoder.local.findAddressesFromCoordinates(
                   (await Database().getPosition(restaurantId))))
               .first

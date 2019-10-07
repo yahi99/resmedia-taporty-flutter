@@ -45,9 +45,11 @@ class RestaurantOrderModel extends OrderModel {
   final String uid;
   final String nominative;
   final String addressR;
+  final String stripe_customer;
 
   RestaurantOrderModel({
     String path,
+    @required this.stripe_customer,
     @required this.addressR,
     @required this.endTime,
     @required this.products,

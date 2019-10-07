@@ -4,6 +4,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:resmedia_taporty_flutter/data/config.dart';
+import 'package:resmedia_taporty_flutter/interface/screen/CheckoutScreen.dart';
 import 'package:resmedia_taporty_flutter/interface/view/BottonButtonBar.dart';
 import 'package:resmedia_taporty_flutter/interface/view/InputField.dart';
 import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
@@ -22,6 +23,8 @@ class _PaymentState extends State<PaymentPage>
   @override
   Widget build(BuildContext context) {
     var isValid = false;
+    var card_id;
+    var stripe_customer;
     final theme = Theme.of(context);
     final tt = theme.textTheme;
     var userBloc = UserBloc.of();
@@ -40,6 +43,7 @@ class _PaymentState extends State<PaymentPage>
         builder: (ctx, snap) {
           if (snap.hasData) {
             isValid = true;
+            card_id=snap.data.token;
             _last4.value = TextEditingValue(text: snap.data.card.last4);
             _month.value =
                 TextEditingValue(text: snap.data.card.exp_month.toString());
@@ -236,8 +240,11 @@ class _PaymentState extends State<PaymentPage>
                     "Continua",
                     style: TextStyle(color: Colors.white),
                   ),
-                  onPressed: () {
-                    if (isValid) {
+                  onPressed: () async{
+                    if (isValid && card_id!=null) {
+                      final state = MyInheritedWidget.of(context);
+                      state.fingerprint = card_id;
+                      state.uid=(await UserBloc.of().outFirebaseUser.first).uid;
                       widget.controller.animateTo(widget.controller.index + 1);
                     }
                   },

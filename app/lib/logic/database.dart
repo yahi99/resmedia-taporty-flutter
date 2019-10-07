@@ -136,7 +136,8 @@ class Database extends FirebaseDatabase
       @required String startTime,
       @required String nominative,
       @required String endTime,
-      @required String restAdd}) async {
+      @required String restAdd,
+      @required String fingerprint}) async {
     final id = (await fs
             .collection(cl.RESTAURANTS)
             .document(model.products.first.restaurantId)
@@ -150,7 +151,8 @@ class Database extends FirebaseDatabase
               ..['uid'] = uid
               ..['nominative'] = nominative
               ..['endTime'] = endTime
-              ..['addressR'] = addressR))
+              ..['addressR'] = addressR
+              ..['fingerprint']=fingerprint))
         .documentID;
     await fs
         .collection(cl.USERS)

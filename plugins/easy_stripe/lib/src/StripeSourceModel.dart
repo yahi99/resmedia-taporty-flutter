@@ -18,9 +18,7 @@ class StripeSourceModel {
     this.card, this.lastUse,
   });
 
-  static StripeSourceModel fromJson(Map json) =>
-      _$StripeSourceModelFromJson(json);
-
+  static StripeSourceModel fromJson(Map json) => _$StripeSourceModelFromJson(json);
   Map<String, dynamic> toJson() => _$StripeSourceModelToJson(this);
 }
 
@@ -29,23 +27,18 @@ class StripeSourceModel {
 class StripeCardModel {
   @JsonKey(fromJson: brandFromJson, toJson: brandToJson)
   final BrandOfPaymentCard brand;
-  String name;
   final String fingerprint;
   final String last4;
-  final String exp_month;
-  final String exp_year;
+  final int exp_month;
+  final int exp_year;
+  final String name;
 
-  StripeCardModel(this.brand, this.fingerprint, this.last4, this.exp_month,
-      this.exp_year);
+  StripeCardModel(this.brand, this.fingerprint, this.last4, this.exp_month,this.exp_year,this.name);
 
   static StripeCardModel fromJson(Map json) => _$StripeCardModelFromJson(json);
-
   Map<String, dynamic> toJson() => _$StripeCardModelToJson(this);
 
-  static BrandOfPaymentCard brandFromJson(String str) =>
-      PAYMENT_CARD_OF_STRING[str];
-
-  static String brandToJson(BrandOfPaymentCard brand) =>
-      STRING_OF_PAYMENT_CARD[brand];
+  static BrandOfPaymentCard brandFromJson(String str) => PAYMENT_CARD_OF_STRING[str];
+  static String brandToJson(BrandOfPaymentCard brand) => STRING_OF_PAYMENT_CARD[brand];
 }
 

@@ -37,8 +37,8 @@ class CartController implements CartControllerRule {
     _cartController.add(cart);
   }
 
-  Future<bool> inIncrement(String id,String restaurantId,String userId,double price) async {
-    return _update(_cart.increment(id,restaurantId,userId,price));
+  Future<bool> inIncrement(String id,String restaurantId,String userId,double price,String category) async {
+    return _update(_cart.increment(id,restaurantId,userId,price,category));
   }
 
   Future<bool> inDecrease(String id,String restaurantId,String userId) async {
@@ -61,7 +61,7 @@ abstract class CartControllerRule {
 
   Observable<Cart> get outCart;
 
-  Future<void> inIncrement(String id,String restaurantId,String userId,double price);
+  Future<void> inIncrement(String id,String restaurantId,String userId,double price,String category);
 
   Future<void> inDecrease(String id,String restaurantId,String userId);
 
@@ -74,7 +74,7 @@ mixin MixinCartController implements CartControllerRule {
 
   Observable<Cart> get outCart => cartController.outCart;
 
-  Future<void> inIncrement(String id,String restaurantId,String userId,double price) => cartController.inIncrement(id,restaurantId,userId,price);
+  Future<void> inIncrement(String id,String restaurantId,String userId,double price,String category) => cartController.inIncrement(id,restaurantId,userId,price,category);
 
   Future<void> inDecrease(String id,String restaurantId,String userId) => cartController.inDecrease(id,restaurantId,userId);
 

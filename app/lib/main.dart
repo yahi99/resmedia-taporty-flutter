@@ -4,7 +4,7 @@ import 'package:easy_widget/easy_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:resmedia_taporty_flutter/interface/screen/LoginScreen.dart';
+import 'package:resmedia_taporty_flutter/restaurant/screen/LoginScreen.dart';
 import 'package:resmedia_taporty_flutter/logic/bloc/FlavourBloc.dart';
 
 /// flutter build --flavor development -t lib/main-dev.dart

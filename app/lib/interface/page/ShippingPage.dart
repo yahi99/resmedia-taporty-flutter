@@ -184,6 +184,7 @@ class _ShippingState extends State<ShippingPage>
                                         dropStream.add(
                                             snap.data.elementAt(0).startTime);
                                         time = snap.data.elementAt(0).startTime;
+                                        endTime=getEnd(snap.data, time);
                                       }
                                       for (int i = 0;
                                           i < snap.data.length;

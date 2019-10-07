@@ -91,7 +91,9 @@ class _ConfirmState extends State<ConfirmPage>
         state.phone == null ||
         state.cap == null ||
         state.date == null ||
-        state.time == null) return false;
+        state.time == null ||
+        state.fingerprint==null ||
+        state.uid==null) return false;
     return true;
   }
 
@@ -153,6 +155,7 @@ class _ConfirmState extends State<ConfirmPage>
                           widget.description.addressLine,
                           state.time,
                           state.endTime,
+                          state.fingerprint,
                         )
                             .then((isDone) {
                           RestaurantScreen.isOrdered = false;

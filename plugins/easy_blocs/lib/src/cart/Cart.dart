@@ -29,12 +29,20 @@ class Cart {
       price + ((getProduct(product.id, restaurantId, uid)==product)?getPrice(product.id, product.price,product.restaurantId,product.userId):0));
   }
 
-  bool increment(String id,String restaurantId,String userId,double price) {
+  bool increment(String id,String restaurantId,String userId,double price,String category) {
     final product = getProduct(id,restaurantId,userId);
     return product == null
-        ? onInsert(ProductCart(id: id, countProducts: 1,restaurantId: restaurantId,userId:userId,price: price))
+        ? onInsert(ProductCart(id: id, countProducts: 1,restaurantId: restaurantId,userId:userId,price: price,category: category))
         : onIncrement(product.increment());
   }
+
+  bool delete(String id, String restId,String uid){
+    final product = getProduct(id,restId,uid);
+    return product == null
+        ? false
+        : onDelete(product.deleteItem(true));
+  }
+
   @protected
   bool onInsert(ProductCart product) {
     _update(product);
@@ -42,6 +50,12 @@ class Cart {
   }
   @protected
   bool onIncrement(ProductCart product) {
+    _update(product);
+    return true;
+  }
+
+  @protected
+  bool onDelete(ProductCart product){
     _update(product);
     return true;
   }
@@ -91,12 +105,16 @@ class ProductCart {
   final int countProducts;
   final String userId;
   final double price;
+  final String category;
+  final bool delete;
 
   ProductCart({
+    @required this.category,
     @required this.id, this.countProducts: 0,
     @required this.restaurantId,
     @required this.userId,
     @required this.price,
+    this.delete=false
   }): assert(countProducts != null), assert(id != null);
 
   ProductCart decrease() {
@@ -115,6 +133,18 @@ class ProductCart {
 
   String toString() => "ProductCart(id: $id, numItemsOrdered: $countProducts, restaurantId: $restaurantId, userId: $userId)";
 
+  ProductCart deleteItem(bool delete){
+    return ProductCart(
+        id: id,
+        restaurantId:restaurantId,
+        countProducts: countProducts,
+        userId: userId,
+        price: price,
+        category: category,
+        delete: delete
+    );
+  }
+
   ProductCart copyWith({int countProducts}) {
     return ProductCart(
       id: id,
@@ -122,6 +152,8 @@ class ProductCart {
       restaurantId: restaurantId,
       userId:userId,
       price:price,
+      category: category,
+      delete: delete
     );
   }
 
@@ -132,7 +164,9 @@ class ProductCart {
 
 abstract class ProductCartPriceRule {
   String get id;
-  int get price;
+  double get price;
   String get restaurantId;
   String get userId;
+  String get category;
+  int get countProducts;
 }

@@ -12,15 +12,18 @@ import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
 import 'package:resmedia_taporty_flutter/model/ProductModel.dart';
 import 'package:vibration/vibration.dart';
 
+import '../../logic/bloc/CartBloc.dart';
+
 class ProductView extends StatelessWidget {
   final ProductModel model;
   final CartControllerRule cartController;
   final String update;
+  final String category;
   final StreamController<String> imgStream=new StreamController.broadcast();
 
   ProductView(
       {Key key,
-      @required this.model,
+      @required this.model,@required this.category,
       @required this.cartController,
       @required this.update})
       : super(key: key);
@@ -105,6 +108,7 @@ class ProductView extends StatelessWidget {
                 update: update,
                 model: model,
                 cartController: cartController,
+                category: category,
               ),
             ],
           ),
@@ -118,12 +122,14 @@ class CartStepperButton extends StatelessWidget {
   final CartController cartController;
   final ProductModel model;
   final String update;
+  final String category;
 
   const CartStepperButton(
       {Key key,
       @required this.cartController,
       @required this.model,
-      @required this.update})
+      @required this.update,
+      @required this.category})
       : super(key: key);
 
   @override
@@ -142,7 +148,9 @@ class CartStepperButton extends StatelessWidget {
                 child: CircularProgressIndicator(),
               );
             print(snap.data.uid);
-            if (update != null && update == model.restaurantId) {
+            final product=cart.getProduct(model.id, model.restaurantId, snap.data.uid);
+            if (product!=null && product.delete) {
+              print(product.id+'  '+product.delete.toString()+'  menu');
               cartController.inRemove(
                   model.id, model.restaurantId, snap.data.uid);
             }
@@ -161,7 +169,8 @@ class CartStepperButton extends StatelessWidget {
                     model.id,
                     model.restaurantId,
                     snap.data.uid,
-                    double.parse(model.price.replaceAll(',', '.')));
+                    double.parse(model.price.replaceAll(',', '.')),
+                    category);
               },
             );
           },
@@ -171,7 +180,7 @@ class CartStepperButton extends StatelessWidget {
   }
 }
 
-class CartButton extends StatelessWidget {
+/*class CartButton extends StatelessWidget {
   final int val;
   final ProductModel model;
 
@@ -219,7 +228,8 @@ class CartButton extends StatelessWidget {
                         model.id,
                         model.restaurantId,
                         snap.data.uid,
-                        double.parse(model.price.replaceAll(',', '.')));
+                        double.parse(model.price.replaceAll(',', '.')),
+                        ca);
                   },
                 ),
               );
@@ -248,4 +258,4 @@ class CartButton extends StatelessWidget {
       ),
     );
   }
-}
+}*/

@@ -134,6 +134,7 @@ class ProductsFoodDrinkBuilder extends StatelessWidget {
                               update: update,
                               model: temp,
                               cartController: cartBloc.drinksCartController,
+                              category: 'drinks',
                             ));
                           }
                         }
@@ -147,6 +148,7 @@ class ProductsFoodDrinkBuilder extends StatelessWidget {
                               update: update,
                               model: temp,
                               cartController: cartBloc.foodsCartController,
+                              category: 'foods',
                             ));
                           }
                         }

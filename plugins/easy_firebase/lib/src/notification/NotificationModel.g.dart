@@ -8,10 +8,11 @@ part of 'NotificationModel.dart';
 
 NotificationModelFirebase _$NotificationModelFirebaseFromJson(Map json) {
   return NotificationModelFirebase(
-      notification: json['notification'] == null
-          ? null
-          : NotificationMessageModelFirebase.fromJson(
-              json['notification'] as Map));
+    notification: json['notification'] == null
+        ? null
+        : NotificationMessageModelFirebase.fromJson(
+            json['notification'] as Map),
+  );
 }
 
 Map<String, dynamic> _$NotificationModelFirebaseToJson(
@@ -31,18 +32,19 @@ Map<String, dynamic> _$NotificationModelFirebaseToJson(
 NotificationMessageModelFirebase _$NotificationMessageModelFirebaseFromJson(
     Map json) {
   return NotificationMessageModelFirebase(
-      tag: json['tag'] as String,
-      body: json['body'] as String,
-      icon: json['icon'] as String,
-      badge: json['badge'] as String,
-      color: json['color'] as String,
-      sound: json['sound'] as String,
-      title: json['title'] as String,
-      bodyLocKey: json['bodyLocKey'] as String,
-      bodyLocArgs: json['bodyLocArgs'] as String,
-      clickAction: json['clickAction'] as String,
-      titleLocKey: json['titleLocKey'] as String,
-      titleLocArgs: json['titleLocArgs'] as String);
+    tag: json['tag'] as String,
+    body: json['body'] as String,
+    icon: json['icon'] as String,
+    badge: json['badge'] as String,
+    color: json['color'] as String,
+    sound: json['sound'] as String,
+    title: json['title'] as String,
+    bodyLocKey: json['bodyLocKey'] as String,
+    bodyLocArgs: json['bodyLocArgs'] as String,
+    clickAction: json['clickAction'] as String,
+    titleLocKey: json['titleLocKey'] as String,
+    titleLocArgs: json['titleLocArgs'] as String,
+  );
 }
 
 Map<String, dynamic> _$NotificationMessageModelFirebaseToJson(

@@ -15,13 +15,15 @@ class ProductViewCart extends StatelessWidget {
   final CartController cartController;
   final ProductModel model;
   final bool update;
+  final String category;
   final StreamController<String> imgStream=new StreamController.broadcast();
 
   ProductViewCart(
       {Key key,
       @required this.cartController,
       @required this.model,
-      @required this.update})
+      @required this.update,
+      @required this.category})
       : super(key: key);
 
   Future<Null> downloadFile(String httpPath)async{
@@ -62,6 +64,12 @@ class ProductViewCart extends StatelessWidget {
             /*if(update){
               cartController.inRemove(temp.id, temp.restaurantId, temp.userId);
             }*/
+            final product=cart.getProduct(model.id, model.restaurantId, snap.data.uid);
+            if (product!=null && product.delete) {
+              print(product.id+'  '+product.delete.toString()+'  cart');
+              cartController.inRemove(
+                  model.id, model.restaurantId, snap.data.uid);
+            }
             return Slidable(
               actionPane: SlidableDrawerActionPane(),
               actionExtentRatio: 0.25,
@@ -132,7 +140,9 @@ class ProductViewCart extends StatelessWidget {
                             model.id,
                             model.restaurantId,
                             snap.data.uid,
-                            double.parse(model.price.replaceAll(',', '.'))),
+                            double.parse(model.price.replaceAll(',', '.')),
+                            category,
+                            ),
                       ),
                     ],
                   ),
@@ -146,7 +156,7 @@ class ProductViewCart extends StatelessWidget {
   }
 }
 
-class CartButton extends StatelessWidget {
+/*class CartButton extends StatelessWidget {
   final int val;
   final ProductModel model;
 
@@ -223,4 +233,4 @@ class CartButton extends StatelessWidget {
       ),
     );
   }
-}
+}*/

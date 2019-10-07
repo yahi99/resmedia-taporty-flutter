@@ -15,8 +15,8 @@ class CartStorage extends Cart {
         this._storage = storage, super(products: products);
 
   @override
-  bool increment(String id,String restaurantId,String userId,double price) {
-    return _store(super.increment(id,restaurantId,userId,price));
+  bool increment(String id,String restaurantId,String userId,double price,String category) {
+    return _store(super.increment(id,restaurantId,userId,price,category));
   }
 
   @override

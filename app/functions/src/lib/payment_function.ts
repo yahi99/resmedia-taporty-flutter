@@ -132,7 +132,7 @@ const createStripeCharge = functions.https.onCall(async (data, context) => {
     const customerData=(await customerRef.get()).data();
     const customer = customerData!.customer_id;
     console.log(customer);
-    const idempotencyKey=uid;
+    const idempotencyKey=data.oid;
     console.log(uid);
     const amount = ((await calculatePrice(foodIds,'foods',restaurantId))+(await calculatePrice(drinkIds,'drinks',restaurantId)))*100;
     //const idempotencyKey = context.params.id;

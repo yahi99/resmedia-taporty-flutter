@@ -112,7 +112,7 @@ class _DetailOrderRestaurantPageState extends State<DetailOrderRestaurantPage> {
                                     'drinkIds':drinkIds,
                                     'restaurantId':widget.model.products.first.restaurantId,
                                     'uid':widget.model.uid,
-                                    'stripe_customer':widget.model.stripe_customer
+                                    'oid':widget.model.id
                                   }).then((isDone){
                                     CloudFunctions.instance
                                         .getHttpsCallable(

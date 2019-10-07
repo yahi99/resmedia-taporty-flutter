@@ -2,38 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d7719948-3a40-4af6-aa9b-8dc65a95b26f" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Flutter_Plugins.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Flutter_Plugins.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/functions/src/lib/payment_function.ts" beforeDir="false" afterPath="$PROJECT_DIR$/functions/src/lib/payment_function.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ios/Flutter/flutter_export_environment.sh" beforeDir="false" afterPath="$PROJECT_DIR$/ios/Flutter/flutter_export_environment.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/control/interface/screen/TurnScreen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/control/interface/screen/TurnScreen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/drivers/interface/widget/GoogleMapsUI.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/drivers/interface/widget/GoogleMapsUI.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/interface/page/CartPage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/interface/page/CartPage.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/interface/page/ConfirmPage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/interface/page/ConfirmPage.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/interface/page/MenuPages.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/interface/page/MenuPages.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/interface/page/PaymentPage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/interface/page/PaymentPage.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/interface/page/ShippingPage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/interface/page/ShippingPage.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/interface/screen/CheckoutScreen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/interface/screen/CheckoutScreen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/interface/view/ProductView.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/interface/view/ProductView.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/interface/view/ProductViewCart.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/interface/view/ProductViewCart.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/logic/bloc/CartBloc.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/logic/bloc/CartBloc.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/logic/database.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/logic/database.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/main.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/model/OrderModel.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/model/OrderModel.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/model/OrderModel.g.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/model/OrderModel.g.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/restaurant/page/DetailOrderRestaurantPage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/restaurant/page/DetailOrderRestaurantPage.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../plugins/easy_blocs/lib/src/cart/Cart.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../plugins/easy_blocs/lib/src/cart/Cart.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../plugins/easy_blocs/lib/src/cart/Cart.g.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../plugins/easy_blocs/lib/src/cart/Cart.g.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../plugins/easy_blocs/lib/src/cart/CartBloc.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../plugins/easy_blocs/lib/src/cart/CartBloc.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../plugins/easy_blocs/lib/src/cart/CartController.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../plugins/easy_blocs/lib/src/cart/CartController.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../plugins/easy_blocs/lib/src/cart/CartStorage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../plugins/easy_blocs/lib/src/cart/CartStorage.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../plugins/easy_firebase/lib/src/cart/CartControllerFs.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../plugins/easy_firebase/lib/src/cart/CartControllerFs.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../plugins/easy_firebase/lib/src/cart/ProductCartFirebase.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../plugins/easy_firebase/lib/src/cart/ProductCartFirebase.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../plugins/easy_firebase/lib/src/cart/ProductCartFirebase.g.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../plugins/easy_firebase/lib/src/cart/ProductCartFirebase.g.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../plugins/easy_firebase/lib/src/notification/NotificationModel.g.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../plugins/easy_firebase/lib/src/notification/NotificationModel.g.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../plugins/easy_stripe/lib/src/StripeSourceModel.g.dart" beforeDir="false" afterPath="$PROJECT_DIR$/../plugins/easy_stripe/lib/src/StripeSourceModel.g.dart" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -48,10 +18,10 @@
   <component name="ExecutionTargetManager" SELECTED_TARGET="NCC" />
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lib/main.dart">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="75">
+            <state relative-caret-position="-1347">
               <caret line="5" column="38" selection-start-line="5" selection-start-column="38" selection-end-line="5" selection-end-column="38" />
             </state>
           </provider>
@@ -114,11 +84,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/lib/restaurant/page/DetailOrderRestaurantPage.dart">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-810">
-              <caret line="114" column="82" selection-start-line="114" selection-start-column="82" selection-end-line="114" selection-end-column="82" />
+            <state relative-caret-position="229">
+              <caret line="119" column="47" lean-forward="true" selection-start-line="119" selection-start-column="47" selection-end-line="119" selection-end-column="47" />
               <folding>
                 <element signature="e#0#54#0" expanded="true" />
               </folding>
@@ -149,17 +119,17 @@
         <option value="$PROJECT_DIR$/lib/control/interface/screen/TurnScreen.dart" />
         <option value="$PROJECT_DIR$/lib/interface/screen/CheckoutScreen.dart" />
         <option value="$PROJECT_DIR$/lib/model/OrderModel.dart" />
-        <option value="$PROJECT_DIR$/lib/restaurant/page/DetailOrderRestaurantPage.dart" />
         <option value="$PROJECT_DIR$/../plugins/easy_stripe/lib/src/StripeSourceModel.dart" />
         <option value="$PROJECT_DIR$/lib/interface/page/PaymentPage.dart" />
         <option value="$PROJECT_DIR$/lib/logic/bloc/CartBloc.dart" />
         <option value="$PROJECT_DIR$/lib/logic/database.dart" />
         <option value="$PROJECT_DIR$/lib/interface/page/ConfirmPage.dart" />
         <option value="$PROJECT_DIR$/lib/main.dart" />
+        <option value="$PROJECT_DIR$/lib/restaurant/page/DetailOrderRestaurantPage.dart" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="65" />
     <option name="y" value="24" />
     <option name="width" value="1301" />
@@ -452,16 +422,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/restaurant/page/DetailOrderRestaurantPage.dart">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-810">
-          <caret line="114" column="82" selection-start-line="114" selection-start-column="82" selection-end-line="114" selection-end-column="82" />
-          <folding>
-            <element signature="e#0#54#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/lib/interface/page/ConfirmPage.dart">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="206">
@@ -474,8 +434,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/main.dart">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="75">
+        <state relative-caret-position="-1347">
           <caret line="5" column="38" selection-start-line="5" selection-start-column="38" selection-end-line="5" selection-end-column="38" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/restaurant/page/DetailOrderRestaurantPage.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="229">
+          <caret line="119" column="47" lean-forward="true" selection-start-line="119" selection-start-column="47" selection-end-line="119" selection-end-column="47" />
+          <folding>
+            <element signature="e#0#54#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

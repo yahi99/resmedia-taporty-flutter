@@ -127,6 +127,10 @@ class Database extends FirebaseDatabase
     return false;
   }
 
+  Future<void> upgradeToDriver({@required String uid})async{
+    await fs.collection(cl.USERS).document(uid).updateData({'isDriver':true});
+  }
+
   Future<void> createOrder(
       {@required String uid,
       @required Cart model,

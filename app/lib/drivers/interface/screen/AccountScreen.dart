@@ -4,6 +4,8 @@ import 'package:easy_route/easy_route.dart';
 import 'package:easy_widget/easy_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:resmedia_taporty_flutter/data/config.dart';
+import 'package:resmedia_taporty_flutter/drivers/interface/screen/BecomeDriverScreen.dart';
+import 'package:resmedia_taporty_flutter/drivers/interface/screen/BecomeRestaurantScreen.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/screen/ChangePasswordScreeen.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/screen/EditScreen.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/screen/LegalNotesScreen.dart';
@@ -53,6 +55,7 @@ class AccountScreenDriver extends StatelessWidget implements WidgetRoute {
             return Center(
               child: CircularProgressIndicator(),
             );
+          print(snap.data.model.isDriver);
           var temp = snap.data.model.nominative.split(' ');
           return Column(
             children: <Widget>[
@@ -74,17 +77,15 @@ class AccountScreenDriver extends StatelessWidget implements WidgetRoute {
                       child: Container(
                         width: double.infinity,
                         height: double.infinity,
-                        child: CircleAvatar(
-                          backgroundImage: snap.data.userFb.photoUrl != null
-                              ? CachedNetworkImageProvider(
+                        child: (snap.data.userFb.photoUrl != null)?CircleAvatar(
+                          backgroundImage:CachedNetworkImageProvider(
                                   snap.data.userFb.photoUrl)
-                              : Container(
-                                  child: Center(
-                                    child: AutoSizeText(
-                                        "Nessun'immagine del profilo selezionata",
-                                        textAlign: TextAlign.center),
-                                  ),
-                                ),
+                        ):Container(
+                          child: Center(
+                            child: AutoSizeText(
+                                "\n\n\n Nessun'immagine del profilo selezionata",
+                                textAlign: TextAlign.center),
+                          ),
                         ),
                       ),
                     ),
@@ -112,6 +113,28 @@ class AccountScreenDriver extends StatelessWidget implements WidgetRoute {
                     Text(
                       snap.data.model.email,
                       style: theme.textTheme.subhead,
+                    ),
+                    Row(
+                      children: <Widget>[
+                        Icon(Icons.directions_car),
+                        FlatButton(
+                          child:
+                          Text('Diventa un Fattorino', style: theme.textTheme.subhead),
+                          onPressed: () =>
+                          {EasyRouter.push(context, BecomeDriverScreen())},
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: <Widget>[
+                        Icon(Icons.directions_car),
+                        FlatButton(
+                          child:
+                          Text('Diventa un ristoratore', style: theme.textTheme.subhead),
+                          onPressed: () =>
+                          {EasyRouter.push(context, BecomeRestaurantScreen())},
+                        ),
+                      ],
                     ),
                     Row(
                       children: <Widget>[

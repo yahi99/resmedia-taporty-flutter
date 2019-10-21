@@ -131,6 +131,13 @@ class Database extends FirebaseDatabase
     await fs.collection(cl.USERS).document(uid).updateData({'isDriver':true});
   }
 
+  Future<void> upgradeToVendor({@required String uid,@required String img,@required Position pos,
+    @required int cop,@required rid})async{
+    await fs.collection(cl.USERS).document(uid).updateData({'restaurantId':rid});
+    await fs.collection(cl.RESTAURANTS).document(rid).setData({'img':img,'lat':pos.latitude,
+    'lng':pos.longitude,'km':cop});
+  }
+
   Future<void> createOrder(
       {@required String uid,
       @required Cart model,

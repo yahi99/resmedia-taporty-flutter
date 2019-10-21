@@ -337,7 +337,10 @@ class _MenuPageState extends State<MenuPage> {
                       onPressed: () async {
                         if (_formKey.currentState.validate()) {
                           if (_tempPath != null) {
-                            uploadFile(_tempPath).then((path) async {
+                            if(_tempPath.split('.').last!='jpg'){
+                              Toast.show('Il formato dell\'immagine deve essere .jpg', context,duration: 3);
+                            }
+                            else uploadFile(_tempPath).then((path) async {
                               Database().createRequestProduct(
                                   _nameKey.currentState.value.toString(),
                                   path,

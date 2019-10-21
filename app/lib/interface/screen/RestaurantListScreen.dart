@@ -1,5 +1,9 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:easy_blocs/easy_blocs.dart';
 import 'package:easy_route/easy_route.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -202,22 +206,50 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
 
 class RestaurantView extends StatelessWidget {
   final RestaurantModel model;
+  final StreamController<String> imgStream=new StreamController.broadcast();
 
-  const RestaurantView({
+  RestaurantView({
     Key key,
     @required this.model,
   })  : assert(model != null),
         super(key: key);
 
+  Future<Null> downloadFile(String httpPath)async{
+    final RegExp regExp=RegExp('([^?/]*\.(jpg))');
+    final String fileName=regExp.stringMatch(httpPath);
+    final Directory tempDir= Directory.systemTemp;
+    final File file=File('${tempDir.path}/$fileName');
+    final StorageReference ref=FirebaseStorage.instance.ref().child(fileName);
+    final StorageFileDownloadTask downloadTask=ref.writeToFile(file);
+    final int byteNumber=(await downloadTask.future).totalByteCount;
+    print(byteNumber);
+    //put the file into the stream
+    imgStream.add(file.path);
+  }
+
   @override
   Widget build(BuildContext context) {
     print(model.id);
+    if(!model.img.startsWith('assets')) downloadFile(model.img);
     return ClipRRect(
       borderRadius: BorderRadius.circular(8.0),
       child: Stack(
         alignment: Alignment.bottomCenter,
         children: <Widget>[
-          Image.asset('${model.img}'),
+          StreamBuilder(
+            stream: imgStream.stream,
+            builder: (context,snap){
+              if(model.img.startsWith('assets')) return Image.asset(
+                model.img,
+                fit: BoxFit.fitHeight,
+              );
+              if(!snap.hasData) return Center(child:CircularProgressIndicator());
+              return Image.asset(
+                snap.data,
+                fit: BoxFit.fitHeight,
+              );
+            },
+          ),
           Container(
             color: Colors.black,
             child: Padding(

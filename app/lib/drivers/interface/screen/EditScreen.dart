@@ -75,16 +75,14 @@ class SnackBarPage extends StatelessWidget {
                           Container(
                             width: double.infinity,
                             height: double.infinity,
-                            child: CircleAvatar(
-                              backgroundImage: snap.data.userFb.photoUrl != null
-                                  ? CachedNetworkImageProvider(
-                                  snap.data.userFb.photoUrl)
-                                  : Container(
-                                child: Center(
-                                  child: AutoSizeText(
-                                      "Nessun'immagine del profilo selezionata",
-                                      textAlign: TextAlign.center),
-                                ),
+                            child: (snap.data.userFb.photoUrl != null)?CircleAvatar(
+                                backgroundImage:CachedNetworkImageProvider(
+                                    snap.data.userFb.photoUrl)
+                            ):Container(
+                              child: Center(
+                                child: AutoSizeText(
+                                    "\n\n\n Nessun'immagine del profilo selezionata",
+                                    textAlign: TextAlign.center),
                               ),
                             ),
                           ),

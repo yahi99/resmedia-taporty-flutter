@@ -1,6 +1,11 @@
+import 'dart:async';
+
 import 'package:easy_route/easy_route.dart';
 import 'package:easy_widget/easy_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_google_places/flutter_google_places.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_webservice/places.dart';
 import 'package:resmedia_taporty_flutter/data/config.dart';
 import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
 import 'package:resmedia_taporty_flutter/logic/database.dart';
@@ -17,6 +22,19 @@ class BecomeDriverScreen extends StatefulWidget implements WidgetRoute {
 }
 
 class NewDriverState extends State<BecomeDriverScreen> {
+
+  static final String _key = 'AIzaSyAmJyflDR6W10z738vMkLz9Oham51HR790';
+
+  GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: _key);
+
+  TextEditingController _controller = TextEditingController();
+
+  Position pos;
+  String address;
+  bool isValid=false;
+
+  StreamController geo;
+
   final _formKey = new GlobalKey<FormState>();
   final _fiscKey = new GlobalKey<FormFieldState>();
   final _resKey = new GlobalKey<FormFieldState>();
@@ -37,6 +55,7 @@ class NewDriverState extends State<BecomeDriverScreen> {
     _copNode = new FocusNode();
     _carNode = new FocusNode();
     _expNode = new FocusNode();
+    geo = StreamController<String>.broadcast();
     super.initState();
   }
 
@@ -47,13 +66,44 @@ class NewDriverState extends State<BecomeDriverScreen> {
     _copNode.dispose();
     _carNode.dispose();
     _expNode.dispose();
+    geo.close();
     super.dispose();
   }
 
-  bool _upgrade(String uid,BuildContext context){
+  void _focusNodePlaces() async {
+    // show input autocomplete with selected mode
+    // then get the Prediction selected
+    Prediction p =
+    await PlacesAutocomplete.show(context: context, apiKey: _key);
+    displayPrediction(p);
+  }
+
+  Future<Null> displayPrediction(Prediction p) async {
+    if (p != null) {
+      PlacesDetailsResponse detail =
+      await _places.getDetailsByPlaceId(p.placeId);
+
+      //var placeId = p.placeId;
+      double lat = detail.result.geometry.location.lat;
+      double lng = detail.result.geometry.location.lng;
+
+      pos = Position(latitude: lat, longitude: lng);
+
+      address = p.description;
+
+      isValid = true;
+
+      geo.sink.add(address);
+    }
+  }
+
+  Future<void> _upgrade(String uid,BuildContext context){
     if(_formKey.currentState.validate()) {
       //Can add all the data that is required in the future
-      Database().upgradeToDriver(uid: uid).then((value){
+      Database().upgradeToDriver(uid: uid,car: _carKey.currentState.value,
+          codiceFiscale: _fiscKey.currentState.value,address: _resKey.currentState.value,
+          km: _copKey.currentState.value,exp:_expKey.currentState.value,
+          pos: pos).then((value){
         Toast.show('Richiesta andata a buon fine!', context,duration: 3);
       });
     }
@@ -124,7 +174,37 @@ class NewDriverState extends State<BecomeDriverScreen> {
                             ),
                             padding: EdgeInsets.all(8.0),
                           ),
-                          Padding(
+                          StreamBuilder<String>(
+                            stream: geo.stream,
+                            builder: (ctx, snap) {
+                              if (snap.hasData)
+                                _controller.value =
+                                    TextEditingValue(text: snap.data);
+                              return Padding(
+                                child: TextFormField(
+                                  controller: _controller,
+                                  onTap: _focusNodePlaces,
+                                  key: _resKey,
+                                  focusNode: _resNode,
+                                  textInputAction: TextInputAction.next,
+                                  onFieldSubmitted: (value) =>
+                                      _changeFocus(context, _resNode, _copNode),
+                                  decoration: InputDecoration(
+                                    hintText: "Indirizzo",
+                                  ),
+                                  validator: (value) {
+                                    if (value.length == 0) {
+                                      return 'Inserisci indirizzo';
+                                    }
+                                    return null;
+                                  },
+                                  keyboardType: TextInputType.text,
+                                ),
+                                padding: EdgeInsets.all(8.0),
+                              );
+                            },
+                          ),
+                          /*Padding(
                             child: TextFormField(
                               key: _resKey,
                               focusNode: _resNode,
@@ -143,7 +223,7 @@ class NewDriverState extends State<BecomeDriverScreen> {
                               keyboardType: TextInputType.text,
                             ),
                             padding: EdgeInsets.all(8.0),
-                          ),
+                          ),*/
                           Padding(
                             child: TextFormField(
                               key: _copKey,

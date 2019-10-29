@@ -127,15 +127,20 @@ class Database extends FirebaseDatabase
     return false;
   }
 
-  Future<void> upgradeToDriver({@required String uid})async{
-    await fs.collection(cl.USERS).document(uid).updateData({'isDriver':true});
+  Future<void> upgradeToDriver({@required String uid,@required codiceFiscale,
+      @required address,@required km,@required car,@required exp,@required Position pos})async{
+    //await fs.collection(cl.USERS).document(uid).updateData({'isDriver':true});
+    await fs.collection('driver_requests').document(uid).setData({'codiceFiscale':codiceFiscale,
+        'address':address,'km':km,'mezzo':car,'experience':exp,'lat':pos.latitude,'lng':pos.longitude});
   }
 
   Future<void> upgradeToVendor({@required String uid,@required String img,@required Position pos,
-    @required int cop,@required rid})async{
-    await fs.collection(cl.USERS).document(uid).updateData({'restaurantId':rid});
-    await fs.collection(cl.RESTAURANTS).document(rid).setData({'img':img,'lat':pos.latitude,
-    'lng':pos.longitude,'km':cop});
+    @required int cop,@required rid,@required ragSociale,@required partitaIva,@required address,
+    @required eseType,@required prodType})async{
+    //await fs.collection(cl.USERS).document(uid).updateData({'restaurantId':rid});
+    await fs.collection('restaurant_requests').document(uid).setData({'img':img,'lat':pos.latitude,
+    'lng':pos.longitude,'km':cop,'ragioneSociale':ragSociale,'partitaIva':partitaIva,
+    'address':address,'tipoEsercizio':eseType,'prodType':prodType});
   }
 
   Future<void> createOrder(

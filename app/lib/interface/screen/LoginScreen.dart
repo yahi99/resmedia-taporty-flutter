@@ -238,6 +238,46 @@ class _LoginScreenState extends State<LoginScreen> {
     super.initState();
   }
 
+  void _showDialog(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (_context) {
+          final theme = Theme.of(context);
+          final cls = theme.colorScheme;
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(20))),
+            content: Scaffold(
+              body: ListView(
+                shrinkWrap: true,
+                children: <Widget>[
+                  AutoSizeText(
+                      'Per poter diventare un fattorino/ristoratore è necessario registrarsi.'),
+                  AutoSizeText(
+                      'Una volta registrato effettua il login e in alto alla pagina principale troverai un\'icona per entrare nelle impostazioni del tuo account'),
+                  Padding(
+                    child: Image.asset('assets/img/account.jpg'),
+                    padding: EdgeInsets.only(top: SPACE, bottom: SPACE),
+                  ),
+                  AutoSizeText(
+                      'Quando sei entrato nelle impostazioni c\'è una lista di possibili azioni, seleziona Diventa un fattorino/ristoratore'),
+                  Padding(
+                    child: Image.asset('assets/img/upgrade.jpg'),
+                    padding: EdgeInsets.only(top: SPACE, bottom: SPACE),
+                  ),
+                  AutoSizeText(
+                      'Compila i campi richiesti ed una volta inviata la richiesta verrà presa in visione nel minor tempo possibile e verrai notificato se la richiesta è andata a buon fine'),
+                  RaisedButton(
+                    child: Text('  Chiudi  '),
+                    onPressed: () => EasyRouter.pop(context),
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
   @override
   void dispose() {
     FirebaseSignInBloc.close();
@@ -327,6 +367,25 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       onPressed: () {
+                        Toast.show("Disponibile in futuro", context,
+                            duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+                        //_userBloc.inSignInAnonymously();
+                      },
+                    ),
+                    RaisedButton(
+                      color: Colors.white,
+                      child: Container(
+                        width: double.infinity,
+                        child: Center(
+                          child: AutoSizeText(
+                            "Diventa un fattorino/ristoratore",
+                            maxLines: 1,
+                            minFontSize: 6.0,
+                          ),
+                        ),
+                      ),
+                      onPressed: () {
+                        _showDialog(context);
                         Toast.show("Disponibile in futuro", context,
                             duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
                         //_userBloc.inSignInAnonymously();

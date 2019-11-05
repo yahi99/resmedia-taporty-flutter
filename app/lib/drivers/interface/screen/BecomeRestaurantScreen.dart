@@ -141,7 +141,7 @@ class NewDriverState extends State<BecomeRestaurantScreen> {
           }
           else uploadFile(_tempPath).then((path) async {
             Database().upgradeToVendor(uid: uid,pos: pos,
-                img: path,cop: int.parse(_copKey.currentState.value),rid: _ragKey.currentState.value,
+                img: path,cop: double.parse(_copKey.currentState.value),rid: _ragKey.currentState.value,
                 ragSociale: _ragKey.currentState.value,partitaIva: _ivaKey.currentState.value,
                 address: _indKey.currentState.value,eseType: _eseKey.currentState.value,
                 prodType: _prodKey.currentState.value).then((value){

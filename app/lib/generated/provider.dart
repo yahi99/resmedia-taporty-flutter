@@ -1,6 +1,8 @@
 import 'package:dash/dash.dart';
 import 'package:easy_blocs/easy_blocs.dart';
+import 'package:resmedia_taporty_flutter/control/logic/bloc/DriverRequestsBloc.dart';
 import 'package:resmedia_taporty_flutter/control/logic/bloc/RequestsBloc.dart';
+import 'package:resmedia_taporty_flutter/control/logic/bloc/RestaurantRequestsBloc.dart';
 import 'package:resmedia_taporty_flutter/drivers/logic/bloc/CalendarBloc.dart';
 import 'package:resmedia_taporty_flutter/drivers/logic/bloc/TimeBloc.dart';
 import 'package:resmedia_taporty_flutter/drivers/logic/bloc/TurnBloc.dart';
@@ -32,4 +34,6 @@ part 'provider.g.dart';
 @BlocProvider.register(CalendarBloc)
 @BlocProvider.register(TimeBloc)
 @BlocProvider.register(RequestsBloc)
+@BlocProvider.register(DriverRequestsBloc)
+@BlocProvider.register(RestaurantRequestsBloc)
 abstract class Provider {}

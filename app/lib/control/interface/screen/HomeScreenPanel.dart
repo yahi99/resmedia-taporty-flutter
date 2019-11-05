@@ -2,7 +2,9 @@ import 'dart:async';
 import 'package:easy_route/easy_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:resmedia_taporty_flutter/control/interface/screen/DriverRequests.dart';
 import 'package:resmedia_taporty_flutter/control/interface/screen/ProductRequestsScreen.dart';
+import 'package:resmedia_taporty_flutter/control/interface/screen/RestaurantRequestScreen.dart';
 import 'package:resmedia_taporty_flutter/control/interface/screen/TurnScreen.dart';
 import 'package:resmedia_taporty_flutter/drivers/logic/bloc/CalendarBloc.dart';
 import 'package:resmedia_taporty_flutter/drivers/logic/bloc/DriverBloc.dart';
@@ -52,9 +54,15 @@ class _HomeScreenPanelState extends State<HomeScreenPanel> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           FlatButton(
-            child: Text('  Aggiungi Turni Fattorini  '),
+            child: Text('  Richieste Ristoratori  '),
             onPressed: (){
-              EasyRouter.push(context, TurnScreen());
+              EasyRouter.push(context, RestaurantRequestsScreen());
+            },
+          ),
+          FlatButton(
+            child: Text('  Richieste Fattorini  '),
+            onPressed: (){
+              EasyRouter.push(context, DriverRequestsScreen());
             },
           ),
           FlatButton(

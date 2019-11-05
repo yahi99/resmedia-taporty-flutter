@@ -97,13 +97,13 @@ class NewDriverState extends State<BecomeDriverScreen> {
     }
   }
 
-  Future<void> _upgrade(String uid,BuildContext context){
+  Future<void> _upgrade(String uid,BuildContext context,String nominative){
     if(_formKey.currentState.validate()) {
       //Can add all the data that is required in the future
       Database().upgradeToDriver(uid: uid,car: _carKey.currentState.value,
           codiceFiscale: _fiscKey.currentState.value,address: _resKey.currentState.value,
-          km: _copKey.currentState.value,exp:_expKey.currentState.value,
-          pos: pos).then((value){
+          km: double.tryParse(_copKey.currentState.value),exp:_expKey.currentState.value,
+          pos: pos,nominative: nominative).then((value){
         Toast.show('Richiesta andata a buon fine!', context,duration: 3);
       });
     }
@@ -271,7 +271,7 @@ class NewDriverState extends State<BecomeDriverScreen> {
                               textInputAction: TextInputAction.done,
                               onFieldSubmitted: (value) {
                                 _expNode.unfocus();
-                                _upgrade(snap.data.model.id,context);
+                                _upgrade(snap.data.model.id,context,snap.data.model.nominative);
                                 // update DB
                               },
                               validator: (value){
@@ -293,10 +293,10 @@ class NewDriverState extends State<BecomeDriverScreen> {
                       ),
                     ),
                     FlatButton(
-                      child: Text('  Invia Richiesta  '),
+                      child: Padding(child:Text('Invia Richiesta'),padding: EdgeInsets.all(SPACE),),
                       onPressed: (){
                         //update DB
-                        _upgrade(snap.data.model.id,context);
+                        _upgrade(snap.data.model.id,context,snap.data.model.nominative);
                       },
                     )
                   ],

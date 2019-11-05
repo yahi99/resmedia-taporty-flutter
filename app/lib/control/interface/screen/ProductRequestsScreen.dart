@@ -11,7 +11,7 @@ import 'package:resmedia_taporty_flutter/data/config.dart';
 import 'package:resmedia_taporty_flutter/logic/database.dart';
 
 class ProductRequestsScreen extends StatefulWidget implements WidgetRoute {
-  static const ROUTE = 'TurnScreenPanel';
+  static const ROUTE = 'ProductRequestScreenPanel';
 
   @override
   String get route => ROUTE;

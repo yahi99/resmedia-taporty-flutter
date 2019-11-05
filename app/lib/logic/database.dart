@@ -11,7 +11,9 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:geocoder/model.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:resmedia_taporty_flutter/control/model/DriverRequestModel.dart';
 import 'package:resmedia_taporty_flutter/control/model/ProductRequestModel.dart';
+import 'package:resmedia_taporty_flutter/control/model/RestaurantRequestModel.dart';
 import 'package:resmedia_taporty_flutter/data/collections.dart' as cl;
 import 'package:resmedia_taporty_flutter/drivers/model/CalendarModel.dart';
 import 'package:resmedia_taporty_flutter/drivers/model/OrderModel.dart';
@@ -111,6 +113,35 @@ class Database extends FirebaseDatabase
     await fs.collection('product_requests').document(model.id).delete();
   }
 
+
+  //TODO
+  Future<void> addDriver(DriverRequestModel model)async{
+    await fs.collection(cl.USERS).document(model.id).updateData({
+      'km':model.km,
+      'lat':model.lat,
+      'lng':model.lng,
+      'isDriver':true,
+    });
+    //await fs.collection('food_categories').document(model.category).setData({'translation':model.category});
+    //await fs.collection('driver_requests').document(model.id).delete();
+  }
+
+  Future<void> addRestaurant(RestaurantRequestModel model)async{
+    await fs.collection(cl.RESTAURANTS).document(model.ragioneSociale).setData({
+      'km':model.km,
+      'lat':model.lat,
+      'lng':model.lng,
+      'img':model.img,
+      'partitaIva':model.partitaIva,
+      'prodType':model.prodType,
+      'tipoEsercizio':model.tipoEsercizio,
+      'address':model.address
+    });
+    await fs.collection(cl.USERS).document(model.id).updateData({'restaurantId':model.ragioneSociale});
+    //await fs.collection('food_categories').document(model.category).setData({'translation':model.category});
+    //await fs.collection('restaurant_requests').document(model.ragioneSociale).delete();
+  }
+
   Future<bool> addShift(String startTime,String endTime,String day,String number)async{
     final id=await fs.collection('days').document(day).collection('times').where('startTime',isEqualTo: startTime).limit(1).getDocuments();
     if(id.documents.length==1) return true;
@@ -128,14 +159,16 @@ class Database extends FirebaseDatabase
   }
 
   Future<void> upgradeToDriver({@required String uid,@required codiceFiscale,
-      @required address,@required km,@required car,@required exp,@required Position pos})async{
+      @required address,@required km,@required car,@required exp,@required Position pos,
+      @required nominative})async{
     //await fs.collection(cl.USERS).document(uid).updateData({'isDriver':true});
     await fs.collection('driver_requests').document(uid).setData({'codiceFiscale':codiceFiscale,
-        'address':address,'km':km,'mezzo':car,'experience':exp,'lat':pos.latitude,'lng':pos.longitude});
+        'address':address,'km':km,'mezzo':car,'experience':exp,'lat':pos.latitude,
+        'lng':pos.longitude,'nominative':nominative});
   }
 
   Future<void> upgradeToVendor({@required String uid,@required String img,@required Position pos,
-    @required int cop,@required rid,@required ragSociale,@required partitaIva,@required address,
+    @required double cop,@required rid,@required ragSociale,@required partitaIva,@required address,
     @required eseType,@required prodType})async{
     //await fs.collection(cl.USERS).document(uid).updateData({'restaurantId':rid});
     await fs.collection('restaurant_requests').document(uid).setData({'img':img,'lat':pos.latitude,
@@ -335,6 +368,26 @@ class Database extends FirebaseDatabase
     return data.map((query) {
       return query.documents
           .map((snap) => ProductRequestModel.fromFirebase(snap))
+          .toList();
+    });
+  }
+
+  Stream<List<DriverRequestModel>> getDriverRequests() {
+    final data =
+    fs.collection('driver_requests').snapshots();
+    return data.map((query) {
+      return query.documents
+          .map((snap) => DriverRequestModel.fromFirebase(snap))
+          .toList();
+    });
+  }
+
+  Stream<List<RestaurantRequestModel>> getRestaurantRequests() {
+    final data =
+    fs.collection('restaurant_requests').snapshots();
+    return data.map((query) {
+      return query.documents
+          .map((snap) => RestaurantRequestModel.fromFirebase(snap))
           .toList();
     });
   }

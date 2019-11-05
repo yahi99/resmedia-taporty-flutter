@@ -84,6 +84,16 @@ class $Provider extends Provider {
           return BlocCache.getBlocInstance(
               "RequestsBloc", () => RequestsBloc.instance());
         }
+      case DriverRequestsBloc:
+        {
+          return BlocCache.getBlocInstance(
+              "DriverRequestsBloc", () => DriverRequestsBloc.instance());
+        }
+      case RestaurantRequestsBloc:
+        {
+          return BlocCache.getBlocInstance("RestaurantRequestsBloc",
+              () => RestaurantRequestsBloc.instance());
+        }
     }
     return null;
   }
@@ -163,6 +173,16 @@ class $Provider extends Provider {
       case RequestsBloc:
         {
           BlocCache.dispose("RequestsBloc");
+          break;
+        }
+      case DriverRequestsBloc:
+        {
+          BlocCache.dispose("DriverRequestsBloc");
+          break;
+        }
+      case RestaurantRequestsBloc:
+        {
+          BlocCache.dispose("RestaurantRequestsBloc");
           break;
         }
     }

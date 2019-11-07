@@ -89,6 +89,16 @@ class Database extends FirebaseDatabase
     return Coordinates(model.lat, model.lng);
   }
 
+  Future<CalendarModel> getRestId(String day,String startTime)async{
+    final list=(await fs.collection(cl.DAYS).document(day).collection(cl.TIMES).document(startTime).collection('restaurant_turns').where('isEmpty',isEqualTo: false).getDocuments()).documents;
+    var min=CalendarModel.fromFirebase(list.first);
+    for(int i=1;i<list.length;i++){
+      var temp=CalendarModel.fromFirebase(list.elementAt(i));
+      if(temp.occupied.length<min.occupied.length) min=temp;
+    }
+    return min;
+  }
+
   Future<void> createRequestProduct(String id, String img, String category,
       String price, String quantity, String restaurantId, String cat) async {
     await fs.collection('product_requests').document(id).setData({
@@ -142,15 +152,56 @@ class Database extends FirebaseDatabase
     //await fs.collection('restaurant_requests').document(model.ragioneSociale).delete();
   }
 
-  Future<bool> addShift(String startTime,String endTime,String day,String number)async{
-    final id=await fs.collection('days').document(day).collection('times').where('startTime',isEqualTo: startTime).limit(1).getDocuments();
-    if(id.documents.length==1) return true;
-    await fs.collection('days').document(day).setData({});
-    fs.collection('days').document(day).collection('times').document(startTime).setData({
+  Future<bool> addShift(String startTime,String endTime,String day,String number,String restId)async{
+    final id=await fs.collection('days').document(day).collection('times').document(startTime).get();
+    final rest=await fs.collection('days').document(day).collection('times').document(startTime).collection('restaurant_turns').document(restId).get();
+    final days= await fs.collection('days').document(day).get();
+    //already tried to insert!!!
+    print(id.exists);
+    print(rest.exists);
+    if(id.exists && rest.exists) return true;
+    if(!days.exists) await fs.collection('days').document(day).setData({});
+    //no data for this time and day
+    if(!id.exists) {
+      //await fs.collection('days').document(day).setData({});
+      await fs.collection('days').document(day).collection('times').document(
+          startTime).setData({
+        'startTime': startTime,
+        'endTime': endTime,
+        'day': day,
+        'number': int.tryParse(number),
+        'isEmpty': true,
+        'free': [''],
+        'occupied': [''],
+      });
+      //fails if somehow there is data on this time and date but no document for startTime
+      fs.collection('days').document(day).collection('times').document(startTime).collection('restaurant_turns').document(restId).setData({
+        'startTime':startTime,
+        'endTime':endTime,
+        'day':day,
+        'number':int.tryParse(number),
+        'isEmpty':true,
+        'free':[''] ,
+        'occupied':[''],
+      });
+      return false;
+    }
+    //id present so we update the start time document and add the restaurant document, which fails in case that it is present
+    final model = CalendarModel.fromFirebase(id);
+    fs.collection('days').document(day).collection('times').document(startTime).updateData({
       'startTime':startTime,
       'endTime':endTime,
       'day':day,
-      'number':number,
+      'number':model.number+int.tryParse(number),
+      'isEmpty':model.isEmpty,
+      'free':model.free ,
+      'occupied':model.occupied,
+    });
+    fs.collection('days').document(day).collection('times').document(startTime).collection('restaurant_turns').document(restId).setData({
+      'startTime':startTime,
+      'endTime':endTime,
+      'day':day,
+      'number':int.tryParse(number),
       'isEmpty':true,
       'free':[''] ,
       'occupied':[''],
@@ -443,7 +494,16 @@ class Database extends FirebaseDatabase
   }
 
   Future<void> occupyDriver(String date, String time, List<String> free,
-      List<String> occupied) async {
+      List<String> occupied,String restId,String did) async {
+    final model=CalendarModel.fromFirebase(await fs
+        .collection(cl.DAYS)
+        .document(date)
+        .collection(cl.TIMES)
+        .document(time)
+        .collection('restaurant_turns')
+        .document(restId)
+        .get());
+    model.occupied.add(did);
     if (free.length > 1)
       await fs
           .collection(cl.DAYS)
@@ -458,6 +518,14 @@ class Database extends FirebaseDatabase
           .collection(cl.TIMES)
           .document(time)
           .updateData({'free': free, 'occupied': occupied, 'isEmpty': true});
+    await fs
+        .collection(cl.DAYS)
+        .document(date)
+        .collection(cl.TIMES)
+        .document(time)
+        .collection('restaurant_turns')
+        .document(restId)
+        .updateData({'occupied':model.occupied});
     //final data=res.data;
     //return CalendarModel.fromJson(res.data);
   }

@@ -12,9 +12,11 @@ class CalendarModel extends FirebaseModel {
   final List<String> free;
   final List<String> occupied;
   final bool isEmpty;
+  final int number;
 
   CalendarModel({
     String path,
+    @required this.number,
     @required this.isEmpty,
     @required this.startTime,
     @required this.day,

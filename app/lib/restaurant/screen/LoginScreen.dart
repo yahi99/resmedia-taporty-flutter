@@ -73,12 +73,14 @@ class _LoginScreenState extends State<LoginScreen> {
       /*if (registrationLevel == RegistrationLevel.LV2)
         await EasyRouter.push(context, SignUpMoreScreen());*/
       if (registrationLevel == RegistrationLevel.COMPLETE) {
-        final orderBloc = OrdersBloc.of();
-        await orderBloc.setRestaurantStream();
         String user = (await UserBloc.of().outUser.first).model.restaurantId;
-        final restaurantBloc = RestaurantBloc.init(idRestaurant: user);
-        await EasyRouter.pushAndRemoveAll(
-            context, HomeScreen(restBloc: restaurantBloc));
+        if(user!=null) {
+          final orderBloc = OrdersBloc.of();
+          await orderBloc.setRestaurantStream();
+          final restaurantBloc = RestaurantBloc.init(idRestaurant: user);
+          await EasyRouter.pushAndRemoveAll(
+              context, HomeScreen(restBloc: restaurantBloc,restId: user,));
+        }
       }
     };
   }

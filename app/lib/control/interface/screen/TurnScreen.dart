@@ -12,6 +12,10 @@ import 'package:toast/toast.dart';
 class TurnScreen extends StatefulWidget implements WidgetRoute {
   static const ROUTE = 'TurnScreenPanel';
 
+  final restId;
+
+  TurnScreen({this.restId});
+
   @override
   String get route => ROUTE;
 
@@ -35,10 +39,8 @@ class _TurnScreenPanelState extends State<TurnScreen> {
   final _quantityKey = GlobalKey<FormFieldState>();
   var hour;
   var time;
-  List<DropdownMenuItem> drop =
-  List<DropdownMenuItem>();
-  List<DropdownMenuItem> dropTime =
-  List<DropdownMenuItem>();
+  List<DropdownMenuItem> drop = List<DropdownMenuItem>();
+  List<DropdownMenuItem> dropTime = List<DropdownMenuItem>();
   final startTime = ['00', '15', '30', '45'];
   final hours = [
     '00',
@@ -115,21 +117,16 @@ class _TurnScreenPanelState extends State<TurnScreen> {
   Widget build(BuildContext context) {
     final TextEditingController _quantityController = TextEditingController();
     _quantityController.value = TextEditingValue(text: '');
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Inserimento Turni"),
-        actions: <Widget>[],
-      ),
-      body: Column(
-        children: <Widget>[
-          StreamBuilder<DateTime>(
-              stream: dateStream.stream,
-              builder: (ctx, sp) {
-                //if(!sp.hasData) return Center(child: CircularProgressIndicator(),);
-                return Column(
-                  children: <Widget>[
-                    Padding(
-                child:TextField(
+    return Column(
+      children: <Widget>[
+        StreamBuilder<DateTime>(
+            stream: dateStream.stream,
+            builder: (ctx, sp) {
+              //if(!sp.hasData) return Center(child: CircularProgressIndicator(),);
+              return Column(
+                children: <Widget>[
+                  Padding(
+                    child: TextField(
                       decoration: InputDecoration(
                         labelText: 'Giorno',
                       ),
@@ -152,12 +149,12 @@ class _TurnScreenPanelState extends State<TurnScreen> {
                         });
                       },
                     ),
-                      padding: EdgeInsets.all(SPACE),
-                    ),
-                  ],
-                );
-              }),
-          /*Row(
+                    padding: EdgeInsets.all(SPACE),
+                  ),
+                ],
+              );
+            }),
+        /*Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Padding(
@@ -167,83 +164,89 @@ class _TurnScreenPanelState extends State<TurnScreen> {
             ],
           ),*/
         Padding(
-          child:Row(
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            Text('Ora'),
-            StreamBuilder<String>(
-              stream: dropStreamHour.stream,
-              builder: (ctx, sp1) {
-                return DropdownButton(
-                  key: _dropKey,
-                  value: (hour==null)
-                      ? hours.elementAt(0):hour,
-                  onChanged: (value) {
-                    print(value);
-                    hour = value;
-                    //endTime = getEnd(snap.data, value);
-                    dropStreamHour.add(value);
-                  },
-                  items: drop,
-                );
-              },
-            ),
-            Text('Minuti'),
-            StreamBuilder<String>(
-              stream: dropStreamTime.stream,
-              builder: (ctx, sp2) {
-                return DropdownButton(
-                  key: _dropTimeKey,
-                  value: (time==null)
-                      ? startTime.elementAt(0):time,
-                  onChanged: (value) {
-                    print(value);
-                    time = value;
-                    //endTime = getEnd(snap.data, value);
-                    dropStreamTime.add(value);
-                  },
-                  items: dropTime,
-                );
-              },
-            ),
-
-          ],
-        ),
+            children: <Widget>[
+              Text('Ora'),
+              StreamBuilder<String>(
+                stream: dropStreamHour.stream,
+                builder: (ctx, sp1) {
+                  return DropdownButton(
+                    key: _dropKey,
+                    value: (hour == null) ? hours.elementAt(0) : hour,
+                    onChanged: (value) {
+                      print(value);
+                      hour = value;
+                      //endTime = getEnd(snap.data, value);
+                      dropStreamHour.add(value);
+                    },
+                    items: drop,
+                  );
+                },
+              ),
+              Text('Minuti'),
+              StreamBuilder<String>(
+                stream: dropStreamTime.stream,
+                builder: (ctx, sp2) {
+                  return DropdownButton(
+                    key: _dropTimeKey,
+                    value: (time == null) ? startTime.elementAt(0) : time,
+                    onChanged: (value) {
+                      print(value);
+                      time = value;
+                      //endTime = getEnd(snap.data, value);
+                      dropStreamTime.add(value);
+                    },
+                    items: dropTime,
+                  );
+                },
+              ),
+            ],
+          ),
           padding: EdgeInsets.all(SPACE),
         ),
-          Padding(
-            child:TextFormField(
+        Padding(
+          child: TextFormField(
             decoration: InputDecoration(
               labelText: 'Numero corrieri',
             ),
             validator: (value) {
-              if (value.length == 0)
-                return 'Campo non valido';
+              if (value.length == 0) return 'Campo non valido';
               return null;
             },
             key: _quantityKey,
             controller: _quantityController,
             keyboardType: TextInputType.number,
           ),
-            padding: EdgeInsets.all(SPACE),
-          ),
-          FlatButton(
-            child: Text('Aggiungi Turno'),
-            onPressed: (){
-              if(date!=null && _quantityKey.currentState.validate()){
-                if(time==null) time=startTime.elementAt(0);
-                if(hour==null) hour=hours.elementAt(0);
-                Database().addShift(hour+':'+time, ((time=='45')?hours.elementAt(hours.indexOf(hour)+1):hour)+':'+endTime.elementAt(startTime.indexOf(time)), date.toIso8601String(), _quantityKey.currentState.value).then((isPresent){
-                  if(isPresent){
-                    Toast.show('Orario già presente!', context,duration: 3);
-                  }
-                  else Toast.show('Orario inserito.', context,duration: 3);
-                });
-              }
-            },
-          ),
+          padding: EdgeInsets.all(SPACE),
+        ),
+        FlatButton(
+          child: Text('Aggiungi Turno'),
+          onPressed: () {
+            if (date != null && _quantityKey.currentState.validate()) {
+              if (time == null) time = startTime.elementAt(0);
+              if (hour == null) hour = hours.elementAt(0);
+              Database()
+                  .addShift(
+                      hour + ':' + time,
+                      ((time == '45')
+                              ? hours.elementAt(hours.indexOf(hour) + 1)
+                              : hour) +
+                          ':' +
+                          endTime.elementAt(startTime.indexOf(time)),
+                      date.toIso8601String(),
+                      _quantityKey.currentState.value,widget.restId)
+                  .then((isPresent) {
+                if (isPresent) {
+                  Toast.show('Orario già presente!', context, duration: 3);
+                } else
+                  Toast.show('Orario inserito.', context, duration: 3);
+              });
+            }
+          },
+        ),
 
-          /*StreamBuilder<List<CalendarModel>>(
+        /*StreamBuilder<List<CalendarModel>>(
             stream: (!sp.hasData)
                 ? timeStream.stream
                 : Database().getAvailableShifts(sp.data),
@@ -299,8 +302,7 @@ class _TurnScreenPanelState extends State<TurnScreen> {
               );
             },
           ),*/
-        ],
-      ),
+      ],
     );
   }
 }

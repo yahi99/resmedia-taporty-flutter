@@ -57,6 +57,7 @@ class _CalendarState extends State<CalendarTabDriver>
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final tt = theme.textTheme;
+    int count=0;
     //final user=UserBloc.of();
     //final cb = CalendarBloc.of();
     //if(widget.model.isNotEmpty && widget.model.first.day!=widget.date.toIso8601String()) widget.callback(widget.date);
@@ -84,6 +85,7 @@ class _CalendarState extends State<CalendarTabDriver>
                         itemCount: snap4.data.length,
                         itemBuilder: (ctx, index) {
                           if (!isPresent(snap4.data.elementAt(index))) {
+                            count++;
                             var temp = snap4.data.elementAt(index).free;
                             //temp.add(cb.user());
                             return Row(
@@ -127,7 +129,8 @@ class _CalendarState extends State<CalendarTabDriver>
                               ],
                             );
                           }
-                          return Container();
+                          if(snap4.data.length-1==index && count!=0) return Container();
+                          return Text('Non ci sono turni disponibili per questo giorno.');
                         })
                     : Text('Non ci sono turni disponibili per questo giorno.'),
               ],

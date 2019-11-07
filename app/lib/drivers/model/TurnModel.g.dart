@@ -9,6 +9,7 @@ part of 'TurnModel.dart';
 TurnModel _$TurnModelFromJson(Map json) {
   return TurnModel(
       path: json['path'] as String,
+      restaurantId: json['restaurantId'] as String,
       startTime: json['startTime'] as String,
       month: _$enumDecodeNullable(_$MonthCategoryEnumMap, json['month']),
       day: json['day'] as String,
@@ -28,6 +29,7 @@ Map<String, dynamic> _$TurnModelToJson(TurnModel instance) {
   writeNotNull('startTime', instance.startTime);
   writeNotNull('endTime', instance.endTime);
   writeNotNull('day', instance.day);
+  writeNotNull('restaurantId', instance.restaurantId);
   writeNotNull('month', _$MonthCategoryEnumMap[instance.month]);
   return val;
 }

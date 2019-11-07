@@ -9,6 +9,7 @@ part of 'CalendarModel.dart';
 CalendarModel _$CalendarModelFromJson(Map json) {
   return CalendarModel(
       path: json['path'] as String,
+      number: json['number'] as int,
       isEmpty: json['isEmpty'] as bool,
       startTime: json['startTime'] as String,
       day: json['day'] as String,
@@ -33,5 +34,6 @@ Map<String, dynamic> _$CalendarModelToJson(CalendarModel instance) {
   writeNotNull('free', instance.free);
   writeNotNull('occupied', instance.occupied);
   writeNotNull('isEmpty', instance.isEmpty);
+  writeNotNull('number', instance.number);
   return val;
 }

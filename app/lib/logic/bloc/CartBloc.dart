@@ -141,14 +141,14 @@ class CartBloc extends Bloc {
         });
   }
 
-  Future<String> isAvailable(String date, String time) async {
+  Future<String> isAvailable(String date, String time,String restId) async {
     final model = await _db.getUsers(date, time);
     if (model.free.length > 1) {
       final temp = model.free;
       final user = temp.removeAt(1);
       final occ = model.occupied;
       occ.add(user);
-      await _db.occupyDriver(date, time, temp, occ);
+      await _db.occupyDriver(date, time, temp, occ,restId,user);
       return user;
     }
     return null;

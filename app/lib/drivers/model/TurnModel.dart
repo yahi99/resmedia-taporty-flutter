@@ -8,11 +8,12 @@ part 'TurnModel.g.dart';
 
 @JsonSerializable(anyMap: true, explicitToJson: true, includeIfNull: false)
 class TurnModel extends FirebaseModel {
-  final String startTime, endTime, day;
+  final String startTime, endTime, day,restaurantId;
   MonthCategory month;
 
   TurnModel({
     String path,
+    @required this.restaurantId,
     @required this.startTime,
     @required this.month,
     @required this.day,

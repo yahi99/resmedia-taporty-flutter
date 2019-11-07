@@ -145,7 +145,7 @@ class _ConfirmState extends State<ConfirmPage>
                 onPressed: () {
                   if (valid(context)) {
                     final state = MyInheritedWidget.of(context);
-                    cartBloc.isAvailable(state.date, state.time).then((user) {
+                    cartBloc.isAvailable(state.date, state.time,widget.model.id).then((user) {
                       if (user != null) {
                         cartBloc
                             .signer(

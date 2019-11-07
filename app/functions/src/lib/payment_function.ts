@@ -110,13 +110,15 @@ const updateOffersApp = functions.https.onCall(async (data, context) => {
 
 const setShift = functions.https.onCall(async (data, context) => {
   const uid=data.uid;
-  const users=data.users;
+  const users=data.free;
   const startTime=data.startTime;
   const endTime=data.endTime;
   const day=data.day;
   const month=data.month;
   const isEmpty=data.isEmpty;
-  await fs.collection('days').doc(day).collection('times').doc(startTime).update({'users':users,'isEmpty':isEmpty});
+  console.log(users);
+  console.log(isEmpty);
+  await fs.collection('days').doc(day).collection('times').doc(startTime).update({'free':users,'isEmpty':isEmpty});
   await fs.collection('users').doc(uid).collection('turns').doc(day).create({'startTime':startTime,'endTime':endTime,'day':day,'month':month});
   return {"documentId": "id",}
 });

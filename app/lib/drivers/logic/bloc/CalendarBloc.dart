@@ -17,7 +17,7 @@ class CalendarBloc implements Bloc {
   @protected
   @override
   void dispose() {
-    _calendarControl.close();
+    if(_calendarControl!=null)_calendarControl.close();
   }
 
   PublishSubject<List<CalendarModel>> _calendarControl;
@@ -39,10 +39,17 @@ class CalendarBloc implements Bloc {
     final user = UserBloc.of();
     final restUser = await user.outFirebaseUser.first;
     users.add(restUser.uid);
+    print(users);
+    //this chooses which restaurant to assign the order to...
+    //chooses the one with less drivers for that time otherwise they all go into one
+    //final restId=await Database().getRestId(day,startTime);
+    //updates the general list and the specific restaurant list
     CloudFunctions.instance.getHttpsCallable(functionName: 'setShift').call({
       'startTime': startTime,
       'endTime': endTime,
       'day': day,
+      //'restUsers':restId.free.add(restUser.uid),
+      //'rid':restId.id,
       'uid': restUser.uid,
       'month': month(DateTime.tryParse(day).month),
       'free': users,

@@ -19,4 +19,6 @@ class FlavorBloc implements Bloc {
 enum Flavor {
   CLIENT,
   DRIVER,
+  CONTROL,
+  RESTAURANT,
 }

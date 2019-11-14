@@ -10,6 +10,8 @@ import 'package:resmedia_taporty_flutter/control/model/ProductRequestModel.dart'
 import 'package:resmedia_taporty_flutter/data/config.dart';
 import 'package:resmedia_taporty_flutter/logic/database.dart';
 
+import 'ProductDetailedRequest.dart';
+
 class ProductRequestsScreen extends StatefulWidget implements WidgetRoute {
   static const ROUTE = 'ProductRequestScreenPanel';
 
@@ -53,11 +55,14 @@ class _ProductRequestsScreenState extends State<ProductRequestsScreen> {
               padding: EdgeInsets.all(SPACE),
             );
           }
-          return ListView.builder(
+          return ListView.separated(
             itemBuilder: (context,index){
               return ItemBuilder(model:snap.data.elementAt(index));
             },
             itemCount: snap.data.length,
+            separatorBuilder: (context,index){
+              return Divider(color: Colors.black,);
+            },
           );
         },
       ),
@@ -68,7 +73,7 @@ class _ProductRequestsScreenState extends State<ProductRequestsScreen> {
 class ItemBuilder extends StatelessWidget{
 
   final ProductRequestModel model;
-  final StreamController<String> imgStream = new StreamController<String>();
+  //final StreamController<String> imgStream = new StreamController<String>();
 
   ItemBuilder({
     @required this.model
@@ -139,44 +144,87 @@ class ItemBuilder extends StatelessWidget{
     final int byteNumber=(await downloadTask.future).totalByteCount;
     print(byteNumber);
     //put the file into the stream
-    imgStream.add(file.path);
+    //imgStream.add(file.path);
   }
 
   @override
   Widget build(BuildContext context) {
-    downloadFile(model.img);
+    //downloadFile(model.img);
     final tt=Theme.of(context).textTheme;
     return InkWell(
-        child:Padding(
-        child:Row(
-      children: <Widget>[
-        StreamBuilder<String>(
-          stream: imgStream.stream,
-          builder: (context,snap){
-            if(!snap.hasData) return Center(child:CircularProgressIndicator());
-            return Image.asset(snap.data,height: 140.0,width: 140.0,);
-          },
-        ),
-        Padding(
-          child:Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text('Nome: ',style:tt.subtitle ,),
-            Text(model.id),
-            Text('Ristorante: ',style:tt.subtitle ,),
-            Text(model.restaurantId),
-            Text('Prezzo: ',style:tt.subtitle ,),
-            Text(model.price+' euro'),
-          ],
-        ),
-          padding: EdgeInsets.only(left: 4.0),
-        ),
-      ],
-        ),
-      padding: EdgeInsets.only(bottom:4.0,left:SPACE),
-        ),
-      onTap:() {
-          _showDialog(context);
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            child: Row(
+              //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Container(
+                  child: Text(
+                    'Nome Prodotto: ',
+                    style: tt.subtitle,
+                  ),
+                ),
+                Flexible(
+                  child: Container(
+                    child: Text(model.id),
+                  ),
+                ),
+              ],
+            ),
+            padding: EdgeInsets.only(top: SPACE, left: SPACE, right: SPACE),
+          ),
+          Container(
+            child: Row(
+              //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Container(
+                  child: Text(
+                    'Ristorante: ',
+                    style: tt.subtitle,
+                  ),
+                ),
+                Flexible(
+                  child: Container(
+                    child: Text(model.restaurantId),
+                  ),
+                ),
+              ],
+            ),
+            padding: EdgeInsets.only(top: SPACE, left: SPACE, right: SPACE),
+          ),
+          Container(
+            child: Row(
+              //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Container(
+                  child: Text(
+                    'Prezzo: ',
+                    style: tt.subtitle,
+                  ),
+                ),
+                Flexible(
+                  child: Container(
+                    child: Text(model.price),
+                  ),
+                ),
+              ],
+            ),
+            padding: EdgeInsets.only(
+                top: SPACE, left: SPACE, right: SPACE, bottom: SPACE),
+          ),
+        ],
+      ),
+      onTap: () {
+        //_showDialog(context);
+        EasyRouter.push(
+            context,
+            ProductDetailedRequest(
+              model: model,
+            ));
       },
     );
   }

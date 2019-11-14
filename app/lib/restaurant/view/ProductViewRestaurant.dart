@@ -9,7 +9,7 @@ import 'package:resmedia_taporty_flutter/model/ProductModel.dart';
 
 class ProductViewRestaurant extends StatelessWidget {
   final ProductModel model;
-  final StreamController<String> imgStream=new StreamController.broadcast();
+  //final StreamController<String> imgStream=new StreamController.broadcast();
 
   ProductViewRestaurant({Key key, @required this.model})
       : super(key: key);
@@ -24,13 +24,13 @@ class ProductViewRestaurant extends StatelessWidget {
     final int byteNumber=(await downloadTask.future).totalByteCount;
     print(byteNumber);
     //put the file into the stream
-    imgStream.add(file.path);
+    //imgStream.add(file.path);
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    if(model.number!=null) downloadFile(model.img);
+    //if(model.number!=null) downloadFile(model.img);
     return Slidable(
       actionPane: SlidableDrawerActionPane(),
       actionExtentRatio: 0.25,
@@ -56,19 +56,12 @@ class ProductViewRestaurant extends StatelessWidget {
                       aspectRatio: 1,
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(16.0),
-                        child: StreamBuilder(
-                          stream: imgStream.stream,
-                          builder: (context,snap){
-                            if(model.number==null) return Image.asset(
-                              model.img,
-                              fit: BoxFit.fitHeight,
-                            );
-                            if(!snap.hasData) return Center(child:CircularProgressIndicator());
-                            return Image.asset(
-                              snap.data,
-                              fit: BoxFit.fitHeight,
-                            );
-                          },
+                        child: (model.img.startsWith('assets'))?Image.asset(
+                          model.img,
+                          fit: BoxFit.fitHeight,
+                        ):Image.network(
+                          model.img,
+                          fit: BoxFit.fitHeight,
                         ),
                       ),
                     ),

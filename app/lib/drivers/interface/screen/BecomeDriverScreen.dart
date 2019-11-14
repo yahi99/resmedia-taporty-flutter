@@ -135,20 +135,6 @@ class NewDriverState extends State<BecomeDriverScreen> {
               Expanded(
                 child: ListView(
                   children: <Widget>[
-                    Padding(
-                      child: Text(
-                        snap.data.model.nominative,
-                        style: theme.textTheme.subhead,
-                      ),
-                      padding: EdgeInsets.all(8.0),
-                    ),
-                    Padding(
-                      child: Text(
-                        snap.data.model.email,
-                        style: theme.textTheme.subhead,
-                      ),
-                      padding: EdgeInsets.all(8.0),
-                    ),
                     Form(
                       autovalidate: false,
                       key: _formKey,

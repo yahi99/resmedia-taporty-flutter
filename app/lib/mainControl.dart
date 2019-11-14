@@ -4,7 +4,7 @@ import 'package:easy_widget/easy_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:resmedia_taporty_flutter/interface/screen/LoginScreen.dart';
+import 'package:resmedia_taporty_flutter/control/interface/screen/LoginScreen.dart';
 import 'package:resmedia_taporty_flutter/logic/bloc/FlavourBloc.dart';
 
 /// flutter build --flavor development -t lib/main-dev.dart
@@ -20,7 +20,7 @@ const STRIPE_PUBLIC_KEY = "pk_test_bI6Z2I2jFP7Tfjfm0AvIyWV500cS2fKdCO";
 
 void main() {
   // TODO: Intervenire qui.
-  FlavorBloc.of().init(Flavor.CLIENT);
+  FlavorBloc.of().init(Flavor.CONTROL);
   runApp(RepositoryBuilder(
     backgroundTask: (context, sharedPreferences) async {
       final assetHandler = await AssetHandler.init(context);

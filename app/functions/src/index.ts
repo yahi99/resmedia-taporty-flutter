@@ -5,7 +5,7 @@
 //  response.send("Hello from Firebase!");
 // });
 
-import { addPaymentSource, createStripeCharge, createStripeCustomer, cleanupUser,updateState,setShift,updateUser,updateOffersEmail,updateOffersSms,updateOffersApp,updateNotifySms,updateNotifyApp,updateNotifyEmail} from './lib';
+import { addPaymentSource, createStripeCharge, createStripeCustomer,sendToDevice,sendToDeviceDriver,sendToDeviceRestaurant,driverRequests,restaurantRequests,productRequests, cleanupUser,updateState,setShift,updateUser,updateOffersEmail,updateOffersSms,updateOffersApp,updateNotifySms,updateNotifyApp,updateNotifyEmail} from './lib';
 
  // Start writing Firebase Functions
  // https://firebase.google.com/docs/functions/typescript
@@ -13,6 +13,12 @@ import { addPaymentSource, createStripeCharge, createStripeCustomer, cleanupUser
  // firebase deploy --only functions
  // npm install @google-cloud/firestore
 
+exports.sendToDevice=sendToDevice;
+exports.sendToDeviceRestaurant=sendToDeviceRestaurant;
+exports.sendToDeviceDriver=sendToDeviceDriver;
+exports.driverRequests=driverRequests;
+exports.restaurantRequests=restaurantRequests;
+exports.productRequests=productRequests;
 exports.updateState = updateState;
 exports.createStripeCustomer = createStripeCustomer;
 exports.cleanupUser = cleanupUser

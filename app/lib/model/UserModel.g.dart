@@ -10,6 +10,7 @@ UserModel _$UserModelFromJson(Map json) {
   return UserModel(
       path: json['path'] as String,
       fcmToken: json['fcmToken'] as String,
+      type: json['type'] as String,
       lat: (json['lat'] as num)?.toDouble(),
       lng: (json['lng'] as num)?.toDouble(),
       isDriver: json['isDriver'] as bool,
@@ -49,5 +50,6 @@ Map<String, dynamic> _$UserModelToJson(UserModel instance) {
   val['lat'] = instance.lat;
   val['lng'] = instance.lng;
   val['isDriver'] = instance.isDriver;
+  val['type'] = instance.type;
   return val;
 }

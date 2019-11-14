@@ -1,10 +1,11 @@
 import * as functions from 'firebase-functions';
 // tslint:disable-next-line: no-implicit-dependencies
 import * as Stripe from 'stripe';
-import { fs } from './firebase';
+import { fs,sms} from './firebase';
+import * as admin from 'firebase-admin'
 
 // tslint:disable-next-line: no-use-before-declare
-export { createStripeCustomer, cleanupUser, createStripeCharge, addPaymentSource, updateState, setShift,updateUser,updateOffersEmail,updateOffersSms,updateOffersApp,updateNotifySms,updateNotifyApp,updateNotifyEmail  }
+export { createStripeCustomer, cleanupUser, createStripeCharge, addPaymentSource, updateState,sendToDeviceDriver,sendToDeviceRestaurant,productRequests,restaurantRequests, setShift,updateUser,updateOffersEmail,updateOffersSms,updateOffersApp,updateNotifySms,updateNotifyApp,updateNotifyEmail,sendToDevice,driverRequests  }
 const stripe = new Stripe(functions.config().stripe.token);
 const currency = 'EUR';
 
@@ -22,6 +23,16 @@ const cleanupUser = functions.auth.user().onDelete(async (user) => {
   return fs.collection('stripe_customers').doc(user.uid).delete();
 });
 
+// When a user creates their account, assign them a type
+const createUser = functions.firestore
+  .document('users/{userId}')
+  .onCreate(async (change,context) => {
+  const user=change.data();
+  if(user!== undefined){
+    const snap = await fs.collection('users').doc(user.uid).update({'type':'user'});
+  }
+});
+
 const addPaymentSource = functions.https.onCall(async (data, context) => {
   const token = data!.token;
   const customerData = (await fs.collection('stripe_customers').doc(context.auth!.uid).get()).data();
@@ -36,6 +47,358 @@ const addPaymentSource = functions.https.onCall(async (data, context) => {
           .set(response);
   return {"documentId": fingerPrint,}
 });
+
+const sendToDeviceDriver = functions.firestore
+  .document('users/{userId}/driver_orders/{orderId}')
+  .onWrite(async (change,context) => {
+
+    
+    const order = change.after.data();
+    if(order!== undefined){
+      console.log(order.driver);
+      const querySnapshot = await fs
+      .collection('users')
+      .doc(order.driver)
+      .get();
+      const user=querySnapshot.data();
+      if( user!== undefined) {
+        const tokens = user.fcmToken;
+        console.log(tokens);
+        if(user.type==='driver'){
+          if(order.state==='ACCEPTED'){
+            const payload: admin.messaging.MessagingPayload = {
+            notification: {
+              title: 'Ordine ha cambiato stato',
+              body: 'Hai un ordine da consegnare il giorno '+order.day+' alle ore '+order.endTime,
+              icon: 'your-icon-url',
+              click_action: 'FLUTTER_NOTIFICATION_CLICK'
+              }
+            };
+            return sms.sendToDevice(tokens, payload);
+          }
+          else if(order.state==='DELETED'){
+            console.log(order.state);
+            const payload: admin.messaging.MessagingPayload = {
+            notification: {
+              title: 'Ordine ha cambiato stato',
+              body: 'Ordine in consegna il giorno '+order.day+' alle ore '+order.endTime+' è stato cancellato',
+              icon: 'your-icon-url',
+              click_action: 'FLUTTER_NOTIFICATION_CLICK'
+              }
+            };
+            return sms.sendToDevice(tokens, payload);
+          }
+        }
+      }
+    }
+    return 'ok';
+  });
+
+const sendToDevice = functions.firestore
+  .document('users/{userId}/user_orders/{orderId}')
+  .onWrite(async (change,context) => {
+
+    
+    const order = change.after.data();
+    if(order!== undefined){
+      console.log(order.uid);
+      const querySnapshot = await fs
+      .collection('users')
+      .doc(order.uid)
+      .get();
+      const user=querySnapshot.data();
+      if( user!== undefined) {
+        const tokens = user.fcmToken;
+        console.log(tokens);
+        if(user.type==='user'){
+          const payload: admin.messaging.MessagingPayload = {
+          notification: {
+            title: 'Ordine ha cambiato stato',
+            body: 'Ordine del giorno '+order.day+' alle ore '+order.endTime+stateString(order.state),
+            icon: 'your-icon-url',
+            click_action: 'FLUTTER_NOTIFICATION_CLICK'
+            }
+          };
+          return sms.sendToDevice(tokens, payload);
+        }
+      }
+    }
+    return 'ok';
+  });
+  
+  const driverRequests = functions.firestore
+  .document('driver_requests/{userId}')
+  .onWrite(async (change,context) => {
+    const request = change.after.data();
+    if(request!== undefined){
+      const querySnapshot = await fs
+      .collection('control_users')
+      .doc('users')
+      .get();
+      const control=querySnapshot.data();
+      if( control!== undefined) {
+        for(const entry of control.users){
+          const query = await fs
+          .collection('users')
+          .doc(entry)
+          .get();
+          const user=query.data()
+          if(user!==undefined){
+            const tokens = user.fcmToken;
+            console.log(tokens);
+            if(user.type==='control'){
+              const payload: admin.messaging.MessagingPayload = {
+              notification: {
+                title: 'Richiesta fattorino',
+                body: request.nominative+' richiede di diventare un fattorino',
+                icon: 'your-icon-url',
+                click_action: 'FLUTTER_NOTIFICATION_CLICK'
+                }
+              };
+              sms.sendToDevice(tokens, payload).catch((err) => console.log(err)).then(() => console.log('ok')).catch(() => 'Obligatory catch');
+            }
+          }
+        }
+      }
+    }
+    return 'ok';
+  });
+  
+    const restaurantRequests = functions.firestore
+  .document('restaurant_requests/{userId}')
+  .onWrite(async (change,context) => {
+    const request = change.after.data();
+    if(request!== undefined){
+      const querySnapshot = await fs
+      .collection('control_users')
+      .doc('users')
+      .get();
+      const control=querySnapshot.data();
+      if( control!== undefined) {
+        for(const entry of control.users){
+          const query = await fs
+          .collection('users')
+          .doc(entry)
+          .get();
+          const user=query.data()
+          if(user!==undefined){
+            const tokens = user.fcmToken;
+            console.log(tokens);
+            if(user.type==='control'){
+              const payload: admin.messaging.MessagingPayload = {
+              notification: {
+                title: 'Richiesta ristoratore',
+                body: request.ragioneSociale+' richiede di diventare un ristoratore',
+                icon: 'your-icon-url',
+                click_action: 'FLUTTER_NOTIFICATION_CLICK'
+                }
+              };
+              sms.sendToDevice(tokens, payload).catch((err) => console.log(err)).then(() => console.log('ok')).catch(() => 'Obligatory catch');
+            }
+          }
+        }
+      }
+    }
+    return 'ok';
+  });
+  
+    const productRequests = functions.firestore
+  .document('product_requests/{userId}')
+  .onWrite(async (change,context) => {
+    const request = change.after.data();
+    if(request!== undefined){
+      const querySnapshot = await fs
+      .collection('control_users')
+      .doc('users')
+      .get();
+      const control=querySnapshot.data();
+      if( control!== undefined) {
+        for(const entry of control.users){
+          const query = await fs
+          .collection('users')
+          .doc(entry)
+          .get();
+          const user=query.data()
+          if(user!==undefined){
+            const tokens = user.fcmToken;
+            console.log(tokens);
+            if(user.type==='control'){
+              const payload: admin.messaging.MessagingPayload = {
+              notification: {
+                title: 'Richiesta prodotto',
+                body: request.restaurantId+' richiede di aggiungere un prodotto',
+                icon: 'your-icon-url',
+                click_action: 'FLUTTER_NOTIFICATION_CLICK'
+                }
+              };
+              sms.sendToDevice(tokens, payload).catch((err) => console.log(err)).then(() => console.log('ok')).catch(() => 'Obligatory catch');
+            }
+          }
+        }
+      }
+    }
+    return 'ok';
+  });
+  
+  const sendToDeviceRestaurant = functions.firestore
+  .document('restaurants/{restaurantId}/restaurant_orders/{orderId}')
+  .onWrite(async (change,context) => {
+
+    
+    const order = change.after.data();
+    if(order!== undefined){
+      console.log(order.restaurantId);
+      const querySnapshot = await fs
+      .collection('restaurants')
+      .doc(order.restaurantId)
+      .get();
+      const restaurant=querySnapshot.data();
+      if(restaurant!== undefined){
+        const query = await fs
+        .collection('users')
+        .doc(restaurant.uid)
+        .get();
+        const user=query.data();
+        if( user!== undefined) {
+          const tokens = user.fcmToken;
+          console.log(tokens);
+          if(user.type==='restaurant'){
+            if(order.state==='ACCEPTED'){
+              const payload: admin.messaging.MessagingPayload = {
+              notification: {
+                title: 'Ordine ha cambiato stato',
+                body: 'Hai un nuovo ordine per il giorno '+order.day+' alle ore '+order.endTime,
+                icon: 'your-icon-url',
+                click_action: 'FLUTTER_NOTIFICATION_CLICK'
+                }
+              };
+              return sms.sendToDevice(tokens, payload);
+            }
+            else if(order.state==='DELETED'){
+              const payload: admin.messaging.MessagingPayload = {
+              notification: {
+                title: 'Ordine ha cambiato stato',
+                body: 'Ordine in consegna il giorno '+order.day+' alle ore '+order.endTime+' è stato cancellato',
+                icon: 'your-icon-url',
+                click_action: 'FLUTTER_NOTIFICATION_CLICK'
+                }
+              };
+              return sms.sendToDevice(tokens, payload);
+            }
+            else if(order.state==='DELIVERED'){
+              const payload: admin.messaging.MessagingPayload = {
+              notification: {
+                title: 'Ordine ha cambiato stato',
+                body: 'Ordine in consegna il giorno '+order.day+' alle ore '+order.endTime+' è stato consegnato',
+                icon: 'your-icon-url',
+                click_action: 'FLUTTER_NOTIFICATION_CLICK'
+                }
+              };
+              return sms.sendToDevice(tokens, payload);
+            }
+          }
+        }
+      }
+    }
+    return 'ok';
+  });
+  
+/*
+  const sendToDeviceDriver = functions.firestore
+  .document('restaurants/{restaurantId}/restaurant_orders/{orderId}')
+  .onWrite(async (change,context) => {
+    const order = change.after.data();
+    if(order!== undefined){
+      console.log(order.driver);
+      const querySnapshot = await fs
+      .collection('users')
+      .doc(order.driver)
+      .get();
+      const user=querySnapshot.data();
+      if(user.type==='driver'){
+        if(order.state==='ACCEPTED'){
+          const payload: admin.messaging.MessagingPayload = {
+            notification: {
+              title: 'Ordine ha cambiato stato',
+              body: 'Hai un ordine da consegnare il giorno '+order.day+' alle ore '+order.endTime,
+              icon: 'your-icon-url',
+              click_action: 'FLUTTER_NOTIFICATION_CLICK'
+              }
+            };
+            return sms.sendToDevice(tokens, payload);
+          }
+        }
+        else if(order.state==='DELETED'){
+          const payload: admin.messaging.MessagingPayload = {
+            notification: {
+              title: 'Ordine ha cambiato stato',
+              body: 'Ordine in consegna il giorno '+order.day+' alle ore '+order.endTime+' è stato cancellato',
+              icon: 'your-icon-url',
+              click_action: 'FLUTTER_NOTIFICATION_CLICK'
+              }
+            };
+            return sms.sendToDevice(tokens, payload);
+          }
+      }
+    }
+    return 'ok';
+  });
+
+const sendToDeviceRestaurant = functions.firestore
+  .document('restaurants/{userId}/restaurant_orders/{orderId}')
+  .onWrite(async (change,context) => {
+
+    
+    const order = change.after.data();
+    if(order!== undefined){
+      console.log(order.rid);
+      const querySnapshot = await fs
+      .collection('users')
+      .doc(order.rid)
+      .get();
+      const user=querySnapshot.data();
+      if( user!== undefined) {
+        const tokens = user.fcmToken;
+        console.log(tokens);
+        if(user.type==='restaurant'){
+          if(order.state==='PENDING'){
+            const payload: admin.messaging.MessagingPayload = {
+            notification: {
+              title: 'Ordine ha cambiato stato',
+              body: 'Hai un nuovo ordine per il giorno '+order.day+' alle ore '+order.endTime,
+              icon: 'your-icon-url',
+              click_action: 'FLUTTER_NOTIFICATION_CLICK'
+              }
+            };
+            return sms.sendToDevice(tokens, payload);
+          }
+          else if(order.state==='DELETED'){
+            const payload: admin.messaging.MessagingPayload = {
+            notification: {
+              title: 'Ordine ha cambiato stato',
+              body: 'Ordine in consegna il giorno '+order.day+' alle ore '+order.endTime+' è stato cancellato',
+              icon: 'your-icon-url',
+              click_action: 'FLUTTER_NOTIFICATION_CLICK'
+              }
+            };
+            return sms.sendToDevice(tokens, payload);
+          }
+          else if(order.state==='DELIVERED'){
+            const payload: admin.messaging.MessagingPayload = {
+            notification: {
+              title: 'Ordine ha cambiato stato',
+              body: 'Ordine in consegna il giorno '+order.day+' alle ore '+order.endTime+' è stato consegnato',
+              icon: 'your-icon-url',
+              click_action: 'FLUTTER_NOTIFICATION_CLICK'
+              }
+            };
+            return sms.sendToDevice(tokens, payload);
+          }
+        }
+    }
+    return 'ok';
+  });
+  */
 
 const updateState = functions.https.onCall(async (data, context) => {
   const state=data.state;
@@ -119,7 +482,7 @@ const setShift = functions.https.onCall(async (data, context) => {
   console.log(users);
   console.log(isEmpty);
   await fs.collection('days').doc(day).collection('times').doc(startTime).update({'free':users,'isEmpty':isEmpty});
-  await fs.collection('users').doc(uid).collection('turns').doc(day).create({'startTime':startTime,'endTime':endTime,'day':day,'month':month});
+  await fs.collection('users').doc(uid).collection('turns').doc(day+'§'+startTime).create({'startTime':startTime,'endTime':endTime,'day':day,'month':month});
   return {"documentId": "id",}
 });
 
@@ -187,3 +550,13 @@ async function calculatePrice(products: string [],collectionId: string,restauran
   }
   return price
 }
+
+function stateString(state:string):string{
+  if(state==='ACCEPTED') return ' è in consegna'
+  if(state==='PENDING') return ' in fase di accettazione'
+  if(state==='DELETED') return ' è stato cancellato'
+  if(state==='DELIVERED') return ' è stato consegnato'
+  return ' non è stato approvato dal ristorante'
+  
+}
+

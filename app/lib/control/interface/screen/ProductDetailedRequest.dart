@@ -13,22 +13,22 @@ import 'package:resmedia_taporty_flutter/control/model/RestaurantRequestModel.da
 import 'package:resmedia_taporty_flutter/data/config.dart';
 import 'package:resmedia_taporty_flutter/logic/database.dart';
 
-class RestaurantDetailedRequest extends StatefulWidget implements WidgetRoute {
-  static const ROUTE = 'RestaurantDetailedRequest';
+class ProductDetailedRequest extends StatefulWidget implements WidgetRoute {
+  static const ROUTE = 'ProductDetailedRequest';
 
-  final RestaurantRequestModel model;
+  final ProductRequestModel model;
 
-  RestaurantDetailedRequest({this.model});
+  ProductDetailedRequest({this.model});
 
   @override
   String get route => ROUTE;
 
   @override
-  _RestaurantDetailedState createState() => _RestaurantDetailedState();
+  _ProductDetailedState createState() => _ProductDetailedState();
 }
 
-class _RestaurantDetailedState extends State<RestaurantDetailedRequest> {
-  final StreamController<String> imgStream = new StreamController<String>();
+class _ProductDetailedState extends State<ProductDetailedRequest> {
+  //final StreamController<String> imgStream = new StreamController<String>();
 
   Future<Null> downloadFile(String httpPath) async {
     final RegExp regExp = RegExp('([^?/]*\.(jpg))');
@@ -40,13 +40,13 @@ class _RestaurantDetailedState extends State<RestaurantDetailedRequest> {
     final int byteNumber = (await downloadTask.future).totalByteCount;
     print(byteNumber);
     //put the file into the stream
-    imgStream.add(file.path);
+    //imgStream.add(file.path);
   }
 
   @override
   Widget build(BuildContext context) {
     final tt = Theme.of(context).textTheme;
-    downloadFile(widget.model.img);
+    //downloadFile(widget.model.img);
     return Scaffold(
       appBar: new AppBar(title: Text('Dettaglio Richiesta')),
       body: Column(
@@ -63,13 +63,73 @@ class _RestaurantDetailedState extends State<RestaurantDetailedRequest> {
               children: <Widget>[
                 Container(
                   child: Text(
-                    'Ragione Sociale: ',
+                    'Nome Prodotto: ',
                     style: tt.subtitle,
                   ),
                 ),
                 Flexible(
                   child: Container(
-                    child: Text(widget.model.ragioneSociale),
+                    child: Text(widget.model.id),
+                  ),
+                ),
+              ],
+            ),
+            padding: EdgeInsets.only(top: SPACE, left: SPACE, right: SPACE),
+          ),
+          Container(
+            child: Row(
+              //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Container(
+                  child: Text(
+                    'Ristorante: ',
+                    style: tt.subtitle,
+                  ),
+                ),
+                Flexible(
+                  child: Container(
+                    child: Text(widget.model.restaurantId),
+                  ),
+                ),
+              ],
+            ),
+            padding: EdgeInsets.only(top: SPACE, left: SPACE, right: SPACE),
+          ),
+          Container(
+            child: Row(
+              //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Container(
+                  child: Text(
+                    'Prezzo: ',
+                    style: tt.subtitle,
+                  ),
+                ),
+                Flexible(
+                  child: Container(
+                    child: Text(widget.model.price),
+                  ),
+                ),
+              ],
+            ),
+            padding: EdgeInsets.only(top: SPACE, left: SPACE, right: SPACE),
+          ),
+          Container(
+            child: Row(
+              //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Container(
+                  child: Text(
+                    'Categoria: ',
+                    style: tt.subtitle,
+                  ),
+                ),
+                Flexible(
+                  child: Container(
+                    child: Text(widget.model.cat),
                   ),
                 ),
               ],
@@ -89,7 +149,7 @@ class _RestaurantDetailedState extends State<RestaurantDetailedRequest> {
                 ),
                 Flexible(
                   child: Container(
-                    child: Text(widget.model.tipoEsercizio),
+                    child: Text(widget.model.category),
                   ),
                 ),
               ],
@@ -103,73 +163,13 @@ class _RestaurantDetailedState extends State<RestaurantDetailedRequest> {
               children: <Widget>[
                 Container(
                   child: Text(
-                    'Indirizzo: ',
+                    'Limite ordine: ',
                     style: tt.subtitle,
                   ),
                 ),
                 Flexible(
                   child: Container(
-                    child: Text(widget.model.address),
-                  ),
-                ),
-              ],
-            ),
-            padding: EdgeInsets.only(top: SPACE, left: SPACE, right: SPACE),
-          ),
-          Container(
-            child: Row(
-              //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Container(
-                  child: Text(
-                    'Copertura in Km: ',
-                    style: tt.subtitle,
-                  ),
-                ),
-                Flexible(
-                  child: Container(
-                    child: Text(widget.model.km.toString()),
-                  ),
-                ),
-              ],
-            ),
-            padding: EdgeInsets.only(top: SPACE, left: SPACE, right: SPACE),
-          ),
-          Container(
-            child: Row(
-              //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Container(
-                  child: Text(
-                    'Partita Iva: ',
-                    style: tt.subtitle,
-                  ),
-                ),
-                Flexible(
-                  child: Container(
-                    child: Text(widget.model.partitaIva),
-                  ),
-                ),
-              ],
-            ),
-            padding: EdgeInsets.only(top: SPACE, left: SPACE, right: SPACE),
-          ),
-          Container(
-            child: Row(
-              //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Container(
-                  child: Text(
-                    'Prodotti: ',
-                    style: tt.subtitle,
-                  ),
-                ),
-                Flexible(
-                  child: Container(
-                    child: Text(widget.model.prodType),
+                    child: Text(widget.model.quantity),
                   ),
                 ),
               ],
@@ -192,7 +192,7 @@ class _RestaurantDetailedState extends State<RestaurantDetailedRequest> {
               ),
               RaisedButton(
                 onPressed: () {
-                  Database().addRestaurant(widget.model);
+                  Database().addProduct(widget.model);
                   EasyRouter.pop(context);
                 },
                 color: Colors.green,

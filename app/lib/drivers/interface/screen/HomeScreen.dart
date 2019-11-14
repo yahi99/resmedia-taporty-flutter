@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:easy_route/easy_route.dart';
 import 'package:easy_widget/easy_widget.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/page/OrdersPage.dart';
@@ -34,21 +36,60 @@ class _HomeScreenDriverState extends State<HomeScreenDriver> {
   final CalendarBloc _calendarBloc = CalendarBloc.of();
   var user;
 
+  BuildContext dialog;
+
+  FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+
+  void showNotification(BuildContext context, Map<String, dynamic> message) async {
+    print('Build dialog');
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        content: ListTile(
+          title: Text(message['notification']['title']),
+          subtitle: Text(message['notification']['body']),
+        ),
+        actions: <Widget>[
+          FlatButton(
+            child: Text('Ok'),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void firebaseCloudMessaging_Listeners() {
+    if (Platform.isIOS) iOS_Permission();
+    print('ok');
+    _firebaseMessaging.configure(
+      onMessage: (Map<String, dynamic> message) async {
+        print('on message $message');
+        if(dialog!=null) showNotification(dialog,message);
+      },
+      onResume: (Map<String, dynamic> message) async {
+        print('on resume $message');
+      },
+      onLaunch: (Map<String, dynamic> message) async {
+        print('on launch $message');
+      },
+    );
+  }
+
+  void iOS_Permission() {
+    _firebaseMessaging.requestNotificationPermissions(
+        IosNotificationSettings(sound: true, badge: true, alert: true));
+    _firebaseMessaging.onIosSettingsRegistered
+        .listen((IosNotificationSettings settings) {
+      print("Settings registered: $settings");
+    });
+  }
+
   @override
   void dispose() {
     _driverBloc.close();
     _calendarBloc.close();
     super.dispose();
-  }
-
-  void callback(DateTime now) {
-    setState(() {
-      date = now;
-      _calendarBloc.setDate(
-        now,
-      );
-      //stream=_calendarBloc.outCalendar;
-    });
   }
 
   void setUser() async {
@@ -61,12 +102,14 @@ class _HomeScreenDriverState extends State<HomeScreenDriver> {
     //stream=_calendarBloc.outCalendar;
     setUser();
     super.initState();
+    firebaseCloudMessaging_Listeners();
     //final bloc=TurnBloc.of();
     //bloc.setTurnStream();
   }
 
   @override
   Widget build(BuildContext context) {
+    dialog=context;
     final turnBloc = TurnBloc.of();
     final orderBloc = OrdersBloc.of();
     //final timeBloc = TimeBloc.of();

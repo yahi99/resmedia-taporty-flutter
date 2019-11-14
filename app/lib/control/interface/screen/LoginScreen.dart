@@ -74,18 +74,10 @@ class _LoginScreenState extends State<LoginScreen> {
       //final user=(await _userBloc.outUser.first);
       //if(user.model.isDriver!=null && user.model.isDriver) {
       final registrationLevel = await _userBloc.getRegistrationLevel();
+      final type=(await _userBloc.outUser.first).model.type;
       /*if (registrationLevel == RegistrationLevel.LV2)
         await EasyRouter.push(context, SignUpMoreScreen());*/
-      if (registrationLevel == RegistrationLevel.COMPLETE) {
-        final orderBloc = OrdersBloc.of();
-        await orderBloc.setDriverStream();
-        final turnBloc = TurnBloc.of();
-        await turnBloc.setTurnStream();
-        final calendarBloc = CalendarBloc.of();
-        final date = DateTime.now();
-        await calendarBloc.setDate(DateTime(date.year, date.month, date.day));
-        //final timeBloc=TimeBloc.of();
-        //await timeBloc.setDay();
+      if (registrationLevel == RegistrationLevel.COMPLETE && type=='control') {
         await EasyRouter.pushAndRemoveAll(context, HomeScreenPanel());
       }
       else {

@@ -106,11 +106,11 @@ class _MenuPageState extends State<MenuPage> {
   }
 
   Future<String> uploadFile(String filePath) async {
-    final ByteData bytes = await rootBundle.load(filePath);
+    final Uint8List bytes = File(filePath).readAsBytesSync();
     final Directory tempDir = Directory.systemTemp;
     final String fileName = filePath.split('/').last;
     final File file = File('${tempDir.path}/$fileName');
-    file.writeAsBytes(bytes.buffer.asInt8List(), mode: FileMode.write);
+    file.writeAsBytes(bytes, mode: FileMode.write);
 
     final StorageReference ref = FirebaseStorage.instance.ref().child(fileName);
     final StorageUploadTask task = ref.putFile(file);
@@ -123,121 +123,135 @@ class _MenuPageState extends State<MenuPage> {
   }
 
   void _addProduct(BuildContext context) {
-    final StreamController<String> dropStream = StreamController<String>.broadcast();
-    final StreamController<String> dropCatStream = StreamController<String>.broadcast();
-    final StreamController<String> _imgCtrl = StreamController<String>.broadcast();
+    final StreamController<String> dropStream = StreamController<
+        String>.broadcast();
+    final StreamController<String> dropCatStream = StreamController<
+        String>.broadcast();
+    final StreamController<String> _imgCtrl = StreamController<
+        String>.broadcast();
     showDialog(
-      context: context,
-      builder: (_context) {
-        final theme = Theme.of(context);
-        final cls = theme.colorScheme;
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(20))),
-          content: Wrap(
-            alignment: WrapAlignment.center,
-            runSpacing: SPACE * 2,
-            children: <Widget>[
-              Form(
-                key: _formKey,
-                child: Column(
+        context: context,
+        builder: (_context) {
+          final theme = Theme.of(context);
+          final cls = theme.colorScheme;
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(20))),
+            content: Container(
+              child:
+                ListView(
+                  physics: AlwaysScrollableScrollPhysics(),
+                  shrinkWrap: true,
                   children: <Widget>[
-                    Padding(
-                      child: TextFormField(
-                        key: _nameKey,
-                        decoration: InputDecoration(
-                          hintText: 'Nome Prodotto',
-                        ),
-                        validator: (value) {
-                          if (value.isEmpty) {
-                            return 'Campo invalido';
-                          } else if (value.length < 4)
-                            return 'Deve contenere almeno 4 caratteri';
-                          else if (value.length > 15)
-                            return "Massimo 15 caratteri";
-                          return null;
-                        },
-                      ),
-                      padding: EdgeInsets.only(bottom: SPACE * 2),
-                    ),
-                    StreamBuilder<String>(
-                      stream: _imgCtrl.stream,
-                      builder: (ctx, img) {
-                        if (img.hasData)
-                          _imgTextController.value =
-                              TextEditingValue(text: img.data);
-                        else
-                          _imgTextController.value = TextEditingValue(text: '');
-                        return Padding(
-                          child: TextField(
-                            controller: _imgTextController,
-                            decoration: InputDecoration(hintText: 'Immagine'),
-                            onTap: () async {
-                              ImagePicker.pickImage(source: ImageSource.gallery)
-                                  .then((img) {
-                                if (img != null) {
-                                  _tempPath = img.path;
-                                  _imgCtrl.add(_tempPath.split('/').last);
-                                } else {
-                                  Toast.show(
-                                      'Devi scegliere un\'immagine!', context,
-                                      duration: 3);
-                                }
-                              }).catchError((error) {
-                                if (error is PlatformException) {
-                                  if (error.code == 'photo_access_denied')
-                                    Toast.show(
-                                        'Devi garantire accesso alle immagini!',
-                                        context,
-                                        duration: 3);
-                                }
-                              });
+                    Form(
+                      key: _formKey,
+                      child: Column(children: <Widget>[
+                        Padding(
+                          child: TextFormField(
+                            key: _nameKey,
+                            decoration: InputDecoration(
+                              hintText: 'Nome Prodotto',
+                            ),
+                            validator: (value) {
+                              if (value.isEmpty) {
+                                return 'Campo invalido';
+                              } else if (value.length < 4)
+                                return 'Deve contenere almeno 4 caratteri';
+                              else if (value.length > 15)
+                                return "Massimo 15 caratteri";
+                              return null;
                             },
                           ),
                           padding: EdgeInsets.only(bottom: SPACE * 2),
-                        );
-                      },
-                    ),
-                    /*FlatButton(
+                        ),
+                        StreamBuilder<String>(
+                          stream: _imgCtrl.stream,
+                          builder: (ctx, img) {
+                            if (img.hasData)
+                              _imgTextController.value =
+                                  TextEditingValue(text: img.data);
+                            else
+                              _imgTextController.value = TextEditingValue(text: '');
+                            return Padding(
+                              child: Column(
+                                children: <Widget>[
+                                  TextField(
+                                    controller: _imgTextController,
+                                    decoration: InputDecoration(hintText: 'Immagine'),
+                                    onTap: () async {
+                                      ImagePicker.pickImage(source: ImageSource.gallery)
+                                          .then((img) {
+                                        if (img != null) {
+                                          print(img.path);
+                                          _tempPath = img.path;
+                                          _imgCtrl.add(_tempPath.split('/').last);
+                                        } else {
+                                          Toast.show(
+                                              'Devi scegliere un\'immagine!', context,
+                                              duration: 3);
+                                        }
+                                      }).catchError((error) {
+                                        if (error is PlatformException) {
+                                          if (error.code == 'photo_access_denied')
+                                            Toast.show(
+                                                'Devi garantire accesso alle immagini!',
+                                                context,
+                                                duration: 3);
+                                        }
+                                      });
+                                    },
+                                  ),
+                                  (img.hasData)?Padding(child:Image.file(File(_tempPath)),padding:EdgeInsets.all(SPACE)):Container(),
+                                ],
+                              ),
+                              padding: EdgeInsets.only(bottom: SPACE * 2),
+                            );
+                          },
+                        ),
+                        /*FlatButton(
                     child: Text('Carica immagine'),
                     onPressed: ()async{
                       uploadFile(_tempPath);
                     },
                   ),*/
-                    Padding(
-                      child: TextFormField(
-                        key: _quantityKey,
-                        decoration: InputDecoration(
-                          hintText: 'Quantità ordinabile',
+                        Padding(
+                          child: TextFormField(
+                            key: _quantityKey,
+                            decoration: InputDecoration(
+                              hintText: 'Quantità ordinabile',
+                            ),
+                            keyboardType: TextInputType.number,
+                            validator: (value) {
+                              int temp = int.tryParse(value);
+                              if (temp == null) {
+                                return 'Campo invalido inserire un numero!';
+                              }
+                              return null;
+                            },
+                          ),
+                          padding: EdgeInsets.only(bottom: SPACE * 2),
                         ),
-                        keyboardType: TextInputType.number,
-                        validator: (value) {
-                          int temp = int.tryParse(value);
-                          if (temp == null) {
-                            return 'Campo invalido inserire un numero!';
-                          }
-                          return null;
-                        },
-                      ),
-                      padding: EdgeInsets.only(bottom: SPACE * 2),
-                    ),
-                    Padding(
-                      child: TextFormField(
-                        key: _priceKey,
-                        decoration: InputDecoration(
-                          hintText: 'Prezzo',
+                        Padding(
+                          child: TextFormField(
+                            key: _priceKey,
+                            decoration: InputDecoration(
+                              hintText: 'Prezzo',
+                            ),
+                            validator: (value) {
+                              double temp = double.tryParse(value);
+                              //var count=int.tryParse(value).toDouble();
+                              //print(temp);
+                              //if(int.tryParse(value).toDouble()!=null) temp=int.tryParse(value).toDouble();
+                              if (temp == null) {
+                                //print(temp);
+                                return 'Campo invalido controllare che ci sia la virgola e non il punto!';
+                              }
+                              return null;
+                            },
+                          ),
+                          padding: EdgeInsets.only(bottom: SPACE * 2),
                         ),
-                        validator: (value) {
-                          double temp = double.tryParse(value);
-                          if (temp != null) {
-                            return 'Campo invalido controllare che ci sia la virgola e non il punto!';
-                          }
-                          return null;
-                        },
-                      ),
-                      padding: EdgeInsets.only(bottom: SPACE * 2),
-                    ),
-                    /*Padding(
+                        /*Padding(
                       child: TextFormField(
                         key: _categoryKey,
                         decoration: InputDecoration(
@@ -252,45 +266,45 @@ class _MenuPageState extends State<MenuPage> {
                       ),
                       padding: EdgeInsets.only(bottom: SPACE * 2),
                     ),*/
-                    StreamBuilder<String>(
-                      stream: dropStream.stream,
-                      builder: (ctx, sp1) {
-                        return Padding(
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              DropdownButton(
-                                key: _dropKey,
-                                value: (cat == null)
-                                    ? values.elementAt(0)
-                                    : sp1.data,
-                                onChanged: (value) {
-                                  print(value);
-                                  cat = value;
-                                  dropStream.add(value);
-                                  if(value=='Cibo'){
-                                    category=foods.elementAt(0);
-                                    dropMenu=dropFoods;
-                                    dropCatStream.add(foods.elementAt(0));
-                                  }
-                                  else {
-                                    category=drinks.elementAt(0);
-                                    dropMenu=dropDrinks;
-                                    dropCatStream.add(drinks.elementAt(0));
-                                  }
-                                },
-                                items: drop,
+                        StreamBuilder<String>(
+                          stream: dropStream.stream,
+                          builder: (ctx, sp1) {
+                            return Padding(
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  DropdownButton(
+                                    key: _dropKey,
+                                    value: (cat == null)
+                                        ? values.elementAt(0)
+                                        : sp1.data,
+                                    onChanged: (value) {
+                                      print(value);
+                                      cat = value;
+                                      dropStream.add(value);
+                                      if(value=='Cibo'){
+                                        category=foods.elementAt(0);
+                                        dropMenu=dropFoods;
+                                        dropCatStream.add(foods.elementAt(0));
+                                      }
+                                      else {
+                                        category=drinks.elementAt(0);
+                                        dropMenu=dropDrinks;
+                                        dropCatStream.add(drinks.elementAt(0));
+                                      }
+                                    },
+                                    items: drop,
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
-                          padding: EdgeInsets.only(bottom: SPACE * 2),
-                        );
-                      },
-                    ),
-                    StreamBuilder<String>(
-                      stream: dropCatStream.stream,
-                      builder: (ctx, sp1) {
-                        /*if(category==null || category=='Cibo')
+                              padding: EdgeInsets.only(bottom: SPACE * 2),
+                            );
+                          },
+                        ),
+                        StreamBuilder<String>(
+                          stream: dropCatStream.stream,
+                          builder: (ctx, sp1) {
+                            /*if(category==null || category=='Cibo')
                         return Padding(
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -311,64 +325,66 @@ class _MenuPageState extends State<MenuPage> {
                           ),
                           padding: EdgeInsets.only(bottom: SPACE * 2),
                         );*/
-                        return Padding(
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              DropdownButton(
-                                key: _dropCatKey,
-                                value: (category == null || !sp1.hasData)
-                                    ? foods.elementAt(0)
-                                    : sp1.data,
-                                onChanged: (value) {
-                                  print(value);
-                                  category = value;
-                                  dropCatStream.add(value);
-                                },
-                                items: dropMenu,
+                            return Padding(
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  DropdownButton(
+                                    key: _dropCatKey,
+                                    value: (category == null || !sp1.hasData)
+                                        ? foods.elementAt(0)
+                                        : sp1.data,
+                                    onChanged: (value) {
+                                      print(value);
+                                      category = value;
+                                      dropCatStream.add(value);
+                                    },
+                                    items: dropMenu,
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
-                          padding: EdgeInsets.only(bottom: SPACE * 2),
-                        );
-                      },
-                    ),
-                    RaisedButton(
-                      onPressed: () async {
-                        if (_formKey.currentState.validate()) {
-                          if (_tempPath != null) {
-                            if(_tempPath.split('.').last!='jpg'){
-                              Toast.show('Il formato dell\'immagine deve essere .jpg', context,duration: 3);
+                              padding: EdgeInsets.only(bottom: SPACE * 2),
+                            );
+                          },
+                        ),
+                        RaisedButton(
+                          onPressed: () async {
+                            if (_formKey.currentState.validate()) {
+                              if (_tempPath != null) {
+                                if(_tempPath.split('.').last!='jpg'){
+                                  Toast.show('Il formato dell\'immagine deve essere .jpg', context,duration: 3);
+                                }
+                                else uploadFile(_tempPath).then((path) async {
+                                  Database().createRequestProduct(
+                                      _nameKey.currentState.value.toString(),
+                                      path,
+                                      translateCat((category==null)?foods[0]:category),
+                                      _priceKey.currentState.value.toString(),
+                                      _quantityKey.currentState.value.toString(),
+                                      (await UserBloc.of().outUser.first)
+                                          .model
+                                          .restaurantId,
+                                      translate((cat == null) ? values[0] : cat));
+                                  Toast.show(
+                                      'Richiesta inviata correttamente!', context);
+                                });
+                              }
                             }
-                            else uploadFile(_tempPath).then((path) async {
-                              Database().createRequestProduct(
-                                  _nameKey.currentState.value.toString(),
-                                  path,
-                                  translateCat((category==null)?foods[0]:category),
-                                  _priceKey.currentState.value.toString(),
-                                  _quantityKey.currentState.value.toString(),
-                                  (await UserBloc.of().outUser.first)
-                                      .model
-                                      .restaurantId,
-                                  translate((cat == null) ? values[0] : cat));
-                              Toast.show(
-                                  'Richiesta inviata correttamente!', context);
-                            });
-                          }
-                        }
-                      },
-                      textColor: Colors.black,
-                      child: Text(
-                        "  Invia richiesta  ",
-                      ),
+                          },
+                          textColor: Colors.black,
+                          child: Text(
+                            "  Invia richiesta  ",
+                          ),
+                        ),
+                      ],),
                     ),
                   ],
                 ),
-              ),
-            ],
-          ),
-        );
-      },
+              height: 400,
+              width: 200,
+            ),
+          );
+        }
     );
   }
 

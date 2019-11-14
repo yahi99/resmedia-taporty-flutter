@@ -7,7 +7,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:resmedia_taporty_flutter/main.dart';
+import 'package:resmedia_taporty_flutter/mainRestaurant.dart';
 
 
 void main() {

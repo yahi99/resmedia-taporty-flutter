@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:easy_blocs/easy_blocs.dart';
 import 'package:easy_route/easy_route.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:resmedia_taporty_flutter/control/interface/screen/TurnScreen.dart';
@@ -25,6 +28,56 @@ class HomeScreen extends StatefulWidget implements WidgetRoute {
 }
 
 class _HomeScreenRestaurantState extends State<HomeScreen> {
+
+  BuildContext dialog;
+
+  FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+
+  void showNotification(BuildContext context, Map<String, dynamic> message) async {
+    print('Build dialog');
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        content: ListTile(
+          title: Text(message['notification']['title']),
+          subtitle: Text(message['notification']['body']),
+        ),
+        actions: <Widget>[
+          FlatButton(
+            child: Text('Ok'),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void firebaseCloudMessaging_Listeners() {
+    if (Platform.isIOS) iOS_Permission();
+    print('ok');
+    _firebaseMessaging.configure(
+      onMessage: (Map<String, dynamic> message) async {
+        print('on message $message');
+        if(dialog!=null) showNotification(dialog,message);
+      },
+      onResume: (Map<String, dynamic> message) async {
+        print('on resume $message');
+      },
+      onLaunch: (Map<String, dynamic> message) async {
+        print('on launch $message');
+      },
+    );
+  }
+
+  void iOS_Permission() {
+    _firebaseMessaging.requestNotificationPermissions(
+        IosNotificationSettings(sound: true, badge: true, alert: true));
+    _firebaseMessaging.onIosSettingsRegistered
+        .listen((IosNotificationSettings settings) {
+      print("Settings registered: $settings");
+    });
+  }
+
   @override
   void dispose() {
     super.dispose();
@@ -33,10 +86,12 @@ class _HomeScreenRestaurantState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    firebaseCloudMessaging_Listeners();
   }
 
   @override
   Widget build(BuildContext context) {
+    dialog=context;
     final orderBloc = OrdersBloc.of();
     return DefaultTabController(
       length: 3,

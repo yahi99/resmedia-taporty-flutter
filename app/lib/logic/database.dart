@@ -111,6 +111,19 @@ class Database extends FirebaseDatabase
     });
   }
 
+  void saveToken(String fcmToken,String uid)async{
+    var tokens = fs
+        .collection('users')
+        .document(uid)
+        .collection('tokens')
+        .document(fcmToken);
+    await tokens.setData({
+      'token': fcmToken,
+      'createdAt': FieldValue.serverTimestamp(), // optional
+      'platform': Platform.operatingSystem // optional
+    });
+  }
+
   Future<void> addProduct(ProductRequestModel model)async{
     await fs.collection(cl.RESTAURANTS).document(model.restaurantId).collection(model.cat).document(model.id).setData({
       'img':model.img,
@@ -130,10 +143,10 @@ class Database extends FirebaseDatabase
       'km':model.km,
       'lat':model.lat,
       'lng':model.lng,
-      'isDriver':true,
+      'type':'driver',
     });
-    //await fs.collection('food_categories').document(model.category).setData({'translation':model.category});
-    //await fs.collection('driver_requests').document(model.id).delete();
+    //await fs.collection('users').document(model.id).updateData({'type':'driver'});
+    await fs.collection('driver_requests').document(model.id).delete();
   }
 
   Future<void> addRestaurant(RestaurantRequestModel model)async{
@@ -145,11 +158,12 @@ class Database extends FirebaseDatabase
       'partitaIva':model.partitaIva,
       'prodType':model.prodType,
       'tipoEsercizio':model.tipoEsercizio,
-      'address':model.address
+      'address':model.address,
+      'id':model.id
     });
-    await fs.collection(cl.USERS).document(model.id).updateData({'restaurantId':model.ragioneSociale});
+    await fs.collection(cl.USERS).document(model.id).updateData({'restaurantId':model.ragioneSociale,'type':'restaurant'});
     //await fs.collection('food_categories').document(model.category).setData({'translation':model.category});
-    //await fs.collection('restaurant_requests').document(model.ragioneSociale).delete();
+    await fs.collection('restaurant_requests').document(model.ragioneSociale).delete();
   }
 
   Future<bool> addShift(String startTime,String endTime,String day,String number,String restId)async{
@@ -235,6 +249,7 @@ class Database extends FirebaseDatabase
       @required String addressR,
       @required String startTime,
       @required String nominative,
+      @required String day,
       @required String endTime,
       @required String restAdd,
       @required String fingerprint}) async {
@@ -252,7 +267,8 @@ class Database extends FirebaseDatabase
               ..['nominative'] = nominative
               ..['endTime'] = endTime
               ..['addressR'] = addressR
-              ..['fingerprint']=fingerprint))
+              ..['fingerprint']=fingerprint
+              ..['day']=day))
         .documentID;
     await fs
         .collection(cl.USERS)
@@ -264,7 +280,9 @@ class Database extends FirebaseDatabase
           ..['timeR'] = DateTime.now().toString()
           ..['state'] = 'PENDING'
           ..['driver'] = driver
-          ..['uid'] = uid);
+          ..['uid'] = uid
+          ..['endTime']=endTime
+          ..['day']=day);
     await fs
         .collection(cl.USERS)
         .document(driver)
@@ -281,7 +299,9 @@ class Database extends FirebaseDatabase
           ..['latR'] = userPos.latitude
           ..['lngR'] = userPos.longitude
           ..['uid'] = uid
-          ..['restId'] = model.products.first.restaurantId);
+          ..['restId'] = model.products.first.restaurantId
+          ..['day']=day
+          ..['endTime']=endTime);
   }
 
   /*Future<void> updateState({@required String uid, @required Cart model}) async {

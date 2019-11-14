@@ -1,11 +1,14 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:easy_blocs/easy_blocs.dart';
 import 'package:easy_route/easy_route.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -17,7 +20,8 @@ import 'package:resmedia_taporty_flutter/interface/view/CardListView.dart';
 import 'package:resmedia_taporty_flutter/interface/widget/SearchBar.dart';
 import 'package:resmedia_taporty_flutter/logic/bloc/RestaurantsBloc.dart';
 import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
-import 'package:resmedia_taporty_flutter/main.dart';
+import 'package:resmedia_taporty_flutter/logic/database.dart';
+import 'package:resmedia_taporty_flutter/mainRestaurant.dart';
 import 'package:resmedia_taporty_flutter/model/RestaurantModel.dart';
 import 'package:resmedia_taporty_flutter/model/UserModel.dart';
 
@@ -98,6 +102,55 @@ class RestaurantListScreen extends StatefulWidget implements WidgetRoute {
 class _RestaurantListScreenState extends State<RestaurantListScreen> {
   final double iconSize = 32;
 
+  BuildContext dialog;
+
+  FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+
+  void showNotification(BuildContext context, Map<String, dynamic> message) async {
+    print('Build dialog');
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        content: ListTile(
+          title: Text(message['notification']['title']),
+          subtitle: Text(message['notification']['body']),
+        ),
+        actions: <Widget>[
+          FlatButton(
+            child: Text('Ok'),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void firebaseCloudMessaging_Listeners() {
+    if (Platform.isIOS) iOS_Permission();
+    print('ok');
+    _firebaseMessaging.configure(
+      onMessage: (Map<String, dynamic> message) async {
+        print('on message $message');
+        if(dialog!=null) showNotification(dialog,message);
+      },
+      onResume: (Map<String, dynamic> message) async {
+        print('on resume $message');
+      },
+      onLaunch: (Map<String, dynamic> message) async {
+        print('on launch $message');
+      },
+    );
+  }
+
+  void iOS_Permission() {
+    _firebaseMessaging.requestNotificationPermissions(
+        IosNotificationSettings(sound: true, badge: true, alert: true));
+    _firebaseMessaging.onIosSettingsRegistered
+        .listen((IosNotificationSettings settings) {
+      print("Settings registered: $settings");
+    });
+  }
+
   @override
   void dispose() {
     RestaurantsBloc.close();
@@ -107,24 +160,25 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
   @override
   void initState() {
     super.initState();
-    //_cartBloc.load(outRestaurants: RestaurantBloc.of().outRestaurant);
+    firebaseCloudMessaging_Listeners();
   }
 
   @override
   Widget build(BuildContext context) {
+    dialog=context;
     final UserBloc userBloc = UserBloc.of();
     final RestaurantsBloc _restaurantsBloc = RestaurantsBloc.instance();
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
         leading: IconButton(
-          icon: Icon(Icons.exit_to_app),
-          onPressed: () {
-            userBloc.logout().then((onValue) {
-              EasyRouter.pushAndRemoveAll(context, LoginScreen());
-            });
-          },
-        ),
+              icon: Icon(Icons.exit_to_app),
+              onPressed: () {
+                userBloc.logout().then((onValue) {
+                  EasyRouter.pushAndRemoveAll(context, LoginScreen());
+                });
+              },
+            ),
         title: Text('Ristoranti nella tua zona'),
         backgroundColor: red,
         centerTitle: true,
@@ -206,7 +260,7 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
 
 class RestaurantView extends StatelessWidget {
   final RestaurantModel model;
-  final StreamController<String> imgStream=new StreamController.broadcast();
+  final StreamController<String> imgStream = new StreamController.broadcast();
 
   RestaurantView({
     Key key,
@@ -214,14 +268,14 @@ class RestaurantView extends StatelessWidget {
   })  : assert(model != null),
         super(key: key);
 
-  Future<Null> downloadFile(String httpPath)async{
-    final RegExp regExp=RegExp('([^?/]*\.(jpg))');
-    final String fileName=regExp.stringMatch(httpPath);
-    final Directory tempDir= Directory.systemTemp;
-    final File file=File('${tempDir.path}/$fileName');
-    final StorageReference ref=FirebaseStorage.instance.ref().child(fileName);
-    final StorageFileDownloadTask downloadTask=ref.writeToFile(file);
-    final int byteNumber=(await downloadTask.future).totalByteCount;
+  Future<Null> downloadFile(String httpPath) async {
+    final RegExp regExp = RegExp('([^?/]*\.(jpg))');
+    final String fileName = regExp.stringMatch(httpPath);
+    final Directory tempDir = Directory.systemTemp;
+    final File file = File('${tempDir.path}/$fileName');
+    final StorageReference ref = FirebaseStorage.instance.ref().child(fileName);
+    final StorageFileDownloadTask downloadTask = ref.writeToFile(file);
+    final int byteNumber = (await downloadTask.future).totalByteCount;
     print(byteNumber);
     //put the file into the stream
     imgStream.add(file.path);
@@ -229,27 +283,20 @@ class RestaurantView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(model.id);
-    if(!model.img.startsWith('assets')) downloadFile(model.img);
+    //print(model.id);
+    //if (!model.img.startsWith('assets')) downloadFile(model.img);
     return ClipRRect(
       borderRadius: BorderRadius.circular(8.0),
       child: Stack(
         alignment: Alignment.bottomCenter,
         children: <Widget>[
-          StreamBuilder(
-            stream: imgStream.stream,
-            builder: (context,snap){
-              if(model.img.startsWith('assets')) return Image.asset(
+      (model.img.startsWith('assets'))?Image.asset(
+                  model.img,
+                  fit: BoxFit.fitHeight,
+                ):Image.network(
                 model.img,
                 fit: BoxFit.fitHeight,
-              );
-              if(!snap.hasData) return Center(child:CircularProgressIndicator());
-              return Image.asset(
-                snap.data,
-                fit: BoxFit.fitHeight,
-              );
-            },
-          ),
+              ),
           Container(
             color: Colors.black,
             child: Padding(

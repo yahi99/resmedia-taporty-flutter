@@ -179,20 +179,6 @@ class NewDriverState extends State<BecomeRestaurantScreen> {
               Expanded(
                 child: ListView(
                   children: <Widget>[
-                    Padding(
-                      child: Text(
-                        snap.data.model.nominative,
-                        style: theme.textTheme.subhead,
-                      ),
-                      padding: EdgeInsets.all(8.0),
-                    ),
-                    Padding(
-                      child: Text(
-                        snap.data.model.email,
-                        style: theme.textTheme.subhead,
-                      ),
-                      padding: EdgeInsets.all(8.0),
-                    ),
                     Form(
                       autovalidate: false,
                       key: _formKey,
@@ -323,37 +309,42 @@ class NewDriverState extends State<BecomeRestaurantScreen> {
                                 _imgTextController.value =
                                     TextEditingValue(text: '');
                               return Padding(
-                                child: TextFormField(
-                                  focusNode: _imgNode,
-                                  textInputAction: TextInputAction.next,
-                                  onFieldSubmitted: (value) =>
-                                      _changeFocus(context, _imgNode, _eseNode),
-                                  controller: _imgTextController,
-                                  decoration:
+                                child: Column(
+                                  children: <Widget>[
+                                    TextFormField(
+                                      focusNode: _imgNode,
+                                      textInputAction: TextInputAction.next,
+                                      onFieldSubmitted: (value) =>
+                                          _changeFocus(context, _imgNode, _eseNode),
+                                      controller: _imgTextController,
+                                      decoration:
                                       InputDecoration(hintText: 'Immagine'),
-                                  onTap: () async {
-                                    ImagePicker.pickImage(
+                                      onTap: () async {
+                                        ImagePicker.pickImage(
                                             source: ImageSource.gallery)
-                                        .then((img) {
-                                      if (img != null) {
-                                        _tempPath = img.path;
-                                        _imgCtrl.add(_tempPath.split('/').last);
-                                      } else {
-                                        Toast.show(
-                                            'Devi scegliere un\'immagine!',
-                                            context,
-                                            duration: 3);
-                                      }
-                                    }).catchError((error) {
-                                      if (error is PlatformException) {
-                                        if (error.code == 'photo_access_denied')
-                                          Toast.show(
-                                              'Devi garantire accesso alle immagini!',
-                                              context,
-                                              duration: 3);
-                                      }
-                                    });
-                                  },
+                                            .then((img) {
+                                          if (img != null) {
+                                            _tempPath = img.path;
+                                            _imgCtrl.add(_tempPath.split('/').last);
+                                          } else {
+                                            Toast.show(
+                                                'Devi scegliere un\'immagine!',
+                                                context,
+                                                duration: 3);
+                                          }
+                                        }).catchError((error) {
+                                          if (error is PlatformException) {
+                                            if (error.code == 'photo_access_denied')
+                                              Toast.show(
+                                                  'Devi garantire accesso alle immagini!',
+                                                  context,
+                                                  duration: 3);
+                                          }
+                                        });
+                                      },
+                                    ),
+                                    (img.hasData)?Padding(child:Image.file(File(_tempPath)),padding:EdgeInsets.all(SPACE)):Container(),
+                                  ],
                                 ),
                                 padding: EdgeInsets.all(8.0),
                               );

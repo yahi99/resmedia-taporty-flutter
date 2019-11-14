@@ -32,7 +32,7 @@ dependencies:
 
   path_provider: any
 
-  image_picker: any
+  image_picker: 0.6.0+11
 
   easy_firebase:
     path: ../plugins/easy_firebase
@@ -64,7 +64,7 @@ dependencies:
   vibration: ^1.2.1
 
   # Fornisce il supporto per la selezione delle immagini.
-  file_picker: ^1.4.0+1
+  file_picker: 1.4.0+1
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -87,10 +87,12 @@ dependencies:
 
   datetime_picker_formfield: ^0.2.0
 
-  firebase_messaging: 5.1.5
+  firebase_messaging: 5.1.8
 
 
   rubber: any
+
+  flutter_local_notifications: ^0.7.1+3
 
   easy_blocs:
     path: ../plugins/easy_blocs

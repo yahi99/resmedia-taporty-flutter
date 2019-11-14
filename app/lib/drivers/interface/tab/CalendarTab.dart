@@ -26,6 +26,7 @@ class CalendarTabDriver extends StatefulWidget {
 class _CalendarState extends State<CalendarTabDriver>
     with AutomaticKeepAliveClientMixin {
   final _calendarBloc = CalendarBloc.of();
+  int count=0;
 
   @override
   void dispose() {
@@ -42,6 +43,7 @@ class _CalendarState extends State<CalendarTabDriver>
 
   void change(DateTime now) {
     print(now.toIso8601String());
+    count=0;
     widget.dateStream.add(now);
   }
 
@@ -57,7 +59,6 @@ class _CalendarState extends State<CalendarTabDriver>
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final tt = theme.textTheme;
-    int count=0;
     //final user=UserBloc.of();
     //final cb = CalendarBloc.of();
     //if(widget.model.isNotEmpty && widget.model.first.day!=widget.date.toIso8601String()) widget.callback(widget.date);
@@ -129,8 +130,11 @@ class _CalendarState extends State<CalendarTabDriver>
                               ],
                             );
                           }
-                          if(snap4.data.length-1==index && count!=0) return Container();
-                          return Text('Non ci sono turni disponibili per questo giorno.');
+                          print(snap4.data.length);
+                          print(index);
+                          if(snap4.data.length-1==index && count==0) return Text('Non ci sono turni disponibili per questo giorno.');
+                          return Container();
+
                         })
                     : Text('Non ci sono turni disponibili per questo giorno.'),
               ],

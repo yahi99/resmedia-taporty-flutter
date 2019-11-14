@@ -25,10 +25,12 @@ class UserModel extends UserFirebaseModel {
   final double lat;
   final double lng;
   final bool isDriver;
+  final String type;
 
   UserModel({
     String path,
     String fcmToken,
+    this.type,
     this.lat,
     this.lng,
     this.isDriver,

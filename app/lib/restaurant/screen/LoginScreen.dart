@@ -73,8 +73,9 @@ class _LoginScreenState extends State<LoginScreen> {
       /*if (registrationLevel == RegistrationLevel.LV2)
         await EasyRouter.push(context, SignUpMoreScreen());*/
       if (registrationLevel == RegistrationLevel.COMPLETE) {
+        final type=(await _userBloc.outUser.first).model.type;
         String user = (await UserBloc.of().outUser.first).model.restaurantId;
-        if(user!=null) {
+        if(user!=null && type=='restaurant') {
           final orderBloc = OrdersBloc.of();
           await orderBloc.setRestaurantStream();
           final restaurantBloc = RestaurantBloc.init(idRestaurant: user);

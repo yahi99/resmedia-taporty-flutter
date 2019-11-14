@@ -8,7 +8,7 @@ import 'package:resmedia_taporty_flutter/interface/page/CartPage.dart';
 import 'package:resmedia_taporty_flutter/interface/page/ConfirmPage.dart';
 import 'package:resmedia_taporty_flutter/interface/page/PaymentPage.dart';
 import 'package:resmedia_taporty_flutter/interface/page/ShippingPage.dart';
-import 'package:resmedia_taporty_flutter/main.dart';
+import 'package:resmedia_taporty_flutter/mainRestaurant.dart';
 import 'package:resmedia_taporty_flutter/model/RestaurantModel.dart';
 import 'package:resmedia_taporty_flutter/model/UserModel.dart';
 

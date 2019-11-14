@@ -4,7 +4,7 @@ import 'package:easy_widget/easy_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:resmedia_taporty_flutter/interface/screen/LoginScreen.dart';
+import 'package:resmedia_taporty_flutter/restaurant/screen/LoginScreen.dart';
 import 'package:resmedia_taporty_flutter/logic/bloc/FlavourBloc.dart';
 
 /// flutter build --flavor development -t lib/main-dev.dart
@@ -20,7 +20,7 @@ const STRIPE_PUBLIC_KEY = "pk_test_bI6Z2I2jFP7Tfjfm0AvIyWV500cS2fKdCO";
 
 void main() {
   // TODO: Intervenire qui.
-  FlavorBloc.of().init(Flavor.CLIENT);
+  FlavorBloc.of().init(Flavor.RESTAURANT);
   runApp(RepositoryBuilder(
     backgroundTask: (context, sharedPreferences) async {
       final assetHandler = await AssetHandler.init(context);
@@ -60,7 +60,7 @@ class _TaportyState extends State<Taporty> {
           colorScheme: cls,
           textTheme: ButtonTextTheme.primary,
           shape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(32.0)),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(32.0)),
         ),
         inputDecorationTheme: InputDecorationTheme(
           border: const OutlineInputBorder(
@@ -119,7 +119,7 @@ class _TaportyState extends State<Taporty> {
       ),
       initialRoute: LoginScreen.ROUTE,
       onGenerateRoute: EasyRouter.onGenerateRouteBuilder(
-              (_) => LoginScreen(), LoginScreen.ROUTE),
+          (_) => LoginScreen(), LoginScreen.ROUTE),
       navigatorObservers: <NavigatorObserver>[
         SwipeBackObserver(),
       ],

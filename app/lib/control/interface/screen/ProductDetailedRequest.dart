@@ -17,8 +17,9 @@ class ProductDetailedRequest extends StatefulWidget implements WidgetRoute {
   static const ROUTE = 'ProductDetailedRequest';
 
   final ProductRequestModel model;
+  final isArchive;
 
-  ProductDetailedRequest({this.model});
+  ProductDetailedRequest({this.model,this.isArchive});
 
   @override
   String get route => ROUTE;
@@ -182,6 +183,7 @@ class _ProductDetailedState extends State<ProductDetailedRequest> {
             children: <Widget>[
               RaisedButton(
                 onPressed: () {
+                  if(!widget.isArchive) Database().archiveProduct(widget.model);
                   EasyRouter.pop(context);
                 },
                 textColor: Colors.white,

@@ -17,8 +17,9 @@ class DriverDetailedRequest extends StatefulWidget implements WidgetRoute {
   static const ROUTE = 'DriverDetailedRequest';
 
   final DriverRequestModel model;
+  final bool isArchived;
 
-  DriverDetailedRequest({this.model});
+  DriverDetailedRequest({this.model,this.isArchived});
 
   @override
   String get route => ROUTE;
@@ -116,6 +117,7 @@ class _DriverDetailedState extends State<DriverDetailedRequest> {
                     children: <Widget>[
                       RaisedButton(
                         onPressed: () {
+                          if(!widget.isArchived) Database().archiveDriver(widget.model);
                           EasyRouter.pop(context);
                         },
                         textColor: Colors.white,

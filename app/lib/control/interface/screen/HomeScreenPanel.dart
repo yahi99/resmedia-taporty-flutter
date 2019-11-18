@@ -6,10 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:resmedia_taporty_flutter/control/interface/screen/DriverRequests.dart';
 import 'package:resmedia_taporty_flutter/control/interface/screen/ProductRequestsScreen.dart';
+import 'package:resmedia_taporty_flutter/control/interface/screen/ResetPasswordAdmin.dart';
 import 'package:resmedia_taporty_flutter/control/interface/screen/RestaurantRequestScreen.dart';
 import 'package:resmedia_taporty_flutter/control/interface/screen/TurnScreen.dart';
 import 'package:resmedia_taporty_flutter/drivers/logic/bloc/CalendarBloc.dart';
 import 'package:resmedia_taporty_flutter/drivers/logic/bloc/DriverBloc.dart';
+import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
+
+import 'CreateAdminScreen.dart';
 
 class HomeScreenPanel extends StatefulWidget implements WidgetRoute {
   static const ROUTE = 'HomeScreenPanel';
@@ -122,6 +126,18 @@ class _HomeScreenPanelState extends State<HomeScreenPanel> {
             child: Text('  Richieste Prodotti  '),
             onPressed: (){
               EasyRouter.push(context, ProductRequestsScreen());
+            },
+          ),
+          FlatButton(
+            child: Text('  Crea amministratore  '),
+            onPressed: (){
+              EasyRouter.push(context, CreateAdminScreen());
+            },
+          ),
+          FlatButton(
+            child: Text('  Reset Password Admin  '),
+            onPressed: ()async{
+              EasyRouter.push(context, ResetPasswordAdmin(userId: (await UserBloc.of().outFirebaseUser.first).uid,));
             },
           ),
         ],

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:resmedia_taporty_flutter/model/OrderModel.dart';
 import 'package:resmedia_taporty_flutter/restaurant/page/DetailOrderRestaurantPage.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class TypeOrderView extends StatelessWidget {
   final RestaurantOrderModel model;
@@ -20,6 +21,11 @@ class TypeOrderView extends StatelessWidget {
       sum += cart.elementAt(i).countProducts;
     }
     return sum;
+  }
+
+  String toDate(String date){
+    final DateTime dateTime=DateTime.parse(date);
+    return(dateTime.day.toString()+'/'+dateTime.month.toString()+'/'+dateTime.year.toString());
   }
 
   @override
@@ -81,6 +87,8 @@ class TypeOrderView extends StatelessWidget {
                     children: <Widget>[
                       Text('Cliente: ', style: tt.subtitle),
                       Text(model.nominative),
+                      Text('Giorno di consegna: ', style: tt.subtitle),
+                      Text(toDate(model.day)),
                       Text('Ora di consegna: ', style: tt.subtitle),
                       Text(model.endTime),
                       Text('Numero di prodotti: ', style: tt.subtitle),
@@ -100,7 +108,9 @@ class TypeOrderView extends StatelessWidget {
                           padding: const EdgeInsets.symmetric(horizontal: 16.0),
                           child: RaisedButton(
                             color: theme.colorScheme.secondaryVariant,
-                            onPressed: () {},
+                            onPressed: () {
+                              launch('tel:$model.phone');
+                            },
                             child: Text(
                               "Chiama",
                               style: tt.button,

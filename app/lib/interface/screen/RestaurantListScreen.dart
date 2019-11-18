@@ -14,6 +14,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:meta/meta.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/screen/AccountScreen.dart';
+import 'package:resmedia_taporty_flutter/interface/screen/GeolocalizationScreen.dart';
 import 'package:resmedia_taporty_flutter/interface/screen/LoginScreen.dart';
 import 'package:resmedia_taporty_flutter/interface/screen/RestaurantScreen.dart';
 import 'package:resmedia_taporty_flutter/interface/view/CardListView.dart';
@@ -172,11 +173,9 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         leading: IconButton(
-              icon: Icon(Icons.exit_to_app),
+              icon: Icon(Icons.public),
               onPressed: () {
-                userBloc.logout().then((onValue) {
-                  EasyRouter.pushAndRemoveAll(context, LoginScreen());
-                });
+                EasyRouter.push(context, GeoLocScreen(isAnonymous:false));
               },
             ),
         title: Text('Ristoranti nella tua zona'),

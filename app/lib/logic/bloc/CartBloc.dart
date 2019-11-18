@@ -154,12 +154,13 @@ class CartBloc extends Bloc {
     return null;
   }
 
-  Future<bool> signer(String restaurantId, String driver, Position userPos,
+  Future<bool> signer(String restaurantId, String driver, Position userPos,String phone,
       String userAddress, String startTime, String endTime,String fingerprint,String day) async {
     final userBloc = UserBloc.of();
     final firebaseUser = await userBloc.outUser.first;
     inDeleteCart(restaurantId).then((cart) async {
       _db.createOrder(
+          phone:phone,
           day: day,
           uid: firebaseUser.model.id,
           model: cart,

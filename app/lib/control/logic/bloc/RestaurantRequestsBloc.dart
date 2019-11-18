@@ -20,15 +20,21 @@ class RestaurantRequestsBloc implements Bloc {
   @protected
   dispose() {
     if (_requestsControl != null) _requestsControl.close();
+    if (_requestsArchivedControl != null) _requestsArchivedControl.close();
   }
 
   PublishSubject<List<RestaurantRequestModel>> _requestsControl;
+  PublishSubject<List<RestaurantRequestModel>> _requestsArchivedControl;
 
   Stream<List<RestaurantRequestModel>> get outRequests =>
       _requestsControl.stream;
 
+  Stream<List<RestaurantRequestModel>> get outArchivedRequests =>
+      _requestsArchivedControl.stream;
+
   RestaurantRequestsBloc.instance() {
     _requestsControl = PublishController.catchStream(source: _db.getRestaurantRequests());
+    _requestsArchivedControl = PublishController.catchStream(source: _db.getArchivedRestaurantRequests());
   }
 
   factory RestaurantRequestsBloc.of() => $Provider.of<RestaurantRequestsBloc>();

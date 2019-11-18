@@ -8,6 +8,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:resmedia_taporty_flutter/interface/screen/RestaurantListScreen.dart';
 import 'package:resmedia_taporty_flutter/interface/view/logo_view.dart';
+import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
 import 'package:toast/toast.dart';
 
 class GeoLocScreen extends StatefulWidget implements WidgetRoute {
@@ -104,13 +105,14 @@ class _GeoLocScreenState extends State<GeoLocScreen> {
                 IconButton(
                     icon: Icon(Icons.check),
                     color: Colors.blue,
-                    onPressed: () {
+                    onPressed: ()async {
                       if (isValid) {
-                        EasyRouter.push(
+                        EasyRouter.pushAndRemoveAll(
                             context,
                             RestaurantListScreen(
                               position: pos,
                               isAnonymous: false,
+                                user: (await UserBloc.of().outUser.first).model
                             ));
                       } else {
                         Toast.show('Inserire un indirizzo valido', context);

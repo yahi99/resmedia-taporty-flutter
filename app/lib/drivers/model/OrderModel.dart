@@ -13,11 +13,15 @@ part 'OrderModel.g.dart';
 class DriverOrderModel extends FirebaseModel {
   final String titleR, titleS, addressR, addressS, timeR, timeS;
   final double latR, lngR;
-  String id, restId, uid, nominative;
+  String id, restId, uid, nominative,day,endTime,startTime,phone;
   StateCategory state;
 
   DriverOrderModel({
     String path,
+    @required this.phone,
+    @required this.day,
+    @required this.startTime,
+    @required this.endTime,
     @required this.id,
     @required this.titleR,
     @required this.titleS,
@@ -36,14 +40,18 @@ class DriverOrderModel extends FirebaseModel {
 
   List<SubjectModel> get subjects => [
         SubjectModel(
+          day: day,
           title: restId,
           address: addressS,
+          deliveryTime: startTime,
           time: (timeS != null) ? timeS : 'Ordine non accettato',
         ),
         SubjectModel(
+            day: day,
             title: nominative,
             address: addressR,
             time: timeR,
+            deliveryTime: endTime,
             position: LatLngModel(lat: latR, lng: lngR))
       ];
 

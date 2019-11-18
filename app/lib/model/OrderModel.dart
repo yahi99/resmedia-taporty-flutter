@@ -46,9 +46,13 @@ class RestaurantOrderModel extends OrderModel {
   final String nominative;
   final String addressR;
   final String stripe_customer;
+  final String day;
+  final String phone;
 
   RestaurantOrderModel({
     String path,
+    @required this.phone,
+    @required this.day,
     @required this.stripe_customer,
     @required this.addressR,
     @required this.endTime,
@@ -79,9 +83,13 @@ class UserOrderModel extends OrderModel {
   final List<ProductCart> products;
   final String timeR, timeS;
   final StateCategory state;
+  final String endTime,day,phone;
 
   UserOrderModel({
     String path,
+    @required this.phone,
+    @required this.day,
+    @required this.endTime,
     @required this.products,
     @required this.timeR,
     @required this.timeS,

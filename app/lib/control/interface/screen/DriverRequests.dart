@@ -5,6 +5,7 @@ import 'package:easy_route/easy_route.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:resmedia_taporty_flutter/control/interface/screen/ArchiveDriverRequests.dart';
 import 'package:resmedia_taporty_flutter/control/logic/bloc/DriverRequestsBloc.dart';
 import 'package:resmedia_taporty_flutter/control/logic/bloc/RequestsBloc.dart';
 import 'package:resmedia_taporty_flutter/control/model/DriverRequestModel.dart';
@@ -45,7 +46,14 @@ class _DriverRequestsScreenState extends State<DriverRequestsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Richieste Fattorini"),
-        actions: <Widget>[],
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.archive),
+            onPressed: (){
+              EasyRouter.push(context, ArchiveDriverRequests());
+            },
+          )
+        ],
       ),
       body: StreamBuilder(
         stream:reqBloc.outRequests ,
@@ -127,7 +135,7 @@ class ItemBuilder extends StatelessWidget{
               ),
       onTap:() {
         //_showDialog(context);
-        EasyRouter.push(context, DriverDetailedRequest(model: model,));
+        EasyRouter.push(context, DriverDetailedRequest(model: model,isArchived: false,));
       },
     );
   }

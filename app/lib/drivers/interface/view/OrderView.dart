@@ -14,6 +14,7 @@ class OrderView extends StatelessWidget {
   Widget build(BuildContext context) {
     final sub = model.subjects;
     return Order(
+      date: model.day,
       children: <Widget>[
         Expanded(
           child: SubjectVoid(
@@ -74,7 +75,7 @@ class SubjectVoid extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(
-                "${model.title}",
+                "${model.deliveryTime}",
                 style: tt.subtitle,
               ),
               Flexible(

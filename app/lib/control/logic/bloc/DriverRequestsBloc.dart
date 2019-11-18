@@ -19,15 +19,21 @@ class DriverRequestsBloc implements Bloc {
   @protected
   dispose() {
     if (_requestsControl != null) _requestsControl.close();
+    if (_requestsArchiveControl != null) _requestsArchiveControl.close();
   }
 
   PublishSubject<List<DriverRequestModel>> _requestsControl;
+  PublishSubject<List<DriverRequestModel>> _requestsArchiveControl;
 
   Stream<List<DriverRequestModel>> get outRequests =>
       _requestsControl.stream;
 
+  Stream<List<DriverRequestModel>> get outArchivedRequests =>
+      _requestsControl.stream;
+
   DriverRequestsBloc.instance() {
     _requestsControl = PublishController.catchStream(source: _db.getDriverRequests());
+    _requestsArchiveControl = PublishController.catchStream(source: _db.getArchivedDriverRequests());
   }
 
   factory DriverRequestsBloc.of() => $Provider.of<DriverRequestsBloc>();

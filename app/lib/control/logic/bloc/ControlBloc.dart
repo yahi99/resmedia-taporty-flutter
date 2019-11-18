@@ -8,34 +8,29 @@ import 'package:resmedia_taporty_flutter/generated/provider.dart';
 import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
 import 'package:resmedia_taporty_flutter/logic/database.dart';
 import 'package:resmedia_taporty_flutter/model/OrderModel.dart';
+import 'package:resmedia_taporty_flutter/model/UserModel.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'RequestsBloc.dart';
 
-class RequestsBloc implements Bloc {
+class ControlBloc implements Bloc {
   final _db = Database();
 
   @protected
   dispose() {
     if (_requestsControl != null) _requestsControl.close();
-    if (_requestsControlArchived != null) _requestsControlArchived.close();
   }
 
-  PublishSubject<List<ProductRequestModel>> _requestsControl;
-  PublishSubject<List<ProductRequestModel>> _requestsControlArchived;
+  PublishSubject<List<UserModel>> _requestsControl;
 
-  Stream<List<ProductRequestModel>> get outRequests =>
+  Stream<List<UserModel>> get outRequests =>
       _requestsControl.stream;
 
-  Stream<List<ProductRequestModel>> get outArchivedRequests =>
-      _requestsControlArchived.stream;
-
-  RequestsBloc.instance() {
-    _requestsControl = PublishController.catchStream(source: _db.getRequests());
-    _requestsControlArchived = PublishController.catchStream(source: _db.getArchivedRequests());
+  ControlBloc.instance() {
+    _requestsControl = PublishController.catchStream(source: _db.getAdminsControl());
   }
 
-  factory RequestsBloc.of() => $Provider.of<RequestsBloc>();
+  factory ControlBloc.of() => $Provider.of<ControlBloc>();
 
-  static void close() => $Provider.dispose<RequestsBloc>();
+  static void close() => $Provider.dispose<ControlBloc>();
 }

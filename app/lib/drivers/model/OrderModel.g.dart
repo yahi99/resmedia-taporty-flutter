@@ -9,6 +9,10 @@ part of 'OrderModel.dart';
 DriverOrderModel _$DriverOrderModelFromJson(Map json) {
   return DriverOrderModel(
       path: json['path'] as String,
+      phone: json['phone'] as String,
+      day: json['day'] as String,
+      startTime: json['startTime'] as String,
+      endTime: json['endTime'] as String,
       id: json['id'] as String,
       titleR: json['titleR'] as String,
       titleS: json['titleS'] as String,
@@ -46,6 +50,10 @@ Map<String, dynamic> _$DriverOrderModelToJson(DriverOrderModel instance) {
   writeNotNull('restId', instance.restId);
   writeNotNull('uid', instance.uid);
   writeNotNull('nominative', instance.nominative);
+  writeNotNull('day', instance.day);
+  writeNotNull('endTime', instance.endTime);
+  writeNotNull('startTime', instance.startTime);
+  writeNotNull('phone', instance.phone);
   writeNotNull('state', _$StateCategoryEnumMap[instance.state]);
   return val;
 }

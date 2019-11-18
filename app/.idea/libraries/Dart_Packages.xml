@@ -933,6 +933,13 @@
             </list>
           </value>
         </entry>
+        <entry key="url_launcher">
+          <value>
+            <list>
+              <option value="$USER_HOME$/res_media/flutter/.pub-cache/hosted/pub.dartlang.org/url_launcher-5.2.1/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="uuid">
           <value>
             <list>
@@ -1122,6 +1129,7 @@
       <root url="file://$USER_HOME$/res_media/flutter/.pub-cache/hosted/pub.dartlang.org/toast-0.1.5/lib" />
       <root url="file://$USER_HOME$/res_media/flutter/.pub-cache/hosted/pub.dartlang.org/transformer_page_view-0.1.6/lib" />
       <root url="file://$USER_HOME$/res_media/flutter/.pub-cache/hosted/pub.dartlang.org/typed_data-1.1.6/lib" />
+      <root url="file://$USER_HOME$/res_media/flutter/.pub-cache/hosted/pub.dartlang.org/url_launcher-5.2.1/lib" />
       <root url="file://$USER_HOME$/res_media/flutter/.pub-cache/hosted/pub.dartlang.org/uuid-2.0.2/lib" />
       <root url="file://$USER_HOME$/res_media/flutter/.pub-cache/hosted/pub.dartlang.org/vector_math-2.0.8/lib" />
       <root url="file://$USER_HOME$/res_media/flutter/.pub-cache/hosted/pub.dartlang.org/vibration-1.2.2/lib" />

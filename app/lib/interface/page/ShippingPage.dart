@@ -123,7 +123,7 @@ class _ShippingState extends State<ShippingPage>
                         ),
                         key: _phoneKey,
                         validator: (value) {
-                          if (value.length == 0) return 'Campo non valido';
+                          if (value==null && (value.length != 10 || int.tryParse(value)==null)) return 'Campo non valido';
                           return null;
                         },
                         controller: _phoneController,

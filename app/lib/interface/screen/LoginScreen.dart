@@ -147,6 +147,52 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  _showMailDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (_context) {
+        final theme = Theme.of(context);
+        final cls = theme.colorScheme;
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(20))),
+          content: Wrap(
+            alignment: WrapAlignment.center,
+            runSpacing: SPACE * 2,
+            children: <Widget>[
+              Column(
+                children: <Widget>[
+                  Text(
+                    "Account non confermato, clicca qui sotto per mandare la mail di conferma.",
+                    style: theme.textTheme.body2,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    //crossAxisAlignment:CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      RaisedButton(
+                        onPressed: ()async {
+                          final user=await _userBloc.outFirebaseUser.first;
+                          user.sendEmailVerification();
+                          EasyRouter.pop(context);
+                        },
+                        color: Colors.blue,
+                        textColor: Colors.white,
+                        child: Text(
+                          "Invia",
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -181,33 +227,41 @@ class _LoginScreenState extends State<LoginScreen> {
           );
       } else {
         final registrationLevel = await _userBloc.getRegistrationLevel();
+        final user=await _userBloc.outFirebaseUser.first;
         if (registrationLevel == RegistrationLevel.LV2)
           await EasyRouter.push(context, SignUpMoreScreen());
         if (registrationLevel == RegistrationLevel.COMPLETE) {
-          if ((await PermissionHandler()
-                  .checkPermissionStatus(PermissionGroup.location)) !=
-              PermissionStatus.granted)
-            _showPositionDialog(context, false);
-          else
-            Geolocator()
-                .getCurrentPosition()
-                .then(
-                  (position) async => await EasyRouter.pushAndRemoveAll(
-                    context,
-                    RestaurantListScreen(
-                      isAnonymous: isAnon,
-                      position: position,
-                      user: (await _userBloc.outUser.first).model,
-                    ),
+          if (user.isEmailVerified) {
+            if ((await PermissionHandler()
+                .checkPermissionStatus(PermissionGroup.location)) !=
+                PermissionStatus.granted)
+              _showPositionDialog(context, false);
+            else
+              Geolocator()
+                  .getCurrentPosition()
+                  .then(
+                    (position) async =>
+                await EasyRouter.pushAndRemoveAll(
+                  context,
+                  RestaurantListScreen(
+                    isAnonymous: isAnon,
+                    position: position,
+                    user: (await _userBloc.outUser.first).model,
                   ),
-                )
-                .catchError(
-              (error) {
-                if (error is PlatformException) {
-                  print(error.code);
-                }
-              },
-            );
+                ),
+              )
+                  .catchError(
+                    (error) {
+                  if (error is PlatformException) {
+                    print(error.code);
+                  }
+                },
+              );
+          }
+          else{
+            //Toast.show('Devi confermare il tuo account per accedere', context);
+            _showMailDialog(context);
+          }
         }
       }
     };
@@ -267,6 +321,32 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   AutoSizeText(
                       'Compila i campi richiesti ed una volta inviata la richiesta verrà presa in visione nel minor tempo possibile e verrai notificato se la richiesta è andata a buon fine'),
+                  RaisedButton(
+                    child: Text('  Chiudi  '),
+                    onPressed: () => EasyRouter.pop(context),
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
+  void _showPolicyDialog(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (_context) {
+          final theme = Theme.of(context);
+          final cls = theme.colorScheme;
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(20))),
+            content: Scaffold(
+              body: ListView(
+                shrinkWrap: true,
+                children: <Widget>[
+                  AutoSizeText(
+                      'Privacy Policy'),
                   RaisedButton(
                     child: Text('  Chiudi  '),
                     onPressed: () => EasyRouter.pop(context),
@@ -354,6 +434,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       icon: Icon(FontAwesomeIcons.facebookF),
                       label: Text('Login with Facebook'),
                     ),
+                    /*
                     RaisedButton(
                       color: Colors.white,
                       child: Container(
@@ -372,6 +453,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         //_userBloc.inSignInAnonymously();
                       },
                     ),
+                    */
                     RaisedButton(
                       color: Colors.white,
                       child: Container(
@@ -386,9 +468,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       onPressed: () {
                         _showDialog(context);
-                        Toast.show("Disponibile in futuro", context,
-                            duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
-                        //_userBloc.inSignInAnonymously();
                       },
                     ),
                   ],

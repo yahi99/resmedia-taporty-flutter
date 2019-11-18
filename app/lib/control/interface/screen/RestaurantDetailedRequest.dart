@@ -17,8 +17,9 @@ class RestaurantDetailedRequest extends StatefulWidget implements WidgetRoute {
   static const ROUTE = 'RestaurantDetailedRequest';
 
   final RestaurantRequestModel model;
+  final bool isArchived;
 
-  RestaurantDetailedRequest({this.model});
+  RestaurantDetailedRequest({this.model,this.isArchived});
 
   @override
   String get route => ROUTE;
@@ -182,6 +183,7 @@ class _RestaurantDetailedState extends State<RestaurantDetailedRequest> {
             children: <Widget>[
               RaisedButton(
                 onPressed: () {
+                  if(!widget.isArchived) Database().archiveVendor(widget.model);
                   EasyRouter.pop(context);
                 },
                 textColor: Colors.white,

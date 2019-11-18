@@ -10,11 +10,10 @@ import 'package:resmedia_taporty_flutter/control/model/ProductRequestModel.dart'
 import 'package:resmedia_taporty_flutter/data/config.dart';
 import 'package:resmedia_taporty_flutter/logic/database.dart';
 
-import 'ArchivedProductRequests.dart';
 import 'ProductDetailedRequest.dart';
 
-class ProductRequestsScreen extends StatefulWidget implements WidgetRoute {
-  static const ROUTE = 'ProductRequestScreenPanel';
+class ArchivedProductRequests extends StatefulWidget implements WidgetRoute {
+  static const ROUTE = 'ArchivedProductRequestScreenPanel';
 
   @override
   String get route => ROUTE;
@@ -23,7 +22,7 @@ class ProductRequestsScreen extends StatefulWidget implements WidgetRoute {
   _ProductRequestsScreenState createState() => _ProductRequestsScreenState();
 }
 
-class _ProductRequestsScreenState extends State<ProductRequestsScreen> {
+class _ProductRequestsScreenState extends State<ArchivedProductRequests> {
   RequestsBloc reqBloc;
 
   @override
@@ -43,23 +42,17 @@ class _ProductRequestsScreenState extends State<ProductRequestsScreen> {
     reqBloc=RequestsBloc.of();
     return Scaffold(
       appBar: AppBar(
-        title: Text("Richieste Prodotti"),
+        title: Text("Richieste Prodotti in Archivio"),
         actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.archive),
-            onPressed: (){
-              EasyRouter.push(context, ArchivedProductRequests());
-            },
-          )
         ],
       ),
       body: StreamBuilder(
-        stream:reqBloc.outRequests ,
+        stream:reqBloc.outArchivedRequests ,
         builder: (context,snap){
           if(!snap.hasData) return Center(child:CircularProgressIndicator());
           if(snap.data.length==0){
             return Padding(
-                child:Text('Non ci sono richieste da approvare.',style: tt.subtitle,),
+              child:Text('Non ci sono richieste archiviate.',style: tt.subtitle,),
               padding: EdgeInsets.all(SPACE),
             );
           }
@@ -231,7 +224,7 @@ class ItemBuilder extends StatelessWidget{
         EasyRouter.push(
             context,
             ProductDetailedRequest(
-              isArchive: false,
+              isArchive: true,
               model: model,
             ));
       },

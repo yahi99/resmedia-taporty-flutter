@@ -12,6 +12,11 @@ class TypeOrderView extends StatelessWidget {
     this.model,
   }) : super(key: key);
 
+  String toDate(String date){
+    final DateTime dateTime=DateTime.parse(date);
+    return(dateTime.day.toString()+'/'+dateTime.month.toString()+'/'+dateTime.year.toString());
+  }
+
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
@@ -91,6 +96,8 @@ class TypeOrderView extends StatelessWidget {
                               Text('Data Ordine: ',
                                   style: theme.textTheme.subtitle),
                               Text(model.timeR),
+                              Text('Data ed ora consegna: '),
+                              Text(toDate(model.day)+' alle ore '+model.endTime),
                               Text('Stato Ordine: ',
                                   style: theme.textTheme.subtitle),
                               Text(translateOrderCategory(model.state)),

@@ -9,11 +9,14 @@ part 'SubjectModel.g.dart';
 class SubjectModel {
   final String title, address, time;
   final LatLngModel position;
+  final String day,deliveryTime;
 
   SubjectModel({
+    @required this.day,
     @required this.title,
     @required this.address,
     @required this.time,
+    @required this.deliveryTime,
     this.position,
   });
 

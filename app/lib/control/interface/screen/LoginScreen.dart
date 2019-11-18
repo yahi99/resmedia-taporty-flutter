@@ -27,9 +27,6 @@ class LoginScreen extends StatefulWidget implements WidgetRoute {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  static const ROUTE = "LoginScreen";
-
-  String get route => ROUTE;
 
   //static final FacebookLogin facebookSignIn = FacebookLogin();
 

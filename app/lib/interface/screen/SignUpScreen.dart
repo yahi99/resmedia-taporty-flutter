@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:easy_blocs/easy_blocs.dart';
 import 'package:easy_firebase/easy_firebase.dart';
 import 'package:easy_route/easy_route.dart';
@@ -28,6 +29,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
       FirebaseSignUpBloc.init(controller: UserBloc.of());
 
   StreamSubscription registrationLevelSub;
+  StreamController privacyStream;
+  bool privacy;
 
   @override
   void didChangeDependencies() {
@@ -44,8 +47,43 @@ class _SignUpScreenState extends State<SignUpScreen> {
   void dispose() {
     registrationLevelSub?.cancel();
     FirebaseSignUpBloc.close();
+    privacyStream.close();
     super.dispose();
   }
+
+  @override
+  void initState(){
+    super.initState();
+    privacy=false;
+    privacyStream= new StreamController<bool>.broadcast();
+  }
+
+  void _showPolicyDialog(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (_context) {
+          final theme = Theme.of(context);
+          final cls = theme.colorScheme;
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(20))),
+            content: Scaffold(
+              body: ListView(
+                shrinkWrap: true,
+                children: <Widget>[
+                  AutoSizeText(
+                      'Privacy Policy'),
+                  RaisedButton(
+                    child: Text('  Chiudi  '),
+                    onPressed: () => EasyRouter.pop(context),
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -140,9 +178,42 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 SizedBox(
                   height: SPACE,
                 ),
-                SubmitButton.raised(
-                  controller: _submitBloc.submitController,
-                  child: FittedText('Registrati'),
+                Row(
+                  children: <Widget>[
+                    StreamBuilder(
+                      stream: privacyStream.stream,
+                      builder: (ctx,snap){
+                        return Checkbox(
+                          value: (snap.hasData)?snap.data:privacy,
+                          onChanged: (value){
+                            privacy=value;
+                            privacyStream.add(value);
+                          },
+                        );
+                      },
+                    ),
+                    FlatButton(
+                      child: Text('Privacy Policy'),
+                      onPressed: (){
+                        _showPolicyDialog(context);
+                      },
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: SPACE,
+                ),
+                StreamBuilder(
+                  stream: privacyStream.stream,
+                  builder: (ctx,snap){
+                    if(snap.data){
+                      return SubmitButton.raised(
+                        controller: _submitBloc.submitController,
+                        child: FittedText('Registrati'),
+                      );
+                    }
+                    else return RaisedButton(child: Text('Registrati'),onPressed: null,);
+                  },
                 ),
                 SizedBox(
                   height: SPACE,

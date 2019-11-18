@@ -11,6 +11,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:geocoder/model.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:resmedia_taporty_flutter/control/model/ControlUsersModel.dart';
 import 'package:resmedia_taporty_flutter/control/model/DriverRequestModel.dart';
 import 'package:resmedia_taporty_flutter/control/model/ProductRequestModel.dart';
 import 'package:resmedia_taporty_flutter/control/model/RestaurantRequestModel.dart';
@@ -109,6 +110,18 @@ class Database extends FirebaseDatabase
       'restaurantId': restaurantId,
       'cat': cat
     });
+  }
+
+  Future<void> archiveProduct(ProductRequestModel model) async {
+    await fs.collection('archived_product_requests').document(model.id).setData({
+      'img': model.img,
+      'category': model.category,
+      'price': model.price,
+      'quantity': model.quantity,
+      'restaurantId': model.restaurantId,
+      'cat': model.cat
+    });
+    await fs.collection('product_requests').document(model.id).delete();
   }
 
   void saveToken(String fcmToken,String uid)async{
@@ -231,6 +244,13 @@ class Database extends FirebaseDatabase
         'address':address,'km':km,'mezzo':car,'experience':exp,'lat':pos.latitude,
         'lng':pos.longitude,'nominative':nominative});
   }
+  Future<void> archiveDriver(DriverRequestModel model)async{
+    //await fs.collection(cl.USERS).document(uid).updateData({'isDriver':true});
+    await fs.collection('archived_driver_requests').document(model.id).setData({'codiceFiscale':model.codiceFiscale,
+      'address':model.address,'km':model.km,'mezzo':model.mezzo,'experience':model.experience,'lat':model.lat,
+      'lng':model.lng,'nominative':model.nominative});
+    await fs.collection('driver_requests').document(model.id).delete();
+  }
 
   Future<void> upgradeToVendor({@required String uid,@required String img,@required Position pos,
     @required double cop,@required rid,@required ragSociale,@required partitaIva,@required address,
@@ -241,8 +261,17 @@ class Database extends FirebaseDatabase
     'address':address,'tipoEsercizio':eseType,'prodType':prodType});
   }
 
+  Future<void> archiveVendor(RestaurantRequestModel model)async{
+    //await fs.collection(cl.USERS).document(uid).updateData({'restaurantId':rid});
+    await fs.collection('archived_restaurant_requests').document(model.id).setData({'img':model.img,'lat':model.lat,
+      'lng':model.lng,'km':model.km,'ragioneSociale':model.ragioneSociale,'partitaIva':model.partitaIva,
+      'address':model.address,'tipoEsercizio':model.tipoEsercizio,'prodType':model.prodType});
+    await fs.collection('restaurant_requests').document(model.id).delete();
+  }
+
   Future<void> createOrder(
       {@required String uid,
+        @required String phone,
       @required Cart model,
       @required String driver,
       @required Position userPos,
@@ -268,7 +297,8 @@ class Database extends FirebaseDatabase
               ..['endTime'] = endTime
               ..['addressR'] = addressR
               ..['fingerprint']=fingerprint
-              ..['day']=day))
+              ..['day']=day
+              ..['phone']=phone))
         .documentID;
     await fs
         .collection(cl.USERS)
@@ -282,7 +312,8 @@ class Database extends FirebaseDatabase
           ..['driver'] = driver
           ..['uid'] = uid
           ..['endTime']=endTime
-          ..['day']=day);
+          ..['day']=day
+          ..['phone']=phone);
     await fs
         .collection(cl.USERS)
         .document(driver)
@@ -298,6 +329,7 @@ class Database extends FirebaseDatabase
           ..['addressR'] = addressR
           ..['latR'] = userPos.latitude
           ..['lngR'] = userPos.longitude
+          ..['phone']=phone
           ..['uid'] = uid
           ..['restId'] = model.products.first.restaurantId
           ..['day']=day
@@ -443,6 +475,36 @@ class Database extends FirebaseDatabase
     });
   }
 
+  Stream<List<ProductRequestModel>> getArchivedRequests() {
+    final data =
+    fs.collection('archived_product_requests').snapshots();
+    return data.map((query) {
+      return query.documents
+          .map((snap) => ProductRequestModel.fromFirebase(snap))
+          .toList();
+    });
+  }
+
+  Stream<List<UserModel>> getUsersControl() {
+    final data =
+    fs.collection('users').where('type',isEqualTo:'user').snapshots();
+    return data.map((query) {
+      return query.documents
+          .map((snap) => UserModel.fromFirebase(snap))
+          .toList();
+    });
+  }
+
+  Stream<List<UserModel>> getAdminsControl() {
+    final data =
+    fs.collection('users').where('type',isEqualTo:'admin').snapshots();
+    return data.map((query) {
+      return query.documents
+          .map((snap) => UserModel.fromFirebase(snap))
+          .toList();
+    });
+  }
+
   Stream<List<DriverRequestModel>> getDriverRequests() {
     final data =
     fs.collection('driver_requests').snapshots();
@@ -453,9 +515,29 @@ class Database extends FirebaseDatabase
     });
   }
 
+  Stream<List<DriverRequestModel>> getArchivedDriverRequests() {
+    final data =
+    fs.collection('archived_driver_requests').snapshots();
+    return data.map((query) {
+      return query.documents
+          .map((snap) => DriverRequestModel.fromFirebase(snap))
+          .toList();
+    });
+  }
+
   Stream<List<RestaurantRequestModel>> getRestaurantRequests() {
     final data =
     fs.collection('restaurant_requests').snapshots();
+    return data.map((query) {
+      return query.documents
+          .map((snap) => RestaurantRequestModel.fromFirebase(snap))
+          .toList();
+    });
+  }
+
+  Stream<List<RestaurantRequestModel>> getArchivedRestaurantRequests() {
+    final data =
+    fs.collection('archived_restaurant_requests').snapshots();
     return data.map((query) {
       return query.documents
           .map((snap) => RestaurantRequestModel.fromFirebase(snap))
@@ -500,6 +582,16 @@ class Database extends FirebaseDatabase
         .collection('driver_orders')
         .document(oid)
         .updateData({'state': state});
+  }
+
+  Future<void> givePermission(String uid) async {
+    await fs
+        .collection(cl.USERS)
+        .document(uid)
+        .updateData({'type': 'control'});
+    final users=(await ControlUsersModel.fromFirebase(await fs.collection('control_users').document('users').get())).users;
+    users.add(uid);
+    await fs.collection('control_users').document('users').updateData({'users':users});
   }
 
   Future<CalendarModel> getUsers(String date, String time) async {

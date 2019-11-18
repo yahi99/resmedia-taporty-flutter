@@ -9,6 +9,8 @@ part of 'OrderModel.dart';
 RestaurantOrderModel _$RestaurantOrderModelFromJson(Map json) {
   return RestaurantOrderModel(
       path: json['path'] as String,
+      phone: json['phone'] as String,
+      day: json['day'] as String,
       stripe_customer: json['stripe_customer'] as String,
       addressR: json['addressR'] as String,
       endTime: json['endTime'] as String,
@@ -47,6 +49,8 @@ Map<String, dynamic> _$RestaurantOrderModelToJson(
   writeNotNull('nominative', instance.nominative);
   writeNotNull('addressR', instance.addressR);
   writeNotNull('stripe_customer', instance.stripe_customer);
+  writeNotNull('day', instance.day);
+  writeNotNull('phone', instance.phone);
   return val;
 }
 
@@ -81,6 +85,9 @@ const _$StateCategoryEnumMap = <StateCategory, dynamic>{
 UserOrderModel _$UserOrderModelFromJson(Map json) {
   return UserOrderModel(
       path: json['path'] as String,
+      phone: json['phone'] as String,
+      day: json['day'] as String,
+      endTime: json['endTime'] as String,
       products: (json['products'] as List)
           ?.map((e) => e == null ? null : ProductCart.fromJson(e as Map))
           ?.toList(),
@@ -104,5 +111,8 @@ Map<String, dynamic> _$UserOrderModelToJson(UserOrderModel instance) {
   writeNotNull('timeR', instance.timeR);
   writeNotNull('timeS', instance.timeS);
   writeNotNull('state', _$StateCategoryEnumMap[instance.state]);
+  writeNotNull('endTime', instance.endTime);
+  writeNotNull('day', instance.day);
+  writeNotNull('phone', instance.phone);
   return val;
 }

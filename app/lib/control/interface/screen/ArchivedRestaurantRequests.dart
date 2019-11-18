@@ -15,11 +15,10 @@ import 'package:resmedia_taporty_flutter/control/model/RestaurantRequestModel.da
 import 'package:resmedia_taporty_flutter/data/config.dart';
 import 'package:resmedia_taporty_flutter/logic/database.dart';
 
-import 'ArchivedRestaurantRequests.dart';
 import 'DriverDetailedRequest.dart';
 
-class RestaurantRequestsScreen extends StatefulWidget implements WidgetRoute {
-  static const ROUTE = 'RestaurantRequestScreenPanel';
+class ArchivedRestaurantRequests extends StatefulWidget implements WidgetRoute {
+  static const ROUTE = 'ArchivedRestaurantRequestScreenPanel';
 
   @override
   String get route => ROUTE;
@@ -29,7 +28,7 @@ class RestaurantRequestsScreen extends StatefulWidget implements WidgetRoute {
       _RestaurantRequestsScreenState();
 }
 
-class _RestaurantRequestsScreenState extends State<RestaurantRequestsScreen> {
+class _RestaurantRequestsScreenState extends State<ArchivedRestaurantRequests> {
   RestaurantRequestsBloc reqBloc;
 
   @override
@@ -49,24 +48,17 @@ class _RestaurantRequestsScreenState extends State<RestaurantRequestsScreen> {
     reqBloc = RestaurantRequestsBloc.of();
     return Scaffold(
       appBar: AppBar(
-        title: Text("Richieste Ristoratori"),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.archive),
-            onPressed: (){
-              EasyRouter.push(context, ArchivedRestaurantRequests());
-            },
-          )
-        ],
+        title: Text("Richieste Ristoratori Archiviate"),
+        actions: <Widget>[],
       ),
       body: StreamBuilder(
-        stream: reqBloc.outRequests,
+        stream: reqBloc.outArchivedRequests,
         builder: (context, snap) {
           if (!snap.hasData) return Center(child: CircularProgressIndicator());
           if (snap.data.length == 0) {
             return Padding(
               child: Text(
-                'Non ci sono richieste da approvare.',
+                'Non ci sono richieste archiviate.',
                 style: tt.subtitle,
               ),
               padding: EdgeInsets.all(SPACE),
@@ -114,77 +106,77 @@ class ItemBuilder extends StatelessWidget {
     //downloadFile(model.img);
     return InkWell(
       child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Container(
-                child: Row(
-                  //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Container(
-                      child: Text(
-                        'Ragione Sociale: ',
-                        style: tt.subtitle,
-                      ),
-                    ),
-                    Flexible(
-                      child: Container(
-                        child: Text(model.ragioneSociale),
-                      ),
-                    ),
-                  ],
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            child: Row(
+              //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Container(
+                  child: Text(
+                    'Ragione Sociale: ',
+                    style: tt.subtitle,
+                  ),
                 ),
-                padding: EdgeInsets.only(top: SPACE, left: SPACE, right: SPACE),
-              ),
-              Container(
-                child: Row(
-                  //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Container(
-                      child: Text(
-                        'Tipologia: ',
-                        style: tt.subtitle,
-                      ),
-                    ),
-                    Flexible(
-                      child: Container(
-                        child: Text(model.tipoEsercizio),
-                      ),
-                    ),
-                  ],
+                Flexible(
+                  child: Container(
+                    child: Text(model.ragioneSociale),
+                  ),
                 ),
-                padding: EdgeInsets.only(top: SPACE, left: SPACE, right: SPACE),
-              ),
-              Container(
-                child: Row(
-                  //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Container(
-                      child: Text(
-                        'Indirizzo: ',
-                        style: tt.subtitle,
-                      ),
-                    ),
-                    Flexible(
-                      child: Container(
-                        child: Text(model.address),
-                      ),
-                    ),
-                  ],
-                ),
-                padding: EdgeInsets.only(
-                    top: SPACE, left: SPACE, right: SPACE, bottom: SPACE),
-              ),
-            ],
+              ],
+            ),
+            padding: EdgeInsets.only(top: SPACE, left: SPACE, right: SPACE),
           ),
+          Container(
+            child: Row(
+              //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Container(
+                  child: Text(
+                    'Tipologia: ',
+                    style: tt.subtitle,
+                  ),
+                ),
+                Flexible(
+                  child: Container(
+                    child: Text(model.tipoEsercizio),
+                  ),
+                ),
+              ],
+            ),
+            padding: EdgeInsets.only(top: SPACE, left: SPACE, right: SPACE),
+          ),
+          Container(
+            child: Row(
+              //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Container(
+                  child: Text(
+                    'Indirizzo: ',
+                    style: tt.subtitle,
+                  ),
+                ),
+                Flexible(
+                  child: Container(
+                    child: Text(model.address),
+                  ),
+                ),
+              ],
+            ),
+            padding: EdgeInsets.only(
+                top: SPACE, left: SPACE, right: SPACE, bottom: SPACE),
+          ),
+        ],
+      ),
       onTap: () {
         //_showDialog(context);
-        EasyRouter.push(
+        EasyRouter.push(7
             context,
             RestaurantDetailedRequest(
-              isArchived: false,
+              isArchived: true,
               model: model,
             ));
       },

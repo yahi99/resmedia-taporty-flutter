@@ -6,12 +6,17 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:resmedia_taporty_flutter/control/interface/screen/TurnScreen.dart';
+import 'package:resmedia_taporty_flutter/drivers/logic/bloc/TurnBloc.dart';
 import 'package:resmedia_taporty_flutter/logic/bloc/OrdersBloc.dart';
 import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
 import 'package:resmedia_taporty_flutter/model/OrderModel.dart';
 import 'package:resmedia_taporty_flutter/model/ProductModel.dart';
 import 'package:resmedia_taporty_flutter/restaurant/page/MenuPage.dart';
 import 'package:resmedia_taporty_flutter/restaurant/page/OrdersPage.dart';
+import 'package:resmedia_taporty_flutter/restaurant/screen/EditRestScreen.dart';
+import 'package:resmedia_taporty_flutter/restaurant/screen/TurnsScreen.dart';
+
+import 'TimetableScreen.dart';
 
 class HomeScreen extends StatefulWidget implements WidgetRoute {
   static const ROUTE = 'HomeScreenRestaurant';
@@ -96,6 +101,31 @@ class _HomeScreenRestaurantState extends State<HomeScreen> {
     return DefaultTabController(
       length: 3,
       child: Scaffold(
+        drawer: Drawer(
+          child: ListView(
+            children: <Widget>[
+              FlatButton(
+                child: Text('Turni Inseriti'),
+                onPressed: (){
+                  TurnBloc.of().setTurnRestStream();
+                  EasyRouter.push(context, TurnsScreen());
+                },
+              ),
+              FlatButton(
+                child: Text('Orario Ristorante'),
+                onPressed: (){
+                  EasyRouter.push(context, TimetableScreen());
+                },
+              ),
+              FlatButton(
+                child: Text('Modifica Dati Ristorante'),
+                onPressed: (){
+                  EasyRouter.push(context, EditRestScreen());
+                },
+              ),
+            ],
+          ),
+        ),
         appBar: AppBar(
           title: Text("Home"),
           actions: <Widget>[

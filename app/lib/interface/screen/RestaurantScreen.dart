@@ -19,8 +19,9 @@ class RestaurantScreen extends StatefulWidget implements WidgetRoute {
   static bool isOrdered = false;
   final RestaurantModel model;
   final Position position;
+  final String address;
 
-  RestaurantScreen({Key key, @required this.model, @required this.position})
+  RestaurantScreen({Key key, @required this.model, @required this.position, @required this.address})
       : super(key: key);
 
   @override
@@ -145,7 +146,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
           ),
           body: TabBarView(
             children: <Widget>[
-              InfoRestaurantPage(model: widget.model),
+              InfoRestaurantPage(address:widget.address,model: widget.model),
               FoodsPage(model: widget.model),
               DrinksPage(model: widget.model),
             ],

@@ -173,7 +173,7 @@ class ItemBuilder extends StatelessWidget {
       ),
       onTap: () {
         //_showDialog(context);
-        EasyRouter.push(7
+        EasyRouter.push(
             context,
             RestaurantDetailedRequest(
               isArchived: true,

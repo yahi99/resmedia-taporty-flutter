@@ -14,10 +14,14 @@ class RestaurantModel extends FirebaseModel {
   final String img, type;
   final double lat;
   final double lng;
-  final double km;
+  final double km,deliveryFee;
+  final Map<String,String> lunch,dinner;
 
   RestaurantModel({
     @required String path,
+    this.lunch,
+    this.dinner,
+    this.deliveryFee,
     @required this.title,
     @required this.description,
     @required this.type,

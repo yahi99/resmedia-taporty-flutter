@@ -112,6 +112,28 @@ class Database extends FirebaseDatabase
     });
   }
 
+  Future<void> updateTime(String day,String isLunch,String startTime,String endTime,String restId)async{
+    final rest=RestaurantModel.fromFirebase(await fs.collection('restaurants').document(restId).get());
+    if(isLunch=='Pranzo'){
+      final temp=rest.lunch;
+      temp.remove(day);
+      temp.putIfAbsent(day, () => startTime+':'+endTime);
+      await fs.collection('restaurants').document(restId).updateData({'lunch':temp});
+    }
+    else{
+      final temp=rest.dinner;
+      temp.remove(day);
+      temp.putIfAbsent(day, () => startTime+':'+endTime);
+      await fs.collection('restaurants').document(restId).updateData({'dinner':temp});
+    }
+  }
+
+  Future<void> updateImg(String path,String restId)async{
+    //TODO delete previous image
+
+    await fs.collection('restaurants').document(restId).updateData({'img':path});
+  }
+
   Future<void> archiveProduct(ProductRequestModel model) async {
     await fs.collection('archived_product_requests').document(model.id).setData({
       'img': model.img,
@@ -172,7 +194,9 @@ class Database extends FirebaseDatabase
       'prodType':model.prodType,
       'tipoEsercizio':model.tipoEsercizio,
       'address':model.address,
-      'id':model.id
+      'id':model.id,
+      'lunch':Map<String,String>(),
+      'dinner':Map<String,String>()
     });
     await fs.collection(cl.USERS).document(model.id).updateData({'restaurantId':model.ragioneSociale,'type':'restaurant'});
     //await fs.collection('food_categories').document(model.category).setData({'translation':model.category});
@@ -186,6 +210,7 @@ class Database extends FirebaseDatabase
     //already tried to insert!!!
     print(id.exists);
     print(rest.exists);
+    final month=DateTime.tryParse(day).month.toString();
     if(id.exists && rest.exists) return true;
     if(!days.exists) await fs.collection('days').document(day).setData({});
     //no data for this time and day
@@ -201,8 +226,9 @@ class Database extends FirebaseDatabase
         'free': [''],
         'occupied': [''],
       });
+      await fs.collection('restaurants').document(restId).collection('turns').document(day+'§'+startTime).setData({'startTime':startTime,'endTime':endTime,'day':day,'month':month});
       //fails if somehow there is data on this time and date but no document for startTime
-      fs.collection('days').document(day).collection('times').document(startTime).collection('restaurant_turns').document(restId).setData({
+      await fs.collection('days').document(day).collection('times').document(startTime).collection('restaurant_turns').document(restId).setData({
         'startTime':startTime,
         'endTime':endTime,
         'day':day,
@@ -224,6 +250,7 @@ class Database extends FirebaseDatabase
       'free':model.free ,
       'occupied':model.occupied,
     });
+    await fs.collection('restaurants').document(restId).collection('turns').document(day+'§'+startTime).setData({'startTime':startTime,'endTime':endTime,'day':day,'month':month});
     fs.collection('days').document(day).collection('times').document(startTime).collection('restaurant_turns').document(restId).setData({
       'startTime':startTime,
       'endTime':endTime,
@@ -386,6 +413,17 @@ class Database extends FirebaseDatabase
     });
   }
 
+  Stream<List<TurnModel>> getTurnsRest(String restId) {
+    final data =
+    fs.collection(cl.RESTAURANTS).document(restId).collection(cl.TURNS).snapshots();
+    print('lol');
+    return data.map((query) {
+      return query.documents
+          .map((snap) => TurnModel.fromFirebase(snap))
+          .toList();
+    });
+  }
+
   Stream<List<ShiftModel>> getUsersTurn(String day) {
     final data =
         fs.collection(cl.DAYS).document(day).collection(cl.TIMES).snapshots();
@@ -395,6 +433,10 @@ class Database extends FirebaseDatabase
           .map((snap) => ShiftModel.fromFirebase(snap))
           .toList();
     });
+  }
+
+  Future<void> updateDeliveryFee(double fee,String restId)async{
+    await fs.collection('restaurants').document(restId).updateData({'deliveryFee':fee});
   }
 
   Stream<List<CalendarModel>> getShifts(DateTime now) {
@@ -473,6 +515,10 @@ class Database extends FirebaseDatabase
           .map((snap) => ProductRequestModel.fromFirebase(snap))
           .toList();
     });
+  }
+
+  Future<void> updateDescription(String description,String restId)async{
+    await fs.collection('restaurants').document(restId).updateData({'description':description});
   }
 
   Stream<List<ProductRequestModel>> getArchivedRequests() {

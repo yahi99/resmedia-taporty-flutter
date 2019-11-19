@@ -8,11 +8,11 @@ import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
 import 'package:resmedia_taporty_flutter/logic/database.dart';
 import 'package:rxdart/rxdart.dart';
 
-class TurnBloc implements Bloc {
+class TimetableBloc implements Bloc {
   final _db = Database();
 
   @protected
-  static TurnBloc instance() => TurnBloc();
+  static TimetableBloc instance() => TimetableBloc();
 
   @protected
   @override
@@ -57,7 +57,7 @@ class TurnBloc implements Bloc {
     _turnControlRest.listen(print);
   }
 
-  static TurnBloc of() => $Provider.of<TurnBloc>();
+  static TimetableBloc of() => $Provider.of<TimetableBloc>();
 
-  void close() => $Provider.dispose<TurnBloc>();
+  void close() => $Provider.dispose<TimetableBloc>();
 }

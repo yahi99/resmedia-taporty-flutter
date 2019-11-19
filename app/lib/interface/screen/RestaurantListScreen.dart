@@ -10,6 +10,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:geocoder/geocoder.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:meta/meta.dart';
@@ -234,13 +235,17 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
                           // if(snap.data/1000<_model.km) {
                           if (true) {
                             return InkWell(
-                              onTap: () => EasyRouter.push(
-                                context,
-                                RestaurantScreen(
-                                  position: widget.position,
-                                  model: _model,
-                                ),
-                              ),
+                              onTap: ()async {
+                                EasyRouter.push(
+                                  context,
+                                  RestaurantScreen(
+                                    address: (await Geocoder.local
+                                        .findAddressesFromCoordinates(new Coordinates(widget.position.latitude,widget.position.longitude))).first.addressLine,
+                                    position: widget.position,
+                                    model: _model,
+                                  ),
+                                );
+                              },
                               child: RestaurantView(
                                 model: _model,
                               ),
@@ -280,10 +285,47 @@ class RestaurantView extends StatelessWidget {
     imgStream.add(file.path);
   }
 
+  String toDay(int weekday){
+    if(weekday==0) return 'Lunedì';
+    if(weekday==1) return 'Martedì';
+    if(weekday==2) return 'Mercoledì';
+    if(weekday==3) return 'Giovedì';
+    if(weekday==4) return 'Venerdì';
+    if(weekday==5) return 'Sabato';
+    return 'Domenica';
+  }
+
   @override
   Widget build(BuildContext context) {
     //print(model.id);
     //if (!model.img.startsWith('assets')) downloadFile(model.img);
+    String times;
+    String day=toDay(DateTime.now().weekday);
+    if(model.lunch==null && model.dinner==null) times='Chiuso';
+    else if(model.lunch==null && model.dinner!=null){
+      if(model.dinner.containsKey(day)){
+        times=model.dinner.remove(day);
+      }
+      else times='Chiuso';
+    }
+    else if(model.lunch!=null && model.dinner==null){
+      if(model.lunch.containsKey(day)){
+        times=model.lunch.remove(day);
+      }
+      else times='Chiuso';
+    }
+    else if(model.lunch!=null && model.dinner!=null){
+      if(model.lunch.containsKey(day) && model.dinner.containsKey(day)){
+        times=model.lunch.remove(day)+'\n'+model.dinner.remove(day);
+      }
+      else if(model.lunch.containsKey(day) && !model.dinner.containsKey(day)){
+        times=model.lunch.remove(day);
+      }
+      else if(!model.lunch.containsKey(day) && model.dinner.containsKey(day)){
+        times=model.dinner.remove(day);
+      }
+      else times='Chiuso';
+    }
     return ClipRRect(
       borderRadius: BorderRadius.circular(8.0),
       child: Stack(
@@ -323,8 +365,8 @@ class RestaurantView extends StatelessWidget {
                         Column(
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
-                            Text("12:00 - 14:00"),
-                            Text("18:00 - 22:00"),
+                            (times!=null)?
+                            Text(times):Container(),
                           ],
                         )
                       ],

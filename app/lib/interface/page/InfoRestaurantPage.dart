@@ -6,8 +6,9 @@ import 'package:resmedia_taporty_flutter/model/RestaurantModel.dart';
 
 class InfoRestaurantPage extends StatelessWidget {
   final RestaurantModel model;
+  final String address;
 
-  InfoRestaurantPage({Key key, @required this.model}) : super(key: key);
+  InfoRestaurantPage({Key key, @required this.model,@required this.address}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -19,9 +20,12 @@ class InfoRestaurantPage extends StatelessWidget {
             children: <Widget>[
               AspectRatio(
                 aspectRatio: 1.5,
-                child: Image.asset(
-                  'assets/img/food/meat.jpg',
-                  fit: BoxFit.fill,
+                child: (model.img.startsWith('assets'))?Image.asset(
+                  model.img,
+                  fit: BoxFit.fitHeight,
+                ):Image.network(
+                  model.img,
+                  fit: BoxFit.fitHeight,
                 ),
               ),
               Padding(
@@ -36,24 +40,24 @@ class InfoRestaurantPage extends StatelessWidget {
                     ),
                     // Nome del ristorante
                     Text(
-                      "Assisi - via Mario Rossi, 21",
+                      address,
                       style: theme.textTheme.subhead,
                     ),
                     // Città - Indirizzo, civico
                     SizedBox(height: 16),
-                    Text(
-                      'Molto Buona.',
+                    model.description!=null?Text(
+                      model.description,
                       style: theme.textTheme.body1,
                       textAlign: TextAlign.justify,
-                    ),
+                    ):Container(),
                     SizedBox(height: 16),
-                    Align(
+                    model.deliveryFee!=null?Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        'Costo consegna:\n 1.90 \n',
+                        'Costo consegna:\n'+ model.deliveryFee.toString()+'\n',
                         style: theme.textTheme.overline,
                       ),
-                    ),
+                    ):Container(),
                   ],
                 ),
               ),

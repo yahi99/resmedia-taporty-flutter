@@ -157,7 +157,7 @@ class _HomeScreenRestaurantState extends State<HomeScreen> {
                 return StreamBuilder<List<FoodModel>>(
                   stream: widget.restBloc.outFoods,
                   builder: (context, foods) {
-                    if (!orders.hasData || !foods.hasData || !orders.hasData)
+                    if (!orders.hasData || !foods.hasData || !drinks.hasData)
                       return Center(
                         child: CircularProgressIndicator(),
                       );

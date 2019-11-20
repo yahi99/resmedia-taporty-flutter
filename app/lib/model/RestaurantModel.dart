@@ -16,9 +16,11 @@ class RestaurantModel extends FirebaseModel {
   final double lng;
   final double km,deliveryFee;
   final Map<String,String> lunch,dinner;
+  final bool isDisabled;
 
   RestaurantModel({
     @required String path,
+    this.isDisabled,
     this.lunch,
     this.dinner,
     this.deliveryFee,

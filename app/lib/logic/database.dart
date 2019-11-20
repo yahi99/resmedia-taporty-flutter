@@ -23,6 +23,7 @@ import 'package:resmedia_taporty_flutter/drivers/model/TurnModel.dart';
 import 'package:resmedia_taporty_flutter/logic/Collections.dart';
 import 'package:resmedia_taporty_flutter/logic/RestaurantDB.dart';
 import 'package:resmedia_taporty_flutter/model/OrderModel.dart';
+import 'package:resmedia_taporty_flutter/model/ProductModel.dart';
 import 'package:resmedia_taporty_flutter/model/RestaurantModel.dart';
 import 'package:resmedia_taporty_flutter/model/UserModel.dart';
 
@@ -130,8 +131,17 @@ class Database extends FirebaseDatabase
 
   Future<void> updateImg(String path,String restId)async{
     //TODO delete previous image
-
     await fs.collection('restaurants').document(restId).updateData({'img':path});
+  }
+
+  Future<void> updateImgProduct(String path,ProductModel model)async{
+    //TODO delete previous image
+    await fs.collection('restaurants').document(model.restaurantId).collection(model.path.contains('foods')?'foods':'drinks').document(model.id).updateData({'img':path});
+  }
+
+  Future<void> deleteProduct(String product,String restId,String type)async{
+    //TODO delete image
+    await fs.collection('restaurants').document(restId).collection(type).document(product).delete();
   }
 
   Future<void> archiveProduct(ProductRequestModel model) async {
@@ -184,6 +194,14 @@ class Database extends FirebaseDatabase
     await fs.collection('driver_requests').document(model.id).delete();
   }
 
+  Future<void> changeStatus(ProductModel model)async{
+    await fs.collection('restaurants').document(model.restaurantId).collection(model.path.contains('foods')?'foods':'drinks').document(model.id).updateData({'isDisabled':model.isDisabled?false:true});
+  }
+
+  Future<void> changeStatusRest(RestaurantModel model)async{
+    await fs.collection('restaurants').document(model.id).updateData({'isDisabled':model.isDisabled?false:true});
+  }
+
   Future<void> addRestaurant(RestaurantRequestModel model)async{
     await fs.collection(cl.RESTAURANTS).document(model.ragioneSociale).setData({
       'km':model.km,
@@ -201,6 +219,16 @@ class Database extends FirebaseDatabase
     await fs.collection(cl.USERS).document(model.id).updateData({'restaurantId':model.ragioneSociale,'type':'restaurant'});
     //await fs.collection('food_categories').document(model.category).setData({'translation':model.category});
     await fs.collection('restaurant_requests').document(model.ragioneSociale).delete();
+  }
+
+  Stream<List<UserModel>> getUsersMod(){
+    final data =
+    fs.collection('users').where('type',isEqualTo:'restaurants').snapshots();
+    return data.map((query) {
+      return query.documents
+          .map((snap) => UserModel.fromFirebase(snap))
+          .toList();
+    });
   }
 
   Future<bool> addShift(String startTime,String endTime,String day,String number,String restId)async{
@@ -263,6 +291,11 @@ class Database extends FirebaseDatabase
     return false;
   }
 
+  Future<void> deleteRestaurant(String restId)async{
+    //TODO we need to delete everything in the collections inside plus the images stored
+    await fs.collection('restaurants').document(restId).delete();
+  }
+
   Future<void> upgradeToDriver({@required String uid,@required codiceFiscale,
       @required address,@required km,@required car,@required exp,@required Position pos,
       @required nominative})async{
@@ -294,6 +327,10 @@ class Database extends FirebaseDatabase
       'lng':model.lng,'km':model.km,'ragioneSociale':model.ragioneSociale,'partitaIva':model.partitaIva,
       'address':model.address,'tipoEsercizio':model.tipoEsercizio,'prodType':model.prodType});
     await fs.collection('restaurant_requests').document(model.id).delete();
+  }
+
+  Future<void> editUser(String id,String type)async{
+    await fs.collection('users').document(id).updateData({'type':type});
   }
 
   Future<void> createOrder(
@@ -361,6 +398,24 @@ class Database extends FirebaseDatabase
           ..['restId'] = model.products.first.restaurantId
           ..['day']=day
           ..['endTime']=endTime);
+    await fs
+        .collection(cl.RESTAURANTS)
+        .document(model.products.first.restaurantId)
+        .collection('control_orders')
+        .document(id)
+        .setData(model.toJson()
+      ..['restaurantId'] = model.products.first.restaurantId
+      ..['timeR'] = DateTime.now().toString()
+      ..['state'] = 'PENDING'
+      ..['driver'] = driver
+      ..['startTime'] = startTime
+      ..['uid'] = uid
+      ..['nominative'] = nominative
+      ..['endTime'] = endTime
+      ..['addressR'] = addressR
+      ..['fingerprint']=fingerprint
+      ..['day']=day
+      ..['phone']=phone);
   }
 
   /*Future<void> updateState({@required String uid, @required Cart model}) async {
@@ -437,6 +492,14 @@ class Database extends FirebaseDatabase
 
   Future<void> updateDeliveryFee(double fee,String restId)async{
     await fs.collection('restaurants').document(restId).updateData({'deliveryFee':fee});
+  }
+
+  Future<void> updateProductPrice(double price,ProductModel model)async{
+    await fs.collection('restaurants').document(model.restaurantId).collection(model.path.contains('foods')?'foods':'drinks').document(model.id).updateData({'price':price});
+  }
+
+  Future<void> updateKm(double km,String restId)async{
+    await fs.collection('restaurants').document(restId).updateData({'km':km});
   }
 
   Stream<List<CalendarModel>> getShifts(DateTime now) {

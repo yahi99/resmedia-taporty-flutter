@@ -420,13 +420,13 @@ class ProductsFoodDrinkBuilder extends StatelessWidget {
     list.clear();
     for (int i = 0; i < drinks.length; i++) {
       var temp = drinks.elementAt(i);
-      list.add(ProductViewRestaurant(
+      if(!temp.isDisabled) list.add(ProductViewRestaurant(
         model: temp,
       ));
     }
     for (int i = 0; i < foods.length; i++) {
       var temp = foods.elementAt(i);
-      list.add(ProductViewRestaurant(
+      if(!temp.isDisabled) list.add(ProductViewRestaurant(
         model: temp,
       ));
     }

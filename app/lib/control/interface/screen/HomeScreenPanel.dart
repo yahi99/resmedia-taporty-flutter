@@ -5,15 +5,20 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:resmedia_taporty_flutter/control/interface/screen/DriverRequests.dart';
+import 'package:resmedia_taporty_flutter/control/interface/screen/ManageOrders.dart';
 import 'package:resmedia_taporty_flutter/control/interface/screen/ProductRequestsScreen.dart';
 import 'package:resmedia_taporty_flutter/control/interface/screen/ResetPasswordAdmin.dart';
 import 'package:resmedia_taporty_flutter/control/interface/screen/RestaurantRequestScreen.dart';
 import 'package:resmedia_taporty_flutter/control/interface/screen/TurnScreen.dart';
 import 'package:resmedia_taporty_flutter/drivers/logic/bloc/CalendarBloc.dart';
 import 'package:resmedia_taporty_flutter/drivers/logic/bloc/DriverBloc.dart';
+import 'package:resmedia_taporty_flutter/logic/bloc/RestaurantBloc.dart';
+import 'package:resmedia_taporty_flutter/logic/bloc/RestaurantsBloc.dart';
 import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
 
 import 'CreateAdminScreen.dart';
+import 'ManageRestaurants.dart';
+import 'ManageUsers.dart';
 
 class HomeScreenPanel extends StatefulWidget implements WidgetRoute {
   static const ROUTE = 'HomeScreenPanel';
@@ -140,6 +145,24 @@ class _HomeScreenPanelState extends State<HomeScreenPanel> {
               EasyRouter.push(context, ResetPasswordAdmin(userId: (await UserBloc.of().outFirebaseUser.first).uid,));
             },
           ),
+          FlatButton(
+            child: Text('Gestisci utenti'),
+            onPressed: (){
+              EasyRouter.push(context, ManageUsers());
+            },
+          ),
+          FlatButton(
+            child: Text('Gestisci ristoranti'),
+            onPressed: (){
+              EasyRouter.push(context, ManageRestaurants());
+            },
+          ),
+          FlatButton(
+            child: Text('Gestisci ordini'),
+            onPressed: (){
+              EasyRouter.push(context, ManageOrders());
+            },
+          )
         ],
       ),
     );

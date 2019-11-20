@@ -233,7 +233,7 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
                           if (!snap.hasData) return Container();
                           // TODO: Ripristinare a tempo debito.
                           // if(snap.data/1000<_model.km) {
-                          if (true) {
+                          if (_model.isDisabled) return Container();
                             return InkWell(
                               onTap: ()async {
                                 EasyRouter.push(
@@ -250,8 +250,7 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
                                 model: _model,
                               ),
                             );
-                          } else
-                            return Container();
+
                         });
                   }).toList(),
                 ),

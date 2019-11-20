@@ -9,6 +9,7 @@ part of 'RestaurantModel.dart';
 RestaurantModel _$RestaurantModelFromJson(Map json) {
   return RestaurantModel(
       path: json['path'] as String,
+      isDisabled: json['isDisabled'] as bool,
       lunch: (json['lunch'] as Map)?.map(
         (k, e) => MapEntry(k as String, e as String),
       ),
@@ -45,5 +46,6 @@ Map<String, dynamic> _$RestaurantModelToJson(RestaurantModel instance) {
   val['deliveryFee'] = instance.deliveryFee;
   val['lunch'] = instance.lunch;
   val['dinner'] = instance.dinner;
+  val['isDisabled'] = instance.isDisabled;
   return val;
 }

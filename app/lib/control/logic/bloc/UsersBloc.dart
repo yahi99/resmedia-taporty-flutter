@@ -19,15 +19,21 @@ class UsersBloc implements Bloc {
   @protected
   dispose() {
     if (_requestsControl != null) _requestsControl.close();
+    if (_requestsControlUsers != null) _requestsControlUsers.close();
   }
 
   PublishSubject<List<UserModel>> _requestsControl;
+  PublishSubject<List<UserModel>> _requestsControlUsers;
 
   Stream<List<UserModel>> get outRequests =>
       _requestsControl.stream;
 
+  Stream<List<UserModel>> get outRequestsUsers =>
+      _requestsControlUsers.stream;
+
   UsersBloc.instance() {
     _requestsControl = PublishController.catchStream(source: _db.getUsersControl());
+    _requestsControlUsers = PublishController.catchStream(source: _db.getUsersMod());
   }
 
   factory UsersBloc.of() => $Provider.of<UsersBloc>();

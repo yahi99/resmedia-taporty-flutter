@@ -15,19 +15,25 @@ import 'package:resmedia_taporty_flutter/drivers/logic/bloc/TurnBloc.dart';
 import 'package:resmedia_taporty_flutter/drivers/model/TurnModel.dart';
 import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
 import 'package:resmedia_taporty_flutter/logic/database.dart';
+import 'package:resmedia_taporty_flutter/model/RestaurantModel.dart';
 import 'package:toast/toast.dart';
 
-class EditRestScreen extends StatefulWidget implements WidgetRoute {
+class ManageRestPage extends StatefulWidget implements WidgetRoute {
   static const ROUTE = 'TurnsRestaurant';
 
   @override
   String get route => ROUTE;
 
+  final String restId;
+  final RestaurantModel rest;
+
+  ManageRestPage({@required this.restId,@required this.rest});
+
   @override
   _TurnWorkTabDriverState createState() => _TurnWorkTabDriverState();
 }
 
-class _TurnWorkTabDriverState extends State<EditRestScreen> {
+class _TurnWorkTabDriverState extends State<ManageRestPage> {
   StreamController img;
 
   String path, _path;
@@ -79,6 +85,17 @@ class _TurnWorkTabDriverState extends State<EditRestScreen> {
         children: <Widget>[
           Row(
             children: <Widget>[
+              Text('Stato ristorante'+(widget.rest.isDisabled?widget.rest.isDisabled.toString():'false')),
+              RaisedButton(
+                child: Text('Cambia'),
+                onPressed: (){
+                  Database().changeStatusRest(widget.rest);
+                },
+              )
+            ],
+          ),
+          Row(
+            children: <Widget>[
               Padding(
                 child: TextFormField(
                   key: _delKey,
@@ -101,7 +118,7 @@ class _TurnWorkTabDriverState extends State<EditRestScreen> {
                 child: Text('Cambia'),
                 onPressed: ()async{
                   if(_kmKey.currentState.validate()){
-                    Database().updateKm(double.parse(_kmKey.currentState.value),(await UserBloc.of().outUser.first).model.restaurantId);
+                    Database().updateKm(double.parse(_kmKey.currentState.value),widget.restId);
                   }
                 },
               )
@@ -131,7 +148,7 @@ class _TurnWorkTabDriverState extends State<EditRestScreen> {
                 child: Text('Cambia'),
                 onPressed: ()async{
                   if(_delKey.currentState.validate()){
-                    Database().updateDeliveryFee(double.parse(_delKey.currentState.value),(await UserBloc.of().outUser.first).model.restaurantId);
+                    Database().updateDeliveryFee(double.parse(_delKey.currentState.value),widget.restId);
                   }
                 },
               )
@@ -161,7 +178,7 @@ class _TurnWorkTabDriverState extends State<EditRestScreen> {
                 child: Text('Cambia'),
                 onPressed: ()async{
                   if(_descrKey.currentState.validate()){
-                    Database().updateDescription(_descrKey.currentState.value,(await UserBloc.of().outUser.first).model.restaurantId);
+                    Database().updateDescription(_descrKey.currentState.value,widget.restId);
                   }
                 },
               )
@@ -222,7 +239,7 @@ class _TurnWorkTabDriverState extends State<EditRestScreen> {
                     }
                     else{
                       uploadFile(path).then((path)async{
-                        Database().updateImg(path,(await UserBloc.of().outUser.first).model.restaurantId);
+                        Database().updateImg(path,widget.restId);
                       });
                     }
                   }

@@ -12,10 +12,12 @@ abstract class ProductModel extends FirebaseModel {
   final String price;
   final String restaurantId;
   final String number;
+  final bool isDisabled;
 
   ProductModel({
     String path,
     this.number,
+    this.isDisabled,
     @required this.title,
     @required this.img,
     @required this.price,

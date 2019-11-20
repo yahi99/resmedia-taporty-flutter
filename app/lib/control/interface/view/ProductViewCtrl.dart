@@ -6,16 +6,17 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:resmedia_taporty_flutter/control/interface/screen/ManageProduct.dart';
 import 'package:resmedia_taporty_flutter/data/config.dart';
 import 'package:resmedia_taporty_flutter/logic/database.dart';
 import 'package:resmedia_taporty_flutter/model/ProductModel.dart';
 import 'package:toast/toast.dart';
 
-class ProductViewRestaurant extends StatelessWidget {
+class ProductViewCtrl extends StatelessWidget {
   final ProductModel model;
   //final StreamController<String> imgStream=new StreamController.broadcast();
 
-  ProductViewRestaurant({Key key, @required this.model})
+  ProductViewCtrl({Key key, @required this.model})
       : super(key: key);
 
   Future<Null> downloadFile(String httpPath)async{
@@ -105,51 +106,51 @@ class ProductViewRestaurant extends StatelessWidget {
         ),
       ],
       child: InkWell(
-    child:DefaultTextStyle(
-        style: theme.textTheme.body1,
-        child: SizedBox(
-          height: 110,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Row(
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.all(4.0),
-                    child: AspectRatio(
-                      aspectRatio: 1,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(16.0),
-                        child: (model.img.startsWith('assets'))?Image.asset(
-                          model.img,
-                          fit: BoxFit.fitHeight,
-                        ):Image.network(
-                          model.img,
-                          fit: BoxFit.fitHeight,
+        child:DefaultTextStyle(
+          style: theme.textTheme.body1,
+          child: SizedBox(
+            height: 110,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.all(4.0),
+                      child: AspectRatio(
+                        aspectRatio: 1,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(16.0),
+                          child: (model.img.startsWith('assets'))?Image.asset(
+                            model.img,
+                            fit: BoxFit.fitHeight,
+                          ):Image.network(
+                            model.img,
+                            fit: BoxFit.fitHeight,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  SizedBox(
-                    width: 16.0,
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                          '${model.id.substring(0, (15 < model.id.length) ? 15 : model.id.length)}'),
-                      Text('€ ${model.price}'),
-                    ],
-                  ),
-                ],
-              ),
-            ],
+                    SizedBox(
+                      width: 16.0,
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                            '${model.id.substring(0, (15 < model.id.length) ? 15 : model.id.length)}'),
+                        Text('€ ${model.price}'),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
-      ),
         onTap: (){
-          //EasyRouter.push(context, ManageProduct());
+          EasyRouter.push(context, ManageProduct(model: model,));
         },
       ),
     );

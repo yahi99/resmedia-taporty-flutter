@@ -180,10 +180,11 @@ class _LoginScreenState extends State<TypeOrderView> {
                   RaisedButton(
                     child: Text('Invia la recensione'),
                     onPressed: ()async{
+                      final user=(await UserBloc.of().outUser.first);
                       if(_driverKey.currentState.validate() && _restKey.currentState.validate()){
-                        Database().pushReviewRest(widget.model.restaurantId, int.parse(pointR), _restKey.currentState.value);
-                        Database().pushReviewDriver(widget.model.driver, int.parse(pointF), _driverKey.currentState.value);
-                        Database().setReviewed((await UserBloc.of().outUser.first).model.id, widget.model.id);
+                        Database().pushReviewRest(widget.model.restaurantId, int.parse(pointR), _restKey.currentState.value,widget.model.id,user.model.id,user.model.nominative);
+                        Database().pushReviewDriver(widget.model.driver, int.parse(pointF), _driverKey.currentState.value,widget.model.id,user.model.id,user.model.nominative);
+                        Database().setReviewed(user.model.id, widget.model.id);
                       }
                     },
                   )

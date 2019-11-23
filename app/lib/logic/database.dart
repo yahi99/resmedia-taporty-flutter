@@ -124,7 +124,7 @@ class Database extends FirebaseDatabase
     });
   }
 
-  Future<void> pushReviewRest(String restId,int points,String strPoints)async{
+  Future<void> pushReviewRest(String restId,int points,String strPoints,String oid,String uid,String nominative)async{
     final model=RestaurantModel.fromFirebase(await fs.collection('restaurants').document(restId).get());
     double average;
     int number;
@@ -137,10 +137,10 @@ class Database extends FirebaseDatabase
       number=1;
     }
     await fs.collection('restaurants').document(restId).updateData({'numberOfReviews':number,'averageReviews':average});
-    await fs.collection('restaurants').document(restId).collection('reviews').add({'points':points,'strPoints':strPoints});
+    await fs.collection('restaurants').document(restId).collection('reviews').add({'points':points,'strPoints':strPoints,'oid':oid,'userId':uid,'nominative':nominative});
   }
 
-  Future<void> pushReviewDriver(String did,int points,String strPoints)async{
+  Future<void> pushReviewDriver(String did,int points,String strPoints,String uid,String oid,String nominative)async{
     final model=UserModel.fromFirebase(await fs.collection('users').document(did).get());
     double average;
     int number;
@@ -153,7 +153,7 @@ class Database extends FirebaseDatabase
       number=1;
     }
     await fs.collection('users').document(did).updateData({'numberOfReviews':number,'averageReviews':average});
-    await fs.collection('users').document(did).collection('reviews').add({'points':points,'strPoints':strPoints});
+    await fs.collection('users').document(did).collection('reviews').add({'points':points,'strPoints':strPoints,'oid':oid,'userId':uid,'nominative':nominative});
   }
 
   Future<void> setReviewed(String uid,String oid)async{

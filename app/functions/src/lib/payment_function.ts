@@ -556,7 +556,7 @@ function stateString(state:string):string{
   if(state==='ACCEPTED') return ' è in consegna'
   if(state==='PENDING') return ' in fase di accettazione'
   if(state==='DELETED') return ' è stato cancellato'
-  if(state==='DELIVERED') return ' è stato consegnato'
+  if(state==='DELIVERED') return ' è stato consegnato. Lascia una recensione sul ristorante ed il fattorino.'
   return ' non è stato approvato dal ristorante'
   
 }

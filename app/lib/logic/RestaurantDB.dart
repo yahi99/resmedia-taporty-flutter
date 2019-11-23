@@ -2,6 +2,7 @@ import 'package:easy_firebase/easy_firebase.dart';
 import 'package:resmedia_taporty_flutter/logic/Collections.dart';
 import 'package:resmedia_taporty_flutter/model/ProductModel.dart';
 import 'package:resmedia_taporty_flutter/model/RestaurantModel.dart';
+import 'package:resmedia_taporty_flutter/model/ReviewModel.dart';
 import 'package:resmedia_taporty_flutter/model/TypesRestaurantModel.dart';
 
 mixin RestaurantDb implements FirebaseDatabase {
@@ -70,6 +71,15 @@ mixin RestaurantDb implements FirebaseDatabase {
         .collection(restaurants.$drinks.id)
         .snapshots()
         .map((querySnap) => fromQuerySnaps(querySnap, DrinkModel.fromFirebase));
+  }
+
+  Stream<List<ReviewModel>> getReviews(String idRestaurant) {
+    return fs
+        .collection(restaurants.id)
+        .document(idRestaurant)
+        .collection('reviews')
+        .snapshots()
+        .map((querySnap) => fromQuerySnaps(querySnap, ReviewModel.fromFirebase));
   }
 
   Future<FoodModel> getFood(String path) async {

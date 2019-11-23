@@ -1,7 +1,9 @@
+import 'package:easy_route/easy_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:resmedia_taporty_flutter/data/config.dart';
+import 'package:resmedia_taporty_flutter/interface/screen/SeeReviewsScreen.dart';
 import 'package:resmedia_taporty_flutter/model/RestaurantModel.dart';
 
 class InfoRestaurantPage extends StatelessWidget {
@@ -50,6 +52,20 @@ class InfoRestaurantPage extends StatelessWidget {
                       style: theme.textTheme.body1,
                       textAlign: TextAlign.justify,
                     ):Container(),
+                    SizedBox(height: 16),
+                    InkWell(
+                      child:Row(
+                        children: <Widget>[
+                          Icon(Icons.star),
+                          Icon(Icons.star),
+                          Text(model.averageReviews.toString()),
+                          Text('Buono')
+                        ],
+                      ),
+                      onTap: (){
+                        EasyRouter.push(context,SeeReviewsScreen(model: model,));
+                      },
+                    ),
                     SizedBox(height: 16),
                     model.deliveryFee!=null?Align(
                       alignment: Alignment.centerLeft,

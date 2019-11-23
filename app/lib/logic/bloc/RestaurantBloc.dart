@@ -8,6 +8,7 @@ import 'package:resmedia_taporty_flutter/generated/provider.dart';
 import 'package:resmedia_taporty_flutter/logic/database.dart';
 import 'package:resmedia_taporty_flutter/model/ProductModel.dart';
 import 'package:resmedia_taporty_flutter/model/RestaurantModel.dart';
+import 'package:resmedia_taporty_flutter/model/ReviewModel.dart';
 import 'package:rxdart/rxdart.dart';
 
 class RestaurantBloc implements Bloc {
@@ -23,6 +24,10 @@ class RestaurantBloc implements Bloc {
   BehaviorSubject<RestaurantModel> _restaurantController;
 
   Stream<RestaurantModel> get outRestaurant => _restaurantController.stream;
+
+  BehaviorSubject<List<ReviewModel>> _restaurantReviewController;
+
+  Stream<List<ReviewModel>> get outRestaurantReview => _restaurantReviewController.stream;
 
   BehaviorSubject<List<FoodModel>> _foodsController;
 
@@ -58,6 +63,8 @@ class RestaurantBloc implements Bloc {
         BehaviorController.catchStream(source: bc._db.getFoods(idRestaurant));
     bc._drinksController =
         BehaviorController.catchStream(source: bc._db.getDrinks(idRestaurant));
+    bc._restaurantReviewController=
+        BehaviorController.catchStream(source: bc._db.getReviews(idRestaurant));
     return bc;
   }
 

@@ -17,6 +17,8 @@ RestaurantModel _$RestaurantModelFromJson(Map json) {
         (k, e) => MapEntry(k as String, e as String),
       ),
       deliveryFee: (json['deliveryFee'] as num)?.toDouble(),
+      averageReviews: (json['averageReviews'] as num)?.toDouble(),
+      numberOfReviews: json['numberOfReviews'] as int,
       title: json['title'] as String,
       description: json['description'] as String,
       type: json['type'] as String,
@@ -47,5 +49,7 @@ Map<String, dynamic> _$RestaurantModelToJson(RestaurantModel instance) {
   val['lunch'] = instance.lunch;
   val['dinner'] = instance.dinner;
   val['isDisabled'] = instance.isDisabled;
+  val['numberOfReviews'] = instance.numberOfReviews;
+  val['averageReviews'] = instance.averageReviews;
   return val;
 }

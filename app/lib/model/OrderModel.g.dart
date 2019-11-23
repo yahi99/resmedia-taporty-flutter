@@ -91,6 +91,9 @@ const _$StateCategoryEnumMap = <StateCategory, dynamic>{
 UserOrderModel _$UserOrderModelFromJson(Map json) {
   return UserOrderModel(
       path: json['path'] as String,
+      restaurantId: json['restaurantId'] as String,
+      driver: json['driver'] as String,
+      isReviewed: json['isReviewed'] as bool,
       phone: json['phone'] as String,
       day: json['day'] as String,
       endTime: json['endTime'] as String,
@@ -120,5 +123,8 @@ Map<String, dynamic> _$UserOrderModelToJson(UserOrderModel instance) {
   writeNotNull('endTime', instance.endTime);
   writeNotNull('day', instance.day);
   writeNotNull('phone', instance.phone);
+  writeNotNull('isReviewed', instance.isReviewed);
+  writeNotNull('restaurantId', instance.restaurantId);
+  writeNotNull('driver', instance.driver);
   return val;
 }

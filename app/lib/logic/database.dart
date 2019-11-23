@@ -75,6 +75,17 @@ class Database extends FirebaseDatabase
     });
   }
 
+  Stream<List<RestaurantOrderModel>> getCtrlOrders() {
+    final data =
+    fs.collection('control_orders').snapshots();
+    print('lol');
+    return data.map((query) {
+      return query.documents
+          .map((snap) => RestaurantOrderModel.fromFirebase(snap))
+          .toList();
+    });
+  }
+
   Future<CalendarModel> getDriverCalModel(
       String uid, String day, String startTime) async {
     return CalendarModel.fromFirebase(await fs
@@ -111,6 +122,42 @@ class Database extends FirebaseDatabase
       'restaurantId': restaurantId,
       'cat': cat
     });
+  }
+
+  Future<void> pushReviewRest(String restId,int points,String strPoints)async{
+    final model=RestaurantModel.fromFirebase(await fs.collection('restaurants').document(restId).get());
+    double average;
+    int number;
+    if(model.numberOfReviews!=null ) {
+      average=(model.averageReviews*model.numberOfReviews+points)/(model.numberOfReviews+1);
+      number=model.numberOfReviews+1;
+    }
+    else {
+      average = points/1.0;
+      number=1;
+    }
+    await fs.collection('restaurants').document(restId).updateData({'numberOfReviews':number,'averageReviews':average});
+    await fs.collection('restaurants').document(restId).collection('reviews').add({'points':points,'strPoints':strPoints});
+  }
+
+  Future<void> pushReviewDriver(String did,int points,String strPoints)async{
+    final model=UserModel.fromFirebase(await fs.collection('users').document(did).get());
+    double average;
+    int number;
+    if(model.numberOfReviews!=null ) {
+      average=(model.averageReviews*model.numberOfReviews+points)/(model.numberOfReviews+1);
+      number=model.numberOfReviews+1;
+    }
+    else {
+      average = points/1.0;
+      number=1;
+    }
+    await fs.collection('users').document(did).updateData({'numberOfReviews':number,'averageReviews':average});
+    await fs.collection('users').document(did).collection('reviews').add({'points':points,'strPoints':strPoints});
+  }
+
+  Future<void> setReviewed(String uid,String oid)async{
+    await fs.collection('users').document(uid).collection('user_orders').document(oid).updateData({'isReviewed':true});
   }
 
   Future<void> updateTime(String day,String isLunch,String startTime,String endTime,String restId)async{
@@ -596,7 +643,7 @@ class Database extends FirebaseDatabase
 
   Stream<List<UserModel>> getUsersControl() {
     final data =
-    fs.collection('users').where('type',isEqualTo:'user').snapshots();
+    fs.collection('users').snapshots();
     return data.map((query) {
       return query.documents
           .map((snap) => UserModel.fromFirebase(snap))

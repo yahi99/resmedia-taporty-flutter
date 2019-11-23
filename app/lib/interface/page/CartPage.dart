@@ -77,6 +77,7 @@ class _CartState extends State<CartPage> with AutomaticKeepAliveClientMixin {
                         ),
                         color: tt.primaryColor,
                         onPressed: () {
+                          //TODO block if zero items in the cart maybe use a stream ans pass it toProductsFoodDrinkBuilder and stream the whole bar
                           widget.controller
                               .animateTo(widget.controller.index + 1);
                         },

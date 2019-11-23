@@ -61,7 +61,7 @@ class _LoginScreenState extends State<ManageUsers> {
                 },
                 itemBuilder: (ctx,index){
                   final user=snap.data.elementAt(index);
-                  return InkWell(
+                  if(user.type!='admin') return InkWell(
                     child: Column(
                       children: <Widget>[
                         Row(
@@ -76,6 +76,7 @@ class _LoginScreenState extends State<ManageUsers> {
                       EasyRouter.push(context,ManageSpecificUser(user:user));
                     },
                   );
+                  else return Container();
             },
 
                 );

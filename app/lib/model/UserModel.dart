@@ -15,6 +15,8 @@ class UserModel extends UserFirebaseModel {
   @JsonKey(includeIfNull: false)
   final int phoneNumber;
   @JsonKey(includeIfNull: false)
+  final int numberOfReviews;
+  final double averageReviews;
   final String restaurantId;
   final bool notifyEmail;
   final bool notifySms;
@@ -30,6 +32,8 @@ class UserModel extends UserFirebaseModel {
   UserModel({
     String path,
     String fcmToken,
+    this.numberOfReviews,
+    this.averageReviews,
     this.type,
     this.lat,
     this.lng,

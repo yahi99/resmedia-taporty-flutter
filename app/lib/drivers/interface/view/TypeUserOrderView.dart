@@ -1,20 +1,200 @@
+import 'dart:async';
+
 import 'package:easy_blocs/easy_blocs.dart';
+import 'package:easy_route/easy_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:resmedia_taporty_flutter/data/config.dart';
+import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
+import 'package:resmedia_taporty_flutter/logic/database.dart';
 import 'package:resmedia_taporty_flutter/model/OrderModel.dart';
 
-class TypeOrderView extends StatelessWidget {
-  final UserOrderModel model;
+class TypeOrderView extends StatefulWidget implements WidgetRoute {
+static const String ROUTE = "TypeOrderView";
 
-  const TypeOrderView({
-    Key key,
-    this.model,
-  }) : super(key: key);
+String get route => ROUTE;
+
+final UserOrderModel model;
+
+const TypeOrderView({
+  Key key,
+  this.model,
+}) : super(key: key);
+
+@override
+_LoginScreenState createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<TypeOrderView> {
+
+  List<String> points = [
+    '1',
+    '2',
+    '3',
+    '4',
+    '5'
+  ];
+
+  String pointF,pointR;
+
+  StreamController pointStreamF;
+  StreamController pointStreamR;
+
+  final _restKey = new GlobalKey<FormFieldState>();
+  final _driverKey = new GlobalKey<FormFieldState>();
+
+  List<DropdownMenuItem> dropPoint = List<DropdownMenuItem>();
+
+  @override
+  void initState(){
+    super.initState();
+    pointStreamF=new StreamController<String>.broadcast();
+    pointStreamR=new StreamController<String>.broadcast();
+    for(int i=0;i<points.length;i++){
+      dropPoint.add(DropdownMenuItem(
+        child: Text(points[i]),
+        value: points[i],
+      ));
+    }
+    pointF=points[points.length-1];
+    pointR=points[points.length-1];
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    pointStreamF.close();
+    pointStreamR.close();
+  }
 
   String toDate(String date){
     final DateTime dateTime=DateTime.parse(date);
     return(dateTime.day.toString()+'/'+dateTime.month.toString()+'/'+dateTime.year.toString());
+  }
+
+
+  void _addReview(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (_context) {
+          final theme = Theme.of(context);
+          final cls = theme.colorScheme;
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(20))),
+            content: Container(
+              child:
+              ListView(
+                physics: AlwaysScrollableScrollPhysics(),
+                shrinkWrap: true,
+                children: <Widget>[
+                  Row(
+                    children: <Widget>[
+                      Text('Valutazione Ristorante'),
+                      StreamBuilder(
+                        stream: pointStreamR.stream,
+                        builder: (ctx,snap){
+                          return Padding(
+                            child:DropdownButton(
+                              //key: _dropKey,
+                              value: (!snap.hasData)
+                                  ? pointR
+                                  : snap.data,
+                              onChanged: (value) {
+                                print(value);
+                                pointR = value;
+                                pointStreamR.add(value);
+                              },
+                              items: dropPoint,
+                            ),
+                            padding: EdgeInsets.only(bottom: SPACE * 2),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                  Padding(
+                    child: TextFormField(
+                      key: _restKey,
+                      textInputAction: TextInputAction.done,
+                      validator: (value){
+                        if(value.length==0){
+                          return 'Inserisci valutazione';
+                        }
+                        return null;
+                      },
+                      decoration: InputDecoration(
+                        hintText: "Come è stata la tua esperienza?",
+                      ),
+                      maxLines: 10,
+                      minLines: 5,
+                      keyboardType: TextInputType.text,
+                    ),
+                    padding: EdgeInsets.all(8.0),
+                  ),
+                  Row(
+                    children: <Widget>[
+                      Text('Valutazione Fattorino'),
+                      StreamBuilder(
+                        stream: pointStreamF.stream,
+                        builder: (ctx,snap){
+                          return Padding(
+                            child:DropdownButton(
+                              //key: _dropKey,
+                              value: (!snap.hasData)
+                                  ? pointF
+                                  : snap.data,
+                              onChanged: (value) {
+                                print(value);
+                                pointF = value;
+                                pointStreamF.add(value);
+                              },
+                              items: dropPoint,
+                            ),
+                            padding: EdgeInsets.only(bottom: SPACE * 2),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                  Padding(
+                    child: TextFormField(
+                      key: _driverKey,
+                      textInputAction: TextInputAction.done,
+                      validator: (value){
+                        if(value.length==0){
+                          return 'Inserisci valutazione';
+                        }
+                        return null;
+                      },
+                      decoration: InputDecoration(
+                        hintText: "Come è stata la tua esperienza?",
+                      ),
+                      maxLines: 10,
+                      minLines: 5,
+                      keyboardType: TextInputType.text,
+                    ),
+                    padding: EdgeInsets.all(8.0),
+                  ),
+                  RaisedButton(
+                    child: Text('Invia la recensione'),
+                    onPressed: ()async{
+                      if(_driverKey.currentState.validate() && _restKey.currentState.validate()){
+                        Database().pushReviewRest(widget.model.restaurantId, int.parse(pointR), _restKey.currentState.value);
+                        Database().pushReviewDriver(widget.model.driver, int.parse(pointF), _driverKey.currentState.value);
+                        Database().setReviewed((await UserBloc.of().outUser.first).model.id, widget.model.id);
+                      }
+                    },
+                  )
+                ],
+              ),
+              height: 400,
+              width: 200,
+            ),
+          );
+        }
+    );
   }
 
   @override
@@ -54,7 +234,7 @@ class TypeOrderView extends StatelessWidget {
           );
         }
     );*/
-    final cart = Cart(products: model.products);
+    final cart = Cart(products: widget.model.products);
     return Stack(
       alignment: Alignment.center,
       children: <Widget>[
@@ -95,12 +275,12 @@ class TypeOrderView extends StatelessWidget {
                             children: <Widget>[
                               Text('Data Ordine: ',
                                   style: theme.textTheme.subtitle),
-                              Text(model.timeR),
+                              Text(widget.model.timeR),
                               Text('Data ed ora consegna: '),
-                              Text(toDate(model.day)+' alle ore '+model.endTime),
+                              Text(toDate(widget.model.day)+' alle ore '+widget.model.endTime),
                               Text('Stato Ordine: ',
                                   style: theme.textTheme.subtitle),
-                              Text(translateOrderCategory(model.state)),
+                              Text(translateOrderCategory(widget.model.state)),
                             ],
                           );
                         else {
@@ -112,12 +292,18 @@ class TypeOrderView extends StatelessWidget {
                                   .toString());
                         }
                       }),
+                  (translateOrderCategory(widget.model.state)=='DELIVERED' && !widget.model.isReviewed)?RaisedButton(
+                    child: Text('Lascia una Recensione'),
+                    onPressed: (){
+                      _addReview(context);
+                    },
+                  ):Container(),
                 ],
               ),
               padding: EdgeInsets.all(4.0),
               decoration: BoxDecoration(
                   border: Border.all(
-                color: (translateOrderCategory(model.state) == 'In Consegna')
+                color: (translateOrderCategory(widget.model.state) == 'In Consegna')
                     ? Colors.red
                     : Colors.black,
               )),

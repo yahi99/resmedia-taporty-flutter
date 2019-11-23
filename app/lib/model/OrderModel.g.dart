@@ -9,9 +9,12 @@ part of 'OrderModel.dart';
 RestaurantOrderModel _$RestaurantOrderModelFromJson(Map json) {
   return RestaurantOrderModel(
       path: json['path'] as String,
+      restaurantId: json['restaurantId'] as String,
+      isPaid: json['isPaid'] as bool,
+      isReviewed: json['isReviewed'] as bool,
       phone: json['phone'] as String,
       day: json['day'] as String,
-      stripe_customer: json['stripe_customer'] as String,
+      fingerprint: json['fingerprint'] as String,
       addressR: json['addressR'] as String,
       endTime: json['endTime'] as String,
       products: (json['products'] as List)
@@ -48,9 +51,12 @@ Map<String, dynamic> _$RestaurantOrderModelToJson(
   writeNotNull('uid', instance.uid);
   writeNotNull('nominative', instance.nominative);
   writeNotNull('addressR', instance.addressR);
-  writeNotNull('stripe_customer', instance.stripe_customer);
+  writeNotNull('fingerprint', instance.fingerprint);
   writeNotNull('day', instance.day);
   writeNotNull('phone', instance.phone);
+  writeNotNull('restaurantId', instance.restaurantId);
+  writeNotNull('isPaid', instance.isPaid);
+  writeNotNull('isReviewed', instance.isReviewed);
   return val;
 }
 

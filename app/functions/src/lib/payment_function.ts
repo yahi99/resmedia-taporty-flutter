@@ -407,7 +407,8 @@ const updateState = functions.https.onCall(async (data, context) => {
   const uid=data.uid;
   const did=data.did;
   const timeS=data.timeS;
-  await fs.collection('restaurants').doc(rid).collection('restaurant_orders').doc(oid).update({'state':state,'timeS':timeS});
+  if(state==='ACCEPTED') await fs.collection('restaurants').doc(rid).collection('restaurant_orders').doc(oid).update({'state':state,'timeS':timeS,'isPaid':true});
+  else await fs.collection('restaurants').doc(rid).collection('restaurant_orders').doc(oid).update({'state':state,'timeS':timeS});
   await fs.collection('users').doc(did).collection('driver_orders').doc(oid).update({'state':state,'timeS':timeS});
   await fs.collection('users').doc(uid).collection('user_orders').doc(oid).update({'state':state,'timeS':timeS});
   if(state==='DENIED'){

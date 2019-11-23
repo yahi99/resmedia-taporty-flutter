@@ -45,15 +45,19 @@ class RestaurantOrderModel extends OrderModel {
   final String uid;
   final String nominative;
   final String addressR;
-  final String stripe_customer;
+  final String fingerprint;
   final String day;
-  final String phone;
+  final String phone,restaurantId;
+  final bool isPaid,isReviewed;
 
   RestaurantOrderModel({
     String path,
+    this.restaurantId,
+    this.isPaid,
+    this.isReviewed,
     @required this.phone,
     @required this.day,
-    @required this.stripe_customer,
+    @required this.fingerprint,
     @required this.addressR,
     @required this.endTime,
     @required this.products,
@@ -84,9 +88,14 @@ class UserOrderModel extends OrderModel {
   final String timeR, timeS;
   final StateCategory state;
   final String endTime,day,phone;
+  final bool isReviewed;
+  final String restaurantId,driver;
 
   UserOrderModel({
     String path,
+    @required this.restaurantId,
+    @required this.driver,
+    this.isReviewed,
     @required this.phone,
     @required this.day,
     @required this.endTime,

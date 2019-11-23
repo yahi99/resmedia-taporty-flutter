@@ -16,6 +16,7 @@ class OrdersBloc implements Bloc {
   @protected
   dispose() {
     if (_restaurantsControl != null) _restaurantsControl.close();
+    if (_restaurantsControlMod != null) _restaurantsControlMod.close();
     if (_driverControl != null) _driverControl.close();
     if (_userControl != null) _userControl.close();
   }
@@ -24,6 +25,11 @@ class OrdersBloc implements Bloc {
 
   Stream<List<RestaurantOrderModel>> get outOrders =>
       _restaurantsControl.stream;
+
+  PublishSubject<List<RestaurantOrderModel>> _restaurantsControlMod;
+
+  Stream<List<RestaurantOrderModel>> get outOrdersCtrl =>
+      _restaurantsControlMod.stream;
 
   PublishSubject<List<UserOrderModel>> _userControl;
 
@@ -38,6 +44,11 @@ class OrdersBloc implements Bloc {
         return categorized(
             StateCategory.values, models, (model) => model.state);
       });
+  Stream<Map<StateCategory, List<RestaurantOrderModel>>> get outCategorizedOrdersCtrl =>
+      outOrdersCtrl.map((models) {
+        return categorized(
+            StateCategory.values, models, (model) => model.state);
+      });
 
   void see() {}
 
@@ -49,6 +60,11 @@ class OrdersBloc implements Bloc {
     //print('lol');
     _userControl =
         PublishController.catchStream(source: _db.getUserOrders(restUser.uid));
+    _userControl.listen(print);
+  }
+
+  void setCtrlStream(){
+    _restaurantsControlMod=PublishController.catchStream(source: _db.getCtrlOrders());
     _userControl.listen(print);
   }
 

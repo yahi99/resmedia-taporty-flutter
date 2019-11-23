@@ -13,6 +13,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:resmedia_taporty_flutter/control/interface/screen/HomeScreenPanel.dart';
+import 'package:resmedia_taporty_flutter/control/interface/view/TypeCtrlOrderView.dart';
 import 'package:resmedia_taporty_flutter/control/logic/bloc/UsersBloc.dart';
 import 'package:resmedia_taporty_flutter/data/config.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/screen/HomeScreen.dart';
@@ -24,6 +25,7 @@ import 'package:resmedia_taporty_flutter/logic/bloc/RestaurantBloc.dart';
 import 'package:resmedia_taporty_flutter/logic/bloc/RestaurantsBloc.dart';
 import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
 import 'package:resmedia_taporty_flutter/logic/database.dart';
+import 'package:resmedia_taporty_flutter/model/OrderModel.dart';
 import 'package:resmedia_taporty_flutter/model/ProductModel.dart';
 import 'package:resmedia_taporty_flutter/model/RestaurantModel.dart';
 import 'package:resmedia_taporty_flutter/model/UserModel.dart';
@@ -49,6 +51,7 @@ class _LoginScreenState extends State<ManageOrders> {
   @override
   void initState() {
     super.initState();
+    OrdersBloc.of().setCtrlStream();
   }
 
   @override
@@ -65,11 +68,22 @@ class _LoginScreenState extends State<ManageOrders> {
         title: Text("Gestisci ordini"),
         actions: <Widget>[],
       ),
-      body: ListView(
-        shrinkWrap: true,
-        children: <Widget>[
-        ],
-      ),
+      body: StreamBuilder<List<RestaurantOrderModel>>(
+        stream: OrdersBloc.of().outOrdersCtrl,
+        builder: (ctx,snap){
+          if(!snap.hasData) return Center(child: CircularProgressIndicator(),);
+          return ListView.separated(
+            shrinkWrap: true,
+            itemBuilder: (ctx,index){
+              final order=snap.data.elementAt(index);
+              return TypeCtrlOrderView(model: order,);
+            },
+            separatorBuilder: (ctx,index){
+              return Divider(height: 4.0,);
+            },
+          );
+        },
+      )
     );
   }
 }

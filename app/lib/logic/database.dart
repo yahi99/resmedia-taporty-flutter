@@ -22,6 +22,7 @@ import 'package:resmedia_taporty_flutter/drivers/model/ShiftModel.dart';
 import 'package:resmedia_taporty_flutter/drivers/model/TurnModel.dart';
 import 'package:resmedia_taporty_flutter/logic/Collections.dart';
 import 'package:resmedia_taporty_flutter/logic/RestaurantDB.dart';
+import 'package:resmedia_taporty_flutter/model/IncomeModel.dart';
 import 'package:resmedia_taporty_flutter/model/OrderModel.dart';
 import 'package:resmedia_taporty_flutter/model/ProductModel.dart';
 import 'package:resmedia_taporty_flutter/model/RestaurantModel.dart';
@@ -163,15 +164,51 @@ class Database extends FirebaseDatabase
   Future<void> updateTime(String day,String isLunch,String startTime,String endTime,String restId)async{
     final rest=RestaurantModel.fromFirebase(await fs.collection('restaurants').document(restId).get());
     if(isLunch=='Pranzo'){
-      final temp=rest.lunch;
-      temp.remove(day);
-      temp.putIfAbsent(day, () => startTime+':'+endTime);
+      Map<String,String> temp=rest.lunch;
+      //print(rest.lunch.toString());
+      if(temp!=null) {
+        temp.remove(day);
+        temp.putIfAbsent(day, () => startTime + ':' + endTime);
+      }
+      else{
+        temp=new Map<String,String>();
+        temp.putIfAbsent(day, () => startTime + ':' + endTime);
+      }
       await fs.collection('restaurants').document(restId).updateData({'lunch':temp});
     }
     else{
-      final temp=rest.dinner;
-      temp.remove(day);
-      temp.putIfAbsent(day, () => startTime+':'+endTime);
+      Map<String,String> temp=rest.dinner;
+      print(rest.dinner);
+      if(temp!=null) {
+        temp.remove(day);
+        temp.putIfAbsent(day, () => startTime + ':' + endTime);
+      }
+      else{
+        temp=new Map<String,String>();
+        temp.putIfAbsent(day, () => startTime + ':' + endTime);
+      }
+      await fs.collection('restaurants').document(restId).updateData({'dinner':temp});
+    }
+  }
+
+  Future<void> cancelTime(String day,String isLunch,String restId)async{
+    final rest=RestaurantModel.fromFirebase(await fs.collection('restaurants').document(restId).get());
+    if(isLunch=='Pranzo'){
+      Map<String,String> temp=rest.lunch;
+      //print(rest.lunch.toString());
+      if(temp!=null) {
+        temp.remove(day);
+        //temp.putIfAbsent(day, () => startTime + ':' + endTime);
+      }
+      await fs.collection('restaurants').document(restId).updateData({'lunch':temp});
+    }
+    else{
+      Map<String,String> temp=rest.dinner;
+      print(rest.dinner);
+      if(temp!=null) {
+        temp.remove(day);
+        //temp.putIfAbsent(day, () => startTime + ':' + endTime);
+      }
       await fs.collection('restaurants').document(restId).updateData({'dinner':temp});
     }
   }
@@ -189,6 +226,24 @@ class Database extends FirebaseDatabase
   Future<void> deleteProduct(String product,String restId,String type)async{
     //TODO delete image
     await fs.collection('restaurants').document(restId).collection(type).document(product).delete();
+  }
+
+  Future<void> updateBank(RestaurantOrderModel model,double total)async{
+    final restInc=IncomeModel.fromFirebase(await fs.collection('restaurants').document(model.restaurantId).collection('income').document(model.day).get());
+    final totalInc=IncomeModel.fromFirebase(await fs.collection('income').document(model.day).get());
+    if(restInc==null){
+      await fs.collection('restaurants').document(model.restaurantId).collection('income').document(model.day).setData({'totalTransactions':1,'dailyTotal':total,'day':model.day});
+      if(totalInc==null){
+        await fs.collection('income').document(model.day).setData({'totalTransactions':1,'dailyTotal':total,'day':model.day});
+      }
+      else{
+        await fs.collection('income').document(model.day).updateData({'totalTransactions':totalInc.totalTransactions+1,'dailyTotal':totalInc.dailyTotal+total,'day':model.day});
+      }
+    }
+    else{
+      await fs.collection('restaurants').document(model.restaurantId).collection('income').document(model.day).updateData({'totalTransactions':restInc.totalTransactions+1,'dailyTotal':restInc.dailyTotal+total,'day':model.day});
+      await fs.collection('income').document(model.day).updateData({'totalTransactions':restInc.totalTransactions+1,'dailyTotal':restInc.dailyTotal+total,'day':model.day});
+    }
   }
 
   Future<void> archiveProduct(ProductRequestModel model) async {
@@ -278,6 +333,21 @@ class Database extends FirebaseDatabase
     });
   }
 
+  String toMonth(int month) {
+    if (month == 1) return 'JANUARY';
+    if (month == 2) return 'FEBRUARY';
+    if (month == 3) return 'MARCH';
+    if (month == 4) return 'APRIL';
+    if (month == 5) return 'MAY';
+    if (month == 6) return 'JUNE';
+    if (month == 7) return 'JULY';
+    if (month == 8) return 'AUGUST';
+    if (month == 9) return 'SEPTEMBER';
+    if (month == 10) return 'OCTOBER';
+    if (month == 11) return 'NOVEMBER';
+    return 'DECEMBER';
+  }
+
   Future<bool> addShift(String startTime,String endTime,String day,String number,String restId)async{
     final id=await fs.collection('days').document(day).collection('times').document(startTime).get();
     final rest=await fs.collection('days').document(day).collection('times').document(startTime).collection('restaurant_turns').document(restId).get();
@@ -301,7 +371,7 @@ class Database extends FirebaseDatabase
         'free': [''],
         'occupied': [''],
       });
-      await fs.collection('restaurants').document(restId).collection('turns').document(day+'§'+startTime).setData({'startTime':startTime,'endTime':endTime,'day':day,'month':month});
+      await fs.collection('restaurants').document(restId).collection('turns').document(day+'§'+startTime).setData({'startTime':startTime,'endTime':endTime,'day':day,'month':toMonth(int.parse(month))});
       //fails if somehow there is data on this time and date but no document for startTime
       await fs.collection('days').document(day).collection('times').document(startTime).collection('restaurant_turns').document(restId).setData({
         'startTime':startTime,
@@ -325,7 +395,7 @@ class Database extends FirebaseDatabase
       'free':model.free ,
       'occupied':model.occupied,
     });
-    await fs.collection('restaurants').document(restId).collection('turns').document(day+'§'+startTime).setData({'startTime':startTime,'endTime':endTime,'day':day,'month':month});
+    await fs.collection('restaurants').document(restId).collection('turns').document(day+'§'+startTime).setData({'startTime':startTime,'endTime':endTime,'day':day,'month':toMonth(int.parse(month))});
     fs.collection('days').document(day).collection('times').document(startTime).collection('restaurant_turns').document(restId).setData({
       'startTime':startTime,
       'endTime':endTime,
@@ -561,6 +631,28 @@ class Database extends FirebaseDatabase
       return query.documents
           .map((snap) => CalendarModel.fromFirebase(snap))
           .toList();
+    });
+  }
+
+  Stream<IncomeModel> getRestIncome(DateTime now,String restId) {
+    //final temp=.replaceAll(' ', 'T');
+    return fs
+        .collection('restaurants')
+        .document(restId)
+        .collection('income')
+        .document(now.toIso8601String())
+        .snapshots().map((snap) {
+          return IncomeModel.fromFirebase(snap);
+        });
+  }
+
+  Stream<IncomeModel> getTotalIncome(DateTime now){
+    //final temp=.replaceAll(' ', 'T');
+    return fs
+        .collection('income')
+        .document(now.toIso8601String())
+        .snapshots().map((snap) {
+      return IncomeModel.fromFirebase(snap);
     });
   }
 

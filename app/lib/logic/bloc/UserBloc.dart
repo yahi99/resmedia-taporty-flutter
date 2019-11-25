@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:dash/dash.dart';
+import 'package:easy_blocs/easy_blocs.dart';
 import 'package:easy_firebase/easy_firebase.dart';
 import 'package:easy_stripe/easy_stripe.dart';
 import 'package:geolocator/geolocator.dart';
@@ -9,6 +10,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:meta/meta.dart';
 import 'package:resmedia_taporty_flutter/generated/provider.dart';
 import 'package:resmedia_taporty_flutter/mainRestaurant.dart';
+import 'package:resmedia_taporty_flutter/model/ReviewModel.dart';
 import 'package:resmedia_taporty_flutter/model/UserModel.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -19,15 +21,21 @@ class UserBloc with MixinFirebaseUserManager implements Bloc {
 
   @protected
   dispose() {
-    _userController.close();
+    if(_userReviewController!=null) _userReviewController.close();
+    _userController?.close();
     _fcmTokenSubscription?.cancel();
-    _notificationController.close();
+    _notificationController?.close();
   }
 
   final FirebaseUserController _firebaseUserController =
       FirebaseUserController();
 
   FirebaseUserManager get firebaseUserManager => _firebaseUserController;
+
+  BehaviorSubject<List<ReviewModel>> _userReviewController;
+
+  Stream<List<ReviewModel>> get outDriverReview => _userReviewController.stream;
+
 
   User _user;
   BehaviorSubject<User> _userController;
@@ -44,6 +52,11 @@ class UserBloc with MixinFirebaseUserManager implements Bloc {
 
   void _notificationHandler(NotificationModelFirebase notification) {
     _notificationController.add(_notification = notification);
+  }
+
+  void setReview(String uid){
+    _userReviewController=
+        BehaviorController.catchStream(source: _db.getDriverReviews(uid));
   }
 
   UserBloc.instance() {

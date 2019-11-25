@@ -93,7 +93,6 @@ class DrinksPage extends StatelessWidget {
           return Center(
             child: CircularProgressIndicator(),
           );
-
         return ProductsDrinkBuilder(
           drinks: snapshot.data,
         );

@@ -88,7 +88,7 @@ class TypeOrderView extends StatelessWidget {
                       Text('Cliente: ', style: tt.subtitle),
                       Text(model.nominative),
                       Text('Giorno di consegna: ', style: tt.subtitle),
-                      Text(toDate(model.day)),
+                      Text(model.day),
                       Text('Ora di consegna: ', style: tt.subtitle),
                       Text(model.endTime),
                       Text('Numero di prodotti: ', style: tt.subtitle),
@@ -109,7 +109,8 @@ class TypeOrderView extends StatelessWidget {
                           child: RaisedButton(
                             color: theme.colorScheme.secondaryVariant,
                             onPressed: () {
-                              launch('tel:$model.phone');
+                              print(model.phone);
+                              launch('tel:'+model.phone);
                             },
                             child: Text(
                               "Chiama",

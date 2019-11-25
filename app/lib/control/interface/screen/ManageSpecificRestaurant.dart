@@ -24,6 +24,7 @@ import 'package:resmedia_taporty_flutter/logic/database.dart';
 import 'package:resmedia_taporty_flutter/model/ProductModel.dart';
 import 'package:resmedia_taporty_flutter/model/RestaurantModel.dart';
 import 'package:resmedia_taporty_flutter/model/UserModel.dart';
+import 'package:resmedia_taporty_flutter/restaurant/page/IncomeScreen.dart';
 import 'package:toast/toast.dart';
 
 //import 'package:flutter_facebook_login/flutter_facebook_login.dart';
@@ -45,22 +46,28 @@ class ManageSpecificRestaurant extends StatefulWidget implements WidgetRoute {
 
 class _LoginScreenState extends State<ManageSpecificRestaurant> {
 
+  StreamController dateStream;
+
 
   @override
   void initState(){
     super.initState();
+    dateStream=StreamController<DateTime>.broadcast();
   }
 
   @override
   void dispose() {
     super.dispose();
+    dateStream.close();
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final cls = theme.colorScheme;
-    return Scaffold(
+    return DefaultTabController(
+      length: 3,
+        child:Scaffold(
       appBar: AppBar(
         title: Text("Gestisci ristorante"),
         actions: <Widget>[
@@ -74,6 +81,9 @@ class _LoginScreenState extends State<ManageSpecificRestaurant> {
             Tab(
               text: 'Gestione',
             ),
+            Tab(
+              text: 'Saldo',
+            )
           ],
         ),
       ),
@@ -95,12 +105,19 @@ class _LoginScreenState extends State<ManageSpecificRestaurant> {
                         drinks: drinks.data,
                       ),
                       ManageRestPage(restId: widget.rest.id,rest:widget.rest),
+                      StreamBuilder<DateTime>(
+                        stream: dateStream.stream,
+                        builder: (ctx,snap){
+                          return IncomeScreen(restId:widget.rest.id,date: snap.hasData?snap.data:DateTime.now(),dateStream: dateStream,);
+                        },
+                      )
                     ],
                   );
                 },
               );
             },
           ),
+        ),
     );
   }
 }

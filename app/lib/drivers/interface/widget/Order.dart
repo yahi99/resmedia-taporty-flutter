@@ -7,7 +7,7 @@ class Order extends StatelessWidget {
 
   const Order({
     Key key,
-    @required this.date,
+    this.date,
     @required this.children,
   }) : super(key: key);
 
@@ -26,7 +26,7 @@ class Order extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
       child: Column(
         children: <Widget>[
-          Container(
+          (date!=null)?Container(
             child: Row(
               //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -45,7 +45,7 @@ class Order extends StatelessWidget {
               ],
             ),
             padding: EdgeInsets.only(top: SPACE, left: SPACE, right: SPACE),
-          ),
+          ):Container(),
           Row(
             children: children,
           ),

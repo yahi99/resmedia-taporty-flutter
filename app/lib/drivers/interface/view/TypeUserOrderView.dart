@@ -91,7 +91,10 @@ class _LoginScreenState extends State<TypeOrderView> {
                 children: <Widget>[
                   Row(
                     children: <Widget>[
-                      Text('Valutazione Ristorante'),
+                      Padding(
+                  child:Text('Ristorante'),
+              padding: EdgeInsets.only(bottom: SPACE * 2,right: SPACE*2),
+                      ),
                       StreamBuilder(
                         stream: pointStreamR.stream,
                         builder: (ctx,snap){
@@ -134,8 +137,12 @@ class _LoginScreenState extends State<TypeOrderView> {
                     padding: EdgeInsets.all(8.0),
                   ),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
-                      Text('Valutazione Fattorino'),
+                      Padding(
+                        child:Text('Fattorino'),
+                        padding: EdgeInsets.only(bottom: SPACE * 2,right: SPACE*2),
+                      ),
                       StreamBuilder(
                         stream: pointStreamF.stream,
                         builder: (ctx,snap){
@@ -183,8 +190,9 @@ class _LoginScreenState extends State<TypeOrderView> {
                       final user=(await UserBloc.of().outUser.first);
                       if(_driverKey.currentState.validate() && _restKey.currentState.validate()){
                         Database().pushReviewRest(widget.model.restaurantId, int.parse(pointR), _restKey.currentState.value,widget.model.id,user.model.id,user.model.nominative);
-                        Database().pushReviewDriver(widget.model.driver, int.parse(pointF), _driverKey.currentState.value,widget.model.id,user.model.id,user.model.nominative);
+                        Database().pushReviewDriver(widget.model.driver, int.parse(pointF), _driverKey.currentState.value,user.model.id,widget.model.id,user.model.nominative);
                         Database().setReviewed(user.model.id, widget.model.id);
+                        EasyRouter.pop(context);
                       }
                     },
                   )
@@ -274,11 +282,11 @@ class _LoginScreenState extends State<TypeOrderView> {
                           return Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              Text('Data Ordine: ',
+                              /*Text('Data Ordine: ',
                                   style: theme.textTheme.subtitle),
-                              Text(widget.model.timeR),
-                              Text('Data ed ora consegna: '),
-                              Text(toDate(widget.model.day)+' alle ore '+widget.model.endTime),
+                              Text(widget.model.timeR),*/
+                              Text('Data ed ora consegna: ',style: theme.textTheme.subtitle),
+                              Text((widget.model.day)+' alle ore '+widget.model.endTime),
                               Text('Stato Ordine: ',
                                   style: theme.textTheme.subtitle),
                               Text(translateOrderCategory(widget.model.state)),
@@ -293,7 +301,7 @@ class _LoginScreenState extends State<TypeOrderView> {
                                   .toString());
                         }
                       }),
-                  (translateOrderCategory(widget.model.state)=='DELIVERED' && !widget.model.isReviewed)?RaisedButton(
+                  (translateOrderCategory(widget.model.state)=='Consegnato' &&  widget.model.isReviewed==null)?RaisedButton(
                     child: Text('Lascia una Recensione'),
                     onPressed: (){
                       _addReview(context);

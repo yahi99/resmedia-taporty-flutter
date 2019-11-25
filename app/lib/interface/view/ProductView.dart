@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:easy_blocs/easy_blocs.dart';
 import 'package:easy_widget/easy_widget.dart';
@@ -7,8 +8,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
+import 'package:resmedia_taporty_flutter/logic/database.dart';
 import 'package:resmedia_taporty_flutter/model/ProductModel.dart';
 import 'package:vibration/vibration.dart';
 
@@ -41,9 +44,35 @@ class ProductView extends StatelessWidget {
     //imgStream.add(file.path);
   }
 
+  Future<String> uploadFile(String filePath) async {
+    try{
+      final data=await rootBundle.load(filePath);
+      final bytes=data.buffer.asUint8List();
+      //final Uint8List bytes = File(filePath).readAsBytesSync();
+      final Directory tempDir = Directory.systemTemp;
+      final String fileName = filePath.split('/').last;
+      final File file = File('${tempDir.path}/$fileName');
+      file.writeAsBytes(bytes, mode: FileMode.write);
+      print(filePath);
+      final StorageReference ref = FirebaseStorage.instance.ref().child(fileName);
+      final StorageUploadTask task = ref.putFile(file);
+      final Uri downloadUrl = (await task.onComplete).uploadSessionUri;
+
+      Database().updateImgProduct(await ref.getDownloadURL(), model);
+      //_path = downloadUrl.toString();
+      return 'ok';
+    }
+    catch(e){
+      print(e.toString());
+    }
+    return 'not ok';
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    if(model.isDisabled==null) Database().updateProdDis(model, category);
+    if(model.img.startsWith('assets')) uploadFile(model.img);
     //if(model.number!=null) downloadFile(model.img);
     return Slidable(
       actionPane: SlidableDrawerActionPane(),

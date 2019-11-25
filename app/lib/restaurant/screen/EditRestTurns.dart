@@ -10,6 +10,7 @@ import 'package:resmedia_taporty_flutter/drivers/logic/bloc/TurnBloc.dart';
 import 'package:resmedia_taporty_flutter/drivers/model/TurnModel.dart';
 import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
 import 'package:resmedia_taporty_flutter/logic/database.dart';
+import 'package:toast/toast.dart';
 
 class EditRestTurns extends StatefulWidget implements WidgetRoute {
 
@@ -91,7 +92,12 @@ class _TurnWorkTabDriverState extends State<EditRestTurns>{
         builder: (ctx,snap){
           if(!snap.hasData) return Center(child: CircularProgressIndicator(),);*/
     return Scaffold(
-      body: Column(
+      appBar: AppBar(
+        title: Text('Modifica Orari'),
+      ),
+      body: Container(
+      child:Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           StreamBuilder<String>(
             stream: day.stream,
@@ -173,12 +179,21 @@ class _TurnWorkTabDriverState extends State<EditRestTurns>{
               //(await FirebaseAuth.instance.currentUser()).metadata.lastSignInTimestamp;
               if(eTime!=null && sTime!=null && dayWeek!=null && isL!=null){
                 if(isAfter(sTime, eTime)){
-                  Database().updateTime(dayWeek,isL,timeToString(sTime),timeToString(eTime),(await UserBloc.of().outUser.first).model.restaurantId);
+                  Database().updateTime(dayWeek,isL,timeToString(sTime),timeToString(eTime),(await UserBloc.of().outUser.first).model.restaurantId).then((value){
+                    Toast.show('Orario Modificato!', context);
+                  });
                 }
+              }
+              else if(eTime==null && sTime==null && dayWeek!=null && isL!=null){
+                Database().cancelTime(dayWeek,isL,(await UserBloc.of().outUser.first).model.restaurantId).then((value){
+                  Toast.show('Orario cancellato!', context);
+                });
               }
             },
           )
         ],
+      ),
+        width: MediaQuery.of(context).size.width,
       ),
     );
     /*},

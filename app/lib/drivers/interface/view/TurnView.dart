@@ -29,6 +29,7 @@ class TurnView extends StatelessWidget {
           Expanded(
             child: TurnVoid(
               model: model,
+              //date:model.day
             ),
           ),
         ],

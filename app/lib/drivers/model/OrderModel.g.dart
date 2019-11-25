@@ -81,7 +81,7 @@ T _$enumDecodeNullable<T>(Map<T, dynamic> enumValues, dynamic source) {
 const _$StateCategoryEnumMap = <StateCategory, dynamic>{
   StateCategory.PENDING: 'PENDING',
   StateCategory.ACCEPTED: 'ACCEPTED',
-  StateCategory.DONE: 'DONE',
+  StateCategory.DELIVERED: 'DELIVERED',
   StateCategory.DENIED: 'DENIED',
   StateCategory.PICKED_UP: 'PICKED_UP'
 };

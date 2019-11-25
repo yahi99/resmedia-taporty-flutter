@@ -157,6 +157,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final theme = Theme.of(context);
     final cls = theme.colorScheme;
     return Material(
+      child:Theme(
       child: Form(
         key: _submitBloc.formKey,
         child: LogoView(
@@ -204,15 +205,17 @@ class _LoginScreenState extends State<LoginScreen> {
                   stream: rememberStream.stream,
                   builder: (ctx,snap){
                     return Checkbox(
+                      checkColor: Colors.white,
                       value: (snap.hasData)?snap.data:false,
                       onChanged: (value){
                         //privacy=value;
                         rememberStream.add(value);
                       },
+                      //activeColor: Colors.white,
                     );
                   },
                 ),
-                Text('Ricordami'),
+                Text('Ricordami',style: TextStyle(color: Colors.white),),
               ],
             ),
             SizedBox(
@@ -241,6 +244,8 @@ class _LoginScreenState extends State<LoginScreen> {
             )*/
           ],
         ),
+      ),
+        data: Theme.of(context).copyWith(unselectedWidgetColor: Colors.white),
       ),
     );
   }

@@ -113,7 +113,8 @@ class _DetailOrderRestaurantPageState extends State<DetailOrderRestaurantPage> {
                                     'restaurantId':widget.model.products.first.restaurantId,
                                     'uid':widget.model.uid,
                                     'oid':widget.model.id
-                                  }).then((isDone){
+                                  }).then((isDone)async{
+                                    Database().updateBank(widget.model,cart.getTotalPrice(cart.products, widget.model.uid, widget.model.restaurantId));
                                     CloudFunctions.instance
                                         .getHttpsCallable(
                                         functionName: 'updateState')
@@ -126,6 +127,7 @@ class _DetailOrderRestaurantPageState extends State<DetailOrderRestaurantPage> {
                                       'did': widget.model.driver,
                                       'uid': widget.model.uid
                                     });
+                                    EasyRouter.pop(context);
                                   });
                                 },
                                 color: Colors.green,

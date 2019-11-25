@@ -13,6 +13,7 @@ import 'package:resmedia_taporty_flutter/drivers/interface/sliver/SliverOrderVoi
 import 'package:resmedia_taporty_flutter/drivers/interface/view/TurnView.dart';
 import 'package:resmedia_taporty_flutter/drivers/logic/bloc/TurnBloc.dart';
 import 'package:resmedia_taporty_flutter/drivers/model/TurnModel.dart';
+import 'package:resmedia_taporty_flutter/interface/screen/SeeReviewsScreen.dart';
 import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
 import 'package:resmedia_taporty_flutter/logic/database.dart';
 import 'package:resmedia_taporty_flutter/model/RestaurantModel.dart';
@@ -183,6 +184,19 @@ class _TurnWorkTabDriverState extends State<ManageRestPage> {
                 },
               )
             ],
+          ),
+          InkWell(
+            child:Row(
+              children: <Widget>[
+                Icon(Icons.star),
+                Icon(Icons.star),
+                Text(widget.rest.averageReviews.toString()),
+                Text('Buono')
+              ],
+            ),
+            onTap: (){
+              EasyRouter.push(context,SeeReviewsScreen(model: widget.rest,));
+            },
           ),
           Row(
             children: <Widget>[

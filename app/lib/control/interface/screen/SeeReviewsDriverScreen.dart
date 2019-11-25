@@ -9,18 +9,19 @@ import 'package:resmedia_taporty_flutter/interface/page/ConfirmPage.dart';
 import 'package:resmedia_taporty_flutter/interface/page/PaymentPage.dart';
 import 'package:resmedia_taporty_flutter/interface/page/ShippingPage.dart';
 import 'package:resmedia_taporty_flutter/logic/bloc/RestaurantBloc.dart';
+import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
 import 'package:resmedia_taporty_flutter/mainRestaurant.dart';
 import 'package:resmedia_taporty_flutter/model/RestaurantModel.dart';
 import 'package:resmedia_taporty_flutter/model/ReviewModel.dart';
 import 'package:resmedia_taporty_flutter/model/UserModel.dart';
 
-class SeeReviewsScreen extends StatefulWidget implements WidgetRoute {
-  static const String ROUTE = "SeeReviewsScreen";
+class SeeReviewsDriverScreen extends StatefulWidget implements WidgetRoute {
+  static const String ROUTE = "SeeReviewsDriverScreen";
 
-  String get route => SeeReviewsScreen.ROUTE;
-  final RestaurantModel model;
+  String get route => SeeReviewsDriverScreen.ROUTE;
+  final UserModel model;
 
-  SeeReviewsScreen(
+  SeeReviewsDriverScreen(
       {Key key,
         @required this.model,})
       : super(key: key);
@@ -29,7 +30,7 @@ class SeeReviewsScreen extends StatefulWidget implements WidgetRoute {
   _CheckoutScreenState createState() => _CheckoutScreenState();
 }
 
-class _CheckoutScreenState extends State<SeeReviewsScreen>{
+class _CheckoutScreenState extends State<SeeReviewsDriverScreen>{
 
   @override
   void initState() {
@@ -44,31 +45,29 @@ class _CheckoutScreenState extends State<SeeReviewsScreen>{
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text('Recensioni '+widget.model.id),
-          backgroundColor: red,
-          centerTitle: true,
-          actions: <Widget>[
-          ],
-        ),
-        body: StreamBuilder<List<ReviewModel>>(
-          stream: RestaurantBloc.init(idRestaurant: widget.model.id).outRestaurantReview,
-          builder: (ctx,snap){
-            if(!snap.hasData) return Center(child: CircularProgressIndicator(),);
-            if(snap.data.length>0)
-            return ListView.separated(
-              shrinkWrap: true,
-              itemBuilder: (ctx,index){
-                final model=snap.data.elementAt(index);
-                return Review(model:model);
-              },
-              separatorBuilder: (ctx,index){
-                return Divider(height: 4.0,);
-              },
-            );
-            return Padding(child:Text('Non ci sono recensioni per questo ristorante'),padding: EdgeInsets.all(8.0),);
-          },
-        ),
+      appBar: AppBar(
+        title: Text('Recensioni '+widget.model.nominative),
+        backgroundColor: red,
+        centerTitle: true,
+        actions: <Widget>[
+        ],
+      ),
+      body: StreamBuilder<List<ReviewModel>>(
+        stream: UserBloc.of().outDriverReview,
+        builder: (ctx,snap){
+          if(!snap.hasData) return Center(child: CircularProgressIndicator(),);
+          return ListView.separated(
+            shrinkWrap: true,
+            itemBuilder: (ctx,index){
+              final model=snap.data.elementAt(index);
+              return Review(model:model);
+            },
+            separatorBuilder: (ctx,index){
+              return Divider(height: 4.0,);
+            },
+          );
+        },
+      ),
     );
   }
 }

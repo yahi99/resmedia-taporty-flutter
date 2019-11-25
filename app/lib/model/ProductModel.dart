@@ -31,14 +31,16 @@ class FoodModel extends ProductModel {
   final FoodCategory category;
   final String restaurantId;
   final String number;
+  final bool isDisabled;
 
   FoodModel(
-      {String path, this.img, String price, this.category, this.restaurantId,this.number})
+      {String path, this.img,this.isDisabled, String price, this.category, this.restaurantId,this.number})
       : super(
           path: path,
           price: price,
           restaurantId: restaurantId,
           number:number,
+          isDisabled:isDisabled,
         );
 
   static FoodModel fromJson(Map json) => _$FoodModelFromJson(json);
@@ -89,14 +91,16 @@ class DrinkModel extends ProductModel {
   final String img;
   final String restaurantId;
   final String number;
+  final bool isDisabled;
 
   DrinkModel(
-      {String path, this.category, this.img, String price, this.restaurantId,this.number})
+      {String path, this.category,this.isDisabled, this.img, String price, this.restaurantId,this.number})
       : super(
           path: path,
           price: price,
           restaurantId: restaurantId,
           number:number,
+          isDisabled:isDisabled,
         );
 
   static DrinkModel fromJson(Map json) => _$DrinkModelFromJson(json);

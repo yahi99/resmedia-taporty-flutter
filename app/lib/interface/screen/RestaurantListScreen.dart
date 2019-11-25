@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:easy_blocs/easy_blocs.dart';
 import 'package:easy_route/easy_route.dart';
@@ -8,6 +9,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geocoder/geocoder.dart';
@@ -233,7 +235,7 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
                           if (!snap.hasData) return Container();
                           // TODO: Ripristinare a tempo debito.
                           // if(snap.data/1000<_model.km) {
-                          if (_model.isDisabled) return Container();
+                          if (_model.isDisabled!=null && _model.isDisabled) return Container();
                             return InkWell(
                               onTap: ()async {
                                 EasyRouter.push(
@@ -284,13 +286,32 @@ class RestaurantView extends StatelessWidget {
     imgStream.add(file.path);
   }
 
+  Future<String> uploadFile(String filePath) async {
+    final data=await rootBundle.load(filePath);
+    final bytes=data.buffer.asUint8List();
+    //final Uint8List bytes = File(filePath).readAsBytesSync();
+    final Directory tempDir = Directory.systemTemp;
+    final String fileName = filePath.split('/').last;
+    final File file = File('${tempDir.path}/$fileName');
+    file.writeAsBytes(bytes, mode: FileMode.write);
+
+    final StorageReference ref = FirebaseStorage.instance.ref().child(fileName);
+    final StorageUploadTask task = ref.putFile(file);
+    final Uri downloadUrl = (await task.onComplete).uploadSessionUri;
+
+    Database().updateImg(await ref.getDownloadURL(), model.id);
+
+    //_path = downloadUrl.toString();
+    return 'ok';
+  }
+
   String toDay(int weekday){
-    if(weekday==0) return 'Lunedì';
-    if(weekday==1) return 'Martedì';
-    if(weekday==2) return 'Mercoledì';
-    if(weekday==3) return 'Giovedì';
-    if(weekday==4) return 'Venerdì';
-    if(weekday==5) return 'Sabato';
+    if(weekday==1) return 'Lunedì';
+    if(weekday==2) return 'Martedì';
+    if(weekday==3) return 'Mercoledì';
+    if(weekday==4) return 'Giovedì';
+    if(weekday==5) return 'Venerdì';
+    if(weekday==6) return 'Sabato';
     return 'Domenica';
   }
 
@@ -300,6 +321,8 @@ class RestaurantView extends StatelessWidget {
     //if (!model.img.startsWith('assets')) downloadFile(model.img);
     String times;
     String day=toDay(DateTime.now().weekday);
+    print(model.lunch.toString()+'\n'+model.dinner.toString());
+    print(day);
     if(model.lunch==null && model.dinner==null) times='Chiuso';
     else if(model.lunch==null && model.dinner!=null){
       if(model.dinner.containsKey(day)){
@@ -325,6 +348,7 @@ class RestaurantView extends StatelessWidget {
       }
       else times='Chiuso';
     }
+    if(model.img.startsWith('assets')) uploadFile(model.img);
     return ClipRRect(
       borderRadius: BorderRadius.circular(8.0),
       child: Stack(

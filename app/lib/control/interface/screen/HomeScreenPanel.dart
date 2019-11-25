@@ -19,6 +19,7 @@ import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
 import 'CreateAdminScreen.dart';
 import 'ManageRestaurants.dart';
 import 'ManageUsers.dart';
+import 'TotalIncomeScreen.dart';
 
 class HomeScreenPanel extends StatefulWidget implements WidgetRoute {
   static const ROUTE = 'HomeScreenPanel';
@@ -161,6 +162,12 @@ class _HomeScreenPanelState extends State<HomeScreenPanel> {
             child: Text('Gestisci ordini'),
             onPressed: (){
               EasyRouter.push(context, ManageOrders());
+            },
+          ),
+          FlatButton(
+            child: Text('Saldo Totale'),
+            onPressed: (){
+              EasyRouter.push(context, TotalIncomeScreen());
             },
           )
         ],

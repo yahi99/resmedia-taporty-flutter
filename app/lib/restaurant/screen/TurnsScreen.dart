@@ -19,6 +19,8 @@ class TurnsScreen extends StatefulWidget implements WidgetRoute {
 }
 
 class _TurnWorkTabDriverState extends State<TurnsScreen>{
+
+
   @override
   void initState() {
     super.initState();
@@ -28,16 +30,24 @@ class _TurnWorkTabDriverState extends State<TurnsScreen>{
 
   @override
   Widget build(BuildContext context) {
-    final turnBloc = TurnBloc.of();
+
+
     /*return StreamBuilder<Map<MonthCategory,List<TurnModel>>>(
         stream: turnBloc.outCategorizedTurns ,
         builder: (ctx,snap){
           if(!snap.hasData) return Center(child: CircularProgressIndicator(),);*/
+    final turnBloc = TurnBloc.of();
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Turni Inseriti'),
+      ),
       body: StreamBuilder<Map<MonthCategory, List<TurnModel>>>(
         stream: turnBloc.outCategorizedTurnsRest,
         builder: (ctx, snap1)
     {
+      print(snap1.hasData);
+      print(snap1.data);
+      if(snap1.hasData && snap1.data.length>0)
       return CustomScrollView(
         slivers: snap1.data.keys.map<Widget>((nameGroup) {
           final products = snap1.data[nameGroup];
@@ -58,6 +68,7 @@ class _TurnWorkTabDriverState extends State<TurnsScreen>{
           );
         }).toList(),
       );
+      else return Padding(child: Text('Non ci sono turni inseriti'),padding: EdgeInsets.all(8.0),);
     }
     ),
     );

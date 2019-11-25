@@ -10,6 +10,7 @@ FoodModel _$FoodModelFromJson(Map json) {
   return FoodModel(
       path: json['path'] as String,
       img: json['img'] as String,
+      isDisabled: json['isDisabled'] as bool,
       price: json['price'] as String,
       category: _$enumDecodeNullable(_$FoodCategoryEnumMap, json['category']),
       restaurantId: json['restaurantId'] as String,
@@ -31,6 +32,7 @@ Map<String, dynamic> _$FoodModelToJson(FoodModel instance) {
   writeNotNull('category', _$FoodCategoryEnumMap[instance.category]);
   writeNotNull('restaurantId', instance.restaurantId);
   writeNotNull('number', instance.number);
+  writeNotNull('isDisabled', instance.isDisabled);
   return val;
 }
 
@@ -68,6 +70,7 @@ DrinkModel _$DrinkModelFromJson(Map json) {
   return DrinkModel(
       path: json['path'] as String,
       category: _$enumDecodeNullable(_$DrinkCategoryEnumMap, json['category']),
+      isDisabled: json['isDisabled'] as bool,
       img: json['img'] as String,
       price: json['price'] as String,
       restaurantId: json['restaurantId'] as String,
@@ -89,6 +92,7 @@ Map<String, dynamic> _$DrinkModelToJson(DrinkModel instance) {
   writeNotNull('img', instance.img);
   writeNotNull('restaurantId', instance.restaurantId);
   writeNotNull('number', instance.number);
+  writeNotNull('isDisabled', instance.isDisabled);
   return val;
 }
 

@@ -18,7 +18,7 @@ import 'package:resmedia_taporty_flutter/logic/database.dart';
 import 'package:toast/toast.dart';
 
 class EditRestScreen extends StatefulWidget implements WidgetRoute {
-  static const ROUTE = 'TurnsRestaurant';
+  static const ROUTE = 'EditRestScreen';
 
   @override
   String get route => ROUTE;
@@ -75,47 +75,58 @@ class _TurnWorkTabDriverState extends State<EditRestScreen> {
         builder: (ctx,snap){
           if(!snap.hasData) return Center(child: CircularProgressIndicator(),);*/
     return Scaffold(
-      body: Column(
+      body: ListView(
+        shrinkWrap: true,
         children: <Widget>[
           Row(
             children: <Widget>[
-              Padding(
-                child: TextFormField(
-                  key: _delKey,
-                  validator: (value){
-                    bool isWrong=value.contains('.');
-                    if(isWrong) return 'Virgola per i decimali';
-                    if(double.tryParse(value)!=null){
-                      return 'Inserisci un numero';
-                    }
-                    return null;
-                  },
-                  decoration: InputDecoration(
-                    hintText: "Inserisci raggio consegne",
+              Container(
+                child: Padding(
+                  child: TextFormField(
+                    key: _kmKey,
+                    validator: (value) {
+                      bool isWrong = value.contains('.');
+                      if (isWrong) return 'Virgola per i decimali';
+                      if (double.tryParse(value) != null) {
+                        return 'Inserisci un numero';
+                      }
+                      return null;
+                    },
+                    decoration: InputDecoration(
+                      hintText: "Inserisci raggio consegne",
+                    ),
+                    keyboardType: TextInputType.number,
                   ),
-                  keyboardType: TextInputType.number,
+                  padding: EdgeInsets.all(8.0),
                 ),
-                padding: EdgeInsets.all(8.0),
+                width: MediaQuery.of(context).size.width/2,
               ),
-              RaisedButton(
-                child: Text('Cambia'),
-                onPressed: ()async{
-                  if(_kmKey.currentState.validate()){
-                    Database().updateKm(double.parse(_kmKey.currentState.value),(await UserBloc.of().outUser.first).model.restaurantId);
-                  }
-                },
-              )
+              Expanded(
+                child: RaisedButton(
+                  child: Text('Cambia'),
+                  onPressed: () async {
+                    if (_kmKey.currentState.validate()) {
+                      Database().updateKm(
+                          double.parse(_kmKey.currentState.value),
+                          (await UserBloc.of().outUser.first)
+                              .model
+                              .restaurantId);
+                    }
+                  },
+                ),
+              ),
             ],
-          ),
+          )
+          /*
           Row(
             children: <Widget>[
               Padding(
                 child: TextFormField(
                   key: _delKey,
-                  validator: (value){
-                    bool isWrong=value.contains('.');
-                    if(isWrong) return 'Virgola per i decimali';
-                    if(double.tryParse(value)!=null){
+                  validator: (value) {
+                    bool isWrong = value.contains('.');
+                    if (isWrong) return 'Virgola per i decimali';
+                    if (double.tryParse(value) != null) {
                       return 'Inserisci un numero';
                     }
                     return null;
@@ -129,9 +140,11 @@ class _TurnWorkTabDriverState extends State<EditRestScreen> {
               ),
               RaisedButton(
                 child: Text('Cambia'),
-                onPressed: ()async{
-                  if(_delKey.currentState.validate()){
-                    Database().updateDeliveryFee(double.parse(_delKey.currentState.value),(await UserBloc.of().outUser.first).model.restaurantId);
+                onPressed: () async {
+                  if (_delKey.currentState.validate()) {
+                    Database().updateDeliveryFee(
+                        double.parse(_delKey.currentState.value),
+                        (await UserBloc.of().outUser.first).model.restaurantId);
                   }
                 },
               )
@@ -142,8 +155,8 @@ class _TurnWorkTabDriverState extends State<EditRestScreen> {
               Padding(
                 child: TextFormField(
                   key: _descrKey,
-                  validator: (value){
-                    if(value.length==0){
+                  validator: (value) {
+                    if (value.length == 0) {
                       return 'Inserisci descrizione';
                     }
                     return null;
@@ -159,9 +172,10 @@ class _TurnWorkTabDriverState extends State<EditRestScreen> {
               ),
               RaisedButton(
                 child: Text('Cambia'),
-                onPressed: ()async{
-                  if(_descrKey.currentState.validate()){
-                    Database().updateDescription(_descrKey.currentState.value,(await UserBloc.of().outUser.first).model.restaurantId);
+                onPressed: () async {
+                  if (_descrKey.currentState.validate()) {
+                    Database().updateDescription(_descrKey.currentState.value,
+                        (await UserBloc.of().outUser.first).model.restaurantId);
                   }
                 },
               )
@@ -169,13 +183,13 @@ class _TurnWorkTabDriverState extends State<EditRestScreen> {
           ),
           Row(
             children: <Widget>[
-              Column(
-                children: <Widget>[
-                  StreamBuilder(
-                    stream: img.stream,
-                    builder: (ctx, snap) {
-                      if (snap.hasData)
-                        return FlatButton(
+              StreamBuilder(
+                stream: img.stream,
+                builder: (ctx, snap) {
+                  if (snap.hasData)
+                    return Column(
+                      children: <Widget>[
+                        FlatButton(
                           child: Text('Clicca per selezionare immagine'),
                           onPressed: () {
                             ImagePicker.pickImage(source: ImageSource.gallery)
@@ -198,38 +212,43 @@ class _TurnWorkTabDriverState extends State<EditRestScreen> {
                               }
                             });
                           },
-                        );
-                      return Text(snap.data);
-                    },
-                  ),
-                  StreamBuilder(
-                    stream: img.stream,
-                    builder: (ctx, snap) {
-                      if (snap.hasData) return Image.file(File(path));
-                      return Container();
-                    },
-                  ),
-                ],
+                        ),
+                        Text(snap.data),
+                      ],
+                    );
+                  return Container();
+                },
+              ),
+              StreamBuilder(
+                stream: img.stream,
+                builder: (ctx, snap) {
+                  if (snap.hasData) return Image.file(File(path));
+                  return Container();
+                },
               ),
               RaisedButton(
                 child: Text('Cambia'),
-                onPressed: () async{
+                onPressed: () async {
                   if (path != null) {
                     if (path.split('.').last != 'jpg') {
                       Toast.show(
                           'Il formato dell\'immagine deve essere .jpg', context,
                           duration: 3);
-                    }
-                    else{
-                      uploadFile(path).then((path)async{
-                        Database().updateImg(path,(await UserBloc.of().outUser.first).model.restaurantId);
+                    } else {
+                      uploadFile(path).then((path) async {
+                        Database().updateImg(
+                            path,
+                            (await UserBloc.of().outUser.first)
+                                .model
+                                .restaurantId);
                       });
                     }
                   }
                 },
               )
             ],
-          ),
+
+          ),*/
         ],
       ),
     );

@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:resmedia_taporty_flutter/control/interface/screen/HomeScreenPanel.dart';
+import 'package:resmedia_taporty_flutter/control/interface/screen/SeeReviewsDriverScreen.dart';
 import 'package:resmedia_taporty_flutter/control/logic/bloc/UsersBloc.dart';
 import 'package:resmedia_taporty_flutter/data/config.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/screen/HomeScreen.dart';
@@ -178,7 +179,21 @@ class _LoginScreenState extends State<ManageSpecificUser> {
                   },
                 )
               ],
-            )
+            ),
+            (widget.user.type=='driver')?InkWell(
+              child:Row(
+                children: <Widget>[
+                  Icon(Icons.star),
+                  Icon(Icons.star),
+                  Text(widget.user.averageReviews.toString()),
+                  Text('Buono')
+                ],
+              ),
+              onTap: (){
+                UserBloc.of().setReview(widget.user.id);
+                EasyRouter.push(context,SeeReviewsDriverScreen(model: widget.user,));
+              },
+            ):Container(),
           ],
         ),
         );

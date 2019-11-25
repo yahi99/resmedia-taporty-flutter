@@ -13,7 +13,7 @@ class TurnModel extends FirebaseModel {
 
   TurnModel({
     String path,
-    @required this.restaurantId,
+    this.restaurantId,
     @required this.startTime,
     @required this.month,
     @required this.day,

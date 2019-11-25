@@ -52,7 +52,7 @@ class _HomeScreenRestaurantState extends State<TimetableScreen> {
     //final orderBloc = OrdersBloc.of();
     return Scaffold(
         appBar: AppBar(
-          title: Text("Home"),
+          title: Text("Orari"),
           actions: <Widget>[
             IconButton(
               onPressed: () {
@@ -71,7 +71,20 @@ class _HomeScreenRestaurantState extends State<TimetableScreen> {
             final dinner=snap.data.dinner;
             String times='';
             for(int i=0;i<days.length;i++){
-              if(lunch.containsKey(days.elementAt(i)) && lunch.containsKey(days.elementAt(i))){
+              if(lunch==null && dinner!=null){
+                if(dinner.containsKey(days.elementAt(i))){
+                  times=times +days.elementAt(i)+': '+dinner.values.elementAt(i)+'\n';
+                }
+                else times=times +days.elementAt(i)+': Chiuso\n';
+              }
+              else if(lunch!=null && dinner==null){
+                if(lunch.containsKey(days.elementAt(i))){
+                  times=times +days.elementAt(i)+': '+lunch.values.elementAt(i)+'\n';
+                }
+                else times=times +days.elementAt(i)+': Chiuso\n';
+              }
+              else if(lunch==null && dinner==null) times=times +days.elementAt(i)+': Chiuso\n';
+              else if(lunch.containsKey(days.elementAt(i)) && dinner.containsKey(days.elementAt(i))){
                 times=times +days.elementAt(i)+': '+lunch.values.elementAt(i)+','+dinner.values.elementAt(i)+'\n';
               }
               else if(!lunch.containsKey(days.elementAt(i)) && dinner.containsKey(days.elementAt(i))){
@@ -84,7 +97,7 @@ class _HomeScreenRestaurantState extends State<TimetableScreen> {
                 times=times +days.elementAt(i)+': Chiuso\n';
               }
             }
-            return Text(times);
+            return Padding(child:Text(times),padding: EdgeInsets.all(8.0));
           },
         ),
       );

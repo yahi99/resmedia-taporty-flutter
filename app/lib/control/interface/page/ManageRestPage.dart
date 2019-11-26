@@ -28,7 +28,7 @@ class ManageRestPage extends StatefulWidget implements WidgetRoute {
   final String restId;
   final RestaurantModel rest;
 
-  ManageRestPage({@required this.restId,@required this.rest});
+  ManageRestPage({@required this.restId, @required this.rest});
 
   @override
   _TurnWorkTabDriverState createState() => _TurnWorkTabDriverState();
@@ -82,6 +82,251 @@ class _TurnWorkTabDriverState extends State<ManageRestPage> {
         builder: (ctx,snap){
           if(!snap.hasData) return Center(child: CircularProgressIndicator(),);*/
     return Scaffold(
+      body: ListView(
+        shrinkWrap: true,
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              Container(
+                child: Text(
+                    'Disabilitato: ' + ((widget.rest.isDisabled==null || !widget.rest.isDisabled) ? 'No' : 'Si')),
+                width: MediaQuery.of(context).size.width * 2 / 3,
+                padding: EdgeInsets.all(8.0),
+              ),
+              Expanded(
+                child: RaisedButton(
+                  child: Text('Cambia'),
+                  onPressed: () {
+                    Database().changeStatusRest(widget.rest);
+                  },
+                ),
+              ),
+            ],
+          ),
+          Row(
+            children: <Widget>[
+              Container(
+                child: Padding(
+                  child: TextFormField(
+                    key: _kmKey,
+                    validator: (value) {
+                      bool isWrong = value.contains(',');
+                      if (isWrong) return 'Punto per i decimali';
+                      if (double.tryParse(value) == null) {
+                        return 'Inserisci un numero';
+                      }
+                      return null;
+                    },
+                    decoration: InputDecoration(
+                      hintText: "Raggio consegne",
+                    ),
+                    keyboardType: TextInputType.number,
+                  ),
+                  padding: EdgeInsets.all(8.0),
+                ),
+                width: MediaQuery.of(context).size.width * 2 / 3,
+              ),
+              Expanded(
+                child: RaisedButton(
+                  child: Text('Cambia'),
+                  onPressed: () async {
+                    if (_kmKey.currentState.validate()) {
+                      Database()
+                          .updateKm(
+                              double.parse(_kmKey.currentState.value),
+                              (await UserBloc.of().outUser.first)
+                                  .model
+                                  .restaurantId)
+                          .then((value) {
+                        Toast.show('Cambiato!', context, duration: 3);
+                      });
+                    }
+                  },
+                ),
+              ),
+            ],
+          ),
+          Row(
+            children: <Widget>[
+              Container(
+                child: Padding(
+                  child: TextFormField(
+                    key: _delKey,
+                    validator: (value) {
+                      //print(value);
+                      bool isWrong = value.contains(',');
+                      if (isWrong) return 'Punto per i decimali';
+                      if (double.tryParse(value) == null) {
+                        return 'Inserisci un numero';
+                      }
+                      return null;
+                    },
+                    decoration: InputDecoration(
+                      hintText: "Costo consegna",
+                    ),
+                    keyboardType: TextInputType.number,
+                  ),
+                  padding: EdgeInsets.all(8.0),
+                ),
+                width: MediaQuery.of(context).size.width * 2 / 3,
+              ),
+              Expanded(
+                  child: RaisedButton(
+                child: Text('Cambia'),
+                onPressed: () async {
+                  //print(double.tryParse('2.6').toString());
+                  if (_delKey.currentState.validate()) {
+                    Database()
+                        .updateDeliveryFee(
+                            double.tryParse(_delKey.currentState.value),
+                            (await UserBloc.of().outUser.first)
+                                .model
+                                .restaurantId)
+                        .then((value) {
+                      Toast.show('Cambiato!', context, duration: 3);
+                    });
+                  }
+                },
+              )),
+            ],
+          ),
+          Row(
+            children: <Widget>[
+              Container(
+                child: Padding(
+                  child: TextFormField(
+                    key: _descrKey,
+                    validator: (value) {
+                      if (value.length == 0) {
+                        return 'Inserisci descrizione';
+                      }
+                      return null;
+                    },
+                    decoration: InputDecoration(
+                      hintText: "Inserisci una descrizione...",
+                    ),
+                    maxLines: 10,
+                    minLines: 5,
+                    keyboardType: TextInputType.text,
+                  ),
+                  padding: EdgeInsets.all(8.0),
+                ),
+                width: MediaQuery.of(context).size.width * 2 / 3,
+              ),
+              Expanded(
+                child: RaisedButton(
+                  child: Text('Cambia'),
+                  onPressed: () async {
+                    if (_descrKey.currentState.validate()) {
+                      Database()
+                          .updateDescription(
+                              _descrKey.currentState.value,
+                              (await UserBloc.of().outUser.first)
+                                  .model
+                                  .restaurantId)
+                          .then((value) {
+                        Toast.show('Cambiato!', context, duration: 3);
+                      });
+                    }
+                  },
+                ),
+              ),
+            ],
+          ),
+          Row(
+            children: <Widget>[
+              StreamBuilder(
+                stream: img.stream,
+                builder: (ctx, snap) {
+                  if (snap.hasData)
+                    return InkWell(
+                      child: Container(
+                        padding: EdgeInsets.all(SPACE),
+                        child: Image.file(File(path)),
+                        width: MediaQuery.of(context).size.width * 2 / 3,
+                      ),
+                      onTap: () {
+                        ImagePicker.pickImage(source: ImageSource.gallery)
+                            .then((file) {
+                          if (file != null) {
+                            path = file.path;
+                            img.add(path.split('/').last);
+                          } else {
+                            Toast.show('Devi scegliere un\'immagine!', context,
+                                duration: 3);
+                          }
+                        }).catchError((error) {
+                          if (error is PlatformException) {
+                            if (error.code == 'photo_access_denied')
+                              Toast.show(
+                                  'Devi garantire accesso alle immagini!',
+                                  context,
+                                  duration: 3);
+                          }
+                        });
+                      },
+                    );
+                  return Container(
+                    child: FlatButton(
+                      child: Text('Clicca per selezionare immagine'),
+                      onPressed: () {
+                        ImagePicker.pickImage(source: ImageSource.gallery)
+                            .then((file) {
+                          if (file != null) {
+                            path = file.path;
+                            img.add(path.split('/').last);
+                          } else {
+                            Toast.show('Devi scegliere un\'immagine!', context,
+                                duration: 3);
+                          }
+                        }).catchError((error) {
+                          if (error is PlatformException) {
+                            if (error.code == 'photo_access_denied')
+                              Toast.show(
+                                  'Devi garantire accesso alle immagini!',
+                                  context,
+                                  duration: 3);
+                          }
+                        });
+                      },
+                    ),
+                    width: MediaQuery.of(context).size.width * 2 / 3,
+                  );
+                },
+              ),
+              Expanded(
+                child: RaisedButton(
+                  child: Text('Cambia'),
+                  onPressed: () async {
+                    if (path != null) {
+                      if (path.split('.').last != 'jpg') {
+                        Toast.show('Il formato dell\'immagine deve essere .jpg',
+                            context,
+                            duration: 3);
+                      } else {
+                        uploadFile(path).then((path) async {
+                          Database()
+                              .updateImg(
+                                  path,
+                                  (await UserBloc.of().outUser.first)
+                                      .model
+                                      .restaurantId)
+                              .then((value) {
+                            Toast.show('Cambiato!', context, duration: 3);
+                          });
+                        });
+                      }
+                    }
+                  },
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+
+    /*Scaffold(
       body: Column(
         children: <Widget>[
           Row(
@@ -263,7 +508,7 @@ class _TurnWorkTabDriverState extends State<ManageRestPage> {
           ),
         ],
       ),
-    );
+    );*/
     /*},
     );*/
   }

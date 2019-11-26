@@ -213,8 +213,9 @@ class GroupsVoid extends StatelessWidget {
       slivers: children.keys.map<Widget>((group) {
         final products = children[group];
         return SliverStickyHeader(
+          overlapsContent: true,
           header: Container(
-            color: Colors.black12,
+            color: Colors.grey,
             child: Padding(
               padding:
                   const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),

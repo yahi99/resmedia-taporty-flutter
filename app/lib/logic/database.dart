@@ -301,7 +301,7 @@ class Database extends FirebaseDatabase
   }
 
   Future<void> changeStatusRest(RestaurantModel model)async{
-    await fs.collection('restaurants').document(model.id).updateData({'isDisabled':model.isDisabled?false:true});
+    await fs.collection('restaurants').document(model.id).updateData({'isDisabled':((model.isDisabled==null || !model.isDisabled)?true:false)});
   }
 
   Future<void> addRestaurant(RestaurantRequestModel model)async{
@@ -448,6 +448,12 @@ class Database extends FirebaseDatabase
 
   Future<void> editUser(String id,String type)async{
     await fs.collection('users').document(id).updateData({'type':type});
+  }
+
+  Stream<FoodModel> getProduct(ProductModel model){
+    return fs.collection('restaurants').document(model.restaurantId).collection(((model.path.contains('foods'))?'foods':'drinks')).document(model.id).snapshots().map((snap) {
+      return FoodModel.fromFirebase(snap);
+    });
   }
 
   Future<void> createOrder(
@@ -612,7 +618,7 @@ class Database extends FirebaseDatabase
   }
 
   Future<void> updateProductPrice(double price,ProductModel model)async{
-    await fs.collection('restaurants').document(model.restaurantId).collection(model.path.contains('foods')?'foods':'drinks').document(model.id).updateData({'price':price});
+    await fs.collection('restaurants').document(model.restaurantId).collection(model.path.contains('foods')?'foods':'drinks').document(model.id).updateData({'price':price.toString()});
   }
 
   Future<void> updateKm(double km,String restId)async{
@@ -745,7 +751,7 @@ class Database extends FirebaseDatabase
 
   Stream<List<UserModel>> getAdminsControl() {
     final data =
-    fs.collection('users').where('type',isEqualTo:'admin').snapshots();
+    fs.collection('users').where('type',isEqualTo:'control').snapshots();
     return data.map((query) {
       return query.documents
           .map((snap) => UserModel.fromFirebase(snap))
@@ -832,14 +838,25 @@ class Database extends FirebaseDatabase
         .updateData({'state': state});
   }
 
-  Future<void> givePermission(String uid) async {
+  Future<void> givePermission(String uid,String type) async {
     await fs
         .collection(cl.USERS)
         .document(uid)
-        .updateData({'type': 'control'});
-    final users=(await ControlUsersModel.fromFirebase(await fs.collection('control_users').document('users').get())).users;
-    users.add(uid);
-    await fs.collection('control_users').document('users').updateData({'users':users});
+        .updateData({'type': (type=='control')?'user':'control'});
+    if(type!='control') {
+      final users = (await ControlUsersModel.fromFirebase(
+          await fs.collection('control_users').document('users').get())).users;
+      users.add(uid);
+      await fs.collection('control_users').document('users').updateData(
+          {'users': users});
+    }
+    else{
+      final users = (await ControlUsersModel.fromFirebase(
+          await fs.collection('control_users').document('users').get())).users;
+      users.remove(uid);
+      await fs.collection('control_users').document('users').updateData(
+          {'users': users});
+    }
   }
 
   Future<CalendarModel> getUsers(String date, String time) async {

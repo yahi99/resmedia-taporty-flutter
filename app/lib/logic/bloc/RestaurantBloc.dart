@@ -19,6 +19,8 @@ class RestaurantBloc implements Bloc {
     _restaurantController?.close();
     _foodsController?.close();
     _drinksController?.close();
+    _foodsControllerCtrl?.close();
+    _drinksControllerCtrl?.close();
   }
 
   BehaviorSubject<RestaurantModel> _restaurantController;
@@ -33,6 +35,10 @@ class RestaurantBloc implements Bloc {
 
   Stream<List<FoodModel>> get outFoods => _foodsController;
 
+  BehaviorSubject<List<FoodModel>> _foodsControllerCtrl;
+
+  Stream<List<FoodModel>> get outFoodsCtrl => _foodsControllerCtrl;
+
   Stream<Map<FoodCategory, List<FoodModel>>> get outCategorizedFoods =>
       outFoods.map((models) {
         return categorized(
@@ -42,6 +48,10 @@ class RestaurantBloc implements Bloc {
   BehaviorSubject<List<DrinkModel>> _drinksController;
 
   Stream<List<DrinkModel>> get outDrinks => _drinksController.stream;
+
+  BehaviorSubject<List<DrinkModel>> _drinksControllerCtrl;
+
+  Stream<List<DrinkModel>> get outDrinksCtrl => _drinksControllerCtrl.stream;
 
   Stream<Map<DrinkCategory, List<DrinkModel>>> get outCategorizedDrinks =>
       outDrinks.map((models) {
@@ -63,6 +73,10 @@ class RestaurantBloc implements Bloc {
         BehaviorController.catchStream(source: bc._db.getFoods(idRestaurant));
     bc._drinksController =
         BehaviorController.catchStream(source: bc._db.getDrinks(idRestaurant));
+    bc._foodsControllerCtrl =
+        BehaviorController.catchStream(source: bc._db.getFoodsCtrl(idRestaurant));
+    bc._drinksControllerCtrl =
+        BehaviorController.catchStream(source: bc._db.getDrinksCtrl(idRestaurant));
     bc._restaurantReviewController=
         BehaviorController.catchStream(source: bc._db.getReviews(idRestaurant));
     return bc;

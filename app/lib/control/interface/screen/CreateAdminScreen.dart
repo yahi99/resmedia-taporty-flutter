@@ -33,7 +33,6 @@ class CreateAdminScreen extends StatefulWidget implements WidgetRoute {
 }
 
 class _AdminScreenState extends State<CreateAdminScreen> {
-
   //bool permits=false;
 
   //static final FacebookLogin facebookSignIn = FacebookLogin();
@@ -83,12 +82,13 @@ class _AdminScreenState extends State<CreateAdminScreen> {
   }
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
     //usersStream=new StreamController<List<UserModel>>.broadcast();
   }
 
-  _showPaymentDialog(BuildContext context,String nominative,String id) {
+  _showPaymentDialog(
+      BuildContext context, String nominative, String id, String type) {
     showDialog(
       context: context,
       builder: (_context) {
@@ -100,7 +100,10 @@ class _AdminScreenState extends State<CreateAdminScreen> {
             runSpacing: SPACE * 2,
             children: <Widget>[
               Text(
-                "Vuoi veramente dare i permessi a "+nominative,
+                "Vuoi veramente " +
+                    ((type == 'control') ? 'togliere' : 'dare') +
+                    " i permessi a " +
+                    nominative,
                 style: theme.textTheme.body2,
               ),
               Row(
@@ -119,7 +122,7 @@ class _AdminScreenState extends State<CreateAdminScreen> {
                   ),
                   RaisedButton(
                     onPressed: () {
-                      Database().givePermission(id);
+                      Database().givePermission(id, type);
                       //permits=
                       EasyRouter.pop(context);
                     },
@@ -143,27 +146,76 @@ class _AdminScreenState extends State<CreateAdminScreen> {
     final theme = Theme.of(context);
     final cls = theme.colorScheme;
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Lista Utenti'),
+      ),
       body: StreamBuilder<List<UserModel>>(
         stream: UsersBloc.of().outRequests,
-        builder: (ctx,snap){
-          if(!snap.hasData) return Center(child: CircularProgressIndicator(),);
-          return ListView.builder(
-              itemBuilder: (ctx,index){
-                final user=snap.data.elementAt(index);
-                return Row(
-                  children: <Widget>[
-                    Text(user.nominative),
-                    Text(user.email),
-                    RaisedButton(
-                      child: Text('Dagli i permessi'),
-                      onPressed: (){
-                        //permits=false;
-                        _showPaymentDialog(context,user.nominative,user.id);
-                      },
-                    )
-                  ],
+        builder: (ctx, snap) {
+          if (!snap.hasData)
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          if (snap.data.length > 0)
+            return ListView.separated(
+              shrinkWrap: true,
+              itemCount: snap.data.length,
+              itemBuilder: (ctx, index) {
+                final user = snap.data.elementAt(index);
+                if (user.email != null && user.nominative != null)
+                  return Row(
+                    children: <Widget>[
+                      Container(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Padding(
+                              child: Text(
+                                user.nominative,
+                                style: theme.textTheme.subtitle,
+                              ),
+                              padding: EdgeInsets.all(4.0),
+                            ),
+                            Padding(
+                              child: Text(user.email),
+                              padding: EdgeInsets.all(4.0),
+                            ),
+                            user.type != null
+                                ? Padding(
+                                    child: Text('Tipologia: ' + user.type),
+                                    padding: EdgeInsets.all(4.0),
+                                  )
+                                : Container(),
+                          ],
+                        ),
+                        width: MediaQuery.of(context).size.width * 2 / 3,
+                      ),
+                      Expanded(
+                        child: Padding(
+                          child: RaisedButton(
+                            child: Text('Cambia'),
+                            onPressed: () {
+                              //permits=false;
+                              _showPaymentDialog(
+                                  context, user.nominative, user.id, user.type);
+                            },
+                          ),
+                          padding: EdgeInsets.only(right:4.0),
+                        ),
+                      ),
+                    ],
+                  );
+                return Container();
+              },
+              separatorBuilder: (ctx, index) {
+                return Divider(
+                  height: 8.0,
                 );
-              }
+              },
+            );
+          return Padding(
+            child: Text('Non ci sono utenti'),
+            padding: EdgeInsets.all(8.0),
           );
         },
       ),

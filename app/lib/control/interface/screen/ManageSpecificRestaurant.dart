@@ -88,10 +88,10 @@ class _LoginScreenState extends State<ManageSpecificRestaurant> {
         ),
       ),
       body: StreamBuilder<List<DrinkModel>>(
-            stream: widget.restBloc.outDrinks,
+            stream: widget.restBloc.outDrinksCtrl,
             builder: (context, drinks) {
               return StreamBuilder<List<FoodModel>>(
-                stream: widget.restBloc.outFoods,
+                stream: widget.restBloc.outFoodsCtrl,
                 builder: (context, foods) {
                   if (!foods.hasData || !drinks.hasData)
                     return Center(
@@ -104,7 +104,12 @@ class _LoginScreenState extends State<ManageSpecificRestaurant> {
                         foods: foods.data,
                         drinks: drinks.data,
                       ),
-                      ManageRestPage(restId: widget.rest.id,rest:widget.rest),
+                      StreamBuilder(
+                        stream: widget.restBloc.outRestaurant,
+                        builder: (context,snap){
+                          return ManageRestPage(restId: widget.rest.id,rest:snap.hasData?snap.data:widget.rest);
+                        },
+                      ),
                       StreamBuilder<DateTime>(
                         stream: dateStream.stream,
                         builder: (ctx,snap){

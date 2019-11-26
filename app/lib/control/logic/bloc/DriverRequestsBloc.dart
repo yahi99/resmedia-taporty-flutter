@@ -29,7 +29,7 @@ class DriverRequestsBloc implements Bloc {
       _requestsControl.stream;
 
   Stream<List<DriverRequestModel>> get outArchivedRequests =>
-      _requestsControl.stream;
+      _requestsArchiveControl.stream;
 
   DriverRequestsBloc.instance() {
     _requestsControl = PublishController.catchStream(source: _db.getDriverRequests());

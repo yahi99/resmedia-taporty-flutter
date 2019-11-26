@@ -39,7 +39,6 @@ class ResetPasswordAdmin extends StatefulWidget implements WidgetRoute {
 }
 
 class _AdminScreenState extends State<ResetPasswordAdmin> {
-
   //bool permits=false;
 
   //static final FacebookLogin facebookSignIn = FacebookLogin();
@@ -89,12 +88,12 @@ class _AdminScreenState extends State<ResetPasswordAdmin> {
   }
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
     //usersStream=new StreamController<List<UserModel>>.broadcast();
   }
 
-  _showPaymentDialog(BuildContext context,String nominative,String mail) {
+  _showPaymentDialog(BuildContext context, String nominative, String mail) {
     showDialog(
       context: context,
       builder: (_context) {
@@ -106,7 +105,7 @@ class _AdminScreenState extends State<ResetPasswordAdmin> {
             runSpacing: SPACE * 2,
             children: <Widget>[
               Text(
-                "Vuoi veramente resettare la password a "+nominative+' ?',
+                "Vuoi veramente resettare la password a " + nominative + ' ?',
                 style: theme.textTheme.body2,
               ),
               Row(
@@ -127,16 +126,19 @@ class _AdminScreenState extends State<ResetPasswordAdmin> {
                     onPressed: () {
                       //Database().givePermission(id);
                       //permits=
-                      FirebaseAuth.instance.sendPasswordResetEmail(email: mail).catchError((error){
-                        if(error is PlatformException){
-                          if(error.code=='ERROR_INVALID_EMAIL'){
-                            Toast.show('Email non valida',context);
+                      FirebaseAuth.instance
+                          .sendPasswordResetEmail(email: mail)
+                          .catchError((error) {
+                        if (error is PlatformException) {
+                          if (error.code == 'ERROR_INVALID_EMAIL') {
+                            Toast.show('Email non valida', context);
                           }
-                          if(error.code=='ERROR_USER_NOT_FOUND'){
-                            Toast.show('Email non corrisponde ad un utente',context);
+                          if (error.code == 'ERROR_USER_NOT_FOUND') {
+                            Toast.show(
+                                'Email non corrisponde ad un utente', context);
                           }
                         }
-                      }).then((value){
+                      }).then((value) {
                         Toast.show('Reset e-mail inviata', context);
                       });
                       EasyRouter.pop(context);
@@ -161,29 +163,69 @@ class _AdminScreenState extends State<ResetPasswordAdmin> {
     final theme = Theme.of(context);
     final cls = theme.colorScheme;
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Recupero Password'),
+      ),
       body: StreamBuilder<List<UserModel>>(
-        stream: ControlBloc.of().outRequests,
-        builder: (ctx,snap){
-          if(!snap.hasData) return Center(child: CircularProgressIndicator(),);
-          return ListView.builder(
-              itemBuilder: (ctx,index){
-                final user=snap.data.elementAt(index);
-                if(user.id!=widget.userId)
-                return Row(
-                  children: <Widget>[
-                    Text(user.nominative),
-                    Text(user.email),
-                    RaisedButton(
-                      child: Text('Reset Password'),
-                      onPressed: (){
-                        //permits=false;
-                        _showPaymentDialog(context,user.nominative,user.email);
-                      },
-                    )
-                  ],
-                );
+        stream: ControlBloc.instance().outRequests,
+        builder: (ctx, snap) {
+          if (!snap.hasData)
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          if (snap.data.length > 0)
+            return ListView.separated(
+              itemCount: snap.data.length,
+              itemBuilder: (ctx, index) {
+                final user = snap.data.elementAt(index);
+                if (user.id != widget.userId)
+                  return Row(
+                    children: <Widget>[
+                      Container(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Padding(
+                              child: Text(
+                                user.nominative,
+                                style: theme.textTheme.subtitle,
+                              ),
+                              padding: EdgeInsets.all(4.0),
+                            ),
+                            Padding(
+                              child: Text(user.email),
+                              padding: EdgeInsets.all(4.0),
+                            ),
+                          ],
+                        ),
+                        width: MediaQuery.of(context).size.width * 2 / 3,
+                      ),
+                      Expanded(
+                        child: Padding(
+                          child: RaisedButton(
+                            child: Text('Reset'),
+                            onPressed: () {
+                              //permits=false;
+                              _showPaymentDialog(
+                                  context, user.nominative, user.email);
+                            },
+                          ),
+                          padding: EdgeInsets.only(right: 4.0),
+                        ),
+                      ),
+                    ],
+                  );
                 return Container();
-              }
+              },
+              separatorBuilder: (ctx, index) {
+                return Divider(
+                  height: 8.0,
+                );
+              },
+            );
+          return Padding(
+            child: Text('Non ci sono utenti amministratore'),
+            padding: EdgeInsets.all(8.0),
           );
         },
       ),

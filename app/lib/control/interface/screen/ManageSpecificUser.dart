@@ -39,14 +39,13 @@ class ManageSpecificUser extends StatefulWidget implements WidgetRoute {
 }
 
 class _LoginScreenState extends State<ManageSpecificUser> {
-
   StreamController typeStream;
 
   String type;
 
   List<DropdownMenuItem> dropType = List<DropdownMenuItem>();
 
-  List<String> types=['user','restaurant','control','disabled'];
+  List<String> types = ['user', 'restaurant', 'control', 'disabled'];
 
   _showPositionDialog(BuildContext context) {
     showDialog(
@@ -83,7 +82,9 @@ class _LoginScreenState extends State<ManageSpecificUser> {
                       ),
                       RaisedButton(
                         onPressed: () {
-                          FirebaseAuth.instance.sendPasswordResetEmail(email: widget.user.email).then((value) {
+                          FirebaseAuth.instance
+                              .sendPasswordResetEmail(email: widget.user.email)
+                              .then((value) {
                             Toast.show('E-mail inviata', context);
                             EasyRouter.pop(context);
                           });
@@ -106,16 +107,16 @@ class _LoginScreenState extends State<ManageSpecificUser> {
   }
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
-    typeStream=new StreamController<String>.broadcast();
-    for(int i=0;i<types.length;i++){
+    typeStream = new StreamController<String>.broadcast();
+    for (int i = 0; i < types.length; i++) {
       dropType.add(DropdownMenuItem(
         child: Text(types[i]),
         value: types[i],
       ));
     }
-    type=widget.user.type;
+    type = widget.user.type == null ? 'user' : widget.user.type;
   }
 
   @override
@@ -129,73 +130,102 @@ class _LoginScreenState extends State<ManageSpecificUser> {
     final theme = Theme.of(context);
     final cls = theme.colorScheme;
     return Scaffold(
-        appBar: AppBar(
-          title: Text("Gestisci utente"),
-          actions: <Widget>[
-
-          ],
-        ),
-        body: ListView(
-          shrinkWrap: true,
-          children: <Widget>[
-            Row(
-              children: <Widget>[
-                Text('Reset e-mail'),
-                RaisedButton(
-                  child: Text('Reset'),
-                  onPressed: (){
-                    _showPositionDialog(context);
-                  },
-                )
-              ],
-            ),
-            Row(
-              children: <Widget>[
-                Text('Tipologia utente: '+widget.user.type),
-                StreamBuilder(
-                  stream: typeStream.stream,
-                  builder: (ctx,snap){
-                    return Padding(
-                      child:DropdownButton(
-                        //key: _dropKey,
-                        value: (!snap.hasData)
-                            ? types.elementAt(0)
-                            : snap.data,
-                        onChanged: (value) {
-                          print(value);
-                          type = value;
-                          typeStream.add(value);
-                        },
-                        items: dropType,
-                      ),
-                      padding: EdgeInsets.only(bottom: SPACE * 2),
-                    );
-                  },
+      appBar: AppBar(
+        title: Text("Gestisci utente "+widget.user.nominative),
+        actions: <Widget>[],
+      ),
+      body: ListView(
+        shrinkWrap: true,
+        children: <Widget>[
+          Row(
+            children: <Widget>[
+              Container(
+                child: Text('Reset e-mail'),
+                padding: EdgeInsets.all(8.0),
+                width: MediaQuery.of(context).size.width * 2 / 3,
+              ),
+              Expanded(
+                child: Padding(
+                  child: RaisedButton(
+                    child: Text('Reset'),
+                    onPressed: () {
+                      _showPositionDialog(context);
+                    },
+                  ),
+                  padding: EdgeInsets.all(8.0),
                 ),
-                RaisedButton(
-                  child: Text('Cambia'),
-                  onPressed: (){
-                    Database().editUser(widget.user.id, type);
-                  },
-                )
-              ],
-            ),
-            (widget.user.type=='driver')?InkWell(
-              child:Row(
+              ),
+            ],
+          ),
+          Row(
+            children: <Widget>[
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Icon(Icons.star),
-                  Icon(Icons.star),
-                  Text(widget.user.averageReviews.toString()),
-                  Text('Buono')
+                  Container(
+                      child: Text('Tipologia utente: ' +
+                          ((widget.user.type == null)
+                              ? 'user'
+                              : widget.user.type)),
+                      padding: EdgeInsets.all(8.0),
+                    width: MediaQuery.of(context).size.width * 2 / 3,
+                    ),
+                  StreamBuilder(
+                    stream: typeStream.stream,
+                    builder: (ctx, snap) {
+                      return Container(
+                        child: DropdownButton(
+                          //key: _dropKey,
+                          value:
+                              (!snap.hasData) ? types.elementAt(0) : snap.data,
+                          onChanged: (value) {
+                            print(value);
+                            type = value;
+                            typeStream.add(value);
+                          },
+                          items: dropType,
+                        ),
+                        padding: EdgeInsets.all(8.0),
+                      );
+                    },
+                  ),
                 ],
               ),
-              onTap: (){
-                UserBloc.of().setReview(widget.user.id);
-                EasyRouter.push(context,SeeReviewsDriverScreen(model: widget.user,));
-              },
-            ):Container(),
-          ],
-        ),
-        );
+              RaisedButton(
+                child: Text('Cambia'),
+                onPressed: () {
+                  Database().editUser(widget.user.id, type).then((value){
+                    Toast.show('Cambiato!', context,duration: 3);
+                  });
+                },
+              )
+            ],
+          ),
+          (widget.user.type == 'driver')
+              ? InkWell(
+                  child: Container(
+                    child:Row(
+                    children: <Widget>[
+                      Icon(Icons.star),
+                      Icon(Icons.star),
+                      (widget.user.averageReviews!=null)?Text(' '+widget.user.averageReviews.toString()):Container(),
+                      Text(' Buono')
+                    ],
+                    ),
+                    padding: EdgeInsets.all(8.0),
+                  ),
+                  onTap: () {
+                    UserBloc.of().setReview(widget.user.id);
+                    EasyRouter.push(
+                        context,
+                        SeeReviewsDriverScreen(
+                          model: widget.user,
+                        ));
+                  },
+                )
+              : Container(),
+        ],
+      ),
+    );
   }
 }

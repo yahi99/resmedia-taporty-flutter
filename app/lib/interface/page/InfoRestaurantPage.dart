@@ -58,8 +58,8 @@ class InfoRestaurantPage extends StatelessWidget {
                         children: <Widget>[
                           Icon(Icons.star),
                           Icon(Icons.star),
-                          model.averageReviews!=null?Text(model.averageReviews.toString()):Container(),
-                          Text('Buono')
+                          model.averageReviews!=null?Text(' '+model.averageReviews.toString()):Container(),
+                          Text(' Buono')
                         ],
                       ),
                       onTap: (){

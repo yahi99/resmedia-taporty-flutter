@@ -74,7 +74,7 @@ class _LoginScreenState extends State<LoginScreen> {
       final type=(await _userBloc.outUser.first).model.type;
       /*if (registrationLevel == RegistrationLevel.LV2)
         await EasyRouter.push(context, SignUpMoreScreen());*/
-      if (registrationLevel == RegistrationLevel.COMPLETE && type=='control') {
+      if (registrationLevel == RegistrationLevel.COMPLETE && (type=='control' || type=='admin')) {
         await EasyRouter.pushAndRemoveAll(context, HomeScreenPanel());
       }
       else {

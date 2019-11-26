@@ -37,11 +37,12 @@ class _TurnWorkTabDriverState extends State<EditRestScreen> {
   final _kmKey = new GlobalKey<FormFieldState>();
 
   Future<String> uploadFile(String filePath) async {
-    final Uint8List bytes = File(filePath).readAsBytesSync();
+    //final Uint8List bytes = File(filePath).readAsBytesSync();
+    final data=await rootBundle.load(filePath);
     final Directory tempDir = Directory.systemTemp;
     final String fileName = filePath.split('/').last;
     final File file = File('${tempDir.path}/$fileName');
-    file.writeAsBytes(bytes, mode: FileMode.write);
+    file.writeAsBytes(data.buffer.asInt8List(), mode: FileMode.write);
 
     final StorageReference ref = FirebaseStorage.instance.ref().child(fileName);
     final StorageUploadTask task = ref.putFile(file);
@@ -75,6 +76,9 @@ class _TurnWorkTabDriverState extends State<EditRestScreen> {
         builder: (ctx,snap){
           if(!snap.hasData) return Center(child: CircularProgressIndicator(),);*/
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Modifica dati ristorante'),
+      ),
       body: ListView(
         shrinkWrap: true,
         children: <Widget>[
@@ -85,21 +89,21 @@ class _TurnWorkTabDriverState extends State<EditRestScreen> {
                   child: TextFormField(
                     key: _kmKey,
                     validator: (value) {
-                      bool isWrong = value.contains('.');
-                      if (isWrong) return 'Virgola per i decimali';
-                      if (double.tryParse(value) != null) {
+                      bool isWrong = value.contains(',');
+                      if (isWrong) return 'Punto per i decimali';
+                      if (double.tryParse(value) == null) {
                         return 'Inserisci un numero';
                       }
                       return null;
                     },
                     decoration: InputDecoration(
-                      hintText: "Inserisci raggio consegne",
+                      hintText: "Raggio consegne",
                     ),
                     keyboardType: TextInputType.number,
                   ),
                   padding: EdgeInsets.all(8.0),
                 ),
-                width: MediaQuery.of(context).size.width/2,
+                width: MediaQuery.of(context).size.width *2/3,
               ),
               Expanded(
                 child: RaisedButton(
@@ -110,75 +114,94 @@ class _TurnWorkTabDriverState extends State<EditRestScreen> {
                           double.parse(_kmKey.currentState.value),
                           (await UserBloc.of().outUser.first)
                               .model
-                              .restaurantId);
+                              .restaurantId).then((value){
+                                Toast.show('Cambiato!', context,duration: 3);
+                      });
                     }
                   },
                 ),
               ),
-            ],
-          )
-          /*
-          Row(
-            children: <Widget>[
-              Padding(
-                child: TextFormField(
-                  key: _delKey,
-                  validator: (value) {
-                    bool isWrong = value.contains('.');
-                    if (isWrong) return 'Virgola per i decimali';
-                    if (double.tryParse(value) != null) {
-                      return 'Inserisci un numero';
-                    }
-                    return null;
-                  },
-                  decoration: InputDecoration(
-                    hintText: "Inserisci costo consegna",
-                  ),
-                  keyboardType: TextInputType.number,
-                ),
-                padding: EdgeInsets.all(8.0),
-              ),
-              RaisedButton(
-                child: Text('Cambia'),
-                onPressed: () async {
-                  if (_delKey.currentState.validate()) {
-                    Database().updateDeliveryFee(
-                        double.parse(_delKey.currentState.value),
-                        (await UserBloc.of().outUser.first).model.restaurantId);
-                  }
-                },
-              )
             ],
           ),
           Row(
             children: <Widget>[
-              Padding(
-                child: TextFormField(
-                  key: _descrKey,
-                  validator: (value) {
-                    if (value.length == 0) {
-                      return 'Inserisci descrizione';
-                    }
-                    return null;
-                  },
-                  decoration: InputDecoration(
-                    hintText: "Inserisci una descrizione...",
+              Container(
+                child: Padding(
+                  child: TextFormField(
+                    key: _delKey,
+                    validator: (value) {
+                      //print(value);
+                      bool isWrong = value.contains(',');
+                      if (isWrong) return 'Punto per i decimali';
+                      if (double.tryParse(value) == null) {
+                        return 'Inserisci un numero';
+                      }
+                      return null;
+                    },
+                    decoration: InputDecoration(
+                      hintText: "Costo consegna",
+                    ),
+                    keyboardType: TextInputType.number,
                   ),
-                  maxLines: 10,
-                  minLines: 5,
-                  keyboardType: TextInputType.text,
+                  padding: EdgeInsets.all(8.0),
                 ),
-                padding: EdgeInsets.all(8.0),
+                width: MediaQuery.of(context).size.width *2/3,
               ),
-              RaisedButton(
+              Expanded(
+                  child: RaisedButton(
                 child: Text('Cambia'),
                 onPressed: () async {
-                  if (_descrKey.currentState.validate()) {
-                    Database().updateDescription(_descrKey.currentState.value,
-                        (await UserBloc.of().outUser.first).model.restaurantId);
+                  //print(double.tryParse('2.6').toString());
+                  if (_delKey.currentState.validate()) {
+                    Database().updateDeliveryFee(
+                        double.tryParse(_delKey.currentState.value),
+                        (await UserBloc.of().outUser.first).model.restaurantId).then((value){
+                      Toast.show('Cambiato!', context,duration: 3);
+                    });
                   }
                 },
-              )
+              )),
+            ],
+          ),
+          Row(
+            children: <Widget>[
+              Container(
+                child: Padding(
+                  child: TextFormField(
+                    key: _descrKey,
+                    validator: (value) {
+                      if (value.length == 0) {
+                        return 'Inserisci descrizione';
+                      }
+                      return null;
+                    },
+                    decoration: InputDecoration(
+                      hintText: "Inserisci una descrizione...",
+                    ),
+                    maxLines: 10,
+                    minLines: 5,
+                    keyboardType: TextInputType.text,
+                  ),
+                  padding: EdgeInsets.all(8.0),
+                ),
+                width: MediaQuery.of(context).size.width *2/3,
+              ),
+              Expanded(
+                child: RaisedButton(
+                  child: Text('Cambia'),
+                  onPressed: () async {
+                    if (_descrKey.currentState.validate()) {
+                      Database().updateDescription(
+                          _descrKey.currentState.value,
+                          (await UserBloc.of().outUser.first)
+                              .model
+                              .restaurantId).then((value){
+                        Toast.show('Cambiato!', context,duration: 3);
+                      });
+                    }
+                  },
+                ),
+              ),
             ],
           ),
           Row(
@@ -187,68 +210,87 @@ class _TurnWorkTabDriverState extends State<EditRestScreen> {
                 stream: img.stream,
                 builder: (ctx, snap) {
                   if (snap.hasData)
-                    return Column(
-                      children: <Widget>[
-                        FlatButton(
-                          child: Text('Clicca per selezionare immagine'),
-                          onPressed: () {
-                            ImagePicker.pickImage(source: ImageSource.gallery)
-                                .then((file) {
-                              if (file != null) {
-                                path = file.path;
-                                img.add(path.split('/').last);
-                              } else {
-                                Toast.show(
-                                    'Devi scegliere un\'immagine!', context,
-                                    duration: 3);
-                              }
-                            }).catchError((error) {
-                              if (error is PlatformException) {
-                                if (error.code == 'photo_access_denied')
-                                  Toast.show(
-                                      'Devi garantire accesso alle immagini!',
-                                      context,
-                                      duration: 3);
-                              }
-                            });
-                          },
-                        ),
-                        Text(snap.data),
-                      ],
+                    return InkWell(
+                      child: Container(
+                        padding: EdgeInsets.all(SPACE),
+                        child:Image.file(File(path)),
+                        width: MediaQuery.of(context).size.width*2/3,
+                      ),
+                      onTap: () {
+                        ImagePicker.pickImage(source: ImageSource.gallery)
+                            .then((file) {
+                          if (file != null) {
+                            path = file.path;
+                            img.add(path.split('/').last);
+                          } else {
+                            Toast.show('Devi scegliere un\'immagine!', context,
+                                duration: 3);
+                          }
+                        }).catchError((error) {
+                          if (error is PlatformException) {
+                            if (error.code == 'photo_access_denied')
+                              Toast.show(
+                                  'Devi garantire accesso alle immagini!',
+                                  context,
+                                  duration: 3);
+                          }
+                        });
+                      },
                     );
-                  return Container();
+                  return Container(
+                    child: FlatButton(
+                      child: Text('Clicca per selezionare immagine'),
+                      onPressed: () {
+                        ImagePicker.pickImage(source: ImageSource.gallery)
+                            .then((file) {
+                          if (file != null) {
+                            path = file.path;
+                            img.add(path.split('/').last);
+                          } else {
+                            Toast.show('Devi scegliere un\'immagine!', context,
+                                duration: 3);
+                          }
+                        }).catchError((error) {
+                          if (error is PlatformException) {
+                            if (error.code == 'photo_access_denied')
+                              Toast.show(
+                                  'Devi garantire accesso alle immagini!',
+                                  context,
+                                  duration: 3);
+                          }
+                        });
+                      },
+                    ),
+                    width: MediaQuery.of(context).size.width *2/3,
+                  );
                 },
               ),
-              StreamBuilder(
-                stream: img.stream,
-                builder: (ctx, snap) {
-                  if (snap.hasData) return Image.file(File(path));
-                  return Container();
-                },
-              ),
-              RaisedButton(
-                child: Text('Cambia'),
-                onPressed: () async {
-                  if (path != null) {
-                    if (path.split('.').last != 'jpg') {
-                      Toast.show(
-                          'Il formato dell\'immagine deve essere .jpg', context,
-                          duration: 3);
-                    } else {
-                      uploadFile(path).then((path) async {
-                        Database().updateImg(
-                            path,
-                            (await UserBloc.of().outUser.first)
-                                .model
-                                .restaurantId);
-                      });
+              Expanded(
+                child: RaisedButton(
+                  child: Text('Cambia'),
+                  onPressed: () async {
+                    if (path != null) {
+                      if (path.split('.').last != 'jpg') {
+                        Toast.show('Il formato dell\'immagine deve essere .jpg',
+                            context,
+                            duration: 3);
+                      } else {
+                        uploadFile(path).then((path) async {
+                          Database().updateImg(
+                              path,
+                              (await UserBloc.of().outUser.first)
+                                  .model
+                                  .restaurantId).then((value){
+                            Toast.show('Cambiato!', context,duration: 3);
+                          });
+                        });
+                      }
                     }
-                  }
-                },
-              )
+                  },
+                ),
+              ),
             ],
-
-          ),*/
+          ),
         ],
       ),
     );

@@ -49,7 +49,6 @@ class ManageProduct extends StatefulWidget implements WidgetRoute {
 }
 
 class _LoginScreenState extends State<ManageProduct> {
-
   StreamController img;
 
   String path, _path;
@@ -94,120 +93,320 @@ class _LoginScreenState extends State<ManageProduct> {
     final theme = Theme.of(context);
     final cls = theme.colorScheme;
     return Scaffold(
-        appBar: AppBar(
-          title: Text("Gestisci prodotto"),
-          actions: <Widget>[],
-        ),
-        body: ListView(
-          shrinkWrap: true,
-          children: <Widget>[
-            Row(
-              children: <Widget>[
-                Text('Stato prodotto'+(widget.model.isDisabled?widget.model.isDisabled.toString():'false')),
-                RaisedButton(
-                  child: Text('Cambia'),
-                  onPressed: (){
-                    Database().changeStatus(widget.model);
-                  },
-                )
-              ],
-            ),
-            Row(
-              children: <Widget>[
-                Text('Prezzo: '+widget.model.price+' euro'),
-                Padding(
-                  child: TextFormField(
-                    key: _delKey,
-                    validator: (value){
-                      bool isWrong=value.contains('.');
-                      if(isWrong) return 'Virgola per i decimali';
-                      if(double.tryParse(value)!=null){
-                        return 'Inserisci un numero';
-                      }
-                      return null;
-                    },
-                    decoration: InputDecoration(
-                      hintText: "Inserisci prezzo",
-                    ),
-                    keyboardType: TextInputType.number,
+      appBar: AppBar(
+        title: Text("Gestisci prodotto"),
+        actions: <Widget>[],
+      ),
+      body: StreamBuilder<FoodModel>(
+        stream: Database().getProduct(widget.model),
+        builder: (ctx,snapshot){
+          print(snapshot.data);
+          if(!snapshot.hasData) return ListView(
+            shrinkWrap: true,
+            children: <Widget>[
+              Row(
+                children: <Widget>[
+                  Container(
+                    child: Text(
+                        'Disabilitato: ' + (widget.model.isDisabled ? 'Si' : 'No')),
+                    width: MediaQuery.of(context).size.width * 2 / 3,
+                    padding: EdgeInsets.all(16.0),
                   ),
-                  padding: EdgeInsets.all(8.0),
-                ),
-                RaisedButton(
-                  child: Text('Cambia'),
-                  onPressed: ()async{
-                    if(_delKey.currentState.validate()){
-                      Database().updateProductPrice(double.parse(_delKey.currentState.value),widget.model);
-                    }
-                  },
-                )
-              ],
-            ),
-            Row(
-              children: <Widget>[
-                Column(
-                  children: <Widget>[
-                    StreamBuilder(
-                      stream: img.stream,
-                      builder: (ctx, snap) {
-                        if (snap.hasData)
-                          return FlatButton(
-                            child: Text('Clicca per selezionare immagine'),
-                            onPressed: () {
-                              ImagePicker.pickImage(source: ImageSource.gallery)
-                                  .then((file) {
-                                if (file != null) {
-                                  path = file.path;
-                                  img.add(path.split('/').last);
-                                } else {
-                                  Toast.show(
-                                      'Devi scegliere un\'immagine!', context,
-                                      duration: 3);
-                                }
-                              }).catchError((error) {
-                                if (error is PlatformException) {
-                                  if (error.code == 'photo_access_denied')
-                                    Toast.show(
-                                        'Devi garantire accesso alle immagini!',
-                                        context,
-                                        duration: 3);
-                                }
-                              });
+                  Expanded(
+                    child: RaisedButton(
+                      child: Text('Cambia'),
+                      onPressed: () {
+                        Database().changeStatus(widget.model);
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                children: <Widget>[
+                  Container(
+                    child: Column(
+                      children: <Widget>[
+                        Padding(child:Text('Prezzo: ' + widget.model.price + ' euro'),padding:EdgeInsets.all(8.0)),
+                        Padding(
+                          child: TextFormField(
+                            key: _delKey,
+                            validator: (value) {
+                              bool isWrong = value.contains(',');
+                              if (isWrong) return 'Punto per i decimali';
+                              if (double.tryParse(value) == null) {
+                                return 'Inserisci un numero';
+                              }
+                              return null;
                             },
-                          );
-                        return Text(snap.data);
+                            decoration: InputDecoration(
+                              hintText: "Inserisci prezzo",
+                            ),
+                            keyboardType: TextInputType.number,
+                          ),
+                          padding: EdgeInsets.all(8.0),
+                        ),
+                      ],
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                    ),
+                    padding: EdgeInsets.all(8.0),
+                    width: MediaQuery.of(context).size.width*2/3,
+                  ),
+                  Expanded(
+                    child: RaisedButton(
+                      child: Text('Cambia'),
+                      onPressed: () async {
+                        if (_delKey.currentState.validate()) {
+                          Database().updateProductPrice(
+                              double.parse(_delKey.currentState.value),
+                              widget.model);
+                        }
                       },
                     ),
-                    StreamBuilder(
-                      stream: img.stream,
-                      builder: (ctx, snap) {
-                        if (snap.hasData) return Image.file(File(path));
-                        return Container();
+                  ),
+                ],
+              ),
+              Row(
+                children: <Widget>[
+                  StreamBuilder(
+                    stream: img.stream,
+                    builder: (ctx, snap) {
+                      if (snap.hasData)
+                        return InkWell(
+                          child: Container(
+                            padding: EdgeInsets.all(SPACE),
+                            child: Image.file(File(path)),
+                            width: MediaQuery.of(context).size.width * 2 / 3,
+                          ),
+                          onTap: () {
+                            ImagePicker.pickImage(source: ImageSource.gallery)
+                                .then((file) {
+                              if (file != null) {
+                                path = file.path;
+                                img.add(path.split('/').last);
+                              } else {
+                                Toast.show('Devi scegliere un\'immagine!', context,
+                                    duration: 3);
+                              }
+                            }).catchError((error) {
+                              if (error is PlatformException) {
+                                if (error.code == 'photo_access_denied')
+                                  Toast.show(
+                                      'Devi garantire accesso alle immagini!',
+                                      context,
+                                      duration: 3);
+                              }
+                            });
+                          },
+                        );
+                      return Container(
+                        child: FlatButton(
+                          child: Text('Clicca per selezionare immagine'),
+                          onPressed: () {
+                            ImagePicker.pickImage(source: ImageSource.gallery)
+                                .then((file) {
+                              if (file != null) {
+                                path = file.path;
+                                img.add(path.split('/').last);
+                              } else {
+                                Toast.show('Devi scegliere un\'immagine!', context,
+                                    duration: 3);
+                              }
+                            }).catchError((error) {
+                              if (error is PlatformException) {
+                                if (error.code == 'photo_access_denied')
+                                  Toast.show(
+                                      'Devi garantire accesso alle immagini!',
+                                      context,
+                                      duration: 3);
+                              }
+                            });
+                          },
+                        ),
+                        width: MediaQuery.of(context).size.width * 2 / 3,
+                      );
+                    },
+                  ),
+                  Expanded(
+                    child: RaisedButton(
+                      child: Text('Cambia'),
+                      onPressed: () async {
+                        if (path != null) {
+                          if (path.split('.').last != 'jpg') {
+                            Toast.show('Il formato dell\'immagine deve essere .jpg',
+                                context,
+                                duration: 3);
+                          } else {
+                            uploadFile(path).then((path) async {
+                              Database()
+                                  .updateImgProduct(path, widget.model)
+                                  .then((value) {
+                                Toast.show('Cambiato!', context, duration: 3);
+                              });
+                            });
+                          }
+                        }
                       },
                     ),
-                  ],
-                ),
-                RaisedButton(
-                  child: Text('Cambia'),
-                  onPressed: () async{
-                    if (path != null) {
-                      if (path.split('.').last != 'jpg') {
-                        Toast.show(
-                            'Il formato dell\'immagine deve essere .jpg', context,
-                            duration: 3);
-                      }
-                      else{
-                        uploadFile(path).then((path)async{
-                          Database().updateImgProduct(path,widget.model);
-                        });
-                      }
-                    }
-                  },
-                )
-              ],
-            ),
-          ],
-        ),
-        );
+                  ),
+                ],
+              ),
+            ],
+          );
+          return ListView(
+            shrinkWrap: true,
+            children: <Widget>[
+              Row(
+                children: <Widget>[
+                  Container(
+                    child: Text(
+                        'Disabilitato: ' + (snapshot.data.isDisabled ? 'Si' : 'No')),
+                    width: MediaQuery.of(context).size.width * 2 / 3,
+                    padding: EdgeInsets.all(16.0),
+                  ),
+                  Expanded(
+                    child: RaisedButton(
+                      child: Text('Cambia'),
+                      onPressed: () {
+                        Database().changeStatus(snapshot.data);
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                children: <Widget>[
+                  Container(
+                    child: Column(
+                      children: <Widget>[
+                        Padding(child:Text('Prezzo: ' + snapshot.data.price + ' euro'),padding:EdgeInsets.all(8.0)),
+                        Padding(
+                          child: TextFormField(
+                            key: _delKey,
+                            validator: (value) {
+                              bool isWrong = value.contains('.');
+                              if (isWrong) return 'Virgola per i decimali';
+                              if (double.tryParse(value) != null) {
+                                return 'Inserisci un numero';
+                              }
+                              return null;
+                            },
+                            decoration: InputDecoration(
+                              hintText: "Inserisci prezzo",
+                            ),
+                            keyboardType: TextInputType.number,
+                          ),
+                          padding: EdgeInsets.all(8.0),
+                        ),
+                      ],
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                    ),
+                    padding: EdgeInsets.all(8.0),
+                    width: MediaQuery.of(context).size.width*2/3,
+                  ),
+                  Expanded(
+                    child: RaisedButton(
+                      child: Text('Cambia'),
+                      onPressed: () async {
+                        if (_delKey.currentState.validate()) {
+                          Database().updateProductPrice(
+                              double.parse(_delKey.currentState.value),
+                              snapshot.data);
+                        }
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                children: <Widget>[
+                  StreamBuilder(
+                    stream: img.stream,
+                    builder: (ctx, snap) {
+                      if (snap.hasData)
+                        return InkWell(
+                          child: Container(
+                            padding: EdgeInsets.all(SPACE),
+                            child: Image.file(File(path)),
+                            width: MediaQuery.of(context).size.width * 2 / 3,
+                          ),
+                          onTap: () {
+                            ImagePicker.pickImage(source: ImageSource.gallery)
+                                .then((file) {
+                              if (file != null) {
+                                path = file.path;
+                                img.add(path.split('/').last);
+                              } else {
+                                Toast.show('Devi scegliere un\'immagine!', context,
+                                    duration: 3);
+                              }
+                            }).catchError((error) {
+                              if (error is PlatformException) {
+                                if (error.code == 'photo_access_denied')
+                                  Toast.show(
+                                      'Devi garantire accesso alle immagini!',
+                                      context,
+                                      duration: 3);
+                              }
+                            });
+                          },
+                        );
+                      return Container(
+                        child: FlatButton(
+                          child: Text('Clicca per selezionare immagine'),
+                          onPressed: () {
+                            ImagePicker.pickImage(source: ImageSource.gallery)
+                                .then((file) {
+                              if (file != null) {
+                                path = file.path;
+                                img.add(path.split('/').last);
+                              } else {
+                                Toast.show('Devi scegliere un\'immagine!', context,
+                                    duration: 3);
+                              }
+                            }).catchError((error) {
+                              if (error is PlatformException) {
+                                if (error.code == 'photo_access_denied')
+                                  Toast.show(
+                                      'Devi garantire accesso alle immagini!',
+                                      context,
+                                      duration: 3);
+                              }
+                            });
+                          },
+                        ),
+                        width: MediaQuery.of(context).size.width * 2 / 3,
+                      );
+                    },
+                  ),
+                  Expanded(
+                    child: RaisedButton(
+                      child: Text('Cambia'),
+                      onPressed: () async {
+                        if (path != null) {
+                          if (path.split('.').last != 'jpg') {
+                            Toast.show('Il formato dell\'immagine deve essere .jpg',
+                                context,
+                                duration: 3);
+                          } else {
+                            uploadFile(path).then((path) async {
+                              Database()
+                                  .updateImgProduct(path, snapshot.data)
+                                  .then((value) {
+                                Toast.show('Cambiato!', context, duration: 3);
+                              });
+                            });
+                          }
+                        }
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          );
+        },
+      )
+    );
   }
 }

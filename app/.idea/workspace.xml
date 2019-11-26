@@ -4,33 +4,25 @@
     <list default="true" id="d7719948-3a40-4af6-aa9b-8dc65a95b26f" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/control/interface/page/ManageRestPage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/control/interface/page/ManageRestPage.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/control/interface/screen/HomeScreenPanel.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/control/interface/screen/HomeScreenPanel.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/control/interface/screen/ArchiveDriverRequests.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/control/interface/screen/ArchiveDriverRequests.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/control/interface/screen/CreateAdminScreen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/control/interface/screen/CreateAdminScreen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/control/interface/screen/LoginScreen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/control/interface/screen/LoginScreen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/control/interface/screen/ManageProduct.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/control/interface/screen/ManageProduct.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/control/interface/screen/ManageRestaurants.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/control/interface/screen/ManageRestaurants.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/control/interface/screen/ManageSpecificRestaurant.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/control/interface/screen/ManageSpecificRestaurant.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/control/interface/screen/ManageSpecificUser.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/control/interface/screen/ManageSpecificUser.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/drivers/interface/view/TurnView.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/drivers/interface/view/TurnView.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/drivers/interface/view/TypeUserOrderView.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/drivers/interface/view/TypeUserOrderView.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/drivers/interface/widget/Order.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/drivers/interface/widget/Order.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/drivers/model/OrderModel.g.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/drivers/model/OrderModel.g.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/drivers/model/TurnModel.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/drivers/model/TurnModel.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/control/interface/screen/ManageUsers.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/control/interface/screen/ManageUsers.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/control/interface/screen/ResetPasswordAdmin.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/control/interface/screen/ResetPasswordAdmin.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/control/interface/screen/SeeReviewsDriverScreen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/control/interface/screen/SeeReviewsDriverScreen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/control/logic/bloc/DriverRequestsBloc.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/control/logic/bloc/DriverRequestsBloc.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/interface/page/InfoRestaurantPage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/interface/page/InfoRestaurantPage.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/interface/page/MenuPages.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/interface/page/MenuPages.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/interface/screen/RestaurantListScreen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/interface/screen/RestaurantListScreen.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/interface/screen/SeeReviewsScreen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/interface/screen/SeeReviewsScreen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/interface/view/ProductView.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/interface/view/ProductView.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/interface/view/TypeOrderView.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/interface/view/TypeOrderView.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/logic/RestaurantDB.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/logic/RestaurantDB.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/logic/bloc/UserBloc.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/logic/bloc/UserBloc.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/logic/bloc/RestaurantBloc.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/logic/bloc/RestaurantBloc.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/logic/database.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/logic/database.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/model/OrderModel.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/model/OrderModel.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/model/OrderModel.g.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/model/OrderModel.g.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/model/ProductModel.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/model/ProductModel.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/model/ProductModel.g.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/model/ProductModel.g.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/restaurant/page/DetailOrderRestaurantPage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/restaurant/page/DetailOrderRestaurantPage.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/restaurant/screen/EditRestScreen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/restaurant/screen/EditRestScreen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/restaurant/screen/EditRestTurns.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/restaurant/screen/EditRestTurns.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/restaurant/screen/HomeScreen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/restaurant/screen/HomeScreen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/restaurant/screen/LoginScreen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/restaurant/screen/LoginScreen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/restaurant/screen/TimetableScreen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/restaurant/screen/TimetableScreen.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/restaurant/screen/TurnsScreen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/restaurant/screen/TurnsScreen.dart" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -46,112 +38,94 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lib/restaurant/screen/TurnsScreen.dart">
+        <entry file="file://$PROJECT_DIR$/lib/control/interface/screen/ManageSpecificRestaurant.dart">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="30">
-              <caret line="9" column="6" selection-start-line="9" selection-start-column="6" selection-end-line="9" selection-end-column="6" />
+            <state relative-caret-position="163">
+              <caret line="102" column="28" selection-start-line="102" selection-start-column="28" selection-end-line="102" selection-end-column="28" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lib/restaurant/screen/LoginScreen.dart">
+        <entry file="file://$PROJECT_DIR$/lib/control/interface/page/MenuCtrlPage.dart">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="890">
-              <caret line="249" column="6" selection-start-line="249" selection-start-column="6" selection-end-line="249" selection-end-column="6" />
+            <state relative-caret-position="112">
+              <caret line="77" column="24" selection-start-line="77" selection-start-column="24" selection-end-line="77" selection-end-column="24" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/lib/control/interface/view/ProductViewCtrl.dart">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="304">
+              <caret line="152" column="38" selection-start-line="152" selection-start-column="38" selection-end-line="152" selection-end-column="38" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/lib/control/interface/screen/ManageProduct.dart">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="294">
+              <caret line="311" column="40" lean-forward="true" selection-start-line="311" selection-start-column="40" selection-end-line="311" selection-end-column="40" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/lib/logic/RestaurantDB.dart">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="332">
+              <caret line="90" column="43" selection-start-line="90" selection-start-column="43" selection-end-line="90" selection-end-column="43" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/lib/logic/bloc/RestaurantBloc.dart">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="231">
+              <caret line="76" column="55" selection-start-line="76" selection-start-column="55" selection-end-line="76" selection-end-column="55" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/lib/control/interface/page/ManageRestPage.dart">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="90">
+              <caret line="235" column="10" selection-start-line="235" selection-start-column="10" selection-end-line="235" selection-end-column="10" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/lib/drivers/interface/tab/TurnWorkTab.dart">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="237">
+              <caret line="48" column="30" selection-start-line="48" selection-start-column="30" selection-end-line="48" selection-end-column="30" />
               <folding>
-                <element signature="e#0#20#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lib/drivers/logic/bloc/TurnBloc.dart">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="47">
-              <caret line="37" column="20" selection-start-line="37" selection-start-column="20" selection-end-line="37" selection-end-column="20" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lib/interface/screen/SeeReviewsScreen.dart">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="366">
-              <caret line="67" column="14" selection-start-line="67" selection-start-column="14" selection-end-line="67" selection-end-column="14" />
-              <folding>
-                <element signature="e#0#44#0" expanded="true" />
+                <element signature="e#0#39#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/lib/restaurant/screen/EditRestScreen.dart">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="205">
-              <caret line="103" column="23" lean-forward="true" selection-start-line="103" selection-start-column="23" selection-end-line="103" selection-end-column="23" />
-              <folding>
-                <element signature="e#0#20#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lib/restaurant/screen/HomeScreen.dart">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="293">
-              <caret line="124" column="47" selection-start-line="124" selection-start-column="47" selection-end-line="124" selection-end-column="47" />
-              <folding>
-                <element signature="e#0#20#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lib/restaurant/screen/TimetableScreen.dart">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="123">
-              <caret line="59" column="44" selection-start-line="59" selection-start-column="44" selection-end-line="59" selection-end-column="44" />
-              <folding>
-                <element signature="e#0#17#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lib/restaurant/screen/EditRestTurns.dart">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="163">
-              <caret line="99" column="8" selection-start-line="99" selection-start-column="8" selection-end-line="99" selection-end-column="8" />
-              <folding>
-                <element signature="e#0#20#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lib/interface/screen/RestaurantListScreen.dart">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="219">
-              <caret line="314" column="22" selection-start-line="314" selection-start-column="22" selection-end-line="314" selection-end-column="22" />
-              <folding>
-                <element signature="e#0#20#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/lib/logic/database.dart">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="137">
-              <caret line="193" column="15" selection-start-line="193" selection-start-column="15" selection-end-line="193" selection-end-column="15" />
+            <state relative-caret-position="247">
+              <caret line="627" column="55" lean-forward="true" selection-start-line="627" selection-start-column="55" selection-end-line="627" selection-end-column="55" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/lib/model/ProductModel.dart">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="420">
+              <caret line="32" column="11" lean-forward="true" selection-start-line="32" selection-start-column="11" selection-end-line="32" selection-end-column="11" />
             </state>
           </provider>
         </entry>
@@ -179,6 +153,8 @@
       <find>createO</find>
       <find>DELI</find>
       <find>getUse</find>
+      <find>grey</find>
+      <find>getUser</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -187,15 +163,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/lib/control/interface/screen/ManageUsers.dart" />
-        <option value="$PROJECT_DIR$/lib/control/interface/screen/ManageRestaurants.dart" />
-        <option value="$PROJECT_DIR$/lib/restaurant/page/MenuPage.dart" />
-        <option value="$PROJECT_DIR$/lib/control/interface/ProductViewCtrl.dart" />
-        <option value="$PROJECT_DIR$/lib/restaurant/view/ProductViewRestaurant.dart" />
-        <option value="$PROJECT_DIR$/lib/control/interface/page/MenuCtrlPage.dart" />
-        <option value="$PROJECT_DIR$/lib/control/interface/view/ProductViewCtrl.dart" />
-        <option value="$PROJECT_DIR$/lib/control/interface/screen/ManageProduct.dart" />
-        <option value="$PROJECT_DIR$/lib/logic/bloc/OrdersBloc.dart" />
         <option value="$PROJECT_DIR$/lib/control/interface/screen/ManageOrders.dart" />
         <option value="$PROJECT_DIR$/lib/interface/page/CartPage.dart" />
         <option value="$PROJECT_DIR$/lib/control/interface/view/TypeCtrlOrderView.dart" />
@@ -204,26 +171,17 @@
         <option value="$PROJECT_DIR$/lib/model/UserModel.dart" />
         <option value="$PROJECT_DIR$/functions/src/lib/payment_function.ts" />
         <option value="$PROJECT_DIR$/lib/model/ReviewModel.dart" />
-        <option value="$PROJECT_DIR$/lib/logic/bloc/RestaurantBloc.dart" />
-        <option value="$PROJECT_DIR$/lib/control/interface/page/ManageRestPage.dart" />
         <option value="$PROJECT_DIR$/lib/logic/bloc/UserBloc.dart" />
-        <option value="$PROJECT_DIR$/lib/control/interface/screen/SeeReviewsDriverScreen.dart" />
-        <option value="$PROJECT_DIR$/lib/control/interface/screen/ManageSpecificUser.dart" />
         <option value="$PROJECT_DIR$/lib/model/IncomeModel.dart" />
         <option value="$PROJECT_DIR$/lib/drivers/interface/tab/CalendarTab.dart" />
-        <option value="$PROJECT_DIR$/lib/control/interface/screen/ManageSpecificRestaurant.dart" />
         <option value="$PROJECT_DIR$/lib/control/interface/screen/TotalIncomeScreen.dart" />
         <option value="$PROJECT_DIR$/lib/control/interface/screen/HomeScreenPanel.dart" />
-        <option value="$PROJECT_DIR$/lib/interface/page/InfoRestaurantPage.dart" />
-        <option value="$PROJECT_DIR$/lib/interface/screen/SeeReviewsScreen.dart" />
-        <option value="$PROJECT_DIR$/lib/interface/page/MenuPages.dart" />
         <option value="$PROJECT_DIR$/lib/model/ProductModel.dart" />
         <option value="$PROJECT_DIR$/lib/interface/view/ProductView.dart" />
         <option value="$PROJECT_DIR$/lib/model/OrderModel.dart" />
         <option value="$PROJECT_DIR$/lib/drivers/model/OrderModel.g.dart" />
         <option value="$PROJECT_DIR$/lib/model/OrderModel.g.dart" />
         <option value="$PROJECT_DIR$/lib/drivers/interface/view/TypeUserOrderView.dart" />
-        <option value="$PROJECT_DIR$/lib/logic/RestaurantDB.dart" />
         <option value="$PROJECT_DIR$/lib/interface/view/TypeOrderView.dart" />
         <option value="$PROJECT_DIR$/lib/restaurant/page/DetailOrderRestaurantPage.dart" />
         <option value="$PROJECT_DIR$/lib/restaurant/page/IncomeScreen.dart" />
@@ -231,13 +189,31 @@
         <option value="$PROJECT_DIR$/lib/drivers/interface/widget/Order.dart" />
         <option value="$PROJECT_DIR$/lib/drivers/interface/view/TurnView.dart" />
         <option value="$PROJECT_DIR$/lib/restaurant/screen/LoginScreen.dart" />
-        <option value="$PROJECT_DIR$/lib/restaurant/screen/TurnsScreen.dart" />
-        <option value="$PROJECT_DIR$/lib/restaurant/screen/HomeScreen.dart" />
         <option value="$PROJECT_DIR$/lib/restaurant/screen/TimetableScreen.dart" />
-        <option value="$PROJECT_DIR$/lib/logic/database.dart" />
         <option value="$PROJECT_DIR$/lib/restaurant/screen/EditRestTurns.dart" />
         <option value="$PROJECT_DIR$/lib/interface/screen/RestaurantListScreen.dart" />
+        <option value="$PROJECT_DIR$/lib/interface/page/InfoRestaurantPage.dart" />
+        <option value="$PROJECT_DIR$/lib/interface/screen/SeeReviewsScreen.dart" />
+        <option value="$PROJECT_DIR$/lib/interface/page/MenuPages.dart" />
         <option value="$PROJECT_DIR$/lib/restaurant/screen/EditRestScreen.dart" />
+        <option value="$PROJECT_DIR$/lib/restaurant/screen/HomeScreen.dart" />
+        <option value="$PROJECT_DIR$/lib/restaurant/screen/TurnsScreen.dart" />
+        <option value="$PROJECT_DIR$/lib/control/interface/screen/ArchiveDriverRequests.dart" />
+        <option value="$PROJECT_DIR$/lib/control/logic/bloc/DriverRequestsBloc.dart" />
+        <option value="$PROJECT_DIR$/lib/control/interface/screen/CreateAdminScreen.dart" />
+        <option value="$PROJECT_DIR$/lib/control/interface/screen/ResetPasswordAdmin.dart" />
+        <option value="$PROJECT_DIR$/lib/control/interface/screen/LoginScreen.dart" />
+        <option value="$PROJECT_DIR$/lib/control/interface/screen/ManageUsers.dart" />
+        <option value="$PROJECT_DIR$/lib/control/interface/screen/ManageSpecificUser.dart" />
+        <option value="$PROJECT_DIR$/lib/control/interface/screen/SeeReviewsDriverScreen.dart" />
+        <option value="$PROJECT_DIR$/lib/control/interface/screen/ManageRestaurants.dart" />
+        <option value="$PROJECT_DIR$/lib/control/interface/page/ManageRestPage.dart" />
+        <option value="$PROJECT_DIR$/lib/logic/bloc/RestaurantBloc.dart" />
+        <option value="$PROJECT_DIR$/lib/logic/RestaurantDB.dart" />
+        <option value="$PROJECT_DIR$/lib/control/interface/screen/ManageSpecificRestaurant.dart" />
+        <option value="$PROJECT_DIR$/lib/control/interface/view/ProductViewCtrl.dart" />
+        <option value="$PROJECT_DIR$/lib/control/interface/screen/ManageProduct.dart" />
+        <option value="$PROJECT_DIR$/lib/logic/database.dart" />
       </list>
     </option>
   </component>
@@ -701,7 +677,7 @@
     <editor active="true" />
     <layout>
       <window_info id="Captures" order="0" weight="0.25" />
-      <window_info content_ui="combo" id="Project" order="1" visible="true" weight="0.29163346" />
+      <window_info content_ui="combo" id="Project" order="1" visible="true" weight="0.29641435" />
       <window_info id="Structure" order="2" side_tool="true" />
       <window_info id="Image Layers" order="3" />
       <window_info id="Designer" order="4" />
@@ -726,277 +702,10 @@
     </layout>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/lib/control/interface/page/ManageRestPage.dart">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="137">
-          <caret line="195" column="14" lean-forward="true" selection-start-line="195" selection-start-column="14" selection-end-line="195" selection-end-column="14" />
-          <folding>
-            <element signature="e#0#20#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/logic/bloc/UserBloc.dart">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="148">
-          <caret line="34" column="44" selection-start-line="34" selection-start-column="44" selection-end-line="34" selection-end-column="44" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/control/interface/screen/SeeReviewsDriverScreen.dart">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="184">
-          <caret line="43" selection-start-line="43" selection-end-line="43" />
-          <folding>
-            <element signature="e#0#44#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/model/RestaurantModel.g.dart">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/model/RestaurantModel.dart">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="211">
-          <caret line="15" column="2" lean-forward="true" selection-start-line="15" selection-start-column="2" selection-end-line="15" selection-end-column="2" />
-          <folding>
-            <element signature="e#0#54#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/res_media/flutter/.pub-cache/hosted/pub.dartlang.org/cloud_firestore-0.12.10/lib/src/collection_reference.dart">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="39" column="20" selection-start-line="39" selection-start-column="20" selection-end-line="39" selection-end-column="20" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/control/interface/screen/ManageSpecificUser.dart">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="277">
-          <caret line="192" column="56" selection-start-line="192" selection-start-column="56" selection-end-line="192" selection-end-column="56" />
-          <folding>
-            <element signature="e#0#20#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/control/interface/screen/ManageRestaurants.dart">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="137">
-          <caret line="110" column="26" selection-start-line="110" selection-start-column="26" selection-end-line="110" selection-end-column="26" />
-          <folding>
-            <element signature="e#0#44#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/control/interface/screen/ManageSpecificRestaurant.dart">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="167">
-          <caret line="110" column="45" selection-start-line="110" selection-start-column="45" selection-end-line="110" selection-end-column="45" />
-          <folding>
-            <element signature="e#0#20#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/drivers/interface/screen/HomeScreen.dart">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="241">
-          <caret line="172" column="77" selection-start-line="172" selection-start-column="77" selection-end-line="172" selection-end-column="77" />
-          <folding>
-            <element signature="e#0#20#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/interface/screen/RestaurantScreen.dart">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="274">
-          <caret line="149" column="16" selection-start-line="149" selection-start-column="16" selection-end-line="149" selection-end-column="16" />
-          <folding>
-            <element signature="e#0#44#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/interface/page/InfoRestaurantPage.dart">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="243">
-          <caret line="65" column="60" lean-forward="true" selection-start-line="65" selection-start-column="60" selection-end-line="65" selection-end-column="60" />
-          <folding>
-            <element signature="e#0#44#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/logic/bloc/RestaurantBloc.dart">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="247">
-          <caret line="64" column="60" selection-start-line="64" selection-start-column="60" selection-end-line="64" selection-end-column="60" />
-          <folding>
-            <element signature="e#0#20#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/interface/page/MenuPages.dart">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="185">
-          <caret line="88" column="52" selection-start-line="88" selection-start-column="52" selection-end-line="88" selection-end-column="52" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/control/interface/screen/HomeScreenPanel.dart">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="318">
-          <caret line="169" column="43" selection-start-line="169" selection-start-column="43" selection-end-line="169" selection-end-column="43" />
-          <folding>
-            <element signature="e#0#20#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/model/ProductModel.dart">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="271">
-          <caret line="33" column="24" selection-start-line="33" selection-start-column="24" selection-end-line="33" selection-end-column="24" />
-          <folding>
-            <element signature="e#0#54#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/control/interface/screen/TotalIncomeScreen.dart">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="16">
-          <caret line="48" column="17" selection-start-line="48" selection-start-column="17" selection-end-line="48" selection-end-column="17" />
-          <folding>
-            <element signature="e#0#20#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/res_media/flutter/.pub-cache/hosted/pub.dartlang.org/firebase_storage-3.0.8/lib/src/storage_reference.dart">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="60" column="25" selection-start-line="60" selection-start-column="25" selection-end-line="60" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/res_media/flutter/packages/flutter/lib/src/widgets/framework.dart">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="3737" column="4" selection-start-line="3737" selection-start-column="4" selection-end-line="3737" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/restaurant/page/MenuPage.dart">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-966">
-          <caret line="108" column="14" selection-start-line="108" selection-start-column="14" selection-end-line="108" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/res_media/flutter/packages/flutter/lib/src/services/asset_bundle.dart">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="54" column="19" selection-start-line="54" selection-start-column="19" selection-end-line="54" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/interface/view/ProductView.dart">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-30">
-          <caret line="21" column="25" selection-start-line="21" selection-start-column="25" selection-end-line="21" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/model/IncomeModel.dart">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="6" column="17" selection-start-line="6" selection-start-column="17" selection-end-line="6" selection-end-column="17" />
-          <folding>
-            <element signature="e#0#54#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/model/OrderModel.g.dart">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="316">
-          <caret line="85" column="37" selection-start-line="85" selection-start-column="37" selection-end-line="85" selection-end-column="37" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/drivers/model/OrderModel.g.dart">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="302">
-          <caret line="83" column="37" selection-start-line="83" selection-start-column="37" selection-end-line="83" selection-end-column="37" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/model/OrderModel.dart">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="330">
-          <caret line="30" column="32" selection-start-line="30" selection-start-column="32" selection-end-line="30" selection-end-column="32" />
-          <folding>
-            <element signature="e#0#54#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/drivers/interface/view/TypeUserOrderView.dart">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-3997">
-          <caret line="19" column="6" selection-start-line="19" selection-start-column="6" selection-end-line="19" selection-end-column="6" />
-          <folding>
-            <element signature="e#0#20#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/restaurant/page/DetailOrderRestaurantPage.dart">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1935">
-          <caret line="129" column="60" selection-start-line="129" selection-start-column="60" selection-end-line="129" selection-end-column="60" />
-          <folding>
-            <element signature="e#0#54#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/interface/view/TypeOrderView.dart">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="158">
-          <caret line="73" column="55" selection-start-line="73" selection-start-column="55" selection-end-line="73" selection-end-column="55" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/restaurant/page/OrdersPage.dart">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="368">
-          <caret line="41" column="25" selection-start-line="41" selection-start-column="25" selection-end-line="41" selection-end-column="25" />
-          <folding>
-            <element signature="e#0#44#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/functions/src/lib/payment_function.ts">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="691">
           <caret line="563" selection-start-line="563" selection-end-line="563" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/logic/RestaurantDB.dart">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="257">
-          <caret line="72" column="44" selection-start-line="72" selection-start-column="44" selection-end-line="72" selection-end-column="44" />
         </state>
       </provider>
     </entry>
@@ -1037,41 +746,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/drivers/model/TurnModel.dart">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="195">
-          <caret line="17" column="18" selection-start-line="17" selection-start-column="18" selection-end-line="17" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/drivers/interface/view/TurnView.dart">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="315">
-          <caret line="26" column="19" selection-start-line="26" selection-start-column="19" selection-end-line="26" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/lib/drivers/interface/widget/Order.dart">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="4">
           <caret line="9" column="4" selection-start-line="9" selection-start-column="4" selection-end-line="9" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/restaurant/screen/LoginScreen.dart">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="890">
-          <caret line="249" column="6" selection-start-line="249" selection-start-column="6" selection-end-line="249" selection-end-column="6" />
-          <folding>
-            <element signature="e#0#20#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/lib/drivers/logic/bloc/TurnBloc.dart">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="47">
-          <caret line="37" column="20" selection-start-line="37" selection-start-column="20" selection-end-line="37" selection-end-column="20" />
         </state>
       </provider>
     </entry>
@@ -1085,13 +763,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/restaurant/screen/TurnsScreen.dart">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="9" column="6" selection-start-line="9" selection-start-column="6" selection-end-line="9" selection-end-column="6" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/../plugins/easy_route/lib/src/EasyRouter.dart">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="137">
@@ -1099,10 +770,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/restaurant/screen/HomeScreen.dart">
+    <entry file="file://$PROJECT_DIR$/lib/restaurant/screen/LoginScreen.dart">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="293">
-          <caret line="124" column="47" selection-start-line="124" selection-start-column="47" selection-end-line="124" selection-end-column="47" />
+        <state relative-caret-position="3480">
+          <caret line="249" column="6" selection-start-line="249" selection-start-column="6" selection-end-line="249" selection-end-column="6" />
           <folding>
             <element signature="e#0#20#0" expanded="true" />
           </folding>
@@ -1111,7 +782,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/restaurant/screen/TimetableScreen.dart">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="123">
+        <state relative-caret-position="600">
           <caret line="59" column="44" selection-start-line="59" selection-start-column="44" selection-end-line="59" selection-end-column="44" />
           <folding>
             <element signature="e#0#17#0" expanded="true" />
@@ -1119,10 +790,44 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/logic/database.dart">
+    <entry file="file://$USER_HOME$/res_media/flutter/packages/flutter/lib/src/widgets/text.dart">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="137">
-          <caret line="193" column="15" selection-start-line="193" selection-start-column="15" selection-end-line="193" selection-end-column="15" />
+          <caret line="38" column="13" selection-start-line="38" selection-start-column="13" selection-end-line="38" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/res_media/flutter/packages/flutter/lib/src/material/text_theme.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="137">
+          <caret line="164" column="18" selection-start-line="164" selection-start-column="18" selection-end-line="164" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/res_media/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_sticky_header-0.4.0/lib/src/widgets/sliver_sticky_header.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="675">
+          <caret line="47" column="2" selection-start-line="47" selection-start-column="2" selection-end-line="47" selection-end-column="2" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/interface/screen/RestaurantScreen.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="274">
+          <caret line="149" column="19" selection-start-line="149" selection-start-column="19" selection-end-line="149" selection-end-column="19" />
+          <folding>
+            <element signature="e#0#44#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/interface/page/InfoRestaurantPage.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="264">
+          <caret line="65" column="56" selection-start-line="65" selection-start-column="56" selection-end-line="65" selection-end-column="56" />
+          <folding>
+            <element signature="e#0#44#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1136,20 +841,189 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/interface/screen/RestaurantListScreen.dart">
+    <entry file="file://$PROJECT_DIR$/lib/drivers/model/TurnModel.dart">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="219">
-          <caret line="314" column="22" selection-start-line="314" selection-start-column="22" selection-end-line="314" selection-end-column="22" />
+        <state>
+          <caret column="2" selection-start-column="2" selection-end-column="2" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/restaurant/screen/HomeScreen.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="129">
+          <caret line="118" column="76" selection-start-line="118" selection-start-column="76" selection-end-line="118" selection-end-column="76" />
           <folding>
             <element signature="e#0#20#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/../plugins/easy_firebase/lib/src/database/Categorized.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="45">
+          <caret line="3" column="46" selection-start-line="3" selection-start-column="46" selection-end-line="3" selection-end-column="46" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/restaurant/screen/TurnsScreen.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="101">
+          <caret line="45" column="20" selection-start-line="45" selection-start-column="20" selection-end-line="45" selection-end-column="20" />
+          <folding>
+            <element signature="e#0#50#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/control/interface/screen/ArchiveDriverRequests.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="168">
+          <caret line="50" column="28" selection-start-line="50" selection-start-column="28" selection-end-line="50" selection-end-column="28" />
+          <folding>
+            <element signature="e#0#20#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/control/logic/bloc/DriverRequestsBloc.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="156">
+          <caret line="31" column="29" selection-start-line="31" selection-start-column="29" selection-end-line="31" selection-end-column="29" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/interface/page/MenuPages.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="221">
+          <caret line="226" column="12" selection-start-line="226" selection-start-column="12" selection-end-line="226" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/control/interface/screen/ArchivedRestaurantRequests.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-724">
+          <folding>
+            <element signature="e#0#20#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/model/UserModel.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="59">
+          <caret line="9" column="6" selection-start-line="9" selection-start-column="6" selection-end-line="9" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/generated/provider.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-324">
+          <folding>
+            <element signature="e#0#32#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/drivers/logic/bloc/TurnBloc.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="61">
+          <caret line="25" selection-start-line="25" selection-end-line="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/control/logic/bloc/ControlBloc.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="216">
+          <caret line="29" column="72" selection-start-line="29" selection-start-column="72" selection-end-line="29" selection-end-column="72" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/control/interface/screen/CreateAdminScreen.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="167" column="22" selection-start-line="167" selection-start-column="22" selection-end-line="167" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/control/interface/screen/LoginScreen.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="327">
+          <caret line="83" column="6" selection-start-line="83" selection-start-column="6" selection-end-line="83" selection-end-column="6" />
+          <folding>
+            <element signature="e#0#44#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/control/interface/screen/ResetPasswordAdmin.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="30">
+          <caret line="180" column="45" selection-start-line="180" selection-start-column="45" selection-end-line="180" selection-end-column="45" />
+          <folding>
+            <element signature="e#0#20#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/control/logic/bloc/UsersBloc.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="242">
+          <caret line="34" column="76" selection-start-line="34" selection-start-column="76" selection-end-line="34" selection-end-column="76" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/control/interface/screen/ManageUsers.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="176">
+          <caret line="91" column="75" selection-start-line="91" selection-start-column="75" selection-end-line="91" selection-end-column="75" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/logic/bloc/UserBloc.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="137">
+          <caret line="56" column="7" selection-start-line="56" selection-start-column="7" selection-end-line="56" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/lib/interface/screen/SeeReviewsScreen.dart">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="366">
-          <caret line="67" column="14" selection-start-line="67" selection-start-column="14" selection-end-line="67" selection-end-column="14" />
+        <state relative-caret-position="141">
+          <caret line="106" column="22" selection-start-line="106" selection-start-column="22" selection-end-line="106" selection-end-column="22" />
+          <folding>
+            <element signature="e#0#44#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/control/interface/screen/ManageSpecificUser.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="301">
+          <caret line="220" column="40" selection-start-line="220" selection-start-column="40" selection-end-line="220" selection-end-column="40" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/control/interface/screen/SeeReviewsDriverScreen.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="381">
+          <caret line="119" selection-start-line="119" selection-end-line="119" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/interface/screen/RestaurantListScreen.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="145">
+          <caret line="218" column="31" selection-start-line="218" selection-start-column="31" selection-end-line="218" selection-end-column="31" />
+          <folding>
+            <element signature="e#0#20#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/control/interface/screen/ManageRestaurants.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="302">
+          <caret line="135" column="44" selection-start-line="135" selection-start-column="44" selection-end-line="135" selection-end-column="44" />
           <folding>
             <element signature="e#0#44#0" expanded="true" />
           </folding>
@@ -1158,11 +1032,91 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/lib/restaurant/screen/EditRestScreen.dart">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="205">
-          <caret line="103" column="23" lean-forward="true" selection-start-line="103" selection-start-column="23" selection-end-line="103" selection-end-column="23" />
+        <state relative-caret-position="1725">
+          <caret line="278" column="23" selection-start-line="278" selection-start-column="23" selection-end-line="278" selection-end-column="23" />
           <folding>
             <element signature="e#0#20#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/drivers/interface/view/TurnView.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="17" column="38" selection-start-line="17" selection-start-column="38" selection-end-line="17" selection-end-column="38" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/logic/RestaurantDB.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="332">
+          <caret line="90" column="43" selection-start-line="90" selection-start-column="43" selection-end-line="90" selection-end-column="43" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/control/interface/page/MenuCtrlPage.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="112">
+          <caret line="77" column="24" selection-start-line="77" selection-start-column="24" selection-end-line="77" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/control/interface/view/ProductViewCtrl.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="304">
+          <caret line="152" column="38" selection-start-line="152" selection-start-column="38" selection-end-line="152" selection-end-column="38" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/control/interface/screen/ManageSpecificRestaurant.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="163">
+          <caret line="102" column="28" selection-start-line="102" selection-start-column="28" selection-end-line="102" selection-end-column="28" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/logic/bloc/RestaurantBloc.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="231">
+          <caret line="76" column="55" selection-start-line="76" selection-start-column="55" selection-end-line="76" selection-end-column="55" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/control/interface/page/ManageRestPage.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="235" column="10" selection-start-line="235" selection-start-column="10" selection-end-line="235" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/model/ProductModel.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="420">
+          <caret line="32" column="11" lean-forward="true" selection-start-line="32" selection-start-column="11" selection-end-line="32" selection-end-column="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/drivers/interface/tab/TurnWorkTab.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="237">
+          <caret line="48" column="30" selection-start-line="48" selection-start-column="30" selection-end-line="48" selection-end-column="30" />
+          <folding>
+            <element signature="e#0#39#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/control/interface/screen/ManageProduct.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="294">
+          <caret line="311" column="40" lean-forward="true" selection-start-line="311" selection-start-column="40" selection-end-line="311" selection-end-column="40" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lib/logic/database.dart">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="247">
+          <caret line="627" column="55" lean-forward="true" selection-start-line="627" selection-start-column="55" selection-end-line="627" selection-end-column="55" />
         </state>
       </provider>
     </entry>

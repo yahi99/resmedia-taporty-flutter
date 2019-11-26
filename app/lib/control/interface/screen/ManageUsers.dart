@@ -52,8 +52,10 @@ class _LoginScreenState extends State<ManageUsers> {
               return Center(
                 child: CircularProgressIndicator(),
               );
+            if(snap.data.length>0)
             return ListView.separated(
                 shrinkWrap: true,
+                itemCount: snap.data.length,
                 separatorBuilder: (ctx, index) {
                   return Divider(
                     height: 4.0,
@@ -61,25 +63,39 @@ class _LoginScreenState extends State<ManageUsers> {
                 },
                 itemBuilder: (ctx,index){
                   final user=snap.data.elementAt(index);
-                  if(user.type!='admin') return InkWell(
+                  return InkWell(
                     child: Column(
                       children: <Widget>[
                         Row(
                           children: <Widget>[
-                            Text(user.nominative),
-                            Text(user.email),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Padding(
+                                  child: Text(
+                                    user.nominative,
+                                    style: theme.textTheme.subtitle,
+                                  ),
+                                  padding: EdgeInsets.all(4.0),
+                                ),
+                                Padding(
+                                  child: Text(user.email),
+                                  padding: EdgeInsets.all(4.0),
+                                ),
+                              ],
+                            ),
                           ],
                         )
                       ],
                     ),
                     onTap: (){
-                      EasyRouter.push(context,ManageSpecificUser(user:user));
+                      if(user.type!='admin') EasyRouter.push(context,ManageSpecificUser(user:user));
                     },
                   );
-                  else return Container();
             },
 
                 );
+            return Padding(child: Text('Non ci sono utenti'),);
           },
         ));
   }

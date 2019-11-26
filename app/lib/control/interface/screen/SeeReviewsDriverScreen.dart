@@ -56,7 +56,9 @@ class _CheckoutScreenState extends State<SeeReviewsDriverScreen>{
         stream: UserBloc.of().outDriverReview,
         builder: (ctx,snap){
           if(!snap.hasData) return Center(child: CircularProgressIndicator(),);
+          if(snap.data.length>0)
           return ListView.separated(
+            itemCount: snap.data.length,
             shrinkWrap: true,
             itemBuilder: (ctx,index){
               final model=snap.data.elementAt(index);
@@ -66,14 +68,14 @@ class _CheckoutScreenState extends State<SeeReviewsDriverScreen>{
               return Divider(height: 4.0,);
             },
           );
+          return Text('Non ci sono recensioni.');
         },
       ),
     );
   }
 }
 
-class Review extends StatelessWidget{
-
+class Review extends StatelessWidget {
   final ReviewModel model;
 
   Review({@required this.model});
@@ -81,17 +83,37 @@ class Review extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
+    final tt = Theme.of(context).textTheme;
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Text(model.nominative),
-        Row(
-          children: <Widget>[
-            Text(model.strPoints),
-            Text(model.points.toString()),
-          ],
+        Padding(
+          child: Text(
+            model.nominative,
+            style: tt.subtitle,
+          ),
+          padding: EdgeInsets.all(8.0),
+        ),
+        Padding(
+          child: Row(
+            children: <Widget>[
+              Container(
+                child: Text(model.strPoints),
+                width: MediaQuery.of(context).size.width * 8 / 10,
+              ),
+              Expanded(
+                child: Row(
+                  children: <Widget>[
+                    Text(model.points.toString()),
+                    Icon(Icons.star),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          padding: EdgeInsets.only(left: 8.0),
         ),
       ],
     );
   }
-
 }

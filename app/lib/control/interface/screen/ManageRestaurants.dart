@@ -37,8 +37,7 @@ class ManageRestaurants extends StatefulWidget implements WidgetRoute {
 }
 
 class _LoginScreenState extends State<ManageRestaurants> {
-
-  _showPositionDialog(BuildContext context,String restId) {
+  _showPositionDialog(BuildContext context, String restId) {
     showDialog(
       context: context,
       builder: (_context) {
@@ -113,45 +112,95 @@ class _LoginScreenState extends State<ManageRestaurants> {
               return Center(
                 child: CircularProgressIndicator(),
               );
-            return ListView.separated(
-              shrinkWrap: true,
-              separatorBuilder: (ctx, index) {
-                return Divider(
-                  height: 4.0,
-                );
-              },
-              itemBuilder: (ctx,index){
-                final rest=snap.data.elementAt(index);
-                return Slidable(
-                    child:InkWell(
-                  child: Column(
-                    children: <Widget>[
-                      Row(
-                        children: <Widget>[
-                          Image.network(rest.img),
-                          Text(rest.id),
-                        ],
+            if (snap.data.length > 0)
+              return ListView.builder(
+                itemCount: snap.data.length,
+                shrinkWrap: true,
+                itemBuilder: (ctx, index) {
+                  final rest = snap.data.elementAt(index);
+                  return Slidable(
+                    actionPane: SlidableDrawerActionPane(),
+                    actionExtentRatio: 0.25,
+                    child: InkWell(
+                      child: Padding(
+                        child: RestaurantView(
+                          model: rest,
+                        ),
+                        padding: EdgeInsets.all(8.0),
+                      ),
+                      onTap: () {
+                        final restBloc =
+                            RestaurantBloc.init(idRestaurant: rest.id);
+                        EasyRouter.push(
+                            context,
+                            ManageSpecificRestaurant(
+                              rest: rest,
+                              restBloc: restBloc,
+                            ));
+                      },
+                    ),
+                    secondaryActions: <Widget>[
+                      IconButton(
+                        icon: Icon(Icons.delete),
+                        onPressed: () {
+                          _showPositionDialog(context, rest.id);
+                        },
                       )
                     ],
-                  ),
-                  onTap: (){
-                    final restBloc=RestaurantBloc.init(idRestaurant: rest.id);
-                    EasyRouter.push(context,ManageSpecificRestaurant(rest:rest,restBloc: restBloc,));
-                  },
-                ),
-                  secondaryActions: <Widget>[
-                    IconButton(
-                      icon: Icon(Icons.delete),
-                      onPressed: (){
-                        _showPositionDialog(context,rest.id);
-                      },
-                    )
-                  ],
-                );
-              },
-
+                  );
+                },
+              );
+            return Padding(
+              child: Text('Non ci sono ristoranti'),
+              padding: EdgeInsets.all(8.0),
             );
           },
         ));
+  }
+}
+
+class RestaurantView extends StatelessWidget {
+  final RestaurantModel model;
+
+  RestaurantView({this.model});
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(8.0),
+      child: Stack(
+        alignment: Alignment.bottomCenter,
+        children: <Widget>[
+          (model.img.startsWith('assets'))
+              ? Image.asset(
+                  model.img,
+                  fit: BoxFit.fitHeight,
+                )
+              : Image.network(
+                  model.img,
+                  fit: BoxFit.fitHeight,
+                ),
+          Container(
+            color: Colors.black,
+            child: Padding(
+              padding:
+                  const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+              child: DefaultTextStyle(
+                style: TextStyle(color: Colors.white),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    DefaultTextStyle(
+                      style: TextStyle(fontSize: 20),
+                      child: Text("${model.id}"),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          )
+        ],
+      ),
+    );
   }
 }

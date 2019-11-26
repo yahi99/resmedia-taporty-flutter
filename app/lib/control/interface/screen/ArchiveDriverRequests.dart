@@ -41,7 +41,7 @@ class _DriverRequestsScreenState extends State<ArchiveDriverRequests> {
   @override
   Widget build(BuildContext context) {
     final tt=Theme.of(context).textTheme;
-    reqBloc=DriverRequestsBloc.of();
+    reqBloc=DriverRequestsBloc.instance();
     return Scaffold(
       appBar: AppBar(
         title: Text("Richieste Fattorini Archiviate"),

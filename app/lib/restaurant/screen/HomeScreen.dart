@@ -116,7 +116,7 @@ class _HomeScreenRestaurantState extends State<HomeScreen> {
               FlatButton(
                 child: Text('Turni Inseriti'),
                 onPressed: (){
-                  EasyRouter.push(context, TurnsScreen());
+                  EasyRouter.push(context, TurnsScreen(restId: widget.restId,));
                 },
               ),
               FlatButton(

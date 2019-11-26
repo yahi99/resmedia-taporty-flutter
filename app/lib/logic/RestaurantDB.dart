@@ -75,6 +75,24 @@ mixin RestaurantDb implements FirebaseDatabase {
         .map((querySnap) => fromQuerySnaps(querySnap, DrinkModel.fromFirebase));
   }
 
+  Stream<List<FoodModel>> getFoodsCtrl(String idRestaurant) {
+    return fs
+        .collection(restaurants.id)
+        .document(idRestaurant)
+        .collection(restaurants.$foods.id)
+        .snapshots()
+        .map((querySnap) => fromQuerySnaps(querySnap, FoodModel.fromFirebase));
+  }
+
+  Stream<List<DrinkModel>> getDrinksCtrl(String idRestaurant) {
+    return fs
+        .collection(restaurants.id)
+        .document(idRestaurant)
+        .collection(restaurants.$drinks.id)
+        .snapshots()
+        .map((querySnap) => fromQuerySnaps(querySnap, DrinkModel.fromFirebase));
+  }
+
   Future<void> updateProdDis(ProductModel model,String cat)async{
     print(model.isDisabled);
     if(model.isDisabled==null) await fs.collection('restaurants').document(model.restaurantId).collection(cat).document(model.id).updateData({'isDisabled':false});

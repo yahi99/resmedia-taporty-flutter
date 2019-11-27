@@ -197,14 +197,6 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
               : Container(),
         ],
         bottom: SearchBar(
-          trailing: IconButton(
-            alignment: Alignment.centerRight,
-            icon: Icon(
-              FontAwesomeIcons.slidersH,
-              color: Colors.white,
-            ),
-            onPressed: () {},
-          ),
         ),
       ),
       body: CacheStreamBuilder<List<RestaurantModel>>(

@@ -27,20 +27,7 @@ class AccountScreenDriver extends StatelessWidget implements WidgetRoute {
     final user = UserBloc.of();
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false,
-        leading: IconButton(
-          icon: Icon(Icons.exit_to_app),
-          onPressed: () {
-            user.logout().then((onValue) {
-              EasyRouter.pushAndRemoveAll(context, LoginScreen());
-            });
-          },
-        ),
         actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () => Navigator.pop(context),
-          ),
           IconButton(
             onPressed: () => {EasyRouter.push(context, EditScreen())},
             icon: Icon(Icons.mode_edit),
@@ -77,16 +64,17 @@ class AccountScreenDriver extends StatelessWidget implements WidgetRoute {
                       child: Container(
                         width: double.infinity,
                         height: double.infinity,
-                        child: (snap.data.userFb.photoUrl != null)?CircleAvatar(
-                          backgroundImage:CachedNetworkImageProvider(
-                                  snap.data.userFb.photoUrl)
-                        ):Container(
-                          child: Center(
-                            child: AutoSizeText(
-                                "\n\n\n Nessun'immagine del profilo selezionata",
-                                textAlign: TextAlign.center),
-                          ),
-                        ),
+                        child: (snap.data.userFb.photoUrl != null)
+                            ? CircleAvatar(
+                                backgroundImage: CachedNetworkImageProvider(
+                                    snap.data.userFb.photoUrl))
+                            : Container(
+                                child: Center(
+                                  child: AutoSizeText(
+                                      "\n\n\n Nessun'immagine del profilo selezionata",
+                                      textAlign: TextAlign.center),
+                                ),
+                              ),
                       ),
                     ),
                   ),
@@ -118,10 +106,10 @@ class AccountScreenDriver extends StatelessWidget implements WidgetRoute {
                       children: <Widget>[
                         Icon(Icons.directions_car),
                         FlatButton(
-                          child:
-                          Text('Diventa un Fattorino', style: theme.textTheme.subhead),
+                          child: Text('Diventa un Fattorino',
+                              style: theme.textTheme.subhead),
                           onPressed: () =>
-                          {EasyRouter.push(context, BecomeDriverScreen())},
+                              {EasyRouter.push(context, BecomeDriverScreen())},
                         ),
                       ],
                     ),
@@ -129,10 +117,11 @@ class AccountScreenDriver extends StatelessWidget implements WidgetRoute {
                       children: <Widget>[
                         Icon(Icons.directions_car),
                         FlatButton(
-                          child:
-                          Text('Diventa un ristoratore', style: theme.textTheme.subhead),
-                          onPressed: () =>
-                          {EasyRouter.push(context, BecomeRestaurantScreen())},
+                          child: Text('Diventa un ristoratore',
+                              style: theme.textTheme.subhead),
+                          onPressed: () => {
+                            EasyRouter.push(context, BecomeRestaurantScreen())
+                          },
                         ),
                       ],
                     ),
@@ -181,6 +170,20 @@ class AccountScreenDriver extends StatelessWidget implements WidgetRoute {
                           onPressed: () =>
                               {EasyRouter.push(context, SettingsScreen())},
                         ),
+                      ],
+                    ),
+                    Row(
+                      children: <Widget>[
+                        Icon(Icons.settings),
+                        FlatButton(
+                            child: Text('Log Out',
+                                style: theme.textTheme.subhead),
+                            onPressed: () {
+                              user.logout().then((onValue) {
+                                EasyRouter.pushAndRemoveAll(
+                                    context, LoginScreen());
+                              });
+                            }),
                       ],
                     ),
                   ].map((child) {

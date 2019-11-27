@@ -63,7 +63,11 @@ const _$FoodCategoryEnumMap = <FoodCategory, dynamic>{
   FoodCategory.SEAFOOD_MENU: 'SEAFOOD_MENU',
   FoodCategory.MEAT_MENU: 'MEAT_MENU',
   FoodCategory.SIDE_DISH: 'SIDE_DISH',
-  FoodCategory.DESERT: 'DESERT'
+  FoodCategory.DESERT: 'DESERT',
+  FoodCategory.DRINK: 'DRINK',
+  FoodCategory.WINE: 'WINE',
+  FoodCategory.ALCOHOLIC: 'ALCOHOLIC',
+  FoodCategory.COFFEE: 'COFFEE'
 };
 
 DrinkModel _$DrinkModelFromJson(Map json) {

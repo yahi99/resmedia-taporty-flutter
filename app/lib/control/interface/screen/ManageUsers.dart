@@ -13,6 +13,7 @@ import 'package:resmedia_taporty_flutter/drivers/logic/bloc/TurnBloc.dart';
 import 'package:resmedia_taporty_flutter/interface/view/logo_view.dart';
 import 'package:resmedia_taporty_flutter/logic/bloc/OrdersBloc.dart';
 import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
+import 'package:resmedia_taporty_flutter/logic/database.dart';
 import 'package:resmedia_taporty_flutter/model/UserModel.dart';
 import 'package:toast/toast.dart';
 
@@ -88,7 +89,7 @@ class _LoginScreenState extends State<ManageUsers> {
                         )
                       ],
                     ),
-                    onTap: (){
+                    onTap: ()async{
                       if(user.type!='admin') EasyRouter.push(context,ManageSpecificUser(user:user));
                     },
                   );

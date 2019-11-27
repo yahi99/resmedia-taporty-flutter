@@ -62,6 +62,7 @@ enum FoodCategory {
   MEAT_MENU,
   SIDE_DISH,
   DESERT,
+  DRINK, WINE, ALCOHOLIC, COFFEE
 }
 
 String translateFoodCategory(FoodCategory category) {
@@ -80,6 +81,14 @@ String translateFoodCategory(FoodCategory category) {
       return "Contorni";
     case FoodCategory.DESERT:
       return "Desert";
+    case FoodCategory.DRINK:
+      return "Bevande";
+    case FoodCategory.WINE:
+      return "Vini";
+    case FoodCategory.ALCOHOLIC:
+      return "Alcolici";
+    case FoodCategory.COFFEE:
+      return "Caffetteria";
     default:
       return "";
   }

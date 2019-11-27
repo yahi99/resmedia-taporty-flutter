@@ -1,3 +1,4 @@
+import 'package:easy_blocs/easy_blocs.dart';
 import 'package:easy_route/easy_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,9 +9,11 @@ import 'package:resmedia_taporty_flutter/drivers/interface/screen/AccountScreen.
 import 'package:resmedia_taporty_flutter/interface/page/InfoRestaurantPage.dart';
 import 'package:resmedia_taporty_flutter/interface/page/MenuPages.dart';
 import 'package:resmedia_taporty_flutter/interface/screen/CheckoutScreen.dart';
+import 'package:resmedia_taporty_flutter/logic/bloc/CartBloc.dart';
 import 'package:resmedia_taporty_flutter/logic/bloc/RestaurantBloc.dart';
 import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
 import 'package:resmedia_taporty_flutter/model/RestaurantModel.dart';
+import 'package:resmedia_taporty_flutter/model/UserModel.dart';
 
 class RestaurantScreen extends StatefulWidget implements WidgetRoute {
   static const ROUTE = 'RestaurantScreen';
@@ -21,7 +24,11 @@ class RestaurantScreen extends StatefulWidget implements WidgetRoute {
   final Position position;
   final String address;
 
-  RestaurantScreen({Key key, @required this.model, @required this.position, @required this.address})
+  RestaurantScreen(
+      {Key key,
+      @required this.model,
+      @required this.position,
+      @required this.address})
       : super(key: key);
 
   @override
@@ -101,6 +108,81 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
             centerTitle: true,
             title: Text(widget.model.id),
             actions: <Widget>[
+              StreamBuilder<Cart>(
+                stream: CartBloc.of().outDrinksCart,
+                builder: (ctx, drinks) {
+                  return StreamBuilder<Cart>(
+                    stream: CartBloc.of().outFoodsCart,
+                    builder: (ctx, foods) {
+                      return StreamBuilder<User>(
+                        stream: UserBloc.of().outUser,
+                        builder: (ctx, user) {
+                          if (drinks.hasData && foods.hasData && user.hasData) {
+                            int count = drinks.data.getTotalItems(
+                                drinks.data.products,
+                                user.data.userFb.uid,
+                                widget.model.id);
+                            return Row(
+                              children: <Widget>[
+                                IconButton(
+                                  icon: Icon(Icons.shopping_cart),
+                                  onPressed: () {
+                                    UserBloc.of().outUser.first.then((user) {
+                                      Geocoder.local
+                                          .findAddressesFromCoordinates(
+                                              Coordinates(
+                                                  widget.position.latitude,
+                                                  widget.position.longitude))
+                                          .then((addresses) {
+                                        EasyRouter.push(
+                                            context,
+                                            CheckoutScreen(
+                                              model: widget.model,
+                                              user: user.model,
+                                              position: widget.position,
+                                              description: addresses.first,
+                                            ));
+                                      });
+                                    });
+                                  },
+                                ),
+                                Text(count.toString(),style: TextStyle(color: Colors.white),)
+                              ],
+                            );
+                          }
+                          return Row(
+                            children: <Widget>[
+                              IconButton(
+                                icon: Icon(Icons.shopping_cart),
+                                onPressed: () {
+                                  UserBloc.of().outUser.first.then((user) {
+                                    Geocoder.local
+                                        .findAddressesFromCoordinates(
+                                        Coordinates(
+                                            widget.position.latitude,
+                                            widget.position.longitude))
+                                        .then((addresses) {
+                                      EasyRouter.push(
+                                          context,
+                                          CheckoutScreen(
+                                            model: widget.model,
+                                            user: user.model,
+                                            position: widget.position,
+                                            description: addresses.first,
+                                          ));
+                                    });
+                                  });
+                                },
+                              ),
+                              Text('0',style: TextStyle(color: Colors.white),)
+                            ],
+                          );
+                        },
+                      );
+                    },
+                  );
+                },
+              ),
               IconButton(
                 icon: Icon(Icons.shopping_cart),
                 onPressed: () {
@@ -146,7 +228,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
           ),
           body: TabBarView(
             children: <Widget>[
-              InfoRestaurantPage(address:widget.address,model: widget.model),
+              InfoRestaurantPage(address: widget.address, model: widget.model),
               FoodsPage(model: widget.model),
               DrinksPage(model: widget.model),
             ],

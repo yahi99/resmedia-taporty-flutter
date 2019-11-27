@@ -45,17 +45,18 @@ class _DetailOrderRestaurantPageState extends State<TotalIncomeScreen> {
     final theme = Theme.of(context);
     final tt = theme.textTheme;
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Saldo Totale'),
+      ),
       body: StreamBuilder<DateTime>(
           stream: dateStream.stream,
           builder: (ctx, snap4) {
-            if (!snap4.hasData)
-              return Center(child: CircularProgressIndicator());
             return Container(
               child: Column(
                 children: <Widget>[
                   MonthPicker(
-                    selectedDate: snap4.data,
-                    firstDate: DateTime(DateTime.now().year,
+                    selectedDate: snap4.hasData?snap4.data:DateTime(DateTime.now().year,DateTime.now().month,DateTime.now().day),
+                    firstDate: DateTime(DateTime.now().year-1,
                         DateTime.now().month, DateTime.now().day - 1),
                     lastDate: DateTime(2020),
                     //displayedMonth: DateTime.now(),
@@ -68,8 +69,8 @@ class _DetailOrderRestaurantPageState extends State<TotalIncomeScreen> {
                     stream: snap4.hasData?Database().getTotalIncome(snap4.data):Database().getTotalIncome(DateTime(DateTime.now().year,
                         DateTime.now().month, DateTime.now().day)),
                     builder: (ctx,snap){
-                      if(snap.hasData) return Center(child: CircularProgressIndicator(),);
-                      return Text('Saldo Giornaliero '+((snap.data.dailyTotal!=null)?snap.data.dailyTotal.toString():'0.0'));
+                      //if(!snap.hasData) return Center(child: CircularProgressIndicator(),);
+                      return Text('Saldo Giornaliero '+((snap.data!=null)?snap.data.dailyTotal.toString():'0.0')+' euro');
                     },
                   )
                 ],

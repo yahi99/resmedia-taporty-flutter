@@ -193,7 +193,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       },
                     ),
                     FlatButton(
-                      child: Text('Privacy Policy'),
+                      child: Text('Privacy Policy',style: TextStyle(color: Colors.white),),
                       onPressed: (){
                         _showPolicyDialog(context);
                       },
@@ -206,7 +206,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 StreamBuilder(
                   stream: privacyStream.stream,
                   builder: (ctx,snap){
-                    if(snap.data){
+                    if(snap.hasData){
                       return SubmitButton.raised(
                         controller: _submitBloc.submitController,
                         child: FittedText('Registrati'),

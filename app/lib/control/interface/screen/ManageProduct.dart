@@ -13,6 +13,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:resmedia_taporty_flutter/control/interface/screen/HomeScreenPanel.dart';
+import 'package:resmedia_taporty_flutter/control/logic/bloc/ProductBloc.dart';
 import 'package:resmedia_taporty_flutter/control/logic/bloc/UsersBloc.dart';
 import 'package:resmedia_taporty_flutter/data/config.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/screen/HomeScreen.dart';
@@ -38,9 +39,10 @@ import 'ManageSpecificUser.dart';
 class ManageProduct extends StatefulWidget implements WidgetRoute {
   static const String ROUTE = "ManageProduct";
 
-  final ProductModel model;
+  final ProductBloc prod;
+  final bool isFood;
 
-  ManageProduct({@required this.model});
+  ManageProduct({@required this.prod,@required this.isFood});
 
   String get route => ROUTE;
 
@@ -98,161 +100,10 @@ class _LoginScreenState extends State<ManageProduct> {
         actions: <Widget>[],
       ),
       body: StreamBuilder<FoodModel>(
-        stream: Database().getProduct(widget.model),
+        stream: widget.prod.outRequests,
         builder: (ctx,snapshot){
           print(snapshot.data);
-          if(!snapshot.hasData) return ListView(
-            shrinkWrap: true,
-            children: <Widget>[
-              Row(
-                children: <Widget>[
-                  Container(
-                    child: Text(
-                        'Disabilitato: ' + (widget.model.isDisabled ? 'Si' : 'No')),
-                    width: MediaQuery.of(context).size.width * 2 / 3,
-                    padding: EdgeInsets.all(16.0),
-                  ),
-                  Expanded(
-                    child: RaisedButton(
-                      child: Text('Cambia'),
-                      onPressed: () {
-                        Database().changeStatus(widget.model);
-                      },
-                    ),
-                  ),
-                ],
-              ),
-              Row(
-                children: <Widget>[
-                  Container(
-                    child: Column(
-                      children: <Widget>[
-                        Padding(child:Text('Prezzo: ' + widget.model.price + ' euro'),padding:EdgeInsets.all(8.0)),
-                        Padding(
-                          child: TextFormField(
-                            key: _delKey,
-                            validator: (value) {
-                              bool isWrong = value.contains(',');
-                              if (isWrong) return 'Punto per i decimali';
-                              if (double.tryParse(value) == null) {
-                                return 'Inserisci un numero';
-                              }
-                              return null;
-                            },
-                            decoration: InputDecoration(
-                              hintText: "Inserisci prezzo",
-                            ),
-                            keyboardType: TextInputType.number,
-                          ),
-                          padding: EdgeInsets.all(8.0),
-                        ),
-                      ],
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                    ),
-                    padding: EdgeInsets.all(8.0),
-                    width: MediaQuery.of(context).size.width*2/3,
-                  ),
-                  Expanded(
-                    child: RaisedButton(
-                      child: Text('Cambia'),
-                      onPressed: () async {
-                        if (_delKey.currentState.validate()) {
-                          Database().updateProductPrice(
-                              double.parse(_delKey.currentState.value),
-                              widget.model);
-                        }
-                      },
-                    ),
-                  ),
-                ],
-              ),
-              Row(
-                children: <Widget>[
-                  StreamBuilder(
-                    stream: img.stream,
-                    builder: (ctx, snap) {
-                      if (snap.hasData)
-                        return InkWell(
-                          child: Container(
-                            padding: EdgeInsets.all(SPACE),
-                            child: Image.file(File(path)),
-                            width: MediaQuery.of(context).size.width * 2 / 3,
-                          ),
-                          onTap: () {
-                            ImagePicker.pickImage(source: ImageSource.gallery)
-                                .then((file) {
-                              if (file != null) {
-                                path = file.path;
-                                img.add(path.split('/').last);
-                              } else {
-                                Toast.show('Devi scegliere un\'immagine!', context,
-                                    duration: 3);
-                              }
-                            }).catchError((error) {
-                              if (error is PlatformException) {
-                                if (error.code == 'photo_access_denied')
-                                  Toast.show(
-                                      'Devi garantire accesso alle immagini!',
-                                      context,
-                                      duration: 3);
-                              }
-                            });
-                          },
-                        );
-                      return Container(
-                        child: FlatButton(
-                          child: Text('Clicca per selezionare immagine'),
-                          onPressed: () {
-                            ImagePicker.pickImage(source: ImageSource.gallery)
-                                .then((file) {
-                              if (file != null) {
-                                path = file.path;
-                                img.add(path.split('/').last);
-                              } else {
-                                Toast.show('Devi scegliere un\'immagine!', context,
-                                    duration: 3);
-                              }
-                            }).catchError((error) {
-                              if (error is PlatformException) {
-                                if (error.code == 'photo_access_denied')
-                                  Toast.show(
-                                      'Devi garantire accesso alle immagini!',
-                                      context,
-                                      duration: 3);
-                              }
-                            });
-                          },
-                        ),
-                        width: MediaQuery.of(context).size.width * 2 / 3,
-                      );
-                    },
-                  ),
-                  Expanded(
-                    child: RaisedButton(
-                      child: Text('Cambia'),
-                      onPressed: () async {
-                        if (path != null) {
-                          if (path.split('.').last != 'jpg') {
-                            Toast.show('Il formato dell\'immagine deve essere .jpg',
-                                context,
-                                duration: 3);
-                          } else {
-                            uploadFile(path).then((path) async {
-                              Database()
-                                  .updateImgProduct(path, widget.model)
-                                  .then((value) {
-                                Toast.show('Cambiato!', context, duration: 3);
-                              });
-                            });
-                          }
-                        }
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          );
+          if(!snapshot.hasData) return Center(child: CircularProgressIndicator(),);
           return ListView(
             shrinkWrap: true,
             children: <Widget>[
@@ -284,9 +135,9 @@ class _LoginScreenState extends State<ManageProduct> {
                           child: TextFormField(
                             key: _delKey,
                             validator: (value) {
-                              bool isWrong = value.contains('.');
-                              if (isWrong) return 'Virgola per i decimali';
-                              if (double.tryParse(value) != null) {
+                              bool isWrong = value.contains(',');
+                              if (isWrong) return 'Punto per i decimali';
+                              if (double.tryParse(value) == null) {
                                 return 'Inserisci un numero';
                               }
                               return null;
@@ -310,7 +161,7 @@ class _LoginScreenState extends State<ManageProduct> {
                       onPressed: () async {
                         if (_delKey.currentState.validate()) {
                           Database().updateProductPrice(
-                              double.parse(_delKey.currentState.value),
+                              double.tryParse(_delKey.currentState.value),
                               snapshot.data);
                         }
                       },

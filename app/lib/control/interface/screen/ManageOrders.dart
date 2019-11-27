@@ -72,7 +72,9 @@ class _LoginScreenState extends State<ManageOrders> {
         stream: OrdersBloc.of().outOrdersCtrl,
         builder: (ctx,snap){
           if(!snap.hasData) return Center(child: CircularProgressIndicator(),);
+          if(snap.data.length>0)
           return ListView.separated(
+            itemCount: snap.data.length,
             shrinkWrap: true,
             itemBuilder: (ctx,index){
               final order=snap.data.elementAt(index);
@@ -82,6 +84,7 @@ class _LoginScreenState extends State<ManageOrders> {
               return Divider(height: 4.0,);
             },
           );
+          return Padding(child: Text('Non ci sono ordini.'),padding: EdgeInsets.all(8.0),);
         },
       )
     );

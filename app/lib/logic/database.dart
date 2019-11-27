@@ -554,6 +554,12 @@ class Database extends FirebaseDatabase
     });
   }
 
+  Stream<UserModel> getUserCtrl(UserModel user) {
+    return fs.collection(cl.USERS).document(user.id).snapshots().map((snap) {
+      return UserModel.fromFirebase(snap);
+    });
+  }
+
   Future<String> uploadImage(String path, File imageFile) async {
     StorageReference ref =
         fbs.ref().child(path).child(imageFile.path.split('/').last);

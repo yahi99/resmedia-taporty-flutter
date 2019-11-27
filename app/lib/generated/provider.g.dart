@@ -104,6 +104,11 @@ class $Provider extends Provider {
           return BlocCache.getBlocInstance(
               "ControlBloc", () => ControlBloc.instance());
         }
+      case ProductBloc:
+        {
+          return BlocCache.getBlocInstance(
+              "ProductBloc", () => ProductBloc.instance());
+        }
     }
     return null;
   }
@@ -203,6 +208,11 @@ class $Provider extends Provider {
       case ControlBloc:
         {
           BlocCache.dispose("ControlBloc");
+          break;
+        }
+      case ProductBloc:
+        {
+          BlocCache.dispose("ProductBloc");
           break;
         }
     }

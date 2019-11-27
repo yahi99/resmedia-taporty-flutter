@@ -162,14 +162,28 @@ class _LoginScreenState extends State<ManageSpecificUser> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Container(
-                      child: Text('Tipologia utente: ' +
-                          ((widget.user.type == null)
-                              ? 'user'
-                              : widget.user.type)),
-                      padding: EdgeInsets.all(8.0),
-                    width: MediaQuery.of(context).size.width * 2 / 3,
-                    ),
+                  StreamBuilder<UserModel>(
+                    stream:Database().getUserCtrl(widget.user),
+                    builder:(ctx,snap){
+                      if(!snap.hasData) return Container(
+                        child: Text('Tipologia utente: ' +
+                            ((widget.user.type == null)
+                                ? 'user'
+                                : widget.user.type)),
+                        padding: EdgeInsets.all(8.0),
+                        width: MediaQuery.of(context).size.width * 2 / 3,
+                      );
+                      print(snap.data.type);
+                      return Container(
+                        child: Text('Tipologia utente: ' +
+                            ((snap.data.type == null)
+                                ? 'user'
+                                : snap.data.type)),
+                        padding: EdgeInsets.all(8.0),
+                        width: MediaQuery.of(context).size.width * 2 / 3,
+                      );
+                    },
+                  ),
                   StreamBuilder(
                     stream: typeStream.stream,
                     builder: (ctx, snap) {
@@ -177,7 +191,7 @@ class _LoginScreenState extends State<ManageSpecificUser> {
                         child: DropdownButton(
                           //key: _dropKey,
                           value:
-                              (!snap.hasData) ? types.elementAt(0) : snap.data,
+                              (!snap.hasData) ? widget.user.type : snap.data,
                           onChanged: (value) {
                             print(value);
                             type = value;

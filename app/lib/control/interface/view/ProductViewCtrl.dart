@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:resmedia_taporty_flutter/control/interface/screen/ManageProduct.dart';
+import 'package:resmedia_taporty_flutter/control/logic/bloc/ProductBloc.dart';
 import 'package:resmedia_taporty_flutter/data/config.dart';
 import 'package:resmedia_taporty_flutter/logic/database.dart';
 import 'package:resmedia_taporty_flutter/model/ProductModel.dart';
@@ -150,7 +151,7 @@ class ProductViewCtrl extends StatelessWidget {
           ),
         ),
         onTap: (){
-          EasyRouter.push(context, ManageProduct(model: model,));
+          EasyRouter.push(context, ManageProduct(prod: ProductBloc.init(model:model),));
         },
       ),
     );

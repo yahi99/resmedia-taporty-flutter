@@ -2,6 +2,7 @@ import 'package:dash/dash.dart';
 import 'package:easy_blocs/easy_blocs.dart';
 import 'package:resmedia_taporty_flutter/control/logic/bloc/ControlBloc.dart';
 import 'package:resmedia_taporty_flutter/control/logic/bloc/DriverRequestsBloc.dart';
+import 'package:resmedia_taporty_flutter/control/logic/bloc/ProductBloc.dart';
 import 'package:resmedia_taporty_flutter/control/logic/bloc/RequestsBloc.dart';
 import 'package:resmedia_taporty_flutter/control/logic/bloc/RestaurantRequestsBloc.dart';
 import 'package:resmedia_taporty_flutter/control/logic/bloc/UsersBloc.dart';
@@ -40,4 +41,5 @@ part 'provider.g.dart';
 @BlocProvider.register(RestaurantRequestsBloc)
 @BlocProvider.register(UsersBloc)
 @BlocProvider.register(ControlBloc)
+@BlocProvider.register(ProductBloc)
 abstract class Provider {}

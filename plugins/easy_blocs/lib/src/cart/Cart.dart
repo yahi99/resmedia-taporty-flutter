@@ -22,6 +22,11 @@ class Cart {
     return a+multiply(a,b-1);
   }
 
+  int getTotalItems(List<ProductCart> products, String uid,String restaurantId){
+    return products.fold(0, (price, product) =>
+    price + ((getProduct(product.id, restaurantId, uid)==product)?product.countProducts:0));
+  }
+
   double getPrice(String id, double price,String restaurantId,String userId) => (multiply(price,getProduct(id,restaurantId,userId).countProducts));
 
   double getTotalPrice(List<ProductCart> products, String uid,String restaurantId) {

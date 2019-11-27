@@ -382,6 +382,7 @@ class _LoginScreenState extends State<LoginScreen> {
         if (userSnapshot.hasData) {
           if (userSnapshot.data is bool)
             return Material(
+              child:Theme(
               child: Form(
                 key: _submitBloc.formKey,
                 child: LogoView(
@@ -401,6 +402,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     PasswordField(
                       checker: _submitBloc.passwordChecker,
+
                     ),
                     Row(
                       children: <Widget>[
@@ -472,6 +474,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ],
                 ),
+              ),
+                data: Theme.of(context).copyWith(unselectedWidgetColor: Colors.white),
               ),
             );
 

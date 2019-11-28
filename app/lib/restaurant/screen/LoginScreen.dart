@@ -15,6 +15,7 @@ import 'package:resmedia_taporty_flutter/logic/bloc/OrdersBloc.dart';
 import 'package:resmedia_taporty_flutter/logic/bloc/RestaurantBloc.dart';
 import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
 import 'package:resmedia_taporty_flutter/restaurant/screen/HomeScreen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
 
 //import 'package:flutter_facebook_login/flutter_facebook_login.dart';
@@ -41,6 +42,8 @@ class _LoginScreenState extends State<LoginScreen> {
   //end my code
 
   StreamController rememberStream;
+
+  bool remember=false;
 
   final FirebaseSignInBloc _submitBloc =
       FirebaseSignInBloc.init(controller: UserBloc.of());
@@ -85,7 +88,7 @@ class _LoginScreenState extends State<LoginScreen> {
       if (registrationLevel == RegistrationLevel.COMPLETE) {
         final type=(await _userBloc.outUser.first).model.type;
         String user = (await UserBloc.of().outUser.first).model.restaurantId;
-        if(user!=null && type=='restaurant') {
+        if(user!=null && type=='restaurant' && remember) {
           final orderBloc = OrdersBloc.of();
           await orderBloc.setRestaurantStream();
           final restaurantBloc = RestaurantBloc.init(idRestaurant: user);
@@ -99,6 +102,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     rememberStream=new StreamController<bool>.broadcast();
+    _read();
     super.initState();
   }
 
@@ -108,6 +112,22 @@ class _LoginScreenState extends State<LoginScreen> {
     //registrationLevelSub?.cancel();
     rememberStream.close();
     super.dispose();
+  }
+
+  _read()async{
+    final prefs=await SharedPreferences.getInstance();
+    final key='remember_me';
+    final value=prefs.getBool(key);
+    print('read: $value');
+    remember=value;
+    rememberStream.add(value);
+  }
+  _write(bool value)async{
+    final prefs=await SharedPreferences.getInstance();
+    final key='remember_me';
+    prefs.setBool(key,value);
+    remember=value;
+    rememberStream.add(value);
   }
 
   _showResetDialog(BuildContext context) {
@@ -209,7 +229,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       value: (snap.hasData)?snap.data:false,
                       onChanged: (value){
                         //privacy=value;
-                        rememberStream.add(value);
+                        _write(value);
+                        //rememberStream.add(value);
                       },
                       //activeColor: Colors.white,
                     );

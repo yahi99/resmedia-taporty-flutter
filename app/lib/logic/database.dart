@@ -9,6 +9,7 @@ import 'package:easy_stripe/easy_stripe.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:geocoder/model.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:resmedia_taporty_flutter/control/model/ControlUsersModel.dart';
@@ -213,14 +214,24 @@ class Database extends FirebaseDatabase
     }
   }
 
-  Future<void> updateImg(String path,String restId)async{
+  Future<void> updateImg(String path,String restId,String previous)async{
     //TODO delete previous image
     await fs.collection('restaurants').document(restId).updateData({'img':path});
+    _deleteFile(previous.split('/').last.split('?').first);
+
   }
 
-  Future<void> updateImgProduct(String path,ProductModel model)async{
+  String _deleteFile(String path) {
+    final StorageReference ref = FirebaseStorage.instance.ref();
+    ref.child(path).delete();
+    //_path = downloadUrl.toString();
+    return 'ok';
+  }
+
+  Future<void> updateImgProduct(String path,ProductModel model,String previous)async{
     //TODO delete previous image
     await fs.collection('restaurants').document(model.restaurantId).collection(model.path.contains('foods')?'foods':'drinks').document(model.id).updateData({'img':path});
+    _deleteFile(previous.split('/').last.split('?').first);
   }
 
   Future<void> deleteProduct(String product,String restId,String type)async{

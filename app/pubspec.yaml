@@ -41,6 +41,8 @@ dependencies:
 
   intl: ^0.15.7
 
+  shared_preferences: ^0.4.3
+
   geolocator: ^5.1.3
 
   geocoder: any

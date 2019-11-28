@@ -240,9 +240,10 @@ class _LoginScreenState extends State<ManageProduct> {
                                 context,
                                 duration: 3);
                           } else {
+                            final imgPath=(await widget.prod.outRequests.first).img;
                             uploadFile(path).then((path) async {
                               Database()
-                                  .updateImgProduct(path, snapshot.data)
+                                  .updateImgProduct(path, snapshot.data,imgPath)
                                   .then((value) {
                                 Toast.show('Cambiato!', context, duration: 3);
                               });

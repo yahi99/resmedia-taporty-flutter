@@ -13,6 +13,7 @@ import 'package:resmedia_taporty_flutter/drivers/interface/sliver/SliverOrderVoi
 import 'package:resmedia_taporty_flutter/drivers/interface/view/TurnView.dart';
 import 'package:resmedia_taporty_flutter/drivers/logic/bloc/TurnBloc.dart';
 import 'package:resmedia_taporty_flutter/drivers/model/TurnModel.dart';
+import 'package:resmedia_taporty_flutter/logic/bloc/RestaurantBloc.dart';
 import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
 import 'package:resmedia_taporty_flutter/logic/database.dart';
 import 'package:toast/toast.dart';
@@ -275,12 +276,13 @@ class _TurnWorkTabDriverState extends State<EditRestScreen> {
                             context,
                             duration: 3);
                       } else {
+                        final img=(await RestaurantBloc.init(idRestaurant: (await UserBloc.of().outUser.first).model.restaurantId).outRestaurant.first).img;
                         uploadFile(path).then((path) async {
                           Database().updateImg(
                               path,
                               (await UserBloc.of().outUser.first)
                                   .model
-                                  .restaurantId).then((value){
+                                  .restaurantId,img).then((value){
                             Toast.show('Cambiato!', context,duration: 3);
                           });
                         });

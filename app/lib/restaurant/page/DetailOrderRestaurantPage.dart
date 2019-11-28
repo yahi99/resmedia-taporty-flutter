@@ -82,12 +82,9 @@ class _DetailOrderRestaurantPageState extends State<DetailOrderRestaurantPage> {
                         shrinkWrap: true,
                         itemCount: cart.products.length,
                         itemBuilder: (BuildContext ctx, int index) {
-                          return Text(cart.products.elementAt(index).id +
-                              ' x' +
-                              cart.products
+                          return ProductView(model:cart.products.elementAt(index),number:cart.products
                                   .elementAt(index)
-                                  .countProducts
-                                  .toString());
+                                  .countProducts);
                         }),
                     (translateOrderCategory(widget.model.state) ==
                             'In Accettazione')
@@ -183,6 +180,57 @@ class _DetailOrderRestaurantPageState extends State<DetailOrderRestaurantPage> {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class ProductView extends StatelessWidget {
+  final ProductCart model;
+  final int number;
+  //final StreamController<String> imgStream=new StreamController.broadcast();
+
+  ProductView(
+      {Key key,
+        @required this.model,@required this.number})
+      : super(key: key);
+
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    //if(model.number!=null) downloadFile(model.img);
+
+    TextEditingController ctrl=new TextEditingController();
+    return DefaultTextStyle(
+      style: theme.textTheme.body1,
+      child: SizedBox(
+        height: 110,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Row(
+              children: <Widget>[
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                        '${model.id.substring(0, (15 < model.id.length) ? 15 : model.id.length)}'),
+                    Text('€ ${model.price}'),
+                  ],
+                ),
+              ],
+            ),
+            Container(
+              child:TextFormField(
+                enabled: false,
+                initialValue: number.toString(),
+              ),
+              width: MediaQuery.of(context).size.width/5,
+            ),
+          ],
+        ),
       ),
     );
   }

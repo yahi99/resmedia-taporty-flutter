@@ -2,13 +2,17 @@ import 'dart:async';
 
 import 'package:easy_blocs/easy_blocs.dart';
 import 'package:easy_route/easy_route.dart';
+import 'package:easy_widget/easy_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:resmedia_taporty_flutter/data/config.dart';
+import 'package:resmedia_taporty_flutter/drivers/interface/screen/DetailedOrderUser.dart';
 import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
 import 'package:resmedia_taporty_flutter/logic/database.dart';
 import 'package:resmedia_taporty_flutter/model/OrderModel.dart';
+import 'package:resmedia_taporty_flutter/model/ProductModel.dart';
+import 'package:vibration/vibration.dart';
 
 class TypeOrderView extends StatefulWidget implements WidgetRoute {
 static const String ROUTE = "TypeOrderView";
@@ -244,7 +248,8 @@ class _LoginScreenState extends State<TypeOrderView> {
         }
     );*/
     final cart = Cart(products: widget.model.products);
-    return Stack(
+    return InkWell(
+        child:Stack(
       alignment: Alignment.center,
       children: <Widget>[
         Center(
@@ -258,13 +263,11 @@ class _LoginScreenState extends State<TypeOrderView> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text('Prodotti: ', style: theme.textTheme.subtitle),
-                  ListView.builder(
+                  ListView(
                       physics: NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
-                      itemCount: cart.products.length + 2,
-                      itemBuilder: (BuildContext ctx, int index) {
-                        if (index == cart.products.length)
-                          return Column(
+                      children:<Widget> [
+                        Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               Text('Prezzo totale: ',
@@ -277,9 +280,8 @@ class _LoginScreenState extends State<TypeOrderView> {
                                       .toString() +
                                   ' euro'),
                             ],
-                          );
-                        else if (index == cart.products.length + 1)
-                          return Column(
+                          ),
+                        Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               /*Text('Data Ordine: ',
@@ -291,16 +293,9 @@ class _LoginScreenState extends State<TypeOrderView> {
                                   style: theme.textTheme.subtitle),
                               Text(translateOrderCategory(widget.model.state)),
                             ],
-                          );
-                        else {
-                          return Text(cart.products.elementAt(index).id +
-                              ' x' +
-                              cart.products
-                                  .elementAt(index)
-                                  .countProducts
-                                  .toString());
-                        }
-                      }),
+                          ),
+                      ],
+                  ),
                   (translateOrderCategory(widget.model.state)=='Consegnato' &&  widget.model.isReviewed==null)?RaisedButton(
                     child: Text('Lascia una Recensione'),
                     onPressed: (){
@@ -320,6 +315,10 @@ class _LoginScreenState extends State<TypeOrderView> {
           ),
         ),
       ],
+        ),
+      onTap: (){
+          EasyRouter.push(context, DetailedOrderUser(model: widget.model,));
+      },
     );
   }
 }

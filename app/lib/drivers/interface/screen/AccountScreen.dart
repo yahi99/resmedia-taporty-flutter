@@ -42,6 +42,7 @@ class AccountScreenDriver extends StatelessWidget implements WidgetRoute {
             return Center(
               child: CircularProgressIndicator(),
             );
+          if(snap.data.model.type!='user') EasyRouter.pushAndRemoveAll(context, LoginScreen());
           print(snap.data.model.isDriver);
           var temp = snap.data.model.nominative.split(' ');
           return Column(

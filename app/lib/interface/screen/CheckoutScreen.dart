@@ -3,11 +3,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoder/model.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:resmedia_taporty_flutter/control/interface/screen/LoginScreen.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/screen/AccountScreen.dart';
 import 'package:resmedia_taporty_flutter/interface/page/CartPage.dart';
 import 'package:resmedia_taporty_flutter/interface/page/ConfirmPage.dart';
 import 'package:resmedia_taporty_flutter/interface/page/PaymentPage.dart';
 import 'package:resmedia_taporty_flutter/interface/page/ShippingPage.dart';
+import 'package:resmedia_taporty_flutter/interface/screen/RestaurantListScreen.dart';
+import 'package:resmedia_taporty_flutter/logic/bloc/RestaurantBloc.dart';
+import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
 import 'package:resmedia_taporty_flutter/mainRestaurant.dart';
 import 'package:resmedia_taporty_flutter/model/RestaurantModel.dart';
 import 'package:resmedia_taporty_flutter/model/UserModel.dart';
@@ -106,31 +110,48 @@ class _CheckoutScreenState extends State<CheckoutScreen>
               ),
             ),
           ),
-          child: MyInheritedWidget(
-            child: TabBarView(
-              controller: controller,
-              physics: NeverScrollableScrollPhysics(),
-              children: <Widget>[
-                CartPage(
-                  model: widget.model,
-                  controller: controller,
-                ),
-                ShippingPage(
-                  user: widget.user,
-                  address: widget.description,
-                  controller: controller,
-                ),
-                PaymentPage(
-                  controller,
-                ),
-                ConfirmPage(
-                  model: widget.model,
-                  position: widget.position,
-                  description: widget.description,
-                  controller: controller,
-                ),
-              ],
-            ),
+          child: StreamBuilder<User>(
+            stream: UserBloc.of().outUser,
+            builder: (ctx,user){
+              return StreamBuilder<RestaurantModel>(
+                stream: RestaurantBloc.init(idRestaurant:widget.model.id).outRestaurant,
+                builder: (ctx,rest){
+                  if(user.hasData && rest.hasData){
+                    if(user.data.model.type!='user') {
+                      EasyRouter.pushAndRemoveAll(context, LoginScreen());
+                    }
+                    if(rest.data.isDisabled) EasyRouter.popUntil(context, RestaurantListScreen.ROUTE);
+                    return MyInheritedWidget(
+                      child: TabBarView(
+                        controller: controller,
+                        physics: NeverScrollableScrollPhysics(),
+                        children: <Widget>[
+                          CartPage(
+                            model: widget.model,
+                            controller: controller,
+                          ),
+                          ShippingPage(
+                            user: widget.user,
+                            address: widget.description,
+                            controller: controller,
+                          ),
+                          PaymentPage(
+                            controller,
+                          ),
+                          ConfirmPage(
+                            model: widget.model,
+                            position: widget.position,
+                            description: widget.description,
+                            controller: controller,
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+                  return Center(child: CircularProgressIndicator(),);
+                },
+              );
+            },
           ),
         ),
       ),

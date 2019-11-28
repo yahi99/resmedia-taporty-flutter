@@ -304,13 +304,14 @@ class _TurnWorkTabDriverState extends State<ManageRestPage> {
                             context,
                             duration: 3);
                       } else {
+                        final img=widget.rest.img;
                         uploadFile(path).then((path) async {
                           Database()
                               .updateImg(
                                   path,
                                   (await UserBloc.of().outUser.first)
                                       .model
-                                      .restaurantId)
+                                      .restaurantId,img)
                               .then((value) {
                             Toast.show('Cambiato!', context, duration: 3);
                           });

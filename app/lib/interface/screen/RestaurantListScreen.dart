@@ -5,6 +5,7 @@ import 'dart:typed_data';
 
 import 'package:easy_blocs/easy_blocs.dart';
 import 'package:easy_route/easy_route.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
@@ -202,53 +203,67 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
       body: CacheStreamBuilder<List<RestaurantModel>>(
           stream: _restaurantsBloc.outRestaurants,
           builder: (context, snap) {
-            if (!snap.hasData)
-              return Center(
-                child: CircularProgressIndicator(),
-              );
-            return SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: CardListView(
-                  children: snap.data.map<Widget>((_model) {
-                    //final distance=Distance();
-                    var stream;
-                    if (_model.getPos() != null && widget.position != null) {
-                      final LatLng start = _model.getPos();
-                      final LatLng end = LatLng(
-                          widget.position.latitude, widget.position.longitude);
-                      stream = userBloc.getDistance(start, end).asStream();
-                      // TODO: Rimuovere l'else che permette un comportamento scorretto.
-                    } else
-                      stream = userBloc.getMockDistance().asStream();
-                    return StreamBuilder<double>(
-                        stream: stream,
-                        builder: (ctx, snap) {
-                          if (!snap.hasData) return Container();
-                          // TODO: Ripristinare a tempo debito.
-                          // if(snap.data/1000<_model.km) {
-                          if (_model.isDisabled!=null && _model.isDisabled) return Container();
-                            return InkWell(
-                              onTap: ()async {
-                                EasyRouter.push(
-                                  context,
-                                  RestaurantScreen(
-                                    address: (await Geocoder.local
-                                        .findAddressesFromCoordinates(new Coordinates(widget.position.latitude,widget.position.longitude))).first.addressLine,
-                                    position: widget.position,
+            return StreamBuilder<User>(
+              stream: UserBloc.of().outUser,
+              builder: (ctx,user){
+                if (snap.hasData && user.hasData) {
+                  if(user.data.model.type!='user') EasyRouter.pushAndRemoveAll(context, LoginScreen());
+                  return SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: CardListView(
+                        children: snap.data.map<Widget>((_model) {
+                          //final distance=Distance();
+                          var stream;
+                          if (_model.getPos() != null &&
+                              widget.position != null) {
+                            final LatLng start = _model.getPos();
+                            final LatLng end = LatLng(
+                                widget.position.latitude,
+                                widget.position.longitude);
+                            stream =
+                                userBloc.getDistance(start, end).asStream();
+                            // TODO: Rimuovere l'else che permette un comportamento scorretto.
+                          } else
+                            stream = userBloc.getMockDistance().asStream();
+                          return StreamBuilder<double>(
+                              stream: stream,
+                              builder: (ctx, snap) {
+                                if (!snap.hasData) return Container();
+                                // TODO: Ripristinare a tempo debito.
+                                // if(snap.data/1000<_model.km) {
+                                if (_model.isDisabled != null &&
+                                    _model.isDisabled) return Container();
+                                return InkWell(
+                                  onTap: () async {
+                                    EasyRouter.push(
+                                      context,
+                                      RestaurantScreen(
+                                        address: (await Geocoder.local
+                                            .findAddressesFromCoordinates(
+                                            new Coordinates(
+                                                widget.position.latitude,
+                                                widget.position.longitude)))
+                                            .first.addressLine,
+                                        position: widget.position,
+                                        model: _model,
+                                      ),
+                                    );
+                                  },
+                                  child: RestaurantView(
                                     model: _model,
                                   ),
                                 );
-                              },
-                              child: RestaurantView(
-                                model: _model,
-                              ),
-                            );
-
-                        });
-                  }).toList(),
-                ),
-              ),
+                              });
+                        }).toList(),
+                      ),
+                    ),
+                  );
+                }
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              },
             );
           }),
     );
@@ -291,7 +306,7 @@ class RestaurantView extends StatelessWidget {
     final StorageUploadTask task = ref.putFile(file);
     final Uri downloadUrl = (await task.onComplete).uploadSessionUri;
 
-    Database().updateImg(await ref.getDownloadURL(), model.id);
+    //Database().updateImg(await ref.getDownloadURL(), model.id);
 
     //_path = downloadUrl.toString();
     return 'ok';

@@ -4,11 +4,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:resmedia_taporty_flutter/control/interface/screen/LoginScreen.dart';
 import 'package:resmedia_taporty_flutter/data/config.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/screen/AccountScreen.dart';
 import 'package:resmedia_taporty_flutter/interface/page/InfoRestaurantPage.dart';
 import 'package:resmedia_taporty_flutter/interface/page/MenuPages.dart';
 import 'package:resmedia_taporty_flutter/interface/screen/CheckoutScreen.dart';
+import 'package:resmedia_taporty_flutter/interface/screen/RestaurantListScreen.dart';
 import 'package:resmedia_taporty_flutter/logic/bloc/CartBloc.dart';
 import 'package:resmedia_taporty_flutter/logic/bloc/RestaurantBloc.dart';
 import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
@@ -118,6 +120,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                         stream: UserBloc.of().outUser,
                         builder: (ctx, user) {
                           if (drinks.hasData && foods.hasData && user.hasData) {
+                            //if(user.data.model.type!='user') EasyRouter.pushAndRemoveAll(context, LoginScreen());
                             int count = drinks.data.getTotalItems(
                                 drinks.data.products,
                                 user.data.userFb.uid,
@@ -226,12 +229,27 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                   )
                 ]),
           ),
-          body: TabBarView(
-            children: <Widget>[
-              InfoRestaurantPage(address: widget.address, model: widget.model),
-              FoodsPage(model: widget.model),
-              DrinksPage(model: widget.model),
-            ],
+          body: StreamBuilder<User>(
+            stream: UserBloc.of().outUser,
+            builder: (ctx,user){
+              return StreamBuilder<RestaurantModel>(
+                stream: RestaurantBloc.init(idRestaurant: widget.model.id).outRestaurant,
+                builder: (ctx,rest){
+                  if(user.hasData && rest.hasData){
+                    if(user.data.model.type!='user') EasyRouter.pushAndRemoveAll(context, LoginScreen());
+                    if(rest.data.isDisabled) EasyRouter.popUntil(context, RestaurantListScreen.ROUTE);
+                    return TabBarView(
+                      children: <Widget>[
+                        InfoRestaurantPage(address: widget.address, model: widget.model),
+                        FoodsPage(model: widget.model),
+                        DrinksPage(model: widget.model),
+                      ],
+                    );
+                  }
+                  return Center(child: CircularProgressIndicator(),);
+                },
+              );
+            },
           ),
           bottomNavigationBar: BottomAppBar(
             child: Container(

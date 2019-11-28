@@ -58,7 +58,7 @@ class ProductView extends StatelessWidget {
       final StorageUploadTask task = ref.putFile(file);
       final Uri downloadUrl = (await task.onComplete).uploadSessionUri;
 
-      Database().updateImgProduct(await ref.getDownloadURL(), model);
+      //Database().updateImgProduct(await ref.getDownloadURL(), model);
       //_path = downloadUrl.toString();
       return 'ok';
     }

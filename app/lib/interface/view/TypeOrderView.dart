@@ -3,6 +3,8 @@ import 'package:easy_route/easy_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:resmedia_taporty_flutter/logic/bloc/OrdersBloc.dart';
+import 'package:resmedia_taporty_flutter/logic/database.dart';
 import 'package:resmedia_taporty_flutter/model/OrderModel.dart';
 import 'package:resmedia_taporty_flutter/restaurant/page/DetailOrderRestaurantPage.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -32,96 +34,71 @@ class TypeOrderView extends StatelessWidget {
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
     var tt = theme.textTheme;
-    /*final _restaurantsBloc = RestaurantsBloc.instance(model.id);
-    return CacheStreamBuilder<List<RestaurantModel>>(
-        stream: _restaurantsBloc.outRestaurants,
-        builder: (context, snap) {
-          return Stack(
-              alignment: Alignment.center,
-              children: snap.data.map<Widget>((_model) {
-                AspectRatio(
-                  aspectRatio: 2,
-                  child: Image.asset(_model.img, fit: BoxFit.fill,),
-                );
-                Center(
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                      minWidth: 186,
-                      minHeight: 48,
-                    ),
-                    child: RaisedButton(
-                      onPressed: () {
-                        EasyRouter.push(context,
-                          RestaurantListScreen(
-                            title: _model.title, models: _model,),);
-                      },
-                      child: Text(_model.title, style: textButtonTheme,),
-                    ),
-                  ),
-
-                );
-              }
-              ),
-          );
-        }
-    );*/
     final cart = Cart(products: model.products);
-    return Stack(
-      alignment: Alignment.center,
-      children: <Widget>[
-        GestureDetector(
-          onTap: () {
-            EasyRouter.push(context, DetailOrderRestaurantPage(model: model));
-          },
-          child: ConstrainedBox(
-            constraints: BoxConstraints(
-              minWidth: 186,
-              minHeight: 48,
-            ),
-            child: Container(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Wrap(
-                    runSpacing: 16.0,
+    return StreamBuilder<RestaurantOrderModel>(
+      stream: Database().getRestaurantOrder(model.restaurantId, model.id),
+      builder: (ctx,order){
+        if(!order.hasData) return Center(child: CircularProgressIndicator(),);
+        final model=order.data;
+        final temp=model.endTime.split(':');
+        final day=DateTime.parse(model.day);
+        final time=DateTime(day.year,day.month,day.day,int.parse(temp.elementAt(0)),int.parse(temp.elementAt(1)));
+        return Stack(
+          alignment: Alignment.center,
+          children: <Widget>[
+            GestureDetector(
+              onTap: () {
+                EasyRouter.push(context, DetailOrderRestaurantPage(model: model));
+              },
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minWidth: 186,
+                  minHeight: 48,
+                ),
+                child: Container(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Text('Cliente: ', style: tt.subtitle),
-                      Text(model.nominative),
-                      Text('Giorno di consegna: ', style: tt.subtitle),
-                      Text(model.day),
-                      Text('Ora di consegna: ', style: tt.subtitle),
-                      Text(model.endTime),
-                      Text('Numero di prodotti: ', style: tt.subtitle),
-                      Text(totalProducts(model.products).toString()),
-                      Text('Prezzo totale: ', style: tt.subtitle),
-                      Text(cart
+                      Wrap(
+                        runSpacing: 16.0,
+                        children: <Widget>[
+                          Text('Cliente: ', style: tt.subtitle),
+                          Text(model.nominative),
+                          Text('Giorno di consegna: ', style: tt.subtitle),
+                          Text(model.day),
+                          Text('Ora di consegna: ', style: tt.subtitle),
+                          Text(model.endTime),
+                          Text('Numero di prodotti: ', style: tt.subtitle),
+                          Text(totalProducts(model.products).toString()),
+                          Text('Prezzo totale: ', style: tt.subtitle),
+                          Text(cart
                               .getTotalPrice(
-                                  cart.products,
-                                  cart.products.first.userId,
-                                  cart.products.first.restaurantId)
+                              cart.products,
+                              cart.products.first.userId,
+                              cart.products.first.restaurantId)
                               .toString() +
-                          ' euro'),
-                      Text('Stato dell\'ordine: ', style: tt.subtitle),
-                      Text(translateOrderCategory(model.state)),
-                      Center(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                          child: RaisedButton(
-                            color: theme.colorScheme.secondaryVariant,
-                            onPressed: () {
-                              print(model.phone);
-                              launch('tel:'+model.phone);
-                            },
-                            child: Text(
-                              "Chiama",
-                              style: tt.button,
+                              ' euro'),
+                          Text('Stato dell\'ordine: ', style: tt.subtitle),
+                          Text(translateOrderCategory(model.state)),
+                          Center(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                              child: RaisedButton(
+                                color: theme.colorScheme.secondaryVariant,
+                                onPressed: () {
+                                  print(model.phone);
+                                  launch('tel:'+model.phone);
+                                },
+                                child: Text(
+                                  "Chiama",
+                                  style: tt.button,
+                                ),
+                              ),
                             ),
                           ),
-                        ),
+                        ],
                       ),
-                    ],
-                  ),
-                  /*ListView.builder(
+                      /*ListView.builder(
                       shrinkWrap: true,
                       itemCount: cart.products.length + 2,
                       itemBuilder: (BuildContext ctx, int index) {
@@ -186,20 +163,22 @@ class TypeOrderView extends StatelessWidget {
                         )
                       : Container(),
                       */
-                ],
+                    ],
+                  ),
+                  padding: EdgeInsets.all(4.0),
+                  decoration: BoxDecoration(
+                      border: Border.all(
+                        color:
+                        (time.difference(DateTime.now()).inMinutes>0 && time.difference(DateTime.now()).inMinutes <=45)
+                            ? Colors.red
+                            : Colors.black,
+                      )),
+                ),
               ),
-              padding: EdgeInsets.all(4.0),
-              decoration: BoxDecoration(
-                  border: Border.all(
-                color:
-                    (translateOrderCategory(model.state) == 'In Accettazione')
-                        ? Colors.red
-                        : Colors.black,
-              )),
             ),
-          ),
-        ),
-      ],
+          ],
+        );
+      },
     );
   }
 }

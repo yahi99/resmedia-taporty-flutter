@@ -67,6 +67,9 @@ class TypeCtrlOrderView extends StatelessWidget {
         }
     );*/
     final cart = Cart(products: model.products);
+    final temp=model.endTime.split(':');
+    final day=DateTime.parse(model.day);
+    final time=DateTime(day.year,day.month,day.day,int.parse(temp.elementAt(0)),int.parse(temp.elementAt(1)));
     return Stack(
       alignment: Alignment.center,
       children: <Widget>[
@@ -177,7 +180,7 @@ class TypeCtrlOrderView extends StatelessWidget {
               decoration: BoxDecoration(
                   border: Border.all(
                     color:
-                    (translateOrderCategory(model.state) == 'In Accettazione')
+                    (time.difference(DateTime.now()).inMinutes>0 && time.difference(DateTime.now()).inMinutes <=45)
                         ? Colors.red
                         : Colors.black,
                   )),

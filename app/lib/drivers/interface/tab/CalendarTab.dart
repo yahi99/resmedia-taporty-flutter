@@ -55,6 +55,16 @@ class _CalendarState extends State<CalendarTabDriver>
     return false;
   }
 
+  int daysLeft(int weekDay){
+    if(weekDay==7) return 0;
+    if(weekDay==6) return 1;
+    if(weekDay==5) return 2;
+    if(weekDay==4) return 3;
+    if(weekDay==3) return 4;
+    if(weekDay==2) return 5;
+    if(weekDay==1) return 6;
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -74,8 +84,9 @@ class _CalendarState extends State<CalendarTabDriver>
                 MonthPicker(
                   selectedDate: widget.date,
                   firstDate: DateTime(DateTime.now().year, DateTime.now().month,
-                      DateTime.now().day - 1),
-                  lastDate: DateTime(2020),
+                      DateTime.now().day),
+                  lastDate: DateTime(DateTime.now().year, DateTime.now().month,
+                      DateTime.now().day).add(Duration(days: daysLeft(DateTime.now().weekday)+28)),
                   //displayedMonth: DateTime.now(),
                   //currentDate: DateTime.now(),
                   onChanged: change,

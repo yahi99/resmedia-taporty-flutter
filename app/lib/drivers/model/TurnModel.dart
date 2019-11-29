@@ -10,10 +10,13 @@ part 'TurnModel.g.dart';
 class TurnModel extends FirebaseModel {
   final String startTime, endTime, day,restaurantId;
   MonthCategory month;
+  String driver,oid;
 
   TurnModel({
     String path,
     this.restaurantId,
+    this.driver,
+    this.oid,
     @required this.startTime,
     @required this.month,
     @required this.day,

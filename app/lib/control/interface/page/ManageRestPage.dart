@@ -52,7 +52,7 @@ class _TurnWorkTabDriverState extends State<ManageRestPage> {
 
     final StorageReference ref = FirebaseStorage.instance.ref().child(fileName);
     final StorageUploadTask task = ref.putFile(file);
-    final Uri downloadUrl = (await task.onComplete).uploadSessionUri;
+    //final Uri downloadUrl = (await task.onComplete).uploadSessionUri;
 
     //_path = downloadUrl.toString();
     _path = (await ref.getDownloadURL());

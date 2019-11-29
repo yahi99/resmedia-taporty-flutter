@@ -10,12 +10,12 @@ part 'ProductRequestModel.g.dart';
 
 @JsonSerializable(anyMap: true, explicitToJson: true, includeIfNull: false)
 class ProductRequestModel extends FirebaseModel {
-  String cat,category,img,price,quantity,restaurantId;
+  String cat,category,img,price,quantity,restaurantId,title;
 
   ProductRequestModel({
     String path,
     @required this.cat,@required this.category,
-    @required this.img,@required this.price,
+    @required this.img,@required this.price,@required this.title,
     @required this.quantity,@required this.restaurantId
   }) : super(path);
 

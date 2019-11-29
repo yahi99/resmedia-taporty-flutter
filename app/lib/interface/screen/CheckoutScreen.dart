@@ -72,9 +72,7 @@ class _CheckoutScreenState extends State<CheckoutScreen>
           bottom: TabBar(
             controller: controller,
             onTap: (index) {
-              setState(() {
-                controller.index = controller.previousIndex;
-              });
+              if(index<controller.index) controller.animateTo(index);
             },
             tabs: [
               Tab(

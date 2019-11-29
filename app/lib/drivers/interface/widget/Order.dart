@@ -4,9 +4,13 @@ import 'package:resmedia_taporty_flutter/data/config.dart';
 class Order extends StatelessWidget {
   final List<Widget> children;
   final String date;
+  final String endTime;
+  final bool isNear;
 
   const Order({
     Key key,
+    this.isNear,
+    this.endTime,
     this.date,
     @required this.children,
   }) : super(key: key);
@@ -21,7 +25,7 @@ class Order extends StatelessWidget {
     final tt=Theme.of(context).textTheme;
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey[300]),
+        border: Border.all(color: (isNear)?Colors.red:Colors.grey[300]),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
       child: Column(
@@ -39,7 +43,7 @@ class Order extends StatelessWidget {
                 ),
                 Flexible(
                   child: Container(
-                    child: Text(toDate(date)),
+                    child: Text(toDate(date)+' alle '+endTime),
                   ),
                 ),
               ],

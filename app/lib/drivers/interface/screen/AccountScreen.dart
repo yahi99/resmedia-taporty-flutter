@@ -1,8 +1,15 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_route/easy_route.dart';
 import 'package:easy_widget/easy_widget.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:geocoder/geocoder.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:resmedia_taporty_flutter/data/config.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/screen/BecomeDriverScreen.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/screen/BecomeRestaurantScreen.dart';
@@ -14,12 +21,27 @@ import 'package:resmedia_taporty_flutter/drivers/interface/screen/SettingsScreen
 import 'package:resmedia_taporty_flutter/interface/screen/LoginScreen.dart';
 import 'package:resmedia_taporty_flutter/logic/bloc/OrdersBloc.dart';
 import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
+import 'package:resmedia_taporty_flutter/logic/database.dart';
 import 'package:resmedia_taporty_flutter/model/UserModel.dart';
+import 'package:toast/toast.dart';
 
 class AccountScreenDriver extends StatelessWidget implements WidgetRoute {
   static const ROUTE = 'AccountScreenDriver';
 
   String get route => ROUTE;
+
+  Future<String> uploadFile(String filePath) async {
+    final Uint8List bytes = File(filePath).readAsBytesSync();
+    final Directory tempDir = Directory.systemTemp;
+    final String fileName = filePath.split('/').last;
+    final File file = File('${tempDir.path}/$fileName');
+    file.writeAsBytes(bytes, mode: FileMode.write);
+
+    final StorageReference ref = FirebaseStorage.instance.ref().child(fileName);
+    final StorageUploadTask task = ref.putFile(file);
+    //final Uri downloadUrl = (await task.onComplete).uploadSessionUri;
+    return (await ref.getDownloadURL());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +64,8 @@ class AccountScreenDriver extends StatelessWidget implements WidgetRoute {
             return Center(
               child: CircularProgressIndicator(),
             );
-          if(snap.data.model.type!='user') EasyRouter.pushAndRemoveAll(context, LoginScreen());
+          if (snap.data.model.type != 'user')
+            EasyRouter.pushAndRemoveAll(context, LoginScreen());
           print(snap.data.model.isDriver);
           var temp = snap.data.model.nominative.split(' ');
           return Column(
@@ -58,6 +81,39 @@ class AccountScreenDriver extends StatelessWidget implements WidgetRoute {
                     ),
                   ),
                   Padding(
+                    padding: EdgeInsets.only(top:25.0,left:8.0),
+                    child: IconButton(
+                      icon: Icon(Icons.camera_alt),
+                      onPressed: () async {
+                        ImagePicker.pickImage(source: ImageSource.camera)
+                            .then((file) {
+                          if (file != null) {
+                            uploadFile(file.path).then((path) async {
+                              Database()
+                                  .updateImg(
+                                  path,
+                                  snap.data.model.id,snap.data.model.img)
+                                  .then((value) {
+                                Toast.show('Cambiato!', context, duration: 3);
+                              });
+                            });
+                          } else {
+                            Toast.show('Devi scegliere un\'immagine!', context,
+                                duration: 3);
+                          }
+                        }).catchError((error) {
+                          if (error is PlatformException) {
+                            if (error.code == 'photo_access_denied')
+                              Toast.show(
+                                  'Devi garantire accesso alle immagini!',
+                                  context,
+                                  duration: 3);
+                          }
+                        });
+                      },
+                    ),
+                  ),
+                  Padding(
                     padding: EdgeInsets.only(top: 25.0),
                     child: Container(
                       width: 190.0,
@@ -65,16 +121,13 @@ class AccountScreenDriver extends StatelessWidget implements WidgetRoute {
                       child: Container(
                         width: double.infinity,
                         height: double.infinity,
-                        child: (snap.data.userFb.photoUrl != null)
+                        child: (snap.data.model.img != null)
                             ? CircleAvatar(
                                 backgroundImage: CachedNetworkImageProvider(
-                                    snap.data.userFb.photoUrl))
-                            : Container(
-                                child: Center(
-                                  child: AutoSizeText(
-                                      "\n\n\n Nessun'immagine del profilo selezionata",
-                                      textAlign: TextAlign.center),
-                                ),
+                                    snap.data.model.img))
+                            : CircleAvatar(
+                                backgroundImage: CachedNetworkImageProvider(
+                                    'assets/img/home/fotoprofilo.jpg'),
                               ),
                       ),
                     ),
@@ -85,7 +138,16 @@ class AccountScreenDriver extends StatelessWidget implements WidgetRoute {
                 padding: EdgeInsets.only(top: 8.0),
               ),
               Text(snap.data.model.nominative),
-              Text('Assisi'),
+              StreamBuilder<List<Address>>(
+                stream: Geocoder.local
+                    .findAddressesFromCoordinates(
+                        Coordinates(snap.data.model.lat, snap.data.model.lng))
+                    .asStream(),
+                builder: (ctx, snap) {
+                  if (snap.hasData) return Text(snap.data.first.locality);
+                  return Container();
+                },
+              ),
               const Divider(
                 color: Colors.grey,
               ),
@@ -177,8 +239,8 @@ class AccountScreenDriver extends StatelessWidget implements WidgetRoute {
                       children: <Widget>[
                         Icon(Icons.settings),
                         FlatButton(
-                            child: Text('Log Out',
-                                style: theme.textTheme.subhead),
+                            child:
+                                Text('Log Out', style: theme.textTheme.subhead),
                             onPressed: () {
                               user.logout().then((onValue) {
                                 EasyRouter.pushAndRemoveAll(

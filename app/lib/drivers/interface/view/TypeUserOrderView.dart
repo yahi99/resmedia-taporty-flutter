@@ -6,12 +6,14 @@ import 'package:easy_widget/easy_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:resmedia_taporty_flutter/data/config.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/screen/DetailedOrderUser.dart';
 import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
 import 'package:resmedia_taporty_flutter/logic/database.dart';
 import 'package:resmedia_taporty_flutter/model/OrderModel.dart';
 import 'package:resmedia_taporty_flutter/model/ProductModel.dart';
+import 'package:toast/toast.dart';
 import 'package:vibration/vibration.dart';
 
 class TypeOrderView extends StatefulWidget implements WidgetRoute {
@@ -214,111 +216,102 @@ class _LoginScreenState extends State<TypeOrderView> {
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
     var textButtonTheme = theme.textTheme.title.copyWith(color: Colors.white);
-    /*final _restaurantsBloc = RestaurantsBloc.instance(model.id);
-    return CacheStreamBuilder<List<RestaurantModel>>(
-        stream: _restaurantsBloc.outRestaurants,
-        builder: (context, snap) {
-          return Stack(
-              alignment: Alignment.center,
-              children: snap.data.map<Widget>((_model) {
-                AspectRatio(
-                  aspectRatio: 2,
-                  child: Image.asset(_model.img, fit: BoxFit.fill,),
-                );
-                Center(
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                      minWidth: 186,
-                      minHeight: 48,
-                    ),
-                    child: RaisedButton(
-                      onPressed: () {
-                        EasyRouter.push(context,
-                          RestaurantListScreen(
-                            title: _model.title, models: _model,),);
-                      },
-                      child: Text(_model.title, style: textButtonTheme,),
-                    ),
-                  ),
-
-                );
-              }
-              ),
-          );
-        }
-    );*/
     final cart = Cart(products: widget.model.products);
-    return InkWell(
-        child:Stack(
-      alignment: Alignment.center,
-      children: <Widget>[
-        Center(
-          child: ConstrainedBox(
-            constraints: BoxConstraints(
-              minWidth: 186,
-              minHeight: 48,
-            ),
-            child: Container(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text('Prodotti: ', style: theme.textTheme.subtitle),
-                  ListView(
-                      physics: NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      children:<Widget> [
-                        Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text('Prezzo totale: ',
-                                  style: theme.textTheme.subtitle),
-                              Text(cart
-                                      .getTotalPrice(
-                                          cart.products,
-                                          cart.products.first.userId,
-                                          cart.products.first.restaurantId)
-                                      .toString() +
-                                  ' euro'),
-                            ],
-                          ),
-                        Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              /*Text('Data Ordine: ',
+    return StreamBuilder<UserOrderModel>(
+      stream: Database().getUserOrder(widget.model.uid, widget.model.id),
+      builder: (ctx,order){
+        if(!order.hasData) return Center(child: CircularProgressIndicator(),);
+        final model=order.data;
+        final temp=model.endTime.split(':');
+        final day=DateTime.parse(model.day);
+        final time=DateTime(day.year,day.month,day.day,int.parse(temp.elementAt(0)),int.parse(temp.elementAt(1)));
+        return Slidable(
+          actionPane: SlidableDrawerActionPane(),
+          actionExtentRatio: 0.25,
+          secondaryActions: <Widget>[
+            IconSlideAction(
+              icon: Icons.close,
+              color: theme.accentColor,
+              onTap: () async{
+                //TODO:DELETE ORDER
+                Database().deleteOrder(order.data,(await UserBloc.of().outUser.first).model.id);
+              },
+            )
+          ],
+            child:InkWell(
+          child:Stack(
+            alignment: Alignment.center,
+            children: <Widget>[
+              Center(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minWidth: 186,
+                    minHeight: 48,
+                  ),
+                  child: Container(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text('Prodotti: ', style: theme.textTheme.subtitle),
+                        ListView(
+                          physics: NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          children:<Widget> [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text('Prezzo totale: ',
+                                    style: theme.textTheme.subtitle),
+                                Text(cart
+                                    .getTotalPrice(
+                                    cart.products,
+                                    cart.products.first.userId,
+                                    cart.products.first.restaurantId)
+                                    .toString() +
+                                    ' euro'),
+                              ],
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                /*Text('Data Ordine: ',
                                   style: theme.textTheme.subtitle),
                               Text(widget.model.timeR),*/
-                              Text('Data ed ora consegna: ',style: theme.textTheme.subtitle),
-                              Text((widget.model.day)+' alle ore '+widget.model.endTime),
-                              Text('Stato Ordine: ',
-                                  style: theme.textTheme.subtitle),
-                              Text(translateOrderCategory(widget.model.state)),
-                            ],
-                          ),
+                                Text('Data ed ora consegna: ',style: theme.textTheme.subtitle),
+                                Text((model.day)+' alle ore '+model.endTime),
+                                Text('Stato Ordine: ',
+                                    style: theme.textTheme.subtitle),
+                                Text(translateOrderCategory(model.state)),
+                              ],
+                            ),
+                          ],
+                        ),
+                        (translateOrderCategory(model.state)=='Consegnato' &&  model.isReviewed==null)?RaisedButton(
+                          child: Text('Lascia una Recensione'),
+                          onPressed: (){
+                            _addReview(context);
+                          },
+                        ):Container(),
                       ],
+                    ),
+                    padding: EdgeInsets.all(4.0),
+                    decoration: BoxDecoration(
+                        border: Border.all(
+                          color: (time.difference(DateTime.now()).inMinutes>0 && time.difference(DateTime.now()).inMinutes <=45)
+                              ? Colors.red
+                              : Colors.black,
+                        )),
                   ),
-                  (translateOrderCategory(widget.model.state)=='Consegnato' &&  widget.model.isReviewed==null)?RaisedButton(
-                    child: Text('Lascia una Recensione'),
-                    onPressed: (){
-                      _addReview(context);
-                    },
-                  ):Container(),
-                ],
+                ),
               ),
-              padding: EdgeInsets.all(4.0),
-              decoration: BoxDecoration(
-                  border: Border.all(
-                color: (translateOrderCategory(widget.model.state) == 'In Consegna')
-                    ? Colors.red
-                    : Colors.black,
-              )),
-            ),
+            ],
           ),
-        ),
-      ],
-        ),
-      onTap: (){
-          EasyRouter.push(context, DetailedOrderUser(model: widget.model,));
-      },
+          onTap: (){
+            EasyRouter.push(context, DetailedOrderUser(model: model,));
+          },
+            ),
+        );
+        },
     );
   }
 }

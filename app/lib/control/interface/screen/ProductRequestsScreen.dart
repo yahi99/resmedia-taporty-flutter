@@ -176,7 +176,7 @@ class ItemBuilder extends StatelessWidget{
                 ),
                 Flexible(
                   child: Container(
-                    child: Text(model.id),
+                    child: Text(model.title),
                   ),
                 ),
               ],

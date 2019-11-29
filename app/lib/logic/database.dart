@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:async';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -116,7 +117,8 @@ class Database extends FirebaseDatabase
 
   Future<void> createRequestProduct(String id, String img, String category,
       String price, String quantity, String restaurantId, String cat) async {
-    await fs.collection('product_requests').document(id).setData({
+    await fs.collection('product_requests').document(id+'§'+restaurantId).setData({
+      'title':id,
       'img': img,
       'category': category,
       'price': price,
@@ -214,11 +216,23 @@ class Database extends FirebaseDatabase
     }
   }
 
+  //if the order deletes and the user has already paid the control panel can reimburs the user
+  void deleteOrder(UserOrderModel order,String uid)async{
+    await fs.collection('users').document(uid).collection('user_orders').document(order.id).updateData({'state':'DELETED'});
+    await fs.collection('restaurants').document(order.restaurantId).collection('restaurant_orders').document(order.id).updateData({'state':'DELETED'});
+    await fs.collection('users').document(order.driver).collection('driver_orders').document(order.id).updateData({'state':'DELETED'});
+    await fs.collection('control_orders').document(order.id).updateData({'state':'DELETED'});
+  }
+
   Future<void> updateImg(String path,String restId,String previous)async{
     //TODO delete previous image
     await fs.collection('restaurants').document(restId).updateData({'img':path});
     _deleteFile(previous.split('/').last.split('?').first);
-
+  }
+  Future<void> updateAccountImg(String path,String uid,String previous)async{
+    //TODO delete previous image
+    await fs.collection('users').document(uid).updateData({'img':path});
+    if(previous!=null) _deleteFile(previous.split('/').last.split('?').first);
   }
 
   String _deleteFile(String path) {
@@ -283,12 +297,13 @@ class Database extends FirebaseDatabase
   }
 
   Future<void> addProduct(ProductRequestModel model)async{
-    await fs.collection(cl.RESTAURANTS).document(model.restaurantId).collection(model.cat).document(model.id).setData({
+    await fs.collection(cl.RESTAURANTS).document(model.restaurantId).collection(model.cat).document(model.title).setData({
       'img':model.img,
       'category':model.category,
       'price':model.price,
       'number':model.quantity,
       'restaurantId':model.restaurantId,
+      'isDisabled':false,
     });
     //await fs.collection('food_categories').document(model.category).setData({'translation':model.category});
     await fs.collection('product_requests').document(model.id).delete();
@@ -357,6 +372,52 @@ class Database extends FirebaseDatabase
     if (month == 10) return 'OCTOBER';
     if (month == 11) return 'NOVEMBER';
     return 'DECEMBER';
+  }
+
+  //TODO handle what happens to the orders maybe add a feature to the control panel that can assign a driver to an order
+  Future<bool> removeShiftRest(String startTime,String day,String restId)async{
+    fs.collection('restaurants').document(restId)
+          .collection('turns')
+          .document(day + '§' + startTime)
+          .delete();
+    /*
+      List<String> usersRest = CalendarModel
+          .fromFirebase(
+          await fs.collection('days').document(day).collection('times')
+              .document(startTime).collection('restaurant_turns').document(
+              restId)
+              .get())
+          .occupied;
+      List<String> usersFree = CalendarModel
+          .fromFirebase(
+          await fs.collection('days').document(day).collection('times')
+              .document(startTime)
+              .get())
+          .free;
+      List<String> usersOcc = CalendarModel
+          .fromFirebase(
+          await fs.collection('days').document(day).collection('times')
+              .document(startTime)
+              .get())
+          .occupied;
+      for (int i = 1; i < usersRest.length; i++) {
+        usersFree.add(usersRest.elementAt(i));
+        usersOcc.remove(usersRest.elementAt(i));
+        //await fs.collection('users').document(usersRest.elementAt(i)).collection('driver_orders').
+      }
+      await fs.collection('days').document(day).collection('times').document(
+          startTime).updateData({'free': usersFree, 'occupied': usersOcc});
+
+     */
+    return true;
+  }
+
+  Future<bool> removeShiftDriver(String startTime,String day,String driver)async{
+    fs.collection('restaurants').document(driver)
+        .collection('turns')
+        .document(day + '§' + startTime)
+        .delete();
+    return true;
   }
 
   Future<bool> addShift(String startTime,String endTime,String day,String number,String restId)async{
@@ -496,7 +557,9 @@ class Database extends FirebaseDatabase
               ..['addressR'] = addressR
               ..['fingerprint']=fingerprint
               ..['day']=day
-              ..['phone']=phone))
+              ..['phone']=phone
+              ..['isPaid']=false
+              ..['isReviewed']=false))
         .documentID;
     await fs
         .collection(cl.USERS)
@@ -533,8 +596,6 @@ class Database extends FirebaseDatabase
           ..['day']=day
           ..['endTime']=endTime);
     await fs
-        .collection(cl.RESTAURANTS)
-        .document(model.products.first.restaurantId)
         .collection('control_orders')
         .document(id)
         .setData(model.toJson()
@@ -549,7 +610,9 @@ class Database extends FirebaseDatabase
       ..['addressR'] = addressR
       ..['fingerprint']=fingerprint
       ..['day']=day
-      ..['phone']=phone);
+      ..['phone']=phone
+      ..['isPaid']=false
+      ..['isReviewed']=false);
   }
 
   /*Future<void> updateState({@required String uid, @required Cart model}) async {
@@ -594,6 +657,36 @@ class Database extends FirebaseDatabase
       return query.documents
           .map((snap) => RestaurantOrderModel.fromFirebase(snap))
           .toList();
+    });
+  }
+
+  Stream<RestaurantOrderModel> getRestaurantOrder(String restaurantId,String oid) {
+    return fs
+        .collection(cl.RESTAURANTS)
+        .document(restaurantId)
+        .collection('restaurant_orders')
+        .document(oid)
+        .snapshots().map((snap) {
+      return RestaurantOrderModel.fromFirebase(snap);
+    });
+  }
+  Stream<RestaurantOrderModel> getCtrlOrder(String oid) {
+    return fs
+        .collection('control_orders')
+        .document(oid)
+        .snapshots().map((snap) {
+      return RestaurantOrderModel.fromFirebase(snap);
+    });
+  }
+
+  Stream<UserOrderModel> getUserOrder(String uid,String oid) {
+    return fs
+        .collection(cl.USERS)
+        .document(uid)
+        .collection('user_orders')
+        .document(oid)
+        .snapshots().map((snap) {
+      return UserOrderModel.fromFirebase(snap);
     });
   }
 
@@ -851,6 +944,10 @@ class Database extends FirebaseDatabase
         .collection(cl.USERS)
         .document(driverId)
         .collection('driver_orders')
+        .document(oid)
+        .updateData({'state': state});
+    await fs
+        .collection('control_orders')
         .document(oid)
         .updateData({'state': state});
   }

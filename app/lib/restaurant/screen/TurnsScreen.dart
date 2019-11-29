@@ -64,7 +64,7 @@ class _TurnWorkTabDriverState extends State<TurnsScreen>{
               childCount: products.length,
               builder: (_context, index) {
                 return InkWell(
-                  child: TurnView(
+                  child: TurnViewRest(
                     model: products[index],
                   ),
                 );

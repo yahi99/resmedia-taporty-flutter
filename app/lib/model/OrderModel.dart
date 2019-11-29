@@ -89,13 +89,14 @@ class UserOrderModel extends OrderModel {
   final StateCategory state;
   final String endTime,day,phone;
   final bool isReviewed;
-  final String restaurantId,driver;
+  final String restaurantId,driver,uid;
 
   UserOrderModel({
     String path,
     @required this.restaurantId,
     @required this.driver,
     this.isReviewed,
+    this.uid,
     @required this.phone,
     @required this.day,
     @required this.endTime,

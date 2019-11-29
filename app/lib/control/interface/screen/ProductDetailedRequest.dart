@@ -70,7 +70,7 @@ class _ProductDetailedState extends State<ProductDetailedRequest> {
                 ),
                 Flexible(
                   child: Container(
-                    child: Text(widget.model.id),
+                    child: Text(widget.model.title),
                   ),
                 ),
               ],

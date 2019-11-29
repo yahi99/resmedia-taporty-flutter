@@ -145,9 +145,10 @@ class _ShippingState extends State<ShippingPage>
                                       firstDate: DateTime(
                                           DateTime.now().year,
                                           DateTime.now().month,
-                                          DateTime.now().day - 1),
+                                          DateTime.now().day),
                                       initialDate: DateTime.now(),
-                                      lastDate: DateTime(2020),
+                                      lastDate: DateTime(DateTime.now().year, DateTime.now().month,
+                                          DateTime.now().day).add(Duration(hours: 48)),
                                     ).then((day) {
                                       if (day != null) {
                                         date = day;
@@ -356,16 +357,23 @@ class _ShippingState extends State<ShippingPage>
                 print(date);
                 print(time);
                 if (date != null && time != null) {
-                  final state = MyInheritedWidget.of(context);
-                  state.date = date.toIso8601String();
-                  state.time = time;
-                  state.endTime = endTime;
-                  state.address = _addressKey.currentState.toString();
-                  state.phone = _phoneKey.currentState.toString();
-                  state.email = _emailKey.currentState.toString();
-                  state.name = _nameKey.currentState.toString();
-                  state.cap = _capKey.currentState.toString();
-                  widget.controller.animateTo(widget.controller.index + 1);
+                  final temp=time.split(':');
+                  double difference=DateTime(date.year,date.month,date.day,int.parse(temp.elementAt(0)),int.parse(temp.elementAt(1))).difference(DateTime.now()).inSeconds/60/60;
+                  if(difference >0 && difference<48.0){
+                    final state = MyInheritedWidget.of(context);
+                    state.date = date.toIso8601String();
+                    state.time = time;
+                    state.endTime = endTime;
+                    state.address = _addressKey.currentState.toString();
+                    state.phone = _phoneKey.currentState.toString();
+                    state.email = _emailKey.currentState.toString();
+                    state.name = _nameKey.currentState.toString();
+                    state.cap = _capKey.currentState.toString();
+                    widget.controller.animateTo(widget.controller.index + 1);
+                  }
+                  else if(difference>48.0){
+                    Toast.show('Non puoi scegliere ordini più in là di 48 ore', context);
+                  }
                 } else
                   Toast.show('Dati Mancanti', context);
               }

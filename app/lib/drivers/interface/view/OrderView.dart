@@ -13,7 +13,12 @@ class OrderView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final sub = model.subjects;
+    final temp=model.endTime.split(':');
+    final day=DateTime.parse(model.day);
+    final time=DateTime(day.year,day.month,day.day,int.parse(temp.elementAt(0)),int.parse(temp.elementAt(1)));
     return Order(
+      isNear:(time.difference(DateTime.now()).inMinutes>0 && time.difference(DateTime.now()).inMinutes <=45)?true:false,
+      endTime: model.endTime,
       date: model.day,
       children: <Widget>[
         Expanded(

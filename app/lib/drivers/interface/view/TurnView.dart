@@ -4,6 +4,9 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/widget/Order.dart';
 import 'package:resmedia_taporty_flutter/drivers/model/TurnModel.dart';
+import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
+import 'package:resmedia_taporty_flutter/logic/database.dart';
+import 'package:toast/toast.dart';
 
 class TurnView extends StatelessWidget {
   final TurnModel model;
@@ -11,7 +14,6 @@ class TurnView extends StatelessWidget {
   TurnView({Key key, @required this.model}) : super(key: key);
 
   @override
-  //TODO bisogna decidere come fare la cancellazione del turno perchè se un driver è libero è semplice altrimenti bisogna assegnare un altro driver se disponibile
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Slidable(
@@ -21,7 +23,52 @@ class TurnView extends StatelessWidget {
         IconSlideAction(
           icon: Icons.close,
           color: theme.accentColor,
-          onTap: () {},
+          onTap: () async{
+            //TODO:DELETE TURN
+            final temp=model.endTime.split(':');
+            final date=DateTime.parse(model.day);
+            double difference=DateTime(date.year,date.month,date.day,int.parse(temp.elementAt(0)),int.parse(temp.elementAt(1))).difference(DateTime.now()).inSeconds/60/60;
+            if(difference>0 && difference <48.0) Database().removeShiftDriver(model.startTime, model.day, (await UserBloc.of().outUser.first).model.id);
+            if(difference >48) Toast.show('Non puoi modificare turni nelle prossime 48 ore!', context, duration: 5);
+          },
+        )
+      ],
+      child: Order(
+        children: <Widget>[
+          Expanded(
+            child: TurnVoid(
+              model: model,
+              //date:model.day
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+class TurnViewRest extends StatelessWidget {
+  final TurnModel model;
+
+  TurnViewRest({Key key, @required this.model}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Slidable(
+      actionPane: SlidableDrawerActionPane(),
+      actionExtentRatio: 0.25,
+      secondaryActions: <Widget>[
+        IconSlideAction(
+          icon: Icons.close,
+          color: theme.accentColor,
+          onTap: () async{
+            //TODO:DELETE TURN
+            final temp=model.endTime.split(':');
+            final date=DateTime.parse(model.day);
+            double difference=DateTime(date.year,date.month,date.day,int.parse(temp.elementAt(0)),int.parse(temp.elementAt(1))).difference(DateTime.now()).inSeconds/60/60;
+            if(difference>0 && difference <48.0) Database().removeShiftRest(model.startTime, model.day, (await UserBloc.of().outUser.first).model.restaurantId);
+            if(difference >48) Toast.show('Non puoi modificare turni nelle prossime 48 ore!', context, duration: 5);
+          },
         )
       ],
       child: Order(

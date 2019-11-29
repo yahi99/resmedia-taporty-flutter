@@ -18,6 +18,7 @@ class UserModel extends UserFirebaseModel {
   final int numberOfReviews;
   final double averageReviews;
   final String restaurantId;
+  final String img;
   final bool notifyEmail;
   final bool notifySms;
   final bool notifyApp;
@@ -32,6 +33,7 @@ class UserModel extends UserFirebaseModel {
   UserModel({
     String path,
     String fcmToken,
+    this.img,
     this.numberOfReviews,
     this.averageReviews,
     this.type,

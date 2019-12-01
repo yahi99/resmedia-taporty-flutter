@@ -19,10 +19,85 @@ import 'package:resmedia_taporty_flutter/interface/screen/SignUpMoreScreen.dart'
 import 'package:resmedia_taporty_flutter/interface/screen/SignUpScreen.dart';
 import 'package:resmedia_taporty_flutter/interface/view/logo_view.dart';
 import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
+import 'package:resmedia_taporty_flutter/logic/database.dart';
 import 'package:toast/toast.dart';
 
 //import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 //import 'package:firebase_auth/firebase_auth.dart';
+
+
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+
+class LoginHelper {
+  final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+  final GoogleSignIn googleSignIn = GoogleSignIn();
+
+  Future<FirebaseUser> signInWithEmailAndPassword(
+      String email, String password) async {
+    try {
+      FirebaseUser result = await firebaseAuth.signInWithEmailAndPassword(
+          email: email, password: password);
+
+      debugPrint("Login di $email eseguito con successo.");
+
+      return result;
+    } catch (exception) {
+      debugPrint("Errore nel login.");
+      debugPrint(exception.toString());
+
+      return null;
+    }
+  }
+
+  Future<FirebaseUser> createUserWithEmailAndPassword(
+      String email, String password) async {
+    try {
+      FirebaseUser result = await firebaseAuth.createUserWithEmailAndPassword(
+          email: email, password: password);
+
+      debugPrint("Registrazione di $email eseguito con successo.");
+
+      return result;
+    } catch (exception) {
+      debugPrint("Errore nella registrazione.");
+      debugPrint(exception.toString());
+
+      return null;
+    }
+  }
+
+  Future<FirebaseUser> signInWithGoogle() async {
+    final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
+
+    if (googleSignInAccount == null) return null;
+
+    final GoogleSignInAuthentication googleSignInAuthentication =
+    await googleSignInAccount.authentication;
+
+    final AuthCredential authCredential = GoogleAuthProvider.getCredential(
+      accessToken: googleSignInAuthentication.accessToken,
+      idToken: googleSignInAuthentication.idToken,
+    );
+
+    final FirebaseUser firebaseUser =
+        (await firebaseAuth.signInWithCredential(authCredential));
+    debugPrint("Eseguito l'accesso con Google di ${firebaseUser.email}.");
+    Database().putUser(firebaseUser);
+
+    return firebaseUser;
+  }
+
+  static Future<void> signOut() async {
+    await FirebaseAuth.instance.signOut();
+    debugPrint("Eseguito il logout.");
+  }
+
+  Future<void> requestNewPassword(String email) async {
+    await firebaseAuth.sendPasswordResetEmail(email: email);
+  }
+}
 
 class LoginScreen extends StatefulWidget implements WidgetRoute {
   static const String ROUTE = "LoginScreen";
@@ -430,8 +505,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     RaisedButton.icon(
                       onPressed: () {
-                        Toast.show('Disponibile in futuro', context,
-                            duration: 3, gravity: Toast.BOTTOM);
+                        LoginHelper().signInWithGoogle();
                       },
                       icon: Icon(FontAwesomeIcons.facebookF),
                       label: Text('Login with Facebook'),

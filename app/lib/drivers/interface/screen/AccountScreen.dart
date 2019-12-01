@@ -35,11 +35,11 @@ class AccountScreenDriver extends StatelessWidget implements WidgetRoute {
     final Directory tempDir = Directory.systemTemp;
     final String fileName = filePath.split('/').last;
     final File file = File('${tempDir.path}/$fileName');
-    file.writeAsBytes(bytes, mode: FileMode.write);
+    await file.writeAsBytes(bytes, mode: FileMode.write);
 
     final StorageReference ref = FirebaseStorage.instance.ref().child(fileName);
     final StorageUploadTask task = ref.putFile(file);
-    //final Uri downloadUrl = (await task.onComplete).uploadSessionUri;
+    final Uri downloadUrl = (await task.onComplete).uploadSessionUri;
     return (await ref.getDownloadURL());
   }
 
@@ -80,17 +80,42 @@ class AccountScreenDriver extends StatelessWidget implements WidgetRoute {
                       fit: BoxFit.cover,
                     ),
                   ),
+                  StreamBuilder<UserModel>(
+                    stream: Database().getUserImg(snap.data.model.id),
+                    builder: (ctx,img){
+                      if(!img.hasData) return Center(child: CircularProgressIndicator(),);
+                      return Padding(
+                        padding: EdgeInsets.only(top: 25.0),
+                        child: Container(
+                          width: 190.0,
+                          height: 190.0,
+                          child: Container(
+                            width: double.infinity,
+                            height: double.infinity,
+                            child: (img.data.img != null)
+                                ? CircleAvatar(
+                                backgroundImage: CachedNetworkImageProvider(
+                                    img.data.img))
+                                : CircleAvatar(
+                              backgroundColor: Colors.black,
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
                   Padding(
-                    padding: EdgeInsets.only(top:25.0,left:8.0),
+                    padding: EdgeInsets.only(top:25.0,left:140.0),
                     child: IconButton(
-                      icon: Icon(Icons.camera_alt),
+                      iconSize: 50.0,
+                      icon: Icon(Icons.camera_alt,color: Colors.white,),
                       onPressed: () async {
                         ImagePicker.pickImage(source: ImageSource.camera)
                             .then((file) {
                           if (file != null) {
                             uploadFile(file.path).then((path) async {
                               Database()
-                                  .updateImg(
+                                  .updateAccountImg(
                                   path,
                                   snap.data.model.id,snap.data.model.img)
                                   .then((value) {
@@ -113,41 +138,23 @@ class AccountScreenDriver extends StatelessWidget implements WidgetRoute {
                       },
                     ),
                   ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 25.0),
-                    child: Container(
-                      width: 190.0,
-                      height: 190.0,
-                      child: Container(
-                        width: double.infinity,
-                        height: double.infinity,
-                        child: (snap.data.model.img != null)
-                            ? CircleAvatar(
-                                backgroundImage: CachedNetworkImageProvider(
-                                    snap.data.model.img))
-                            : CircleAvatar(
-                                backgroundImage: CachedNetworkImageProvider(
-                                    'assets/img/home/fotoprofilo.jpg'),
-                              ),
-                      ),
-                    ),
-                  ),
                 ],
               ),
               Padding(
                 padding: EdgeInsets.only(top: 8.0),
               ),
               Text(snap.data.model.nominative),
-              StreamBuilder<List<Address>>(
+
+          (snap.data.model.lat!=null && snap.data.model.lng!=null)?StreamBuilder<List<Address>>(
                 stream: Geocoder.local
                     .findAddressesFromCoordinates(
                         Coordinates(snap.data.model.lat, snap.data.model.lng))
                     .asStream(),
-                builder: (ctx, snap) {
-                  if (snap.hasData) return Text(snap.data.first.locality);
+                builder: (ctx, loc) {
+                  if (loc.hasData) return Text(loc.data.first.addressLine);
                   return Container();
                 },
-              ),
+              ):Container(),
               const Divider(
                 color: Colors.grey,
               ),

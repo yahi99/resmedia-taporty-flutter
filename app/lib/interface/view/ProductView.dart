@@ -52,7 +52,7 @@ class ProductView extends StatelessWidget {
       final Directory tempDir = Directory.systemTemp;
       final String fileName = filePath.split('/').last;
       final File file = File('${tempDir.path}/$fileName');
-      file.writeAsBytes(bytes, mode: FileMode.write);
+      await file.writeAsBytes(bytes, mode: FileMode.write);
       print(filePath);
       final StorageReference ref = FirebaseStorage.instance.ref().child(fileName);
       final StorageUploadTask task = ref.putFile(file);

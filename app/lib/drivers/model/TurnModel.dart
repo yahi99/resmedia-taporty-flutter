@@ -11,12 +11,14 @@ class TurnModel extends FirebaseModel {
   final String startTime, endTime, day,restaurantId;
   MonthCategory month;
   String driver,oid;
+  final int year;
 
   TurnModel({
     String path,
     this.restaurantId,
     this.driver,
     this.oid,
+    this.year,
     @required this.startTime,
     @required this.month,
     @required this.day,

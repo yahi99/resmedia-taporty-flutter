@@ -50,6 +50,7 @@ class CalendarBloc implements Bloc {
       'day': day,
       //'restUsers':restId.free.add(restUser.uid),
       //'rid':restId.id,
+      'year':DateTime.tryParse(day).year,
       'uid': restUser.uid,
       'month': month(DateTime.tryParse(day).month),
       'free': users,

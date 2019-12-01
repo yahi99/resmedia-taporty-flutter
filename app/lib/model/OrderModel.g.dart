@@ -94,6 +94,7 @@ UserOrderModel _$UserOrderModelFromJson(Map json) {
       restaurantId: json['restaurantId'] as String,
       driver: json['driver'] as String,
       isReviewed: json['isReviewed'] as bool,
+      uid: json['uid'] as String,
       phone: json['phone'] as String,
       day: json['day'] as String,
       endTime: json['endTime'] as String,
@@ -126,5 +127,6 @@ Map<String, dynamic> _$UserOrderModelToJson(UserOrderModel instance) {
   writeNotNull('isReviewed', instance.isReviewed);
   writeNotNull('restaurantId', instance.restaurantId);
   writeNotNull('driver', instance.driver);
+  writeNotNull('uid', instance.uid);
   return val;
 }

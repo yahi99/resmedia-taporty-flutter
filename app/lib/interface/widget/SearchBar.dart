@@ -1,16 +1,22 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class SearchBar extends StatelessWidget implements PreferredSizeWidget {
   final Widget trailing;
+  final StreamController barStream;
 
-  const SearchBar({Key key, this.trailing}) : super(key: key);
+  const SearchBar({Key key, this.trailing,this.barStream}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final List<Widget> children = [
       Expanded(
         child: TextField(
+          onChanged: (value){
+            barStream.add(value);
+          },
           scrollPadding: EdgeInsets.all(2.0),
           decoration: InputDecoration(
             contentPadding: EdgeInsets.zero,

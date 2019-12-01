@@ -5,7 +5,7 @@ import { fs,sms} from './firebase';
 import * as admin from 'firebase-admin'
 
 // tslint:disable-next-line: no-use-before-declare
-export { createStripeCustomer, cleanupUser, createStripeCharge, addPaymentSource, updateState,sendToDeviceDriver,sendToDeviceRestaurant,productRequests,restaurantRequests, setShift,updateUser,updateOffersEmail,updateOffersSms,updateOffersApp,updateNotifySms,updateNotifyApp,updateNotifyEmail,sendToDevice,driverRequests  }
+export { createStripeCustomer, cleanupUser, createStripeCharge, addPaymentSource,createUser, updateState,sendToDeviceDriver,sendToDeviceRestaurant,productRequests,restaurantRequests, setShift,updateUser,updateOffersEmail,updateOffersSms,updateOffersApp,updateNotifySms,updateNotifyApp,updateNotifyEmail,sendToDevice,driverRequests  }
 const stripe = new Stripe(functions.config().stripe.token);
 const currency = 'EUR';
 
@@ -29,7 +29,7 @@ const createUser = functions.firestore
   .onCreate(async (change,context) => {
   const user=change.data();
   if(user!== undefined){
-    const snap = await fs.collection('users').doc(user.uid).update({'type':'user'});
+    await fs.collection('users').doc(user.uid).update({'type':'user'});
   }
 });
 
@@ -479,11 +479,12 @@ const setShift = functions.https.onCall(async (data, context) => {
   const endTime=data.endTime;
   const day=data.day;
   const month=data.month;
+  const year=data.year;
   const isEmpty=data.isEmpty;
   console.log(users);
   console.log(isEmpty);
   await fs.collection('days').doc(day).collection('times').doc(startTime).update({'free':users,'isEmpty':isEmpty});
-  await fs.collection('users').doc(uid).collection('turns').doc(day+'§'+startTime).create({'startTime':startTime,'endTime':endTime,'day':day,'month':month});
+  await fs.collection('users').doc(uid).collection('turns').doc(day+'§'+startTime).create({'startTime':startTime,'endTime':endTime,'day':day,'month':month,'year':year});
   return {"documentId": "id",}
 });
 

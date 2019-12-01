@@ -10,6 +10,7 @@ UserModel _$UserModelFromJson(Map json) {
   return UserModel(
       path: json['path'] as String,
       fcmToken: json['fcmToken'] as String,
+      img: json['img'] as String,
       numberOfReviews: json['numberOfReviews'] as int,
       averageReviews: (json['averageReviews'] as num)?.toDouble(),
       type: json['type'] as String,
@@ -45,6 +46,7 @@ Map<String, dynamic> _$UserModelToJson(UserModel instance) {
   writeNotNull('numberOfReviews', instance.numberOfReviews);
   val['averageReviews'] = instance.averageReviews;
   val['restaurantId'] = instance.restaurantId;
+  val['img'] = instance.img;
   val['notifyEmail'] = instance.notifyEmail;
   val['notifySms'] = instance.notifySms;
   val['notifyApp'] = instance.notifyApp;

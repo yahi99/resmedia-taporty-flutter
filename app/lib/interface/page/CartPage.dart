@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
+import 'package:resmedia_taporty_flutter/interface/screen/CheckoutScreen.dart';
 import 'package:resmedia_taporty_flutter/interface/screen/RestaurantScreen.dart';
 import 'package:resmedia_taporty_flutter/interface/view/BottonButtonBar.dart';
 import 'package:resmedia_taporty_flutter/interface/view/ProductViewCart.dart';
@@ -49,6 +50,16 @@ class _CartState extends State<CartPage> with AutomaticKeepAliveClientMixin {
                     child: CircularProgressIndicator(),
                   );
                 return Scaffold(
+                  /*appBar: AppBar(
+                    leading: IconButton(
+                      icon: Icon(Icons.arrow_back),
+                      onPressed: (){
+                        widget.controller.animateTo(widget.controller.index-1);
+                      },
+                    ),
+                  ),
+
+                   */
                     body: StreamBuilder<List<DrinkModel>>(
                       stream: restaurantBloc.outDrinks,
                       builder: (context, snapshot) {
@@ -77,6 +88,8 @@ class _CartState extends State<CartPage> with AutomaticKeepAliveClientMixin {
                         ),
                         color: tt.primaryColor,
                         onPressed: () {
+                          final state = MyInheritedWidget.of(context);
+                          //print(Continue.isContinued);
                           //TODO block if zero items in the cart maybe use a stream ans pass it toProductsFoodDrinkBuilder and stream the whole bar
                           widget.controller
                               .animateTo(widget.controller.index + 1);

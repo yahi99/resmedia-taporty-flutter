@@ -37,13 +37,20 @@ class CheckoutScreen extends StatefulWidget implements WidgetRoute {
   _CheckoutScreenState createState() => _CheckoutScreenState();
 }
 
+class Continue {
+  static bool isContinued;
+}
+
 class _CheckoutScreenState extends State<CheckoutScreen>
     with TickerProviderStateMixin {
   static TabController controller;
+  int indexUser;
 
   @override
   void initState() {
-    controller = TabController(vsync: this, length: 4);
+    Continue.isContinued = false;
+    controller = TabController(vsync: this, length: 4)..addListener(() {});
+    indexUser = 0;
     super.initState();
   }
 
@@ -71,9 +78,16 @@ class _CheckoutScreenState extends State<CheckoutScreen>
           ],
           bottom: TabBar(
             controller: controller,
-            onTap: (index) {
-              if(index<controller.index) controller.animateTo(index);
+              /*onTap: (index) {
+              if (controller.previousIndex > controller.index) {
+                setState(() {
+                  controller.index = indexUser;
+                });
+              } else
+                indexUser = index;
             },
+
+               */
             tabs: [
               Tab(
                 icon: Icon(
@@ -110,15 +124,17 @@ class _CheckoutScreenState extends State<CheckoutScreen>
           ),
           child: StreamBuilder<User>(
             stream: UserBloc.of().outUser,
-            builder: (ctx,user){
+            builder: (ctx, user) {
               return StreamBuilder<RestaurantModel>(
-                stream: RestaurantBloc.init(idRestaurant:widget.model.id).outRestaurant,
-                builder: (ctx,rest){
-                  if(user.hasData && rest.hasData){
-                    if(user.data.model.type!='user') {
+                stream: RestaurantBloc.init(idRestaurant: widget.model.id)
+                    .outRestaurant,
+                builder: (ctx, rest) {
+                  if (user.hasData && rest.hasData) {
+                    if (user.data.model.type != 'user') {
                       EasyRouter.pushAndRemoveAll(context, LoginScreen());
                     }
-                    if(rest.data.isDisabled) EasyRouter.popUntil(context, RestaurantListScreen.ROUTE);
+                    if (rest.data.isDisabled != null && rest.data.isDisabled)
+                      EasyRouter.popUntil(context, RestaurantListScreen.ROUTE);
                     return MyInheritedWidget(
                       child: TabBarView(
                         controller: controller,
@@ -146,7 +162,9 @@ class _CheckoutScreenState extends State<CheckoutScreen>
                       ),
                     );
                   }
-                  return Center(child: CircularProgressIndicator(),);
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
                 },
               );
             },
@@ -178,7 +196,17 @@ class MyInheritedWidget extends InheritedWidget {
 }
 
 class MyInheritedWidgetData {
-  String name, cap, email, phone, address, date, time, endTime,fingerprint,customerId,uid;
+  String name,
+      cap,
+      email,
+      phone,
+      address,
+      date,
+      time,
+      endTime,
+      fingerprint,
+      customerId,
+      uid;
 
 //final StreamController _streamController =StreamController.broadcast();
 

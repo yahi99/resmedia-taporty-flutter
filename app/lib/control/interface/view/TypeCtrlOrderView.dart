@@ -3,9 +3,13 @@ import 'package:easy_route/easy_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:resmedia_taporty_flutter/control/interface/page/DetailedOrderCtrlPage.dart';
+import 'package:resmedia_taporty_flutter/data/config.dart';
+import 'package:resmedia_taporty_flutter/logic/database.dart';
 import 'package:resmedia_taporty_flutter/model/OrderModel.dart';
 import 'package:resmedia_taporty_flutter/restaurant/page/DetailOrderRestaurantPage.dart';
+import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class TypeCtrlOrderView extends StatelessWidget {
@@ -22,6 +26,63 @@ class TypeCtrlOrderView extends StatelessWidget {
       sum += cart.elementAt(i).countProducts;
     }
     return sum;
+  }
+
+  _showPositionDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (_context) {
+        final theme = Theme.of(context);
+        final cls = theme.colorScheme;
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(20))),
+          content: Wrap(
+            alignment: WrapAlignment.center,
+            runSpacing: SPACE * 2,
+            children: <Widget>[
+              Column(
+                children: <Widget>[
+                  Text(
+                    "Sicuro di volere cancellare questo ordine?",
+                    style: theme.textTheme.body2,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    //crossAxisAlignment:CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      RaisedButton(
+                        onPressed: () {
+                          EasyRouter.pop(context);
+                        },
+                        textColor: Colors.white,
+                        color: Colors.red,
+                        child: Text(
+                          "Nega",
+                        ),
+                      ),
+                      RaisedButton(
+                        onPressed: () {
+                          Database().deleteOrderFinal(model).then((value) {
+                            Toast.show('Ordine cancellato', context);
+                            EasyRouter.pop(context);
+                          });
+                        },
+                        color: Colors.green,
+                        textColor: Colors.white,
+                        child: Text(
+                          "Consenti",
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   String toDate(String date){
@@ -70,7 +131,19 @@ class TypeCtrlOrderView extends StatelessWidget {
     final temp=model.endTime.split(':');
     final day=DateTime.parse(model.day);
     final time=DateTime(day.year,day.month,day.day,int.parse(temp.elementAt(0)),int.parse(temp.elementAt(1)));
-    return Stack(
+    return Slidable(
+      actionPane: SlidableDrawerActionPane(),
+      actionExtentRatio: 0.25,
+      secondaryActions: <Widget>[
+        IconSlideAction(
+          color: Colors.blue,
+          icon: Icons.close,
+          onTap: () async {
+            _showPositionDialog(context);
+          },
+        ),
+      ],
+        child:Stack(
       alignment: Alignment.center,
       children: <Widget>[
         GestureDetector(
@@ -188,6 +261,7 @@ class TypeCtrlOrderView extends StatelessWidget {
           ),
         ),
       ],
+        ),
     );
   }
 }

@@ -464,6 +464,20 @@
             </list>
           </value>
         </entry>
+        <entry key="google_sign_in">
+          <value>
+            <list>
+              <option value="$USER_HOME$/res_media/flutter/.pub-cache/hosted/pub.dartlang.org/google_sign_in-4.0.14/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="google_sign_in_platform_interface">
+          <value>
+            <list>
+              <option value="$USER_HOME$/res_media/flutter/.pub-cache/hosted/pub.dartlang.org/google_sign_in_platform_interface-1.0.0/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="graphs">
           <value>
             <list>
@@ -741,6 +755,13 @@
           <value>
             <list>
               <option value="$USER_HOME$/res_media/flutter/.pub-cache/hosted/pub.dartlang.org/quiver-2.0.5/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="quiver_hashcode">
+          <value>
+            <list>
+              <option value="$USER_HOME$/res_media/flutter/.pub-cache/hosted/pub.dartlang.org/quiver_hashcode-2.0.0/lib" />
             </list>
           </value>
         </entry>
@@ -1064,6 +1085,8 @@
       <root url="file://$USER_HOME$/res_media/flutter/.pub-cache/hosted/pub.dartlang.org/google_api_availability-2.0.1/lib" />
       <root url="file://$USER_HOME$/res_media/flutter/.pub-cache/hosted/pub.dartlang.org/google_maps_flutter-0.5.21+10/lib" />
       <root url="file://$USER_HOME$/res_media/flutter/.pub-cache/hosted/pub.dartlang.org/google_maps_webservice-0.0.16/lib" />
+      <root url="file://$USER_HOME$/res_media/flutter/.pub-cache/hosted/pub.dartlang.org/google_sign_in-4.0.14/lib" />
+      <root url="file://$USER_HOME$/res_media/flutter/.pub-cache/hosted/pub.dartlang.org/google_sign_in_platform_interface-1.0.0/lib" />
       <root url="file://$USER_HOME$/res_media/flutter/.pub-cache/hosted/pub.dartlang.org/graphs-0.2.0/lib" />
       <root url="file://$USER_HOME$/res_media/flutter/.pub-cache/hosted/pub.dartlang.org/html-0.14.0+3/lib" />
       <root url="file://$USER_HOME$/res_media/flutter/.pub-cache/hosted/pub.dartlang.org/http-0.12.0+2/lib" />
@@ -1103,6 +1126,7 @@
       <root url="file://$USER_HOME$/res_media/flutter/.pub-cache/hosted/pub.dartlang.org/pub_semver-1.4.2/lib" />
       <root url="file://$USER_HOME$/res_media/flutter/.pub-cache/hosted/pub.dartlang.org/pubspec_parse-0.1.5/lib" />
       <root url="file://$USER_HOME$/res_media/flutter/.pub-cache/hosted/pub.dartlang.org/quiver-2.0.5/lib" />
+      <root url="file://$USER_HOME$/res_media/flutter/.pub-cache/hosted/pub.dartlang.org/quiver_hashcode-2.0.0/lib" />
       <root url="file://$USER_HOME$/res_media/flutter/.pub-cache/hosted/pub.dartlang.org/rubber-0.4.0/lib" />
       <root url="file://$USER_HOME$/res_media/flutter/.pub-cache/hosted/pub.dartlang.org/rxdart-0.22.6/lib" />
       <root url="file://$USER_HOME$/res_media/flutter/.pub-cache/hosted/pub.dartlang.org/shared_preferences-0.4.3/lib" />

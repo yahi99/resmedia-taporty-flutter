@@ -124,7 +124,11 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                             int count = drinks.data.getTotalItems(
                                 drinks.data.products,
                                 user.data.userFb.uid,
+                                widget.model.id)+foods.data.getTotalItems(
+                                foods.data.products,
+                                user.data.userFb.uid,
                                 widget.model.id);
+                            print(count);
                             return Row(
                               children: <Widget>[
                                 IconButton(
@@ -149,7 +153,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                                     });
                                   },
                                 ),
-                                Text(count.toString(),style: TextStyle(color: Colors.white),)
+                                Text(count.toString(),style: TextStyle(color: Colors.white,fontSize: 18.0,),)
                               ],
                             );
                           }
@@ -177,7 +181,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                                   });
                                 },
                               ),
-                              Text('0',style: TextStyle(color: Colors.white),)
+                              Text('0',style: TextStyle(color: Colors.white,fontSize: 18.0),)
                             ],
                           );
                         },
@@ -186,7 +190,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                   );
                 },
               ),
-              IconButton(
+              /*IconButton(
                 icon: Icon(Icons.shopping_cart),
                 onPressed: () {
                   UserBloc.of().outUser.first.then((user) {
@@ -206,7 +210,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                     });
                   });
                 },
-              ),
+              ),*/
               IconButton(
                 icon: Icon(Icons.account_circle),
                 onPressed: () {
@@ -237,7 +241,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                 builder: (ctx,rest){
                   if(user.hasData && rest.hasData){
                     if(user.data.model.type!='user') EasyRouter.pushAndRemoveAll(context, LoginScreen());
-                    if(rest.data.isDisabled) EasyRouter.popUntil(context, RestaurantListScreen.ROUTE);
+                    if(rest.data.isDisabled!=null && rest.data.isDisabled) EasyRouter.popUntil(context, RestaurantListScreen.ROUTE);
                     return TabBarView(
                       children: <Widget>[
                         InfoRestaurantPage(address: widget.address, model: widget.model),

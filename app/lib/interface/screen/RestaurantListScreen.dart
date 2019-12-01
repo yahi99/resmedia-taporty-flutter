@@ -111,6 +111,8 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
 
   FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
+  StreamController barStream;
+
   void showNotification(BuildContext context, Map<String, dynamic> message) async {
     print('Build dialog');
     showDialog(
@@ -159,12 +161,14 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
   @override
   void dispose() {
     RestaurantsBloc.close();
+    barStream.close();
     super.dispose();
   }
 
   @override
   void initState() {
     super.initState();
+    barStream=new StreamController<String>.broadcast();
     firebaseCloudMessaging_Listeners();
   }
 
@@ -198,6 +202,7 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
               : Container(),
         ],
         bottom: SearchBar(
+          barStream: barStream,
         ),
       ),
       body: CacheStreamBuilder<List<RestaurantModel>>(
@@ -206,6 +211,9 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
             return StreamBuilder<User>(
               stream: UserBloc.of().outUser,
               builder: (ctx,user){
+                return StreamBuilder<String>(
+                    stream: barStream.stream,
+                    builder: (ctx,bar){
                 if (snap.hasData && user.hasData) {
                   if(user.data.model.type!='user') EasyRouter.pushAndRemoveAll(context, LoginScreen());
                   return SingleChildScrollView(
@@ -214,6 +222,7 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
                       child: CardListView(
                         children: snap.data.map<Widget>((_model) {
                           //final distance=Distance();
+                          if(bar.hasData && !_model.id.toLowerCase().contains(bar.data.toLowerCase())) return Container();
                           var stream;
                           if (_model.getPos() != null &&
                               widget.position != null) {
@@ -263,6 +272,9 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
                 return Center(
                   child: CircularProgressIndicator(),
                 );
+                    },
+                );
+
               },
             );
           }),

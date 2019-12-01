@@ -89,6 +89,15 @@ class Database extends FirebaseDatabase
     });
   }
 
+  Stream<List<UserModel>> driversList(){
+    final data=fs.collection('users').where('type',isEqualTo: 'driver').snapshots();
+    return data.map((query) {
+    return query.documents
+        .map((snap) => UserModel.fromFirebase(snap))
+        .toList();
+    });
+  }
+
   Future<CalendarModel> getDriverCalModel(
       String uid, String day, String startTime) async {
     return CalendarModel.fromFirebase(await fs
@@ -194,6 +203,27 @@ class Database extends FirebaseDatabase
     }
   }
 
+  Future<void> deleteUser(String uid,String img)async{
+    final turns=await fs.collection('users').document(uid).collection('turns').getDocuments();
+    final orders=await fs.collection('users').document(uid).collection('user_orders').getDocuments();
+    final driverOrders=await fs.collection('users').document(uid).collection('driver_orders').getDocuments();
+    final reviews=await fs.collection('users').document(uid).collection('reviews').getDocuments();
+    for(int i=0;i<turns.documents.length;i++){
+      await fs.collection('users').document(uid).collection('turns').document(turns.documents.elementAt(i).documentID).delete();
+    }
+    for(int i=0;i<orders.documents.length;i++){
+      await fs.collection('users').document(uid).collection('user_orders').document(orders.documents.elementAt(i).documentID).delete();
+    }
+    for(int i=0;i<driverOrders.documents.length;i++){
+      await fs.collection('users').document(uid).collection('driver_orders').document(driverOrders.documents.elementAt(i).documentID).delete();
+    }
+    for(int i=0;i<reviews.documents.length;i++){
+      await fs.collection('users').document(uid).collection('reviews').document(reviews.documents.elementAt(i).documentID).delete();
+    }
+    if(img!=null) _deleteFile(img.split('/').last.split('?').first);
+    await fs.collection('users').document(uid).delete();
+  }
+
   Future<void> cancelTime(String day,String isLunch,String restId)async{
     final rest=RestaurantModel.fromFirebase(await fs.collection('restaurants').document(restId).get());
     if(isLunch=='Pranzo'){
@@ -224,11 +254,23 @@ class Database extends FirebaseDatabase
     await fs.collection('control_orders').document(order.id).updateData({'state':'DELETED'});
   }
 
+  Future<void> putUser(FirebaseUser user)async{
+    final userModel=await fs.collection('users').document(user.uid);
+    if(userModel==null) await fs.collection('users').document(user.uid).setData({'email':user.email,'nominative':'not given','address':'not given','phoneNumber':'not given'});
+  }
+
+  Stream<UserModel> getUserImg(String id){
+    return fs.collection('users').document(id).snapshots().map((snap) {
+      return UserModel.fromFirebase(snap);
+    });
+  }
+
   Future<void> updateImg(String path,String restId,String previous)async{
     //TODO delete previous image
     await fs.collection('restaurants').document(restId).updateData({'img':path});
     _deleteFile(previous.split('/').last.split('?').first);
   }
+
   Future<void> updateAccountImg(String path,String uid,String previous)async{
     //TODO delete previous image
     await fs.collection('users').document(uid).updateData({'img':path});
@@ -251,6 +293,13 @@ class Database extends FirebaseDatabase
   Future<void> deleteProduct(String product,String restId,String type)async{
     //TODO delete image
     await fs.collection('restaurants').document(restId).collection(type).document(product).delete();
+  }
+
+  Future<void> deleteOrderFinal(RestaurantOrderModel model)async{
+    await fs.collection('users').document(model.uid).collection('user_orders').document(model.id).delete();
+    await fs.collection('users').document(model.driver).collection('driver_orders').document(model.id).delete();
+    await fs.collection('restaurants').document(model.restaurantId).collection('restaurant_orders').document(model.id).delete();
+    await fs.collection('control_orders').document(model.id).delete();
   }
 
   Future<void> updateBank(RestaurantOrderModel model,double total)async{
@@ -443,7 +492,7 @@ class Database extends FirebaseDatabase
         'free': [''],
         'occupied': [''],
       });
-      await fs.collection('restaurants').document(restId).collection('turns').document(day+'§'+startTime).setData({'startTime':startTime,'endTime':endTime,'day':day,'month':toMonth(int.parse(month))});
+      await fs.collection('restaurants').document(restId).collection('turns').document(day+'§'+startTime).setData({'startTime':startTime,'endTime':endTime,'day':day,'year':DateTime.tryParse(day).year,'month':toMonth(int.parse(month))});
       //fails if somehow there is data on this time and date but no document for startTime
       await fs.collection('days').document(day).collection('times').document(startTime).collection('restaurant_turns').document(restId).setData({
         'startTime':startTime,
@@ -692,7 +741,7 @@ class Database extends FirebaseDatabase
 
   Stream<List<TurnModel>> getTurns(String uid) {
     final data =
-        fs.collection(cl.USERS).document(uid).collection(cl.TURNS).snapshots();
+        fs.collection(cl.USERS).document(uid).collection(cl.TURNS).where('year',isEqualTo: DateTime.now().year).snapshots();
     print('lol');
     return data.map((query) {
       return query.documents
@@ -703,7 +752,7 @@ class Database extends FirebaseDatabase
 
   Stream<List<TurnModel>> getTurnsRest(String restId) {
     final data =
-    fs.collection(cl.RESTAURANTS).document(restId).collection(cl.TURNS).snapshots();
+    fs.collection(cl.RESTAURANTS).document(restId).collection(cl.TURNS).where('year',isEqualTo: DateTime.now().year).snapshots();
     print('lol');
     return data.map((query) {
       return query.documents
@@ -982,6 +1031,14 @@ class Database extends FirebaseDatabase
         .get();
     //final data=res.data;
     return CalendarModel.fromJson(res.data);
+  }
+  Future <void> updateOrderDriver(RestaurantOrderModel model,String driver)async{
+    final orderDriver=await fs.collection('users').document(model.driver).collection('driver_orders').document(model.id).get();
+    await fs.collection('users').document(model.driver).collection('driver_orders').document(model.id).delete();
+    await fs.collection('users').document(driver).collection('driver_orders').document(model.id).setData(orderDriver.data);
+    await fs.collection('users').document(model.uid).collection('user_orders').document(model.id).updateData({'driver':driver});
+    await fs.collection('control_orders').document(model.id).updateData({'driver':driver});
+    await fs.collection('restaurants').document(model.restaurantId).collection('restaurant_orders').document(model.id).updateData({'driver':driver});
   }
 
   Future<void> occupyDriver(String date, String time, List<String> free,

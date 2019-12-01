@@ -13,6 +13,7 @@ ProductRequestModel _$ProductRequestModelFromJson(Map json) {
       category: json['category'] as String,
       img: json['img'] as String,
       price: json['price'] as String,
+      title: json['title'] as String,
       quantity: json['quantity'] as String,
       restaurantId: json['restaurantId'] as String);
 }
@@ -33,5 +34,6 @@ Map<String, dynamic> _$ProductRequestModelToJson(ProductRequestModel instance) {
   writeNotNull('price', instance.price);
   writeNotNull('quantity', instance.quantity);
   writeNotNull('restaurantId', instance.restaurantId);
+  writeNotNull('title', instance.title);
   return val;
 }

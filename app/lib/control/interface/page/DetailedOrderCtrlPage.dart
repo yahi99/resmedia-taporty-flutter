@@ -6,9 +6,11 @@ import 'package:easy_route/easy_route.dart';
 import 'package:flutter/material.dart';
 import 'package:resmedia_taporty_flutter/data/config.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/screen/DetailedOrderUser.dart';
+import 'package:resmedia_taporty_flutter/logic/bloc/CartBloc.dart';
 import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
 import 'package:resmedia_taporty_flutter/logic/database.dart';
 import 'package:resmedia_taporty_flutter/model/OrderModel.dart';
+import 'package:resmedia_taporty_flutter/model/UserModel.dart';
 import 'package:toast/toast.dart';
 
 class DetailOrderCtrlPage extends StatefulWidget implements WidgetRoute {
@@ -39,16 +41,88 @@ class _DetailOrderRestaurantPageState extends State<DetailOrderCtrlPage> {
     'ACCEPTED'
   ];
 
-  String state;
+  String state,driverN,driverId;
 
-  StreamController stateStream;
+  UserModel driverModel;
+
+  StreamController stateStream,driversStream;
 
   List<DropdownMenuItem> dropType = List<DropdownMenuItem>();
+
+  //TODO ADD TURN FOR THE DRIVER MAYBE?
+  Future<String> isAvailable(String date, String time,String restId,UserModel driver) async {
+    final model = await Database().getUsers(date, time);
+      final temp = model.free;
+      temp.remove(driver.id);
+      final occ = model.occupied;
+      occ.add(driver.id);
+      await Database().occupyDriver(date, time, temp, occ,restId,driver.id);
+      return 'ok';
+  }
+
+  _showPositionDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (_context) {
+        final theme = Theme.of(context);
+        final cls = theme.colorScheme;
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(20))),
+          content: Wrap(
+            alignment: WrapAlignment.center,
+            runSpacing: SPACE * 2,
+            children: <Widget>[
+              Column(
+                children: <Widget>[
+                  Text(
+                    "Sicuro di volere assegnare "+driverModel.nominative+" all'ordine?",
+                    style: theme.textTheme.body2,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    //crossAxisAlignment:CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      RaisedButton(
+                        onPressed: () {
+                          EasyRouter.pop(context);
+                        },
+                        textColor: Colors.white,
+                        color: Colors.red,
+                        child: Text(
+                          "Nega",
+                        ),
+                      ),
+                      RaisedButton(
+                        onPressed: () {
+                          isAvailable(widget.model.day, widget.model.startTime, widget.model.restaurantId,driverModel);
+                          Database().updateOrderDriver(widget.model, driverModel.id).then((value) {
+                            Toast.show('Ordine cancellato', context);
+                            EasyRouter.pop(context);
+                          });
+                        },
+                        color: Colors.green,
+                        textColor: Colors.white,
+                        child: Text(
+                          "Consenti",
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
 
   @override
   void initState() {
     super.initState();
     stateStream = new StreamController<String>.broadcast();
+    driversStream= new StreamController<String>.broadcast();
     for (int i = 0; i < states.length; i++) {
       dropType.add(DropdownMenuItem(
         child: Text(states[i]),
@@ -62,6 +136,7 @@ class _DetailOrderRestaurantPageState extends State<DetailOrderCtrlPage> {
   void dispose() {
     super.dispose();
     stateStream.close();
+    driversStream.close();
   }
 
   @override
@@ -89,6 +164,56 @@ class _DetailOrderRestaurantPageState extends State<DetailOrderCtrlPage> {
                         Text(
                           "DETTAGLIO ORDINE",
                           style: tt.title,
+                        ),
+                        Row(
+                          children: <Widget>[
+                            Text('Assegna ordine al fattorino'),
+                            StreamBuilder<List<UserModel>>(
+                              stream: Database().driversList(),
+                              builder: (ctx,drivers){
+                                if(drivers.hasData){
+                                  List<DropdownMenuItem> dropDrivers = List<DropdownMenuItem>();
+                                  for (int i = 0; i < drivers.data.length; i++) {
+                                    dropDrivers.add(DropdownMenuItem(
+                                      child: Text(drivers.data[i].nominative),
+                                      value: drivers.data[i],
+                                    ));
+                                  }
+                                  driverModel=drivers.data[0];
+                                  driverN=drivers.data[0].nominative;
+                                  driverId=drivers.data[0].id;
+                                  return StreamBuilder<UserModel>(
+                                    stream: driversStream.stream,
+                                    builder: (ctx,driver){
+                                      return Padding(
+                                        child: DropdownButton(
+                                          //key: _dropKey,
+                                          value: (!driver.hasData)
+                                              ? driverModel
+                                              : driver.data,
+                                          onChanged: (value) {
+                                            print(value);
+                                            driverModel=value;
+                                            driverN = value;
+                                            driversStream.add(value);
+                                          },
+                                          items: dropDrivers,
+                                        ),
+                                        padding: EdgeInsets.only(bottom: SPACE * 2),
+                                      );
+                                    },
+                                  );
+                                }
+                                else return Text('Non ci sono fattorini.');
+                              },
+                            ),
+                            RaisedButton(
+                              child: Text('Assegna'),
+                              onPressed: (){
+                                _showPositionDialog(context);
+                              },
+                            )
+                          ],
                         ),
                         Row(
                           children: <Widget>[

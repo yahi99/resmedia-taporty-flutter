@@ -228,6 +228,10 @@ class GroupsVoid extends StatelessWidget {
           sliver: SliverList(
             delegate: SliverChildBuilderDelegate(
               (context, index) {
+                if(index==0) return Padding(
+                  padding: EdgeInsets.only(top:42.0,bottom: 16.0,left: 16.0,right: 16.0),
+                  child: products[index],
+                );
                 return Padding(
                   padding: EdgeInsets.all(16.0),
                   child: products[index],

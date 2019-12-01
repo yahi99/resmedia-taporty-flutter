@@ -10,6 +10,9 @@ TurnModel _$TurnModelFromJson(Map json) {
   return TurnModel(
       path: json['path'] as String,
       restaurantId: json['restaurantId'] as String,
+      driver: json['driver'] as String,
+      oid: json['oid'] as String,
+      year: json['year'] as int,
       startTime: json['startTime'] as String,
       month: _$enumDecodeNullable(_$MonthCategoryEnumMap, json['month']),
       day: json['day'] as String,
@@ -31,6 +34,9 @@ Map<String, dynamic> _$TurnModelToJson(TurnModel instance) {
   writeNotNull('day', instance.day);
   writeNotNull('restaurantId', instance.restaurantId);
   writeNotNull('month', _$MonthCategoryEnumMap[instance.month]);
+  writeNotNull('driver', instance.driver);
+  writeNotNull('oid', instance.oid);
+  writeNotNull('year', instance.year);
   return val;
 }
 

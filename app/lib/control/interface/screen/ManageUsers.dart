@@ -4,6 +4,7 @@ import 'package:easy_route/easy_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:resmedia_taporty_flutter/control/interface/screen/HomeScreenPanel.dart';
 import 'package:resmedia_taporty_flutter/control/logic/bloc/UsersBloc.dart';
 import 'package:resmedia_taporty_flutter/data/config.dart';
@@ -37,6 +38,63 @@ class _LoginScreenState extends State<ManageUsers> {
     super.dispose();
   }
 
+  _showPositionDialog(BuildContext context,String uid,String img) {
+    showDialog(
+      context: context,
+      builder: (_context) {
+        final theme = Theme.of(context);
+        final cls = theme.colorScheme;
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(20))),
+          content: Wrap(
+            alignment: WrapAlignment.center,
+            runSpacing: SPACE * 2,
+            children: <Widget>[
+              Column(
+                children: <Widget>[
+                  Text(
+                    "Sicuro di volere cancellare questo utente?",
+                    style: theme.textTheme.body2,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    //crossAxisAlignment:CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      RaisedButton(
+                        onPressed: () {
+                          EasyRouter.pop(context);
+                        },
+                        textColor: Colors.white,
+                        color: Colors.red,
+                        child: Text(
+                          "Nega",
+                        ),
+                      ),
+                      RaisedButton(
+                        onPressed: () {
+                          Database().deleteUser(uid,img).then((value) {
+                            Toast.show('Utente cancellato', context);
+                            EasyRouter.pop(context);
+                          });
+                        },
+                        color: Colors.green,
+                        textColor: Colors.white,
+                        child: Text(
+                          "Consenti",
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -64,7 +122,19 @@ class _LoginScreenState extends State<ManageUsers> {
                 },
                 itemBuilder: (ctx,index){
                   final user=snap.data.elementAt(index);
-                  return InkWell(
+                  return Slidable(
+                    actionPane: SlidableDrawerActionPane(),
+                    actionExtentRatio: 0.25,
+                    secondaryActions: <Widget>[
+                      IconSlideAction(
+                        color: Colors.blue,
+                        icon: Icons.close,
+                        onTap: () async {
+                          _showPositionDialog(context,user.id,user.img);
+                        },
+                      ),
+                    ],
+                      child:InkWell(
                     child: Column(
                       children: <Widget>[
                         Row(
@@ -92,6 +162,7 @@ class _LoginScreenState extends State<ManageUsers> {
                     onTap: ()async{
                       if(user.type!='admin') EasyRouter.push(context,ManageSpecificUser(user:user));
                     },
+                      ),
                   );
             },
 

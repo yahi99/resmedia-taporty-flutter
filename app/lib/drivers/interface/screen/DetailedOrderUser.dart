@@ -71,14 +71,13 @@ class _DetailOrderRestaurantPageState extends State<DetailedOrderUser> {
                 Wrap(
                   runSpacing: 16.0,
                   children: <Widget>[
-                    Text(
-                      "DETTAGLIO ORDINE",
-                      style: tt.title,
-                    ),
                     Text('Prodotti: ', style: tt.subtitle),
-                    ListView.builder(
+                    ListView.separated(
                         shrinkWrap: true,
                         itemCount: cart.products.length,
+                        separatorBuilder: (ctx,index){
+                          return Divider(height: 4.0,);
+                        },
                         itemBuilder: (BuildContext ctx, int index) {
                           return ProductView(model:cart.products.elementAt(index),number:cart.products
                                   .elementAt(index)

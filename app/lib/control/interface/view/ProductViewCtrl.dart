@@ -139,8 +139,7 @@ class ProductViewCtrl extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Text(
-                            '${model.id.substring(0, (15 < model.id.length) ? 15 : model.id.length)}'),
+                        Flexible(child:Container(child: Text(model.id),width: MediaQuery.of(context).size.width*2/5),),
                         Text('€ ${model.price}'),
                       ],
                     ),

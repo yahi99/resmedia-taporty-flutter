@@ -425,10 +425,30 @@ class Database extends FirebaseDatabase
 
   //TODO handle what happens to the orders maybe add a feature to the control panel that can assign a driver to an order
   Future<bool> removeShiftRest(String startTime,String day,String restId)async{
-    fs.collection('restaurants').document(restId)
+    await fs.collection('restaurants').document(restId)
           .collection('turns')
           .document(day + '§' + startTime)
           .delete();
+    final modelRest=CalendarModel.fromFirebase(await fs.collection('days').document(day).collection('times').document(startTime).collection('restaurant_turns').document(restId).get());
+    final model=CalendarModel.fromFirebase(await fs.collection('days').document(day).collection('times').document(startTime).get());
+    final tempRest=modelRest.number;
+    final temp=model.number;
+    /*
+    final free=modelRest.occupied;
+    for(int i=1;i<free.length;i++){
+      removeShiftDriver(startTime, day, free.elementAt(i));
+    }
+     */
+    if(temp==tempRest){
+      await fs.collection('days').document(day).collection('times').document(startTime).collection('restaurant_turns').document(restId).delete();
+      fs.collection('days').document(day).collection('times').document(startTime).delete();
+      fs.collection('days').document(day).delete();
+    }
+    else{
+      await fs.collection('days').document(day).collection('times').document(startTime).collection('restaurant_turns').document(restId).delete();
+      fs.collection('days').document(day).collection('times').document(startTime).updateData({'number':(temp-tempRest)});
+    }
+
     /*
       List<String> usersRest = CalendarModel
           .fromFirebase(
@@ -462,10 +482,15 @@ class Database extends FirebaseDatabase
   }
 
   Future<bool> removeShiftDriver(String startTime,String day,String driver)async{
-    fs.collection('restaurants').document(driver)
+    print(day + '§' + startTime);
+    await fs.collection('users').document(driver)
         .collection('turns')
         .document(day + '§' + startTime)
         .delete();
+    final model=CalendarModel.fromFirebase(await fs.collection('days').document(day).collection('times').document(startTime).get());
+    final temp=model.free;
+    temp.remove(driver);
+    await fs.collection('days').document(day).collection('times').document(startTime).updateData({'free':temp});
     return true;
   }
 

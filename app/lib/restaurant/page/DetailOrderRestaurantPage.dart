@@ -59,7 +59,7 @@ class _DetailOrderRestaurantPageState extends State<DetailOrderRestaurantPage> {
     final theme = Theme.of(context);
     final tt = theme.textTheme;
     final cart = Cart(products: widget.model.products);
-    return StreamBuilder(
+    return StreamBuilder<RestaurantOrderModel>(
       stream: Database().getRestaurantOrder(widget.model.restaurantId, widget.model.id),
       builder: (ctx,order){
         if(!order.hasData) return Center(child: CircularProgressIndicator(),);
@@ -82,15 +82,18 @@ class _DetailOrderRestaurantPageState extends State<DetailOrderRestaurantPage> {
                         Text('Inidirizzo cliente: ', style: tt.subtitle),
                         Text(widget.model.addressR),
                         Text('Prodotti: ', style: tt.subtitle),
-                        ListView.builder(
+                        ListView.separated(
                             shrinkWrap: true,
                             itemCount: cart.products.length,
+                            separatorBuilder: (ctx,index){
+                              return Divider(height: 4.0,);
+                            },
                             itemBuilder: (BuildContext ctx, int index) {
                               return ProductView(model:cart.products.elementAt(index),number:cart.products
                                   .elementAt(index)
                                   .countProducts);
                             }),
-                        (translateOrderCategory(order.data.model.state) ==
+                        (translateOrderCategory(order.data.state) ==
                             'In Accettazione')
                             ? Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -221,8 +224,11 @@ class ProductView extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Text(
+                    Flexible(child:Container(child: Text(model.id),width: MediaQuery.of(context).size.width*3/5),),
+                    /*Text(
                         '${model.id.substring(0, (15 < model.id.length) ? 15 : model.id.length)}'),
+
+                     */
                     Text('€ ${model.price}'),
                   ],
                 ),

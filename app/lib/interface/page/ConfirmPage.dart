@@ -108,6 +108,14 @@ class _ConfirmState extends State<ConfirmPage>
       stream: user.outFirebaseUser,
       builder: (ctx, uid) {
         return Scaffold(
+          appBar: AppBar(
+            leading: IconButton(
+              icon: Icon(Icons.arrow_back),
+              onPressed: (){
+                widget.controller.animateTo(widget.controller.index-1);
+              },
+            ),
+          ),
           body: StreamBuilder<List<DrinkModel>>(
             stream: restaurantBloc.outDrinks,
             builder: (context, snapshot) {
@@ -152,12 +160,13 @@ class _ConfirmState extends State<ConfirmPage>
                           widget.model.id,
                           user,
                           widget.position,
+                          state.phone,
                           widget.description.addressLine,
                           state.time,
                           state.endTime,
                           state.fingerprint,
                           state.date,
-                          state.phone,
+
                         )
                             .then((isDone) {
                           RestaurantScreen.isOrdered = false;

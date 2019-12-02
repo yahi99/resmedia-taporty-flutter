@@ -1,3 +1,4 @@
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:easy_blocs/easy_blocs.dart';
 import 'package:easy_firebase/easy_firebase.dart';
 import 'package:easy_route/easy_route.dart';
@@ -72,7 +73,12 @@ class _LoginScreenState extends State<ManageRestaurants> {
                       ),
                       RaisedButton(
                         onPressed: () {
-                          Database().deleteRestaurant(restId);
+                          CloudFunctions.instance.getHttpsCallable(functionName: 'deleteRestaurant').call({
+                            'restaurantId':restId
+                          }).then((isDone){
+
+                          });
+                          //Database().deleteRestaurant(restId);
                         },
                         color: Colors.green,
                         textColor: Colors.white,

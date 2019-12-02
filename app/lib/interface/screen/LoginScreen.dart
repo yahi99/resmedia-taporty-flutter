@@ -303,9 +303,10 @@ class _LoginScreenState extends State<LoginScreen> {
       } else {
         final registrationLevel = await _userBloc.getRegistrationLevel();
         final user=await _userBloc.outFirebaseUser.first;
+        final userType=(await UserBloc.of().outUser.first).model.type;
         if (registrationLevel == RegistrationLevel.LV2)
           await EasyRouter.push(context, SignUpMoreScreen());
-        if (registrationLevel == RegistrationLevel.COMPLETE) {
+        if (registrationLevel == RegistrationLevel.COMPLETE && userType=='user') {
           if (user.isEmailVerified) {
             if ((await PermissionHandler()
                 .checkPermissionStatus(PermissionGroup.location)) !=
@@ -337,6 +338,9 @@ class _LoginScreenState extends State<LoginScreen> {
             //Toast.show('Devi confermare il tuo account per accedere', context);
             _showMailDialog(context);
           }
+        }
+        else{
+          Toast.show('Utente non abilitato', context);
         }
       }
     };

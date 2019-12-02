@@ -215,7 +215,14 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
                     stream: barStream.stream,
                     builder: (ctx,bar){
                 if (snap.hasData && user.hasData) {
-                  if(user.data.model.type!='user') EasyRouter.pushAndRemoveAll(context, LoginScreen());
+                  if(user.data.model.type!='user') {
+                    return RaisedButton(
+                      child: Text('Sei stato disabilitato clicca per fare logout'),
+                      onPressed: (){
+                        UserBloc.of().logout();
+                      },
+                    );
+                  }
                   return SingleChildScrollView(
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),

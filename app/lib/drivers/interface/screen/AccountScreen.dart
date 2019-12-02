@@ -64,8 +64,14 @@ class AccountScreenDriver extends StatelessWidget implements WidgetRoute {
             return Center(
               child: CircularProgressIndicator(),
             );
-          if (snap.data.model.type != 'user')
-            EasyRouter.pushAndRemoveAll(context, LoginScreen());
+          if (snap.data.model.type != 'user'){
+            return RaisedButton(
+              child: Text('Sei stato disabilitato clicca per fare logout'),
+              onPressed: (){
+                UserBloc.of().logout();
+              },
+            );
+          }
           print(snap.data.model.isDriver);
           var temp = snap.data.model.nominative.split(' ');
           return Column(
@@ -252,6 +258,7 @@ class AccountScreenDriver extends StatelessWidget implements WidgetRoute {
                               user.logout().then((onValue) {
                                 EasyRouter.pushAndRemoveAll(
                                     context, LoginScreen());
+                                UserBloc.close();
                               });
                             }),
                       ],

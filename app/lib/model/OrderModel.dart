@@ -16,7 +16,7 @@ abstract class OrderModel extends FirebaseModel {
   }) : super(path);
 }
 
-enum StateCategory { PENDING, ACCEPTED, DELIVERED, DENIED, PICKED_UP }
+enum StateCategory { PENDING, ACCEPTED, DELIVERED, DENIED, PICKED_UP,CANCELLED }
 
 String translateOrderCategory(StateCategory category) {
   switch (category) {
@@ -30,6 +30,8 @@ String translateOrderCategory(StateCategory category) {
       return "In Consegna";
     case StateCategory.DELIVERED:
       return "Consegnato";
+    case StateCategory.CANCELLED:
+      return "Ordine Cancellato";
     default:
       return "";
   }

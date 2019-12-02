@@ -85,7 +85,8 @@ const _$StateCategoryEnumMap = <StateCategory, dynamic>{
   StateCategory.ACCEPTED: 'ACCEPTED',
   StateCategory.DELIVERED: 'DELIVERED',
   StateCategory.DENIED: 'DENIED',
-  StateCategory.PICKED_UP: 'PICKED_UP'
+  StateCategory.PICKED_UP: 'PICKED_UP',
+  StateCategory.CANCELLED: 'CANCELLED'
 };
 
 UserOrderModel _$UserOrderModelFromJson(Map json) {

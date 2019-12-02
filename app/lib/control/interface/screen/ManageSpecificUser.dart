@@ -45,7 +45,7 @@ class _LoginScreenState extends State<ManageSpecificUser> {
 
   List<DropdownMenuItem> dropType = List<DropdownMenuItem>();
 
-  List<String> types = ['user', 'restaurant', 'control', 'disabled'];
+  List<String> types = ['user', 'restaurant', 'control', 'disabled','driver'];
 
   _showPositionDialog(BuildContext context) {
     showDialog(
@@ -191,7 +191,7 @@ class _LoginScreenState extends State<ManageSpecificUser> {
                         child: DropdownButton(
                           //key: _dropKey,
                           value:
-                              (!snap.hasData) ? widget.user.type : snap.data,
+                              (!snap.hasData) ? ((widget.user.type==null)?'user':widget.user.type) : snap.data,
                           onChanged: (value) {
                             print(value);
                             type = value;

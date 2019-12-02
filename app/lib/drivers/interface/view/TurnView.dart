@@ -28,8 +28,9 @@ class TurnView extends StatelessWidget {
             final temp=model.endTime.split(':');
             final date=DateTime.parse(model.day);
             double difference=DateTime(date.year,date.month,date.day,int.parse(temp.elementAt(0)),int.parse(temp.elementAt(1))).difference(DateTime.now()).inSeconds/60/60;
-            if(difference>0 && difference <48.0) Database().removeShiftDriver(model.startTime, model.day, (await UserBloc.of().outUser.first).model.id);
-            if(difference >48) Toast.show('Non puoi modificare turni nelle prossime 48 ore!', context, duration: 5);
+            print(difference);
+            if(difference>0 && difference <48.0) Toast.show('Non puoi modificare turni nelle prossime 48 ore!', context, duration: 5);
+            if(difference >48) Database().removeShiftDriver(model.startTime, model.day, (await UserBloc.of().outUser.first).model.id);
           },
         )
       ],
@@ -66,8 +67,8 @@ class TurnViewRest extends StatelessWidget {
             final temp=model.endTime.split(':');
             final date=DateTime.parse(model.day);
             double difference=DateTime(date.year,date.month,date.day,int.parse(temp.elementAt(0)),int.parse(temp.elementAt(1))).difference(DateTime.now()).inSeconds/60/60;
-            if(difference>0 && difference <48.0) Database().removeShiftRest(model.startTime, model.day, (await UserBloc.of().outUser.first).model.restaurantId);
-            if(difference >48) Toast.show('Non puoi modificare turni nelle prossime 48 ore!', context, duration: 5);
+            if(difference >48) Database().removeShiftRest(model.startTime, model.day, (await UserBloc.of().outUser.first).model.restaurantId);
+            if(difference>0 && difference <48.0) Toast.show('Non puoi modificare turni nelle prossime 48 ore!', context, duration: 5);
           },
         )
       ],

@@ -153,7 +153,8 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                                     });
                                   },
                                 ),
-                                Text(count.toString(),style: TextStyle(color: Colors.white,fontSize: 18.0,),)
+                                Text(count.toString(),style: TextStyle(color: Colors.white,fontSize: 18.0,fontWeight: FontWeight.bold,
+                                  fontFamily: 'Comfortaa',),)
                               ],
                             );
                           }
@@ -181,7 +182,8 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                                   });
                                 },
                               ),
-                              Text('0',style: TextStyle(color: Colors.white,fontSize: 18.0),)
+                              Text('0',style: TextStyle(color: Colors.white,fontSize: 18.0,fontWeight: FontWeight.bold,
+                                fontFamily: 'Comfortaa',),)
                             ],
                           );
                         },
@@ -240,8 +242,18 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                 stream: RestaurantBloc.init(idRestaurant: widget.model.id).outRestaurant,
                 builder: (ctx,rest){
                   if(user.hasData && rest.hasData){
-                    if(user.data.model.type!='user') EasyRouter.pushAndRemoveAll(context, LoginScreen());
-                    if(rest.data.isDisabled!=null && rest.data.isDisabled) EasyRouter.popUntil(context, RestaurantListScreen.ROUTE);
+                    if(user.data.model.type!='user'){
+                      return RaisedButton(
+                        child: Text('Sei stato disabilitato clicca per fare logout'),
+                        onPressed: (){
+                          UserBloc.of().logout();
+                        },
+                      );
+                      //EasyRouter.pushAndRemoveAll(context, LoginScreen());
+                    }
+                    if(rest.data.isDisabled!=null && rest.data.isDisabled) {
+                      return Text('Ristorante non abilitato scegline un\'altro');
+                    }
                     return TabBarView(
                       children: <Widget>[
                         InfoRestaurantPage(address: widget.address, model: widget.model),

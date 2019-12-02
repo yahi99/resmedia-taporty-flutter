@@ -136,8 +136,8 @@ class TypeCtrlOrderView extends StatelessWidget {
       actionExtentRatio: 0.25,
       secondaryActions: <Widget>[
         IconSlideAction(
-          color: Colors.blue,
-          icon: Icons.close,
+          //color: Colors.black12,
+          icon: Icons.delete,
           onTap: () async {
             _showPositionDialog(context);
           },
@@ -156,12 +156,10 @@ class TypeCtrlOrderView extends StatelessWidget {
               minHeight: 48,
             ),
             child: Container(
+              width: MediaQuery.of(context).size.width*4/5,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Wrap(
-                    runSpacing: 16.0,
-                    children: <Widget>[
                       Text('Cliente: ', style: tt.subtitle),
                       Text(model.nominative),
                       Text('Ristorante: ', style: tt.subtitle),
@@ -180,8 +178,6 @@ class TypeCtrlOrderView extends StatelessWidget {
                           ' euro'),
                       Text('Stato dell\'ordine: ', style: tt.subtitle),
                       Text(translateOrderCategory(model.state)),
-                    ],
-                  ),
                   /*ListView.builder(
                       shrinkWrap: true,
                       itemCount: cart.products.length + 2,

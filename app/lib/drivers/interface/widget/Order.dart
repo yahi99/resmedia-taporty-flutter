@@ -25,7 +25,7 @@ class Order extends StatelessWidget {
     final tt=Theme.of(context).textTheme;
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(color: (isNear)?Colors.red:Colors.grey[300]),
+        border: Border.all(color: (isNear!=null && isNear)?Colors.red:Colors.grey[300]),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
       child: Column(

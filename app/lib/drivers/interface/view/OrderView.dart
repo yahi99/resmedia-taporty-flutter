@@ -21,6 +21,7 @@ class OrderView extends StatelessWidget {
       endTime: model.endTime,
       date: model.day,
       children: <Widget>[
+        Padding(child:Divider(height: 4.0,),padding: EdgeInsets.only(top:8.0,bottom: 8.0),),
         Expanded(
           child: SubjectVoid(
             model: sub[0],
@@ -79,10 +80,6 @@ class SubjectVoid extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Text(
-                "${model.deliveryTime}",
-                style: tt.subtitle,
-              ),
               Flexible(
                 child: Text(
                   "${(model.address.length > 30) ? model.address.substring(0, 28) + '\n' + model.address.substring(28) : model.address}",

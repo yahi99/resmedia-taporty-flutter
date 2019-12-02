@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:resmedia_taporty_flutter/data/config.dart';
+import 'package:resmedia_taporty_flutter/interface/screen/LoginScreen.dart';
 import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
 import 'package:resmedia_taporty_flutter/model/UserModel.dart';
 
@@ -52,6 +53,16 @@ class SnackBarPage extends StatelessWidget {
             return Center(
               child: CircularProgressIndicator(),
             );
+          if (snap.data.model.type != 'user') {
+            return RaisedButton(
+              child: Text('Sei stato disabilitato clicca per fare logout'),
+              onPressed: (){
+                UserBloc.of().logout();
+                EasyRouter.pushAndRemoveAll(context, LoginScreen());
+              },
+            );
+            //EasyRouter.pushAndRemoveAll(context, LoginScreen());
+          }
           var temp = snap.data.model.nominative.split(' ');
           return Column(
             children: <Widget>[

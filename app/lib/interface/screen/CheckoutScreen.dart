@@ -76,40 +76,39 @@ class _CheckoutScreenState extends State<CheckoutScreen>
               },
             )
           ],
-          bottom: TabBar(
-            controller: controller,
-              /*onTap: (index) {
-              if (controller.previousIndex > controller.index) {
-                setState(() {
-                  controller.index = indexUser;
-                });
-              } else
-                indexUser = index;
-            },
-
-               */
-            tabs: [
-              Tab(
-                icon: Icon(
-                  Icons.shopping_cart,
+          bottom: MyTabBar(
+            child: TabBar(
+              controller: controller,
+              onTap: (index) {
+                if (controller.previousIndex < index) {
+                  setState(() {
+                    controller.index = controller.previousIndex;
+                  });
+                }
+              },
+              tabs: [
+                Tab(
+                  icon: Icon(
+                    Icons.shopping_cart,
+                  ),
                 ),
-              ),
-              Tab(
-                icon: Icon(
-                  Icons.location_on,
+                Tab(
+                  icon: Icon(
+                    Icons.location_on,
+                  ),
                 ),
-              ),
-              Tab(
-                icon: Icon(
-                  Icons.credit_card,
+                Tab(
+                  icon: Icon(
+                    Icons.credit_card,
+                  ),
                 ),
-              ),
-              Tab(
-                icon: Icon(
-                  Icons.flag,
+                Tab(
+                  icon: Icon(
+                    Icons.flag,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
         body: Theme(
@@ -131,10 +130,18 @@ class _CheckoutScreenState extends State<CheckoutScreen>
                 builder: (ctx, rest) {
                   if (user.hasData && rest.hasData) {
                     if (user.data.model.type != 'user') {
-                      EasyRouter.pushAndRemoveAll(context, LoginScreen());
+                      return RaisedButton(
+                        child: Text('Sei stato disabilitato clicca per fare logout'),
+                        onPressed: (){
+                          UserBloc.of().logout();
+                          EasyRouter.pushAndRemoveAll(context, LoginScreen());
+                        },
+                      );
+                      //EasyRouter.pushAndRemoveAll(context, LoginScreen());
                     }
-                    if (rest.data.isDisabled != null && rest.data.isDisabled)
-                      EasyRouter.popUntil(context, RestaurantListScreen.ROUTE);
+                    if (rest.data.isDisabled != null && rest.data.isDisabled){
+                      return Text('Ristorante non abilitato scegline un\'altro');
+                    }
                     return MyInheritedWidget(
                       child: TabBarView(
                         controller: controller,
@@ -207,10 +214,25 @@ class MyInheritedWidgetData {
       fingerprint,
       customerId,
       uid;
+  int count;
 
 //final StreamController _streamController =StreamController.broadcast();
 
 //Stream get stream => _streamController.stream;
 
 //Sink get sink => _streamController.sink;
+}
+
+class MyTabBar extends StatelessWidget implements PreferredSizeWidget {
+  final TabBar child;
+
+  MyTabBar({this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return IgnorePointer(child: child);
+  }
+
+  @override
+  Size get preferredSize => this.child.preferredSize;
 }

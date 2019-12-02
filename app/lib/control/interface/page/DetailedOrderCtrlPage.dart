@@ -38,7 +38,8 @@ class _DetailOrderRestaurantPageState extends State<DetailOrderCtrlPage> {
     'CANCELLED',
     'DELIVERED',
     'PENDING',
-    'ACCEPTED'
+    'ACCEPTED',
+    'PICKED_UP'
   ];
 
   String state,driverN,driverId;
@@ -122,7 +123,7 @@ class _DetailOrderRestaurantPageState extends State<DetailOrderCtrlPage> {
   void initState() {
     super.initState();
     stateStream = new StreamController<String>.broadcast();
-    driversStream= new StreamController<String>.broadcast();
+    driversStream= new StreamController<UserModel>.broadcast();
     for (int i = 0; i < states.length; i++) {
       dropType.add(DropdownMenuItem(
         child: Text(states[i]),
@@ -165,9 +166,9 @@ class _DetailOrderRestaurantPageState extends State<DetailOrderCtrlPage> {
                           "DETTAGLIO ORDINE",
                           style: tt.title,
                         ),
+                        Text('Assegna ordine al fattorino', style: tt.subtitle),
                         Row(
                           children: <Widget>[
-                            Text('Assegna ordine al fattorino'),
                             StreamBuilder<List<UserModel>>(
                               stream: Database().driversList(),
                               builder: (ctx,drivers){
@@ -192,14 +193,15 @@ class _DetailOrderRestaurantPageState extends State<DetailOrderCtrlPage> {
                                               ? driverModel
                                               : driver.data,
                                           onChanged: (value) {
-                                            print(value);
+                                            print(value.id);
                                             driverModel=value;
-                                            driverN = value;
+                                            driverN = value.nominative;
+                                            driverId=value.id;
                                             driversStream.add(value);
                                           },
                                           items: dropDrivers,
                                         ),
-                                        padding: EdgeInsets.only(bottom: SPACE * 2),
+                                        padding: EdgeInsets.only(right: SPACE * 2),
                                       );
                                     },
                                   );
@@ -215,10 +217,10 @@ class _DetailOrderRestaurantPageState extends State<DetailOrderCtrlPage> {
                             )
                           ],
                         ),
+                        Text('Stato ordine: ', style: tt.subtitle),
+                        Text(translateOrderCategory(model.state)),
                         Row(
                           children: <Widget>[
-                            Text('Stato ordine: ', style: tt.subtitle),
-                            Text(translateOrderCategory(model.state)),
                             StreamBuilder(
                               stream: stateStream.stream,
                               builder: (ctx, snap) {
@@ -235,7 +237,7 @@ class _DetailOrderRestaurantPageState extends State<DetailOrderCtrlPage> {
                                     },
                                     items: dropType,
                                   ),
-                                  padding: EdgeInsets.only(bottom: SPACE * 2),
+                                  padding: EdgeInsets.only(right: SPACE * 2),
                                 );
                               },
                             ),
@@ -267,7 +269,7 @@ class _DetailOrderRestaurantPageState extends State<DetailOrderCtrlPage> {
                         Row(
                           children: <Widget>[
                             Text(model.isPaid?'Pagato':'Da Pagare'),
-                            model.isPaid?RaisedButton(child: Text('Paga'),onPressed: (){
+                            !model.isPaid?RaisedButton(child: Text('Paga'),onPressed: (){
                               //TODO pay
                               List <String> foodIds=new List<String>();
                               List <String> drinkIds=new List<String>();
@@ -301,11 +303,17 @@ class _DetailOrderRestaurantPageState extends State<DetailOrderCtrlPage> {
                               });
                             },):RaisedButton(child:Text('Rimborsa'),onPressed: (){
                               //TODO rimborso
+                              CloudFunctions.instance.getHttpsCallable(functionName: 'reimbursCharge').call({
+                              'fingerprint':widget.model.fingerprint
+                              }).then((isDone){
+
+                              });
                             },),
                           ],
                         ),
                         Text('Inidirizzo cliente: ', style: tt.subtitle),
                         Text(widget.model.addressR),
+                        /*
                         Text('Prodotti: ', style: tt.subtitle),
                         ListView.builder(
                             shrinkWrap: true,
@@ -315,6 +323,8 @@ class _DetailOrderRestaurantPageState extends State<DetailOrderCtrlPage> {
                                       .elementAt(index)
                                       .countProducts);
                             }),
+
+                         */
                       ],
                     ),
                   ],

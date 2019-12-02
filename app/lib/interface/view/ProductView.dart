@@ -13,6 +13,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
 import 'package:resmedia_taporty_flutter/logic/database.dart';
 import 'package:resmedia_taporty_flutter/model/ProductModel.dart';
+import 'package:toast/toast.dart';
 import 'package:vibration/vibration.dart';
 
 import '../../logic/bloc/CartBloc.dart';
@@ -119,8 +120,7 @@ class ProductView extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      Text(
-                          '${model.id.substring(0, (15 < model.id.length) ? 15 : model.id.length)}'),
+                      Flexible(child:Container(child: Text(model.id),width: MediaQuery.of(context).size.width*2/5),),
                       Text('€ ${model.price}'),
                     ],
                   ),
@@ -186,13 +186,20 @@ class CartStepperButton extends StatelessWidget {
                     model.id, model.restaurantId, snap.data.uid);
               },
               onIncrement: () {
-                Vibration.vibrate(duration: 65);
-                cartController.inIncrement(
-                    model.id,
-                    model.restaurantId,
-                    snap.data.uid,
-                    double.parse(model.price.replaceAll(',', '.')),
-                    category);
+                print(model.number);
+                final prod=cart.getProduct(model.id, model.restaurantId, snap.data.uid);
+                final count=(prod!=null)?prod.countProducts:0;
+                if(model.number!=null && int.parse(model.number)<=count)
+                  Toast.show('Limite massimo prodotti',context,duration: 3);
+                else {
+                  Vibration.vibrate(duration: 65);
+                  cartController.inIncrement(
+                      model.id,
+                      model.restaurantId,
+                      snap.data.uid,
+                      double.parse(model.price.replaceAll(',', '.')),
+                      category);
+                }
               },
             );
           },

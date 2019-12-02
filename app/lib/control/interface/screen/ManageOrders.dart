@@ -78,7 +78,7 @@ class _LoginScreenState extends State<ManageOrders> {
             shrinkWrap: true,
             itemBuilder: (ctx,index){
               final order=snap.data.elementAt(index);
-              return TypeCtrlOrderView(model: order,);
+              return Padding(child:TypeCtrlOrderView(model: order,),padding: EdgeInsets.only(top: 8.0),);
             },
             separatorBuilder: (ctx,index){
               return Divider(height: 4.0,);

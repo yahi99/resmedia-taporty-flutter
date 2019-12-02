@@ -77,6 +77,14 @@ class _ShippingState extends State<ShippingPage>
     final _capKey = GlobalKey<FormFieldState>();
     //MyInheritedWidget.of(context).sharedData;
     return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: (){
+            widget.controller.animateTo(widget.controller.index-1);
+          },
+        ),
+      ),
       body: SingleChildScrollView(
         child: Form(
           key: _formKey,
@@ -359,16 +367,18 @@ class _ShippingState extends State<ShippingPage>
                 if (date != null && time != null) {
                   final temp=time.split(':');
                   double difference=DateTime(date.year,date.month,date.day,int.parse(temp.elementAt(0)),int.parse(temp.elementAt(1))).difference(DateTime.now()).inSeconds/60/60;
+                  final state = MyInheritedWidget.of(context);
+                  print(_phoneKey.currentState.value.toString());
                   if(difference >0 && difference<48.0){
                     final state = MyInheritedWidget.of(context);
                     state.date = date.toIso8601String();
                     state.time = time;
                     state.endTime = endTime;
-                    state.address = _addressKey.currentState.toString();
-                    state.phone = _phoneKey.currentState.toString();
-                    state.email = _emailKey.currentState.toString();
-                    state.name = _nameKey.currentState.toString();
-                    state.cap = _capKey.currentState.toString();
+                    state.address = _addressKey.currentState.value.toString();
+                    state.phone = _phoneKey.currentState.value.toString();
+                    state.email = _emailKey.currentState.value.toString();
+                    state.name = _nameKey.currentState.value.toString();
+                    state.cap = _capKey.currentState.value.toString();
                     widget.controller.animateTo(widget.controller.index + 1);
                   }
                   else if(difference>48.0){

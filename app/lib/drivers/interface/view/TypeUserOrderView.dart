@@ -252,7 +252,6 @@ class _LoginScreenState extends State<TypeOrderView> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        Text('Prodotti: ', style: theme.textTheme.subtitle),
                         ListView(
                           physics: NeverScrollableScrollPhysics(),
                           shrinkWrap: true,

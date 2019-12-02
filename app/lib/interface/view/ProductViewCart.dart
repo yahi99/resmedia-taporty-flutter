@@ -10,6 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
 import 'package:resmedia_taporty_flutter/model/ProductModel.dart';
+import 'package:toast/toast.dart';
+import 'package:vibration/vibration.dart';
 
 class ProductViewCart extends StatelessWidget {
   final CartController cartController;
@@ -116,8 +118,7 @@ class ProductViewCart extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
-                              Text(
-                                  '${model.id.substring(0, (15 < model.id.length) ? 15 : model.id.length)}'),
+                              Flexible(child:Container(child: Text(model.id),width: MediaQuery.of(context).size.width*2/5),),
                               Text('€ ${model.price}'),
                             ],
                           ),
@@ -129,13 +130,19 @@ class ProductViewCart extends StatelessWidget {
                             '${cart.getProduct(model.id, model.restaurantId, snap.data.uid)?.countProducts ?? 0}'),
                         onDecrease: () => cartController.inDecrease(
                             model.id, model.restaurantId, snap.data.uid),
-                        onIncrement: () => cartController.inIncrement(
-                            model.id,
-                            model.restaurantId,
-                            snap.data.uid,
-                            double.parse(model.price.replaceAll(',', '.')),
-                            category,
-                            ),
+                        onIncrement: () {
+                          if(model.number!=null && int.parse(model.number)<=cart.getProduct(model.id, model.restaurantId, snap.data.uid)?.countProducts)
+                            Toast.show('Limite massimo prodotti',context,duration: 3);
+                          else {
+                            Vibration.vibrate(duration: 65);
+                            cartController.inIncrement(
+                                model.id,
+                                model.restaurantId,
+                                snap.data.uid,
+                                double.parse(model.price.replaceAll(',', '.')),
+                                category);
+                          }
+                        }
                       ),
                     ],
                   ),

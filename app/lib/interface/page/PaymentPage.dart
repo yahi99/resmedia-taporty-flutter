@@ -58,6 +58,14 @@ class _PaymentState extends State<PaymentPage>
             }
           }
           return Scaffold(
+              appBar: AppBar(
+                leading: IconButton(
+                  icon: Icon(Icons.arrow_back),
+                  onPressed: (){
+                    widget.controller.animateTo(widget.controller.index-1);
+                  },
+                ),
+              ),
               body: SingleChildScrollView(
                 child: Padding(
                   padding: const EdgeInsets.all(SPACE * 2),

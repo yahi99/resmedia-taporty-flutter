@@ -12,6 +12,7 @@ import 'package:resmedia_taporty_flutter/logic/bloc/RestaurantBloc.dart';
 import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
 import 'package:resmedia_taporty_flutter/model/ProductModel.dart';
 import 'package:resmedia_taporty_flutter/model/RestaurantModel.dart';
+import 'package:toast/toast.dart';
 
 class CartPage extends StatefulWidget {
   final RestaurantModel model;
@@ -25,9 +26,18 @@ class CartPage extends StatefulWidget {
 }
 
 class _CartState extends State<CartPage> with AutomaticKeepAliveClientMixin {
+
+  int count;
+
   @override
   void dispose() {
     super.dispose();
+  }
+
+  @override
+  void initState(){
+    count=0;
+    super.initState();
   }
 
   @override
@@ -50,16 +60,7 @@ class _CartState extends State<CartPage> with AutomaticKeepAliveClientMixin {
                     child: CircularProgressIndicator(),
                   );
                 return Scaffold(
-                  /*appBar: AppBar(
-                    leading: IconButton(
-                      icon: Icon(Icons.arrow_back),
-                      onPressed: (){
-                        widget.controller.animateTo(widget.controller.index-1);
-                      },
-                    ),
-                  ),
 
-                   */
                     body: StreamBuilder<List<DrinkModel>>(
                       stream: restaurantBloc.outDrinks,
                       builder: (context, snapshot) {
@@ -70,6 +71,9 @@ class _CartState extends State<CartPage> with AutomaticKeepAliveClientMixin {
                               return Center(
                                 child: CircularProgressIndicator(),
                               );
+                            final state = MyInheritedWidget.of(context);
+                            state.count=sp1.data.getTotalItems(sp1.data.products, uid.data.uid, widget.model.id)+
+                                sp2.data.getTotalItems(sp2.data.products, uid.data.uid, widget.model.id);
                             return ProductsFoodDrinkBuilder(
                               drinks: snapshot.data,
                               foods: snap.data,
@@ -90,9 +94,11 @@ class _CartState extends State<CartPage> with AutomaticKeepAliveClientMixin {
                         onPressed: () {
                           final state = MyInheritedWidget.of(context);
                           //print(Continue.isContinued);
+
                           //TODO block if zero items in the cart maybe use a stream ans pass it toProductsFoodDrinkBuilder and stream the whole bar
-                          widget.controller
+                          if(state.count>0) widget.controller
                               .animateTo(widget.controller.index + 1);
+                          else Toast.show('Non hai elementi nel carrello!', context,duration: 3);
                         },
                       ),
                     ));
@@ -138,7 +144,7 @@ class ProductsFoodDrinkBuilder extends StatelessWidget {
                       if (snap.hasData && snapshot.hasData && sp.hasData) {
                         list.clear();
                         prod.clear();
-                        for (int i = 0; i < drinks.length; i++) {
+                      for (int i = 0; i < drinks.length; i++) {
                           var temp = drinks.elementAt(i);
                           var find = sp.data.getProduct(
                               temp.id, temp.restaurantId, snap.data.uid);
@@ -209,7 +215,7 @@ class GroupsVoid extends StatelessWidget {
       slivers: <Widget>[
         SliverStickyHeader(
           header: Container(
-            color: Colors.black12,
+            color: Colors.grey,
             child: Padding(
               padding:
                   const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),

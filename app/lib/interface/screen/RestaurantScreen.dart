@@ -247,6 +247,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                         child: Text('Sei stato disabilitato clicca per fare logout'),
                         onPressed: (){
                           UserBloc.of().logout();
+                          EasyRouter.pushAndRemoveAll(context, LoginScreen());
                         },
                       );
                       //EasyRouter.pushAndRemoveAll(context, LoginScreen());

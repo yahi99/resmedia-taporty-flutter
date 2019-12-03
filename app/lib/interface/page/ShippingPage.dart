@@ -72,7 +72,7 @@ class _ShippingState extends State<ShippingPage>
     final _nameKey = GlobalKey<FormFieldState>();
     //final _lastNameKey = GlobalKey<FormFieldState>();
     final _emailKey = GlobalKey<FormFieldState>();
-    final _addressKey = GlobalKey<FormFieldState>();
+    //final _addressKey = GlobalKey<FormFieldState>();
     final _phoneKey = GlobalKey<FormFieldState>();
     final _capKey = GlobalKey<FormFieldState>();
     //MyInheritedWidget.of(context).sharedData;
@@ -154,10 +154,12 @@ class _ShippingState extends State<ShippingPage>
                                           DateTime.now().year,
                                           DateTime.now().month,
                                           DateTime.now().day),
-                                      initialDate: DateTime.now(),
+                                      initialDate: DateTime(DateTime.now().year, DateTime.now().month,
+                                          DateTime.now().day),
                                       lastDate: DateTime(DateTime.now().year, DateTime.now().month,
                                           DateTime.now().day).add(Duration(hours: 48)),
                                     ).then((day) {
+                                      print(day);
                                       if (day != null) {
                                         date = day;
                                         _dateController.value =
@@ -374,7 +376,7 @@ class _ShippingState extends State<ShippingPage>
                     state.date = date.toIso8601String();
                     state.time = time;
                     state.endTime = endTime;
-                    state.address = _addressKey.currentState.value.toString();
+                    //state.address = _addressKey.currentState.value.toString();
                     state.phone = _phoneKey.currentState.value.toString();
                     state.email = _emailKey.currentState.value.toString();
                     state.name = _nameKey.currentState.value.toString();

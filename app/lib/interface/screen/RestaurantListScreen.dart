@@ -190,16 +190,12 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
         backgroundColor: red,
         centerTitle: true,
         actions: <Widget>[
-          (widget.isAnonymous != null)
-              ? (!widget.isAnonymous)
-                  ? IconButton(
+          IconButton(
                       icon: Icon(Icons.account_circle),
                       onPressed: () {
                         EasyRouter.push(context, AccountScreenDriver());
                       },
-                    )
-                  : Container()
-              : Container(),
+                    ),
         ],
         bottom: SearchBar(
           barStream: barStream,
@@ -214,12 +210,14 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
                 return StreamBuilder<String>(
                     stream: barStream.stream,
                     builder: (ctx,bar){
+                      print(user.hasData);
                 if (snap.hasData && user.hasData) {
                   if(user.data.model.type!='user') {
                     return RaisedButton(
                       child: Text('Sei stato disabilitato clicca per fare logout'),
                       onPressed: (){
                         UserBloc.of().logout();
+                        EasyRouter.pushAndRemoveAll(context, LoginScreen());
                       },
                     );
                   }

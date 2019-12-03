@@ -30,12 +30,20 @@ class _SignUpMoreScreenState extends State<SignUpMoreScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    print('here');
     registrationLevelSub?.cancel();
     _submitBloc.submitController.solver = (res) async {
+      print('maybe here');
       if (!res) return;
-
-      if (await _userBloc.getRegistrationLevel() == RegistrationLevel.COMPLETE)
+      final user= (await UserBloc.of().outUser.first);
+      print(user);
+      print('not here');
+      if(user!=null)print(user.model);
+      if(user!=null && user.model!=null)print(user.model);
+      if (await _userBloc.getRegistrationLevel() == RegistrationLevel.COMPLETE && user!=null && user.model!=null && user.model.type=='user'){
         await EasyRouter.pushAndRemoveAll(context, RestaurantListScreen());
+      }
+      else EasyRouter.pop(context);
     };
     super.didChangeDependencies();
   }

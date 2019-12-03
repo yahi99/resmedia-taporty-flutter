@@ -136,8 +136,9 @@ class _TurnScreenPanelState extends State<TurnScreen> {
                         showDatePicker(
                           context: context,
                           firstDate: DateTime(DateTime.now().year,
-                              DateTime.now().month, DateTime.now().day - 1),
-                          initialDate: DateTime.now(),
+                              DateTime.now().month, DateTime.now().day),
+                          initialDate: DateTime(DateTime.now().year,
+                              DateTime.now().month, DateTime.now().day),
                           lastDate: DateTime(2020),
                         ).then((day) {
                           if (day != null) {

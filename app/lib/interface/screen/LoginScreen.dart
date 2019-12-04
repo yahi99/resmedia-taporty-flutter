@@ -84,13 +84,13 @@ class LoginHelper {
     final FirebaseUser firebaseUser =
         (await firebaseAuth.signInWithCredential(authCredential));
     debugPrint("Eseguito l'accesso con Google di ${firebaseUser.email}.");
-    Database().putUser(firebaseUser);
+    //Database().putUser(firebaseUser);
 
     return firebaseUser;
   }
 
-  static Future<void> signOut() async {
-    await FirebaseAuth.instance.signOut();
+  Future<void> signOut() async {
+    googleSignIn.disconnect();
     debugPrint("Eseguito il logout.");
   }
 
@@ -112,6 +112,8 @@ class _LoginScreenState extends State<LoginScreen> {
   static const ROUTE = "LoginScreen";
 
   String get route => ROUTE;
+
+  bool isVerified;
 
   //static final FacebookLogin facebookSignIn = FacebookLogin();
 
@@ -283,7 +285,7 @@ class _LoginScreenState extends State<LoginScreen> {
         //final user = await _userBloc.outFirebaseUser.first;
         print('here');
         if (registrationLevel == RegistrationLevel.COMPLETE &&
-            userId.type == 'user') {
+            (userId.type == 'user' || userId.type==null)) {
           print('not here');
           if (user.isEmailVerified) {
             if ((await PermissionHandler()
@@ -344,6 +346,7 @@ class _LoginScreenState extends State<LoginScreen> {
         });*/
       }
     });*/
+    isVerified = false;
     super.initState();
   }
 
@@ -430,11 +433,12 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: getUser(),
-      builder: (BuildContext context, AsyncSnapshot<dynamic> userSnapshot) {
+    return StreamBuilder<FirebaseUser>(
+      stream: FirebaseAuth.instance.onAuthStateChanged,
+      builder: (context, userSnapshot) {
+        print('here');
         if (userSnapshot.hasData) {
-          if (userSnapshot.data is bool)
+          if (userSnapshot.data==null)
             return Material(
               child: Theme(
                 child: Form(
@@ -483,7 +487,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       RaisedButton.icon(
                         onPressed: () {
-                          LoginHelper().signInWithGoogle();
+                          _submitBloc.submitterGoogle();
                         },
                         icon: Icon(FontAwesomeIcons.google),
                         label: Text('Login with Google'),
@@ -531,31 +535,89 @@ class _LoginScreenState extends State<LoginScreen> {
                     .copyWith(unselectedWidgetColor: Colors.white),
               ),
             );
-
-          Geolocator()
-              .getCurrentPosition()
-              .then(
-                (position) async {
-                  final user = await _userBloc.outFirebaseUser.first;
-                  if(user.isEmailVerified)
-                  await EasyRouter.pushAndRemoveAll(
-                    context,
-                    RestaurantListScreen(
-                      isAnonymous: userSnapshot.data.isAnonymous,
-                      position: position,
-                      user: (await _userBloc.outUser.first).model,
+            print('here');
+            /*if(userSnapshot.data.isEmailVerified){
+              Geolocator().getCurrentPosition().then((pos)async{
+                await EasyRouter.pushAndRemoveAll(
+                  context,
+                  RestaurantListScreen(
+                    isAnonymous: userSnapshot.data.isAnonymous,
+                    position: pos,
+                    user: (await _userBloc.outUser.first).model,
+                  ),
+                );
+              });
+            }*/
+          //final user = await _userBloc.outFirebaseUser.first;
+          //print(user.uid);
+          Database().getUser(userSnapshot.data).first.then((userId) async {
+            print(userId.type);
+            final registrationLevel = await _userBloc.getRegistrationLevel();
+            //final user = await _userBloc.outFirebaseUser.first;
+            print('here');
+            if (registrationLevel == RegistrationLevel.COMPLETE &&
+                (userId.type == 'user' || userId.type==null)) {
+              print('not here');
+              if (userSnapshot.data.isEmailVerified) {
+                if ((await PermissionHandler()
+                    .checkPermissionStatus(PermissionGroup.location)) !=
+                    PermissionStatus.granted)
+                  _showPositionDialog(context, false);
+                else
+                  Geolocator()
+                      .getCurrentPosition()
+                      .then(
+                        (position) async =>
+                    await EasyRouter.pushAndRemoveAll(
+                      context,
+                      RestaurantListScreen(
+                        isAnonymous: userSnapshot.data.isAnonymous,
+                        position: position,
+                        user: (await _userBloc.outUser.first).model,
+                      ),
                     ),
+                  )
+                      .catchError(
+                        (error) {
+                      if (error is PlatformException) {
+                        print(error.code);
+                      }
+                    },
                   );
-                  else _showMailDialog(context);
-                }
-              )
-              .catchError(
-            (error) {
-              if (error is PlatformException) {
-                print(error.code);
               }
-            },
-          );
+              else {
+                if (!isVerified) {
+                  _showMailDialog(context);
+                  isVerified = true;
+                }
+              }
+            }
+          });
+          /*if (!isVerified) {
+            isVerified=true;
+            Geolocator().getCurrentPosition().then((position) async {
+              final user = await _userBloc.outFirebaseUser.first;
+              if (user.isEmailVerified)
+                await EasyRouter.pushAndRemoveAll(
+                  context,
+                  RestaurantListScreen(
+                    isAnonymous: userSnapshot.data.isAnonymous,
+                    position: position,
+                    user: (await _userBloc.outUser.first).model,
+                  ),
+                );
+              else
+                _showMailDialog(context);
+            }).catchError(
+              (error) {
+                if (error is PlatformException) {
+                  print(error.code);
+                }
+              },
+            );
+          }
+
+           */
         }
 
         return Material(
@@ -606,7 +668,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   RaisedButton.icon(
                     onPressed: () {
-                      LoginHelper().signInWithGoogle();
+                      _submitBloc.submitterGoogle();
                     },
                     icon: Icon(FontAwesomeIcons.google),
                     label: Text('Login with Google'),

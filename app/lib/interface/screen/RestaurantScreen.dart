@@ -242,7 +242,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                 stream: RestaurantBloc.init(idRestaurant: widget.model.id).outRestaurant,
                 builder: (ctx,rest){
                   if(user.hasData && rest.hasData){
-                    if(user.data.model.type!='user'){
+                    if(user.data.model.type!='user' && user.data.model.type!=null){
                       return RaisedButton(
                         child: Text('Sei stato disabilitato clicca per fare logout'),
                         onPressed: (){

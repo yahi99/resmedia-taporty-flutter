@@ -34,13 +34,21 @@ class FirebaseSignInBloc with MixinDefaultSingInManager<bool> implements Bloc {
     final res = await secureFirebaseError(() => _firebaseUserController.inSignInWithEmailAndPassword(
         email: _singInController.email, password: _singInController.password,
       ),
-
       adderEmailError: _singInController.addEmailError,
       adderPasswordError: _singInController.addPasswordError,
     );
     if (!res)
       _singInController.addSubmitEvent(SubmitEvent.WAITING);
     return res;
+  }
+
+  Future<bool> submitterGoogle() async {
+    final res = await _firebaseUserController.inSignInWithGoogle();
+    if (res!=null) {
+      _singInController.addSubmitEvent(SubmitEvent.WAITING);
+      return true;
+    }
+    return false;
   }
 
   FirebaseSignInBloc.instance() {

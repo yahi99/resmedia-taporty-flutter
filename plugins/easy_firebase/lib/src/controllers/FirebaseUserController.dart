@@ -4,6 +4,7 @@ import 'package:easy_firebase/src/Utility.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:meta/meta.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 
 class FirebaseUserController<L> implements FirebaseUserManager<L> {
@@ -45,6 +46,12 @@ class FirebaseUserController<L> implements FirebaseUserManager<L> {
     _firebaseUserHandler = await converterFirebaseError<FirebaseUser>(() async => await _fba.createUserWithEmailAndPassword(
       email: email, password: password,
     ));
+    return _firebaseUser;
+  }
+
+  Future<FirebaseUser> inSignInWithGoogle() async {
+    _registrationLevel = Completer();
+    _firebaseUserHandler = await converterFirebaseError<FirebaseUser>(() async => await LoginHelper().signInWithGoogle());
     return _firebaseUser;
   }
 
@@ -103,6 +110,8 @@ abstract class FirebaseUserManager<L> {
 
   Future<FirebaseUser> inSignUpWithEmailAndPassword({@required String email, @required String password});
 
+  Future<FirebaseUser> inSignInWithGoogle();
+
   Future<LV> nextRegistrationLv<LV>(Future<LV> conveyor);
 
   Future<void> logout();
@@ -135,9 +144,83 @@ mixin MixinFirebaseUserManager<L> implements FirebaseUserManager{
     return firebaseUserManager.inSignUpWithEmailAndPassword(email: email, password: password);
   }
 
+  Future<FirebaseUser> inSignInWithGoogle() {
+    return firebaseUserManager.inSignInWithGoogle();
+  }
+
   Future<LV> nextRegistrationLv<LV>(Future<LV> conveyor) {
     return firebaseUserManager.nextRegistrationLv(conveyor);
   }
 
   Future<void> logout() => firebaseUserManager.logout();
+}
+
+class LoginHelper {
+  final FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+  final GoogleSignIn googleSignIn = GoogleSignIn();
+
+  Future<FirebaseUser> signInWithEmailAndPassword(
+      String email, String password) async {
+    try {
+      FirebaseUser result = await firebaseAuth.signInWithEmailAndPassword(
+          email: email, password: password);
+
+      print("Login di $email eseguito con successo.");
+
+      return result;
+    } catch (exception) {
+      print("Errore nel login.");
+      print(exception.toString());
+
+      return null;
+    }
+  }
+
+  Future<FirebaseUser> createUserWithEmailAndPassword(
+      String email, String password) async {
+    try {
+      FirebaseUser result = await firebaseAuth.createUserWithEmailAndPassword(
+          email: email, password: password);
+
+      print("Registrazione di $email eseguito con successo.");
+
+      return result;
+    } catch (exception) {
+      print("Errore nella registrazione.");
+      print(exception.toString());
+
+      return null;
+    }
+  }
+
+  Future<FirebaseUser> signInWithGoogle() async {
+    final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
+
+    if (googleSignInAccount == null) return null;
+
+    final GoogleSignInAuthentication googleSignInAuthentication =
+    await googleSignInAccount.authentication;
+
+    final AuthCredential authCredential = GoogleAuthProvider.getCredential(
+      accessToken: googleSignInAuthentication.accessToken,
+      idToken: googleSignInAuthentication.idToken,
+    );
+
+    final FirebaseUser firebaseUser =
+    (await firebaseAuth.signInWithCredential(authCredential));
+    print("Eseguito l'accesso con Google di ${firebaseUser.email}.");
+    //Database().putUser(firebaseUser);
+
+    return firebaseUser;
+  }
+
+  Future<void> signOut() async {
+    await googleSignIn.signOut();
+    //await FirebaseAuth.instance.signOut();
+    print("Eseguito il logout.");
+  }
+
+  Future<void> requestNewPassword(String email) async {
+    await firebaseAuth.sendPasswordResetEmail(email: email);
+  }
 }

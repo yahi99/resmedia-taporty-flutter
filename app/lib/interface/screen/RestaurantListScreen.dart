@@ -212,7 +212,7 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
                     builder: (ctx,bar){
                       print(user.hasData);
                 if (snap.hasData && user.hasData) {
-                  if(user.data.model.type!='user') {
+                  if(user.data.model.type!='user' && user.data.model.type!=null) {
                     return RaisedButton(
                       child: Text('Sei stato disabilitato clicca per fare logout'),
                       onPressed: (){

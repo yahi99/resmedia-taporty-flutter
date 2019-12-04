@@ -5,10 +5,12 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_route/easy_route.dart';
 import 'package:easy_widget/easy_widget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geocoder/geocoder.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:resmedia_taporty_flutter/data/config.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/screen/BecomeDriverScreen.dart';
@@ -64,7 +66,7 @@ class AccountScreenDriver extends StatelessWidget implements WidgetRoute {
             return Center(
               child: CircularProgressIndicator(),
             );
-          if (snap.data.model.type != 'user'){
+          if (snap.data.model.type != 'user' && snap.data.model.type!=null){
             return RaisedButton(
               child: Text('Sei stato disabilitato clicca per fare logout'),
               onPressed: (){
@@ -256,6 +258,7 @@ class AccountScreenDriver extends StatelessWidget implements WidgetRoute {
                                 Text('Log Out', style: theme.textTheme.subhead),
                             onPressed: () {
                               user.logout().then((onValue) {
+                                LoginHelper().signOut();
                                 EasyRouter.pushAndRemoveAll(
                                     context, LoginScreen());
                                 UserBloc.close();

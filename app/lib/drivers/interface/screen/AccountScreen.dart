@@ -80,7 +80,7 @@ class AccountScreenDriver extends StatelessWidget implements WidgetRoute {
           );
         }
         print(snap.data.model.isDriver);
-        var temp = snap.data.model.nominative.split(' ');
+        //var temp = snap.data.model.nominative.split(' ');
         return Column(
           children: <Widget>[
             Stack(
@@ -157,7 +157,7 @@ class AccountScreenDriver extends StatelessWidget implements WidgetRoute {
             Padding(
               padding: EdgeInsets.only(top: 8.0),
             ),
-            Text(snap.data.model.nominative),
+            snap.data.model.nominative!=null?Text(snap.data.model.nominative):Container(),
 
             (snap.data.model.lat != null && snap.data.model.lng != null)
                 ? StreamBuilder<List<Address>>(
@@ -180,10 +180,6 @@ class AccountScreenDriver extends StatelessWidget implements WidgetRoute {
                   color: Colors.grey,
                 ),
                 children: <Widget>[
-                  Text(
-                    snap.data.model.nominative,
-                    style: theme.textTheme.subhead,
-                  ),
                   (snap.data.model.email != null) ? Text(
                     snap.data.model.email,
                     style: theme.textTheme.subhead,

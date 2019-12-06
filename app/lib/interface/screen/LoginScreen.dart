@@ -114,6 +114,8 @@ class _LoginScreenState extends State<LoginScreen> {
   String get route => ROUTE;
 
   bool isVerified;
+  var permission;
+  var pos;
 
   //static final FacebookLogin facebookSignIn = FacebookLogin();
 
@@ -224,7 +226,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  _showMailDialog(BuildContext context) {
+  _showMailDialog(BuildContext context, FirebaseUser user) {
     showDialog(
       context: context,
       builder: (_context) {
@@ -249,8 +251,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     children: <Widget>[
                       RaisedButton(
                         onPressed: () async {
-                          final user = await _userBloc.outFirebaseUser.first;
                           user.sendEmailVerification();
+                          UserBloc.of().logout();
+                          LoginHelper().signOut();
                           EasyRouter.pop(context);
                         },
                         color: Colors.blue,
@@ -273,7 +276,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    print('changed');
+    /*print('changed');
     _submitBloc.submitController.solver = (res) async {
       if (!res) return;
       print('not here');
@@ -322,11 +325,14 @@ class _LoginScreenState extends State<LoginScreen> {
       if (registrationLevel == RegistrationLevel.LV2)
         await EasyRouter.push(context, SignUpMoreScreen());
     };
+
+     */
   }
 
   //TODO: Sistemare login automatico e senza registrazione
   @override
   void initState() {
+    getPos();
     /*final FirebaseAuth _fAuth = FirebaseAuth.instance;
     _fAuth.currentUser().then((user) {
       if (user != null) {
@@ -431,68 +437,553 @@ class _LoginScreenState extends State<LoginScreen> {
       return currentUser;
   }
 
+  getPos() async {
+    if (permission == PermissionStatus.granted)
+      pos = await Geolocator().getCurrentPosition();
+    print(pos);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<FirebaseUser>(
-      stream: FirebaseAuth.instance.onAuthStateChanged,
-      builder: (context, userSnapshot) {
-        print('here');
-        if (userSnapshot.hasData) {
-          if (userSnapshot.data == null)
-            return Material(
-              child: Theme(
-                child: Form(
-                  key: _submitBloc.formKey,
-                  child: LogoView(
-                    top: FittedBox(
-                      fit: BoxFit.contain,
-                      child: Icon(
-                        Icons.lock_outline,
-                        color: Colors.white,
-                      ),
-                    ),
-                    children: [
-                      EmailField(
-                        checker: _submitBloc.emailChecker,
-                      ),
-                      SizedBox(
-                        height: SPACE,
-                      ),
-                      PasswordField(
-                        checker: _submitBloc.passwordChecker,
-                      ),
-                      Row(
-                        children: <Widget>[
-                          Expanded(
-                            child: RaisedButton(
-                              onPressed: () {
-                                EasyRouter.push(context, SignUpScreen());
-                              },
-                              child: FittedText('Sign up'),
+    return StreamBuilder(
+        stream: PermissionHandler()
+            .checkPermissionStatus(PermissionGroup.location)
+            .asStream(),
+        builder: (ctx, perm) {
+          return StreamBuilder<FirebaseUser>(
+            stream: FirebaseAuth.instance.onAuthStateChanged,
+            builder: (context, userSnapshot) {
+              print('here');
+              if (userSnapshot.hasData) {
+                if (userSnapshot.data == null)
+                  return Material(
+                    child: Theme(
+                      child: Form(
+                        key: _submitBloc.formKey,
+                        child: LogoView(
+                          top: FittedBox(
+                            fit: BoxFit.contain,
+                            child: Icon(
+                              Icons.lock_outline,
+                              color: Colors.white,
                             ),
+                          ),
+                          children: [
+                            EmailField(
+                              checker: _submitBloc.emailChecker,
+                            ),
+                            SizedBox(
+                              height: SPACE,
+                            ),
+                            PasswordField(
+                              checker: _submitBloc.passwordChecker,
+                            ),
+                            Row(
+                              children: <Widget>[
+                                Expanded(
+                                  child: RaisedButton(
+                                    onPressed: () {
+                                      EasyRouter.push(context, SignUpScreen());
+                                    },
+                                    child: FittedText('Sign up'),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: SPACE,
+                                ),
+                                Expanded(
+                                  child: SubmitButton.raised(
+                                    controller: _submitBloc.submitController,
+                                    child: FittedText('Login'),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              height: SPACE * 3,
+                            ),
+                            RaisedButton.icon(
+                              onPressed: () {
+                                _submitBloc.submitterGoogle();
+                              },
+                              icon: Icon(FontAwesomeIcons.google),
+                              label: Text('Login with Google'),
+                            ),
+                            /*
+                    RaisedButton(
+                      color: Colors.white,
+                      child: Container(
+                        width: double.infinity,
+                        child: Center(
+                          child: AutoSizeText(
+                            "Continua senza registrazione",
+                            maxLines: 1,
+                            minFontSize: 6.0,
+                          ),
+                        ),
+                      ),
+                      onPressed: () {
+                        Toast.show("Disponibile in futuro", context,
+                            duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+                        //_userBloc.inSignInAnonymously();
+                      },
+                    ),
+                    */
+                            RaisedButton(
+                              color: Colors.white,
+                              child: Container(
+                                width: double.infinity,
+                                child: Center(
+                                  child: AutoSizeText(
+                                    "Diventa un fattorino/ristoratore",
+                                    maxLines: 1,
+                                    minFontSize: 6.0,
+                                  ),
+                                ),
+                              ),
+                              onPressed: () {
+                                _showDialog(context);
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                      data: Theme.of(context)
+                          .copyWith(unselectedWidgetColor: Colors.white),
+                    ),
+                  );
+                return StreamBuilder<UserModel>(
+                    stream: Database().getUser(userSnapshot.data),
+                    builder: (ctx, userId) {
+                      if (userId.hasData) {
+                        if (userSnapshot.data.isEmailVerified) {
+                          if (pos != null)
+                            return RestaurantListScreen(
+                              isAnonymous: userSnapshot.data.isAnonymous,
+                              position: pos,
+                              user: userId.data,
+                            );
+                          return GeoLocScreen();
+                        }
+                        return Material(
+                          child: Theme(
+                            child: Form(
+                              key: _submitBloc.formKey,
+                              child: LogoView(
+                                top: FittedBox(
+                                  fit: BoxFit.contain,
+                                  child: Icon(
+                                    Icons.lock_outline,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                children: [
+                                  EmailField(
+                                    checker: _submitBloc.emailChecker,
+                                  ),
+                                  SizedBox(
+                                    height: SPACE,
+                                  ),
+                                  PasswordField(
+                                    checker: _submitBloc.passwordChecker,
+                                  ),
+                                  SizedBox(
+                                    height: SPACE,
+                                  ),
+                                  RaisedButton.icon(
+                                    onPressed: () {
+                                      _showMailDialog(
+                                          context, userSnapshot.data);
+                                    },
+                                    icon: Icon(Icons.mail),
+                                    label: Text('Conferma e-mail'),
+                                  ),
+                                  SizedBox(
+                                    height: SPACE,
+                                  ),
+                                  Row(
+                                    children: <Widget>[
+                                      Expanded(
+                                        child: RaisedButton(
+                                          onPressed: () {
+                                            EasyRouter.push(
+                                                context, SignUpScreen());
+                                          },
+                                          child: FittedText('Sign up'),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: SPACE,
+                                      ),
+                                      Expanded(
+                                        child: SubmitButton.raised(
+                                          controller:
+                                              _submitBloc.submitController,
+                                          child: FittedText('Login'),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: SPACE * 3,
+                                  ),
+                                  RaisedButton.icon(
+                                    onPressed: () {
+                                      _submitBloc.submitterGoogle();
+                                    },
+                                    icon: Icon(FontAwesomeIcons.google),
+                                    label: Text('Login with Google'),
+                                  ),
+                                  /*
+                    RaisedButton(
+                      color: Colors.white,
+                      child: Container(
+                        width: double.infinity,
+                        child: Center(
+                          child: AutoSizeText(
+                            "Continua senza registrazione",
+                            maxLines: 1,
+                            minFontSize: 6.0,
+                          ),
+                        ),
+                      ),
+                      onPressed: () {
+                        Toast.show("Disponibile in futuro", context,
+                            duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+                        //_userBloc.inSignInAnonymously();
+                      },
+                    ),
+                    */
+                                  RaisedButton(
+                                    color: Colors.white,
+                                    child: Container(
+                                      width: double.infinity,
+                                      child: Center(
+                                        child: AutoSizeText(
+                                          "Diventa un fattorino/ristoratore",
+                                          maxLines: 1,
+                                          minFontSize: 6.0,
+                                        ),
+                                      ),
+                                    ),
+                                    onPressed: () {
+                                      _showDialog(context);
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ),
+                            data: Theme.of(context)
+                                .copyWith(unselectedWidgetColor: Colors.white),
+                          ),
+                        );
+                      }
+                      return Material(
+                        child: Theme(
+                          child: Form(
+                            key: _submitBloc.formKey,
+                            child: LogoView(
+                              top: FittedBox(
+                                fit: BoxFit.contain,
+                                child: Icon(
+                                  Icons.lock_outline,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              children: [
+                                EmailField(
+                                  checker: _submitBloc.emailChecker,
+                                ),
+                                SizedBox(
+                                  height: SPACE,
+                                ),
+                                PasswordField(
+                                  checker: _submitBloc.passwordChecker,
+                                ),
+                                Row(
+                                  children: <Widget>[
+                                    Expanded(
+                                      child: RaisedButton(
+                                        onPressed: () {
+                                          EasyRouter.push(
+                                              context, SignUpScreen());
+                                        },
+                                        child: FittedText('Sign up'),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: SPACE,
+                                    ),
+                                    Expanded(
+                                      child: SubmitButton.raised(
+                                        controller:
+                                            _submitBloc.submitController,
+                                        child: FittedText('Login'),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: SPACE * 3,
+                                ),
+                                RaisedButton.icon(
+                                  onPressed: () {
+                                    _submitBloc.submitterGoogle();
+                                  },
+                                  icon: Icon(FontAwesomeIcons.google),
+                                  label: Text('Login with Google'),
+                                ),
+                                /*
+                    RaisedButton(
+                      color: Colors.white,
+                      child: Container(
+                        width: double.infinity,
+                        child: Center(
+                          child: AutoSizeText(
+                            "Continua senza registrazione",
+                            maxLines: 1,
+                            minFontSize: 6.0,
+                          ),
+                        ),
+                      ),
+                      onPressed: () {
+                        Toast.show("Disponibile in futuro", context,
+                            duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+                        //_userBloc.inSignInAnonymously();
+                      },
+                    ),
+                    */
+                                RaisedButton(
+                                  color: Colors.white,
+                                  child: Container(
+                                    width: double.infinity,
+                                    child: Center(
+                                      child: AutoSizeText(
+                                        "Diventa un fattorino/ristoratore",
+                                        maxLines: 1,
+                                        minFontSize: 6.0,
+                                      ),
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    _showDialog(context);
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                          data: Theme.of(context)
+                              .copyWith(unselectedWidgetColor: Colors.white),
+                        ),
+                      );
+                    });
+                return Material(
+                  child: Theme(
+                    child: Form(
+                      key: _submitBloc.formKey,
+                      child: LogoView(
+                        top: FittedBox(
+                          fit: BoxFit.contain,
+                          child: Icon(
+                            Icons.lock_outline,
+                            color: Colors.white,
+                          ),
+                        ),
+                        children: [
+                          EmailField(
+                            checker: _submitBloc.emailChecker,
                           ),
                           SizedBox(
-                            width: SPACE,
+                            height: SPACE,
                           ),
-                          Expanded(
-                            child: SubmitButton.raised(
-                              controller: _submitBloc.submitController,
-                              child: FittedText('Login'),
+                          PasswordField(
+                            checker: _submitBloc.passwordChecker,
+                          ),
+                          Row(
+                            children: <Widget>[
+                              Expanded(
+                                child: RaisedButton(
+                                  onPressed: () {
+                                    EasyRouter.push(context, SignUpScreen());
+                                  },
+                                  child: FittedText('Sign up'),
+                                ),
+                              ),
+                              SizedBox(
+                                width: SPACE,
+                              ),
+                              Expanded(
+                                child: SubmitButton.raised(
+                                  controller: _submitBloc.submitController,
+                                  child: FittedText('Login'),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: SPACE * 3,
+                          ),
+                          StreamBuilder<UserModel>(
+                            stream: Database().getUser(userSnapshot.data),
+                            builder: (ctx, userId) {
+                              if (userId.hasData && userId != null) {
+                                print(userId.data.type);
+                                //final registrationLevel = await _userBloc.getRegistrationLevel();
+                                //final user = await _userBloc.outFirebaseUser.first;
+                                print('here');
+                                if (userId.data.type == 'user' ||
+                                    userId.data.type == null) {
+                                  print('not here');
+                                  if (userSnapshot.data.isEmailVerified) {
+                                    PermissionHandler()
+                                        .checkPermissionStatus(
+                                            PermissionGroup.location)
+                                        .then((value) {
+                                      if (value != PermissionStatus.granted)
+                                        _showPositionDialog(context, false);
+                                      else
+                                        Geolocator()
+                                            .getCurrentPosition()
+                                            .then(
+                                              (position) async =>
+                                                  await EasyRouter
+                                                      .pushAndRemoveAll(
+                                                context,
+                                                RestaurantListScreen(
+                                                  isAnonymous: userSnapshot
+                                                      .data.isAnonymous,
+                                                  position: position,
+                                                  user: (await _userBloc
+                                                          .outUser.first)
+                                                      .model,
+                                                ),
+                                              ),
+                                            )
+                                            .catchError(
+                                          (error) {
+                                            if (error is PlatformException) {
+                                              print(error.code);
+                                            }
+                                          },
+                                        );
+                                    });
+                                  } else {
+                                    if (!isVerified) {
+                                      //_showMailDialog(context);
+                                      isVerified = true;
+                                    }
+                                  }
+                                }
+                              }
+                              return RaisedButton.icon(
+                                onPressed: () {},
+                                icon: Icon(FontAwesomeIcons.google),
+                                label: Text(
+                                    userSnapshot.data.displayName != null
+                                        ? userSnapshot.data.displayName
+                                        : 'Login Google'),
+                              );
+                            },
+                          ),
+
+                          /*
+                    RaisedButton(
+                      color: Colors.white,
+                      child: Container(
+                        width: double.infinity,
+                        child: Center(
+                          child: AutoSizeText(
+                            "Continua senza registrazione",
+                            maxLines: 1,
+                            minFontSize: 6.0,
+                          ),
+                        ),
+                      ),
+                      onPressed: () {
+                        Toast.show("Disponibile in futuro", context,
+                            duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+                        //_userBloc.inSignInAnonymously();
+                      },
+                    ),
+                    */
+                          RaisedButton(
+                            color: Colors.white,
+                            child: Container(
+                              width: double.infinity,
+                              child: Center(
+                                child: AutoSizeText(
+                                  "Diventa un fattorino/ristoratore",
+                                  maxLines: 1,
+                                  minFontSize: 6.0,
+                                ),
+                              ),
                             ),
+                            onPressed: () {
+                              _showDialog(context);
+                            },
                           ),
                         ],
                       ),
-                      SizedBox(
-                        height: SPACE * 3,
+                    ),
+                    data: Theme.of(context)
+                        .copyWith(unselectedWidgetColor: Colors.white),
+                  ),
+                );
+              }
+              return Material(
+                child: Theme(
+                  child: Form(
+                    key: _submitBloc.formKey,
+                    child: LogoView(
+                      top: FittedBox(
+                        fit: BoxFit.contain,
+                        child: Icon(
+                          Icons.lock_outline,
+                          color: Colors.white,
+                        ),
                       ),
-                      RaisedButton.icon(
-                        onPressed: () {
-                          _submitBloc.submitterGoogle();
-                        },
-                        icon: Icon(FontAwesomeIcons.google),
-                        label: Text('Login with Google'),
-                      ),
-                      /*
+                      children: [
+                        EmailField(
+                          checker: _submitBloc.emailChecker,
+                        ),
+                        SizedBox(
+                          height: SPACE,
+                        ),
+                        PasswordField(
+                          checker: _submitBloc.passwordChecker,
+                        ),
+                        Row(
+                          children: <Widget>[
+                            Expanded(
+                              child: RaisedButton(
+                                onPressed: () {
+                                  EasyRouter.push(context, SignUpScreen());
+                                },
+                                child: FittedText('Sign up'),
+                              ),
+                            ),
+                            SizedBox(
+                              width: SPACE,
+                            ),
+                            Expanded(
+                              child: SubmitButton.raised(
+                                controller: _submitBloc.submitController,
+                                child: FittedText('Login'),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: SPACE * 3,
+                        ),
+                        RaisedButton.icon(
+                          onPressed: () {
+                            _submitBloc.submitterGoogle();
+                          },
+                          icon: Icon(FontAwesomeIcons.google),
+                          label: Text('Login with Google'),
+                        ),
+                        /*
                     RaisedButton(
                       color: Colors.white,
                       child: Container(
@@ -512,273 +1003,31 @@ class _LoginScreenState extends State<LoginScreen> {
                       },
                     ),
                     */
-                      RaisedButton(
-                        color: Colors.white,
-                        child: Container(
-                          width: double.infinity,
-                          child: Center(
-                            child: AutoSizeText(
-                              "Diventa un fattorino/ristoratore",
-                              maxLines: 1,
-                              minFontSize: 6.0,
+                        RaisedButton(
+                          color: Colors.white,
+                          child: Container(
+                            width: double.infinity,
+                            child: Center(
+                              child: AutoSizeText(
+                                "Diventa un fattorino/ristoratore",
+                                maxLines: 1,
+                                minFontSize: 6.0,
+                              ),
                             ),
                           ),
-                        ),
-                        onPressed: () {
-                          _showDialog(context);
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-                data: Theme.of(context)
-                    .copyWith(unselectedWidgetColor: Colors.white),
-              ),
-            );
-          return Material(
-            child: Theme(
-              child: Form(
-                key: _submitBloc.formKey,
-                child: LogoView(
-                  top: FittedBox(
-                    fit: BoxFit.contain,
-                    child: Icon(
-                      Icons.lock_outline,
-                      color: Colors.white,
-                    ),
-                  ),
-                  children: [
-                    EmailField(
-                      checker: _submitBloc.emailChecker,
-                    ),
-                    SizedBox(
-                      height: SPACE,
-                    ),
-                    PasswordField(
-                      checker: _submitBloc.passwordChecker,
-                    ),
-                    Row(
-                      children: <Widget>[
-                        Expanded(
-                          child: RaisedButton(
-                            onPressed: () {
-                              EasyRouter.push(context, SignUpScreen());
-                            },
-                            child: FittedText('Sign up'),
-                          ),
-                        ),
-                        SizedBox(
-                          width: SPACE,
-                        ),
-                        Expanded(
-                          child: SubmitButton.raised(
-                            controller: _submitBloc.submitController,
-                            child: FittedText('Login'),
-                          ),
+                          onPressed: () {
+                            _showDialog(context);
+                          },
                         ),
                       ],
                     ),
-                    SizedBox(
-                      height: SPACE * 3,
-                    ),
-                    StreamBuilder<UserModel>(
-                      stream: Database().getUser(userSnapshot.data),
-                      builder: (ctx, userId) {
-                        if (userId.hasData && userId != null) {
-                          print(userId.data.type);
-                          //final registrationLevel = await _userBloc.getRegistrationLevel();
-                          //final user = await _userBloc.outFirebaseUser.first;
-                          print('here');
-                          if (userId.data.type == 'user' ||
-                              userId.data.type == null) {
-                            print('not here');
-                            if (userSnapshot.data.isEmailVerified) {
-                              PermissionHandler()
-                                  .checkPermissionStatus(PermissionGroup.location)
-                                  .then((value) {
-                                if (value != PermissionStatus.granted)
-                                  _showPositionDialog(context, false);
-                                else
-                                  Geolocator()
-                                      .getCurrentPosition()
-                                      .then(
-                                        (position) async =>
-                                    await EasyRouter.pushAndRemoveAll(
-                                      context,
-                                      RestaurantListScreen(
-                                        isAnonymous:
-                                        userSnapshot.data.isAnonymous,
-                                        position: position,
-                                        user: (await _userBloc.outUser.first)
-                                            .model,
-                                      ),
-                                    ),
-                                  )
-                                      .catchError(
-                                        (error) {
-                                      if (error is PlatformException) {
-                                        print(error.code);
-                                      }
-                                    },
-                                  );
-                              });
-                            } else {
-                              if (!isVerified) {
-                                _showMailDialog(context);
-                                isVerified = true;
-                              }
-                            }
-                          }
-                        }
-                        return RaisedButton.icon(
-                          onPressed: () {},
-                          icon: Icon(FontAwesomeIcons.google),
-                          label: Text(userSnapshot.data.displayName),
-                        );
-                      },
-                    ),
-
-                    /*
-                    RaisedButton(
-                      color: Colors.white,
-                      child: Container(
-                        width: double.infinity,
-                        child: Center(
-                          child: AutoSizeText(
-                            "Continua senza registrazione",
-                            maxLines: 1,
-                            minFontSize: 6.0,
-                          ),
-                        ),
-                      ),
-                      onPressed: () {
-                        Toast.show("Disponibile in futuro", context,
-                            duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
-                        //_userBloc.inSignInAnonymously();
-                      },
-                    ),
-                    */
-                    RaisedButton(
-                      color: Colors.white,
-                      child: Container(
-                        width: double.infinity,
-                        child: Center(
-                          child: AutoSizeText(
-                            "Diventa un fattorino/ristoratore",
-                            maxLines: 1,
-                            minFontSize: 6.0,
-                          ),
-                        ),
-                      ),
-                      onPressed: () {
-                        _showDialog(context);
-                      },
-                    ),
-                  ],
+                  ),
+                  data: Theme.of(context)
+                      .copyWith(unselectedWidgetColor: Colors.white),
                 ),
-              ),
-              data:
-              Theme.of(context).copyWith(unselectedWidgetColor: Colors.white),
-            ),
+              );
+            },
           );
-        }
-        return Material(
-          child: Theme(
-            child: Form(
-              key: _submitBloc.formKey,
-              child: LogoView(
-                top: FittedBox(
-                  fit: BoxFit.contain,
-                  child: Icon(
-                    Icons.lock_outline,
-                    color: Colors.white,
-                  ),
-                ),
-                children: [
-                  EmailField(
-                    checker: _submitBloc.emailChecker,
-                  ),
-                  SizedBox(
-                    height: SPACE,
-                  ),
-                  PasswordField(
-                    checker: _submitBloc.passwordChecker,
-                  ),
-                  Row(
-                    children: <Widget>[
-                      Expanded(
-                        child: RaisedButton(
-                          onPressed: () {
-                            EasyRouter.push(context, SignUpScreen());
-                          },
-                          child: FittedText('Sign up'),
-                        ),
-                      ),
-                      SizedBox(
-                        width: SPACE,
-                      ),
-                      Expanded(
-                        child: SubmitButton.raised(
-                          controller: _submitBloc.submitController,
-                          child: FittedText('Login'),
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: SPACE * 3,
-                  ),
-                  RaisedButton.icon(
-                    onPressed: () {
-                      _submitBloc.submitterGoogle();
-                    },
-                    icon: Icon(FontAwesomeIcons.google),
-                    label: Text('Login with Google'),
-                  ),
-                  /*
-                    RaisedButton(
-                      color: Colors.white,
-                      child: Container(
-                        width: double.infinity,
-                        child: Center(
-                          child: AutoSizeText(
-                            "Continua senza registrazione",
-                            maxLines: 1,
-                            minFontSize: 6.0,
-                          ),
-                        ),
-                      ),
-                      onPressed: () {
-                        Toast.show("Disponibile in futuro", context,
-                            duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
-                        //_userBloc.inSignInAnonymously();
-                      },
-                    ),
-                    */
-                  RaisedButton(
-                    color: Colors.white,
-                    child: Container(
-                      width: double.infinity,
-                      child: Center(
-                        child: AutoSizeText(
-                          "Diventa un fattorino/ristoratore",
-                          maxLines: 1,
-                          minFontSize: 6.0,
-                        ),
-                      ),
-                    ),
-                    onPressed: () {
-                      _showDialog(context);
-                    },
-                  ),
-                ],
-              ),
-            ),
-            data: Theme.of(context)
-                .copyWith(unselectedWidgetColor: Colors.white),
-          ),
-        );
-      },
-    );
+        });
   }
 }

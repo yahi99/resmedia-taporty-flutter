@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 class CheckerField<V> extends CacheStreamBuilder<DataField<V>> {
   CheckerField({Key key,
     @required CheckerRule<V, String> checker, Translator translator,
-    InputDecoration decoration: const InputDecoration(),
+    InputDecoration decoration: const InputDecoration(), @required bool obscure
   }) : super(
     key: key,
     stream: checker.outData,
@@ -22,7 +22,7 @@ class CheckerField<V> extends CacheStreamBuilder<DataField<V>> {
           errorMaxLines: decoration.errorMaxLines??2,
         ),
         keyboardType: checker.keyboardType,
-        obscureText: true,
+        obscureText: obscure,
 
         maxLength: checker.maxLength,
 

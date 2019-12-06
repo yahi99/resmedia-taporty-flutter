@@ -18,7 +18,7 @@ class EmailField extends StringField {
     ),
   }) : assert(checker != null), super(key: key,
     checker: checker, translator: translator,
-    decoration: decoration,
+    decoration: decoration,obscure:false
   );
 
 }

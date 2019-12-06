@@ -12,6 +12,7 @@ import 'package:resmedia_taporty_flutter/data/config.dart';
 import 'package:resmedia_taporty_flutter/interface/screen/SignUpMoreScreen.dart';
 import 'package:resmedia_taporty_flutter/interface/view/logo_view.dart';
 import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
+import 'package:resmedia_taporty_flutter/logic/database.dart';
 
 class SignUpScreen extends StatefulWidget implements WidgetRoute {
   static const ROUTE = "SignUpScreen";
@@ -37,9 +38,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
     super.didChangeDependencies();
     _submitBloc.submitController.solver = (res) async {
       if (!res) return;
-
-      if (await _userBloc.getRegistrationLevel() == RegistrationLevel.LV2)
-        await EasyRouter.push(context, SignUpMoreScreen());
+      final user=await _userBloc.outFirebaseUser.first;
+      if ( user!= null)
+        Database().createUserGoogle(uid: user.uid, nominative: user.displayName, email: user.email);
+        EasyRouter.pop(context);
     };
   }
 
@@ -214,14 +216,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     }
                     else return RaisedButton(child: Text('Registrati'),onPressed: null,);
                   },
-                ),
-                SizedBox(
-                  height: SPACE,
-                ),
-                RaisedButton.icon(
-                  onPressed: () {},
-                  icon: Icon(FontAwesomeIcons.facebookF),
-                  label: Text('Login with Facebook'),
                 ),
               ],
             ),

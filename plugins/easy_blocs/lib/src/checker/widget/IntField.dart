@@ -8,11 +8,11 @@ import 'package:flutter/material.dart';
 class IntField extends CheckerField<int> {
   IntField({Key key,
     @required CheckerRule<int, String> checker,
-    Translator translator: translatorIntField,
+    Translator translator: translatorIntField,@required bool obscure,
     InputDecoration decoration: const InputDecoration(),
   }) : assert(checker != null), assert(decoration != null), super(key: key,
     checker: checker, translator: translator,
-    decoration: decoration,
+    decoration: decoration,obscure:obscure
   );
 }
 

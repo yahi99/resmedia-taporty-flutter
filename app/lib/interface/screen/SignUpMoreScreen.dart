@@ -35,7 +35,7 @@ class _SignUpMoreScreenState extends State<SignUpMoreScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    print('here');
+    /*print('here');
     registrationLevelSub?.cancel();
     _submitBloc.submitController.solver = (res) async {
       print('maybe here');
@@ -50,7 +50,8 @@ class _SignUpMoreScreenState extends State<SignUpMoreScreen> {
       }
       else EasyRouter.pop(context);
     };
-    super.didChangeDependencies();
+
+     */
   }
 
   @override

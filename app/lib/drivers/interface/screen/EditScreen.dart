@@ -65,7 +65,7 @@ class SnackBarPage extends StatelessWidget {
               );
               //EasyRouter.pushAndRemoveAll(context, LoginScreen());
             }
-            var temp = snap.data.model.nominative.split(' ');
+            //var temp = snap.data.model.nominative.split(' ');
             return Column(
               children: <Widget>[
                 Stack(
@@ -108,7 +108,7 @@ class SnackBarPage extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.only(top: 8.0),
                 ),
-                Text(snap.data.model.nominative),
+                (snap.data.model.nominative!=null)?Text(snap.data.model.nominative):Container(),
                 Text('Assisi'),
                 const Divider(
                   color: Colors.grey,

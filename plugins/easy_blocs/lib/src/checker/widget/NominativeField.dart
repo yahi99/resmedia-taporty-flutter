@@ -13,7 +13,7 @@ class NominativeField extends StringField {
     bool defaultDecoration: true,
   }) : assert(checker != null), assert(decoration != null), super(key: key,
     checker: checker, translator: translator,
-    decoration: decoration,
+    decoration: decoration,obscure:false
   );
 
 }

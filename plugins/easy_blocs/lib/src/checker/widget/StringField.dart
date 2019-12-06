@@ -5,16 +5,15 @@ import 'package:easy_blocs/src/translator/TranslationsModel.dart';
 import 'package:easy_blocs/src/translator/TranslatorController.dart';
 import 'package:flutter/material.dart';
 
-
 class StringField extends CheckerField<String> {
   StringField({Key key,
     @required CheckerRule<String, String> checker,
     Translator translator: translatorStringField,
     InputDecoration decoration: const InputDecoration(),
-    bool defaultDecoration: true,
+    bool defaultDecoration: true,@required bool obscure
   }) : assert(checker != null), assert(decoration != null), super(key: key,
     checker: checker, translator: translator,
-    decoration: decoration,
+    decoration: decoration,obscure:obscure
   );
 
 }

@@ -74,25 +74,25 @@ class _HomeScreenRestaurantState extends State<TimetableScreen> {
             for(int i=0;i<days.length;i++){
               if(lunch==null && dinner!=null){
                 if(dinner.containsKey(days.elementAt(i))){
-                  times=times +days.elementAt(i)+': '+dinner.values.elementAt(i)+'\n';
+                  times=times +days.elementAt(i)+': '+dinner.remove(days.elementAt(i))+'\n';
                 }
                 else times=times +days.elementAt(i)+': Chiuso\n';
               }
               else if(lunch!=null && dinner==null){
                 if(lunch.containsKey(days.elementAt(i))){
-                  times=times +days.elementAt(i)+': '+lunch.values.elementAt(i)+'\n';
+                  times=times +days.elementAt(i)+': '+lunch.remove(days.elementAt(i))+'\n';
                 }
                 else times=times +days.elementAt(i)+': Chiuso\n';
               }
               else if(lunch==null && dinner==null) times=times +days.elementAt(i)+': Chiuso\n';
               else if(lunch.containsKey(days.elementAt(i)) && dinner.containsKey(days.elementAt(i))){
-                times=times +days.elementAt(i)+': '+lunch.values.elementAt(i)+','+dinner.values.elementAt(i)+'\n';
+                times=times +days.elementAt(i)+': '+lunch.remove(days.elementAt(i))+','+dinner.remove(days.elementAt(i))+'\n';
               }
               else if(!lunch.containsKey(days.elementAt(i)) && dinner.containsKey(days.elementAt(i))){
-                times=times +days.elementAt(i)+': '+dinner.values.elementAt(i)+'\n';
+                times=times +days.elementAt(i)+': '+dinner.remove(days.elementAt(i))+'\n';
               }
               else if(lunch.containsKey(days.elementAt(i)) && !dinner.containsKey(days.elementAt(i))){
-                times=times +days.elementAt(i)+': '+lunch.values.elementAt(i)+'\n';
+                times=times +days.elementAt(i)+': '+lunch.remove(days.elementAt(i))+'\n';
               }
               else if(!lunch.containsKey(days.elementAt(i)) && !dinner.containsKey(days.elementAt(i))){
                 times=times +days.elementAt(i)+': Chiuso\n';

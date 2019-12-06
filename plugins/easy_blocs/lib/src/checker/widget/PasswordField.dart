@@ -15,7 +15,7 @@ class PasswordField extends StringField {
       ),
     ),
   }) : super(
-      checker: checker, translator: translatorPasswordField,
+      checker: checker, translator: translatorPasswordField,obscure:true,
     decoration: decoration.copyWith(
       prefixIcon: CacheStreamBuilder<DataField>(
         stream: checker.outData,

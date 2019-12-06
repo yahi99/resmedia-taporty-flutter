@@ -94,6 +94,8 @@ dependencies:
 
   firebase_messaging: 5.1.8
 
+  mailer: any
+
 
   rubber: any
 
@@ -137,8 +139,6 @@ flutter:
   assets:
     - assets/img/
     - assets/img/home/
-    - assets/img/drink/
-    - assets/img/food/
   
 
   # The following line ensures that the Material Icons font is

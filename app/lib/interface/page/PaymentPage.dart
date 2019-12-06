@@ -20,6 +20,33 @@ class PaymentPage extends StatefulWidget {
 
 class _PaymentState extends State<PaymentPage>
     with AutomaticKeepAliveClientMixin {
+
+  TextEditingController _last4;
+  TextEditingController _month;
+  TextEditingController _year;
+  TextEditingController _name;
+  TextEditingController _lastName;
+
+  @override
+  void initState(){
+    super.initState();
+    _last4 = TextEditingController();
+    _month = TextEditingController();
+    _year = TextEditingController();
+    _name = TextEditingController();
+    _lastName = TextEditingController();
+  }
+
+  @override
+  void dispose(){
+    super.dispose();
+    _last4.dispose();
+    _month.dispose();
+    _year.dispose();
+    _name.dispose();
+    _lastName.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     var isValid = false;
@@ -28,11 +55,6 @@ class _PaymentState extends State<PaymentPage>
     final theme = Theme.of(context);
     final tt = theme.textTheme;
     var userBloc = UserBloc.of();
-    final TextEditingController _last4 = TextEditingController();
-    final TextEditingController _month = TextEditingController();
-    final TextEditingController _year = TextEditingController();
-    final TextEditingController _name = TextEditingController();
-    final TextEditingController _lastName = TextEditingController();
     _last4.value = TextEditingValue(text: '');
     _month.value = TextEditingValue(text: '');
     _year.value = TextEditingValue(text: '');

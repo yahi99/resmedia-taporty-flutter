@@ -285,7 +285,7 @@ class _LoginScreenState extends State<LoginScreen> {
         //final user = await _userBloc.outFirebaseUser.first;
         print('here');
         if (registrationLevel == RegistrationLevel.COMPLETE &&
-            (userId.type == 'user' || userId.type==null)) {
+            (userId.type == 'user' || userId.type == null)) {
           print('not here');
           if (user.isEmailVerified) {
             if ((await PermissionHandler()
@@ -438,7 +438,7 @@ class _LoginScreenState extends State<LoginScreen> {
       builder: (context, userSnapshot) {
         print('here');
         if (userSnapshot.hasData) {
-          if (userSnapshot.data==null)
+          if (userSnapshot.data == null)
             return Material(
               child: Theme(
                 child: Form(
@@ -535,91 +535,153 @@ class _LoginScreenState extends State<LoginScreen> {
                     .copyWith(unselectedWidgetColor: Colors.white),
               ),
             );
-            print('here');
-            /*if(userSnapshot.data.isEmailVerified){
-              Geolocator().getCurrentPosition().then((pos)async{
-                await EasyRouter.pushAndRemoveAll(
-                  context,
-                  RestaurantListScreen(
-                    isAnonymous: userSnapshot.data.isAnonymous,
-                    position: pos,
-                    user: (await _userBloc.outUser.first).model,
-                  ),
-                );
-              });
-            }*/
-          //final user = await _userBloc.outFirebaseUser.first;
-          //print(user.uid);
-          Database().getUser(userSnapshot.data).first.then((userId) async {
-            print(userId.type);
-            final registrationLevel = await _userBloc.getRegistrationLevel();
-            //final user = await _userBloc.outFirebaseUser.first;
-            print('here');
-            if (registrationLevel == RegistrationLevel.COMPLETE &&
-                (userId.type == 'user' || userId.type==null)) {
-              print('not here');
-              if (userSnapshot.data.isEmailVerified) {
-                if ((await PermissionHandler()
-                    .checkPermissionStatus(PermissionGroup.location)) !=
-                    PermissionStatus.granted)
-                  _showPositionDialog(context, false);
-                else
-                  Geolocator()
-                      .getCurrentPosition()
-                      .then(
-                        (position) async =>
-                    await EasyRouter.pushAndRemoveAll(
-                      context,
-                      RestaurantListScreen(
-                        isAnonymous: userSnapshot.data.isAnonymous,
-                        position: position,
-                        user: (await _userBloc.outUser.first).model,
-                      ),
+          return Material(
+            child: Theme(
+              child: Form(
+                key: _submitBloc.formKey,
+                child: LogoView(
+                  top: FittedBox(
+                    fit: BoxFit.contain,
+                    child: Icon(
+                      Icons.lock_outline,
+                      color: Colors.white,
                     ),
-                  )
-                      .catchError(
-                        (error) {
-                      if (error is PlatformException) {
-                        print(error.code);
-                      }
-                    },
-                  );
-              }
-              else {
-                if (!isVerified) {
-                  _showMailDialog(context);
-                  isVerified = true;
-                }
-              }
-            }
-          });
-          /*if (!isVerified) {
-            isVerified=true;
-            Geolocator().getCurrentPosition().then((position) async {
-              final user = await _userBloc.outFirebaseUser.first;
-              if (user.isEmailVerified)
-                await EasyRouter.pushAndRemoveAll(
-                  context,
-                  RestaurantListScreen(
-                    isAnonymous: userSnapshot.data.isAnonymous,
-                    position: position,
-                    user: (await _userBloc.outUser.first).model,
                   ),
-                );
-              else
-                _showMailDialog(context);
-            }).catchError(
-              (error) {
-                if (error is PlatformException) {
-                  print(error.code);
-                }
-              },
-            );
-          }
+                  children: [
+                    EmailField(
+                      checker: _submitBloc.emailChecker,
+                    ),
+                    SizedBox(
+                      height: SPACE,
+                    ),
+                    PasswordField(
+                      checker: _submitBloc.passwordChecker,
+                    ),
+                    Row(
+                      children: <Widget>[
+                        Expanded(
+                          child: RaisedButton(
+                            onPressed: () {
+                              EasyRouter.push(context, SignUpScreen());
+                            },
+                            child: FittedText('Sign up'),
+                          ),
+                        ),
+                        SizedBox(
+                          width: SPACE,
+                        ),
+                        Expanded(
+                          child: SubmitButton.raised(
+                            controller: _submitBloc.submitController,
+                            child: FittedText('Login'),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: SPACE * 3,
+                    ),
+                    StreamBuilder<UserModel>(
+                      stream: Database().getUser(userSnapshot.data),
+                      builder: (ctx, userId) {
+                        if (userId.hasData && userId != null) {
+                          print(userId.data.type);
+                          //final registrationLevel = await _userBloc.getRegistrationLevel();
+                          //final user = await _userBloc.outFirebaseUser.first;
+                          print('here');
+                          if (userId.data.type == 'user' ||
+                              userId.data.type == null) {
+                            print('not here');
+                            if (userSnapshot.data.isEmailVerified) {
+                              PermissionHandler()
+                                  .checkPermissionStatus(PermissionGroup.location)
+                                  .then((value) {
+                                if (value != PermissionStatus.granted)
+                                  _showPositionDialog(context, false);
+                                else
+                                  Geolocator()
+                                      .getCurrentPosition()
+                                      .then(
+                                        (position) async =>
+                                    await EasyRouter.pushAndRemoveAll(
+                                      context,
+                                      RestaurantListScreen(
+                                        isAnonymous:
+                                        userSnapshot.data.isAnonymous,
+                                        position: position,
+                                        user: (await _userBloc.outUser.first)
+                                            .model,
+                                      ),
+                                    ),
+                                  )
+                                      .catchError(
+                                        (error) {
+                                      if (error is PlatformException) {
+                                        print(error.code);
+                                      }
+                                    },
+                                  );
+                              });
+                            } else {
+                              if (!isVerified) {
+                                _showMailDialog(context);
+                                isVerified = true;
+                              }
+                            }
+                          }
+                        }
+                        return RaisedButton.icon(
+                          onPressed: () {},
+                          icon: Icon(FontAwesomeIcons.google),
+                          label: Text(userSnapshot.data.displayName),
+                        );
+                      },
+                    ),
 
-           */
+                    /*
+                    RaisedButton(
+                      color: Colors.white,
+                      child: Container(
+                        width: double.infinity,
+                        child: Center(
+                          child: AutoSizeText(
+                            "Continua senza registrazione",
+                            maxLines: 1,
+                            minFontSize: 6.0,
+                          ),
+                        ),
+                      ),
+                      onPressed: () {
+                        Toast.show("Disponibile in futuro", context,
+                            duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+                        //_userBloc.inSignInAnonymously();
+                      },
+                    ),
+                    */
+                    RaisedButton(
+                      color: Colors.white,
+                      child: Container(
+                        width: double.infinity,
+                        child: Center(
+                          child: AutoSizeText(
+                            "Diventa un fattorino/ristoratore",
+                            maxLines: 1,
+                            minFontSize: 6.0,
+                          ),
+                        ),
+                      ),
+                      onPressed: () {
+                        _showDialog(context);
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              data:
+              Theme.of(context).copyWith(unselectedWidgetColor: Colors.white),
+            ),
+          );
         }
-
         return Material(
           child: Theme(
             child: Form(
@@ -712,8 +774,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 ],
               ),
             ),
-            data:
-                Theme.of(context).copyWith(unselectedWidgetColor: Colors.white),
+            data: Theme.of(context)
+                .copyWith(unselectedWidgetColor: Colors.white),
           ),
         );
       },

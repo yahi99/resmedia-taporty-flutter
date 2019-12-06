@@ -18,7 +18,6 @@ class ProductViewCart extends StatelessWidget {
   final ProductModel model;
   final bool update;
   final String category;
-  //final StreamController<String> imgStream=new StreamController.broadcast();
 
   ProductViewCart(
       {Key key,
@@ -28,24 +27,9 @@ class ProductViewCart extends StatelessWidget {
       @required this.category})
       : super(key: key);
 
-  Future<Null> downloadFile(String httpPath)async{
-    final RegExp regExp=RegExp('([^?/]*\.(jpg))');
-    final String fileName=regExp.stringMatch(httpPath);
-    final Directory tempDir= Directory.systemTemp;
-    final File file=File('${tempDir.path}/$fileName');
-    final StorageReference ref=FirebaseStorage.instance.ref().child(fileName);
-    final StorageFileDownloadTask downloadTask=ref.writeToFile(file);
-    final int byteNumber=(await downloadTask.future).totalByteCount;
-    print(byteNumber);
-    //put the file into the stream
-    //imgStream.add(file.path);
-  }
-
-
   @override
   Widget build(BuildContext context) {
     final UserBloc user = UserBloc.of();
-    if(model.number!=null) downloadFile(model.img);
     return StreamBuilder<Cart>(
       stream: cartController.outCart,
       builder: (_, snapshot) {
@@ -155,82 +139,3 @@ class ProductViewCart extends StatelessWidget {
     );
   }
 }
-
-/*class CartButton extends StatelessWidget {
-  final int val;
-  final ProductModel model;
-
-  const CartButton({Key key, this.val, this.model}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    //final cart = CartBloc();
-    final user = UserBloc.of();
-    var cartStorage = CartStorage(
-        storage:
-            InternalStorage.manager(versionManager: VersionManager("Drink")));
-    final cls = Theme.of(context).colorScheme;
-    return Container(
-      width: 40,
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(5.0),
-          color: cls.secondaryVariant),
-      child: Column(
-        children: <Widget>[
-          CacheStreamBuilder<FirebaseUser>(
-            stream: user.outFirebaseUser,
-            builder: (context, snap) {
-              if (!snap.hasData)
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
-              print(snap.hasData);
-              return Expanded(
-                child: IconButton(
-                  icon: Icon(Icons.add),
-                  color: Colors.white,
-                  onPressed: () {
-                    //cart.inIncrementDrink(model);
-                    List<ProductCart> temp = List<ProductCart>();
-                    temp.add(ProductCart(
-                        id: model.id,
-                        restaurantId: model.restaurantId,
-                        userId: snap.data.uid));
-                    cartStorage = CartStorage(
-                        storage: InternalStorage.manager(
-                            versionManager: VersionManager("Drink")),
-                        products: temp);
-                    cartStorage.increment(
-                        model.id,
-                        model.restaurantId,
-                        snap.data.uid,
-                        double.parse(model.price.replaceAll(',', '.')));
-                  },
-                ),
-              );
-            },
-          ),
-          Expanded(
-            child: Container(
-              color: Colors.white,
-              alignment: Alignment.center,
-              child: Padding(
-                padding: const EdgeInsets.all(2.0),
-                child: Text('$val'),
-              ),
-            ),
-          ),
-          Expanded(
-            child: IconButton(
-              icon: Icon(Icons.remove),
-              color: Colors.white,
-              onPressed: () {
-                //cart.inIncrementDrink(model);
-              },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}*/

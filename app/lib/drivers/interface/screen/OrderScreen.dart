@@ -52,16 +52,6 @@ class OrderListScreenState extends State<OrderListScreen> {
   }
 }
 
-/*final typesRestaurant = [
-  TypeRestaurant(img: "assets/img/home/ristoranti.png", title: "Ristoranti", restaurants: restaurants),
-  TypeRestaurant(img: "assets/img/home/fastfood.png", title: "FastFood", restaurants: fastFood),
-  TypeRestaurant(img: "assets/img/home/etnici.png", title: "Etnici", restaurants: etnici),
-  TypeRestaurant(img: "assets/img/home/pizza.png", title: "Pizzeria", restaurants: pizza),
-  TypeRestaurant(img: "assets/img/home/bisteccherie.jpg", title: "Bisteccherie", restaurants: beef),
-  TypeRestaurant(img: "assets/img/home/japan.png", title: "Giapponese", restaurants: jap),
-  TypeRestaurant(img: "assets/img/home/china.png", title: "Cinese", restaurants: china),
-  TypeRestaurant(img: "assets/img/home/thai.png", title: "Thailandese", restaurants: thai),
-];*/
 class TypesRestaurantView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

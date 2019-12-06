@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoder/model.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:resmedia_taporty_flutter/control/interface/screen/LoginScreen.dart';
+import 'package:resmedia_taporty_flutter/interface/screen/LoginScreen.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/screen/AccountScreen.dart';
 import 'package:resmedia_taporty_flutter/interface/page/CartPage.dart';
 import 'package:resmedia_taporty_flutter/interface/page/ConfirmPage.dart';
@@ -12,9 +12,12 @@ import 'package:resmedia_taporty_flutter/interface/page/ShippingPage.dart';
 import 'package:resmedia_taporty_flutter/interface/screen/RestaurantListScreen.dart';
 import 'package:resmedia_taporty_flutter/logic/bloc/RestaurantBloc.dart';
 import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
+import 'package:resmedia_taporty_flutter/logic/database.dart';
 import 'package:resmedia_taporty_flutter/mainRestaurant.dart';
 import 'package:resmedia_taporty_flutter/model/RestaurantModel.dart';
 import 'package:resmedia_taporty_flutter/model/UserModel.dart';
+
+import 'LoginScreen.dart';
 
 class CheckoutScreen extends StatefulWidget implements WidgetRoute {
   static const String ROUTE = "ProductsScreen";
@@ -56,6 +59,7 @@ class _CheckoutScreenState extends State<CheckoutScreen>
 
   @override
   void dispose() {
+    controller.dispose();
     super.dispose();
   }
 
@@ -79,13 +83,6 @@ class _CheckoutScreenState extends State<CheckoutScreen>
           bottom: MyTabBar(
             child: TabBar(
               controller: controller,
-              onTap: (index) {
-                if (controller.previousIndex < index) {
-                  setState(() {
-                    controller.index = controller.previousIndex;
-                  });
-                }
-              },
               tabs: [
                 Tab(
                   icon: Icon(
@@ -128,50 +125,61 @@ class _CheckoutScreenState extends State<CheckoutScreen>
                 stream: RestaurantBloc.init(idRestaurant: widget.model.id)
                     .outRestaurant,
                 builder: (ctx, rest) {
-                  if (user.hasData && rest.hasData) {
-                    if (user.data.model.type != 'user' && user.data.model.type!=null) {
-                      return RaisedButton(
-                        child: Text('Sei stato disabilitato clicca per fare logout'),
-                        onPressed: (){
-                          UserBloc.of().logout();
-                          EasyRouter.pushAndRemoveAll(context, LoginScreen());
-                        },
-                      );
-                      //EasyRouter.pushAndRemoveAll(context, LoginScreen());
-                    }
-                    if (rest.data.isDisabled != null && rest.data.isDisabled){
-                      return Text('Ristorante non abilitato scegline un\'altro');
-                    }
-                    return MyInheritedWidget(
-                      child: TabBarView(
-                        controller: controller,
-                        physics: NeverScrollableScrollPhysics(),
-                        children: <Widget>[
-                          CartPage(
-                            model: widget.model,
-                            controller: controller,
-                          ),
-                          ShippingPage(
-                            user: widget.user,
-                            address: widget.description,
-                            controller: controller,
-                          ),
-                          PaymentPage(
-                            controller,
-                          ),
-                          ConfirmPage(
-                            model: widget.model,
-                            position: widget.position,
-                            description: widget.description,
-                            controller: controller,
-                          ),
-                        ],
-                      ),
-                    );
-                  }
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
+                  if(!user.hasData) return Center(child: CircularProgressIndicator(),);
+                  return StreamBuilder(
+                      stream: Database().getUser(user.data.userFb),
+                      builder: (ctx, model) {
+                        if (user.hasData && rest.hasData && model.hasData) {
+                          if (model.data.type != 'user' &&
+                              model.data.type != null) {
+                            return RaisedButton(
+                              child: Text(
+                                  'Sei stato disabilitato clicca per fare logout'),
+                              onPressed: () {
+                                UserBloc.of().logout();
+                                LoginHelper().signOut();
+                                EasyRouter.pushAndRemoveAll(
+                                    context, LoginScreen());
+                              },
+                            );
+                            //EasyRouter.pushAndRemoveAll(context, LoginScreen());
+                          }
+                          if (rest.data.isDisabled != null &&
+                              rest.data.isDisabled) {
+                            return Text(
+                                'Ristorante non abilitato scegline un\'altro');
+                          }
+                          return MyInheritedWidget(
+                            child: TabBarView(
+                              controller: controller,
+                              physics: NeverScrollableScrollPhysics(),
+                              children: <Widget>[
+                                CartPage(
+                                  model: widget.model,
+                                  controller: controller,
+                                ),
+                                ShippingPage(
+                                  user: widget.user,
+                                  address: widget.description,
+                                  controller: controller,
+                                ),
+                                PaymentPage(
+                                  controller,
+                                ),
+                                ConfirmPage(
+                                  model: widget.model,
+                                  position: widget.position,
+                                  description: widget.description,
+                                  controller: controller,
+                                ),
+                              ],
+                            ),
+                          );
+                        }
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      });
                 },
               );
             },

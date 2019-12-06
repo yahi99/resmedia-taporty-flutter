@@ -277,7 +277,7 @@ class _LoginScreenState extends State<TypeOrderView> {
                                   style: theme.textTheme.subtitle),
                               Text(widget.model.timeR),*/
                                 Text('Data ed ora consegna: ',style: theme.textTheme.subtitle),
-                                Text((model.day)+' alle ore '+model.endTime),
+                                Text(toDate(model.day)+' alle ore '+model.endTime),
                                 Text('Stato Ordine: ',
                                     style: theme.textTheme.subtitle),
                                 Text(translateOrderCategory(model.state)),

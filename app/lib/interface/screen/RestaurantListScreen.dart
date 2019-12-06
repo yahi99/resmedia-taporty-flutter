@@ -30,61 +30,6 @@ import 'package:resmedia_taporty_flutter/mainRestaurant.dart';
 import 'package:resmedia_taporty_flutter/model/RestaurantModel.dart';
 import 'package:resmedia_taporty_flutter/model/UserModel.dart';
 
-/*final List<RestaurantModel> restaurants = [
-  RestaurantModel(title: 'PRIMO PIATTO', img:'assets/img/home/ristoranti.png'),
-  RestaurantModel(title: "L'ECONOMIA", img: 'assets/img/home/ristoranti.png'),
-  RestaurantModel(title: "IL GOURMET", img: 'assets/img/home/ristoranti.png')
-
-];*/
-
-final List<RestaurantModel> restaurants = [
-  RestaurantModel(title: 'da bepi', img: 'assets/img/home/ristoranti.png'),
-];
-
-final List<RestaurantModel> fastFood = [
-  RestaurantModel(title: "BURGER", img: 'assets/img/home/fastfood.png'),
-  RestaurantModel(title: "CHIPS&FISH", img: 'assets/img/home/fastfood.png'),
-  RestaurantModel(title: "XXL", img: 'assets/img/home/fastfood.png'),
-];
-
-final List<RestaurantModel> etnici = [
-  RestaurantModel(title: "ROSSO", img: 'assets/img/home/etnici.png'),
-  RestaurantModel(title: "PICCANTISSIMO", img: 'assets/img/home/etnici.png'),
-  RestaurantModel(title: "LO SPEZIATO", img: 'assets/img/home/etnici.png'),
-];
-
-final List<RestaurantModel> pizza = [
-  RestaurantModel(title: "BELLA NAPOLI", img: 'assets/img/home/pizza.jpg'),
-  RestaurantModel(title: "MARGHERITA", img: 'assets/img/home/pizza.jpg'),
-  RestaurantModel(title: "POMODORO ROSSO", img: 'assets/img/home/pizza.jpg'),
-];
-
-final List<RestaurantModel> beef = [
-  RestaurantModel(
-      title: "ROAST HOUSE", img: 'assets/img/home/bisteccherie.jpg'),
-  RestaurantModel(title: "BEST MEAT", img: 'assets/img/home/bisteccherie.jpg'),
-  RestaurantModel(
-      title: "BISTECCA AL SANGUE", img: 'assets/img/home/bisteccherie.jpg'),
-];
-
-final List<RestaurantModel> jap = [
-  RestaurantModel(title: "ICHI NO SAMA", img: 'assets/img/home/japan.jpg'),
-  RestaurantModel(title: "NI", img: 'assets/img/home/japan.jpg'),
-  RestaurantModel(title: "SAN", img: 'assets/img/home/japan.jpg'),
-];
-
-final List<RestaurantModel> china = [
-  RestaurantModel(title: "ORIENTE", img: 'assets/img/home/china.jpg'),
-  RestaurantModel(title: "SOL LEVANTE", img: 'assets/img/home/china.jpg'),
-  RestaurantModel(title: "DRAGONE ROSSO", img: 'assets/img/home/china.jpg'),
-];
-
-final List<RestaurantModel> thai = [
-  RestaurantModel(title: "BAN", img: 'assets/img/home/thai.jpg'),
-  RestaurantModel(title: "TRADIZIONALE", img: 'assets/img/home/thai.jpg'),
-  RestaurantModel(title: "AL TEMPIO", img: 'assets/img/home/thai.jpg'),
-];
-
 class RestaurantListScreen extends StatefulWidget implements WidgetRoute {
   static const ROUTE = 'RestaurantListScreen';
 
@@ -207,76 +152,83 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
             return StreamBuilder<User>(
               stream: UserBloc.of().outUser,
               builder: (ctx,user){
+                if(!snap.hasData) return Center(child: CircularProgressIndicator(),);
                 return StreamBuilder<String>(
                     stream: barStream.stream,
                     builder: (ctx,bar){
-                      print(user.hasData);
-                if (snap.hasData && user.hasData) {
-                  if(user.data.model.type!='user' && user.data.model.type!=null) {
-                    return RaisedButton(
-                      child: Text('Sei stato disabilitato clicca per fare logout'),
-                      onPressed: (){
-                        UserBloc.of().logout();
-                        EasyRouter.pushAndRemoveAll(context, LoginScreen());
-                      },
-                    );
-                  }
-                  return SingleChildScrollView(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: CardListView(
-                        children: snap.data.map<Widget>((_model) {
-                          //final distance=Distance();
-                          if(bar.hasData && !_model.id.toLowerCase().contains(bar.data.toLowerCase())) return Container();
-                          var stream;
-                          if (_model.getPos() != null &&
-                              widget.position != null) {
-                            final LatLng start = _model.getPos();
-                            final LatLng end = LatLng(
-                                widget.position.latitude,
-                                widget.position.longitude);
-                            stream =
-                                userBloc.getDistance(start, end).asStream();
-                            // TODO: Rimuovere l'else che permette un comportamento scorretto.
-                          } else
-                            stream = userBloc.getMockDistance().asStream();
-                          return StreamBuilder<double>(
-                              stream: stream,
-                              builder: (ctx, snap) {
-                                if (!snap.hasData) return Container();
-                                // TODO: Ripristinare a tempo debito.
-                                // if(snap.data/1000<_model.km) {
-                                if (_model.isDisabled != null &&
-                                    _model.isDisabled) return Container();
-                                return InkWell(
-                                  onTap: () async {
-                                    EasyRouter.push(
-                                      context,
-                                      RestaurantScreen(
-                                        address: (await Geocoder.local
-                                            .findAddressesFromCoordinates(
-                                            new Coordinates(
-                                                widget.position.latitude,
-                                                widget.position.longitude)))
-                                            .first.addressLine,
-                                        position: widget.position,
-                                        model: _model,
-                                      ),
-                                    );
-                                  },
-                                  child: RestaurantView(
-                                    model: _model,
-                                  ),
-                                );
-                              });
-                        }).toList(),
-                      ),
-                    ),
-                  );
-                }
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
+                      return StreamBuilder(
+                        stream: Database().getUser(user.data.userFb),
+                        builder: (ctx,model){
+                          if (snap.hasData && user.hasData && model.hasData) {
+                            if(model.data.type!='user' && model.data.type!=null) {
+                              return RaisedButton(
+                                child: Text('Sei stato disabilitato clicca per fare logout'),
+                                onPressed: (){
+                                  UserBloc.of().logout();
+                                  LoginHelper().signOut();
+                                  EasyRouter.pushAndRemoveAll(
+                                      context, LoginScreen());
+                                },
+                              );
+                            }
+                            return SingleChildScrollView(
+                              child: Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: CardListView(
+                                  children: snap.data.map<Widget>((_model) {
+                                    //final distance=Distance();
+                                    if(bar.hasData && !_model.id.toLowerCase().contains(bar.data.toLowerCase())) return Container();
+                                    var stream;
+                                    if (_model.getPos() != null &&
+                                        widget.position != null) {
+                                      final LatLng start = _model.getPos();
+                                      final LatLng end = LatLng(
+                                          widget.position.latitude,
+                                          widget.position.longitude);
+                                      stream =
+                                          userBloc.getDistance(start, end).asStream();
+                                      // TODO: Rimuovere l'else che permette un comportamento scorretto.
+                                    } else
+                                      stream = userBloc.getMockDistance().asStream();
+                                    return StreamBuilder<double>(
+                                        stream: stream,
+                                        builder: (ctx, snap) {
+                                          if (!snap.hasData) return Container();
+                                          // TODO: Ripristinare a tempo debito.
+                                          // if(snap.data/1000<_model.km) {
+                                          if (_model.isDisabled != null &&
+                                              _model.isDisabled) return Container();
+                                          return InkWell(
+                                            onTap: () async {
+                                              EasyRouter.push(
+                                                context,
+                                                RestaurantScreen(
+                                                  address: (await Geocoder.local
+                                                      .findAddressesFromCoordinates(
+                                                      new Coordinates(
+                                                          widget.position.latitude,
+                                                          widget.position.longitude)))
+                                                      .first.addressLine,
+                                                  position: widget.position,
+                                                  model: _model,
+                                                ),
+                                              );
+                                            },
+                                            child: RestaurantView(
+                                              model: _model,
+                                            ),
+                                          );
+                                        });
+                                  }).toList(),
+                                ),
+                              ),
+                            );
+                          }
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        },
+                      );
                     },
                 );
 
@@ -289,45 +241,12 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
 
 class RestaurantView extends StatelessWidget {
   final RestaurantModel model;
-  final StreamController<String> imgStream = new StreamController.broadcast();
 
   RestaurantView({
     Key key,
     @required this.model,
   })  : assert(model != null),
         super(key: key);
-
-  Future<Null> downloadFile(String httpPath) async {
-    final RegExp regExp = RegExp('([^?/]*\.(jpg))');
-    final String fileName = regExp.stringMatch(httpPath);
-    final Directory tempDir = Directory.systemTemp;
-    final File file = File('${tempDir.path}/$fileName');
-    final StorageReference ref = FirebaseStorage.instance.ref().child(fileName);
-    final StorageFileDownloadTask downloadTask = ref.writeToFile(file);
-    final int byteNumber = (await downloadTask.future).totalByteCount;
-    print(byteNumber);
-    //put the file into the stream
-    imgStream.add(file.path);
-  }
-
-  Future<String> uploadFile(String filePath) async {
-    final data=await rootBundle.load(filePath);
-    final bytes=data.buffer.asUint8List();
-    //final Uint8List bytes = File(filePath).readAsBytesSync();
-    final Directory tempDir = Directory.systemTemp;
-    final String fileName = filePath.split('/').last;
-    final File file = File('${tempDir.path}/$fileName');
-    file.writeAsBytes(bytes, mode: FileMode.write);
-
-    final StorageReference ref = FirebaseStorage.instance.ref().child(fileName);
-    final StorageUploadTask task = ref.putFile(file);
-    final Uri downloadUrl = (await task.onComplete).uploadSessionUri;
-
-    //Database().updateImg(await ref.getDownloadURL(), model.id);
-
-    //_path = downloadUrl.toString();
-    return 'ok';
-  }
 
   String toDay(int weekday){
     if(weekday==1) return 'Lunedì';
@@ -372,7 +291,6 @@ class RestaurantView extends StatelessWidget {
       }
       else times='Chiuso';
     }
-    if(model.img.startsWith('assets')) uploadFile(model.img);
     return ClipRRect(
       borderRadius: BorderRadius.circular(8.0),
       child: Stack(

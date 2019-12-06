@@ -23,7 +23,8 @@ class PasswordField extends StringField {
           final data = snap.data;
           return IconButton(
             onPressed: () => checker.obscureText(!data.obscureText),
-            icon: data.obscureText ? const Icon(Icons.lock) : const Icon(Icons.lock_outline),
+            //icon: data.obscureText ? const Icon(Icons.lock) : const Icon(Icons.lock_outline),
+            icon: const Icon(Icons.lock),
           );
         }
       ),

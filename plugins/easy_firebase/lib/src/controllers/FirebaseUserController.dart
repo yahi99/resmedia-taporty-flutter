@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:meta/meta.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:resmedia_taporty_flutter/logic/database.dart';
 
 
 class FirebaseUserController<L> implements FirebaseUserManager<L> {
@@ -210,7 +211,12 @@ class LoginHelper {
     (await firebaseAuth.signInWithCredential(authCredential));
     print("Eseguito l'accesso con Google di ${firebaseUser.email}.");
     //Database().putUser(firebaseUser);
-
+    Database().getUser(firebaseUser).first.then((userId) async {
+      if(userId==null){
+        await Database().createUserGoogle(uid: firebaseUser.uid, nominative: firebaseUser.displayName,email:firebaseUser.email);
+      }
+    }
+    );
     return firebaseUser;
   }
 

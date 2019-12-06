@@ -276,13 +276,12 @@ class _TurnWorkTabDriverState extends State<EditRestScreen> {
                             context,
                             duration: 3);
                       } else {
-                        final img=(await RestaurantBloc.init(idRestaurant: (await UserBloc.of().outUser.first).model.restaurantId).outRestaurant.first).img;
                         uploadFile(path).then((path) async {
                           Database().updateImg(
                               path,
                               (await UserBloc.of().outUser.first)
                                   .model
-                                  .restaurantId,img).then((value){
+                                  .restaurantId).then((value){
                             Toast.show('Cambiato!', context,duration: 3);
                           });
                         });

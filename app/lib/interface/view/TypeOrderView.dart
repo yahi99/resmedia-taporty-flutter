@@ -65,7 +65,7 @@ class TypeOrderView extends StatelessWidget {
                           Text('Cliente: ', style: tt.subtitle),
                           Text(model.nominative),
                           Text('Giorno di consegna: ', style: tt.subtitle),
-                          Text(model.day),
+                          Text(toDate(model.day)),
                           Text('Ora di consegna: ', style: tt.subtitle),
                           Text(model.endTime),
                           Text('Numero di prodotti: ', style: tt.subtitle),

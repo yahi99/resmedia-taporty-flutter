@@ -84,10 +84,17 @@ class _ConfirmState extends State<ConfirmPage>
 
   bool valid(BuildContext context) {
     final state = MyInheritedWidget.of(context);
+    print(state.name);
+    print(state.email);
+    print(state.address);
+    print(state.phone);
+    print(state.cap);
+    print(state.date);
     print(state.time);
+    print(state.fingerprint);
+    print(state.uid);
     if (state.name == null ||
         state.email == null ||
-        state.address == null ||
         state.phone == null ||
         state.cap == null ||
         state.date == null ||

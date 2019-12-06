@@ -70,6 +70,7 @@ class _HomeScreenRestaurantState extends State<TimetableScreen> {
             final lunch=snap.data.lunch;
             final dinner=snap.data.dinner;
             String times='';
+            //lunch.values.element at doesn't work need to do a remove and get the element
             for(int i=0;i<days.length;i++){
               if(lunch==null && dinner!=null){
                 if(dinner.containsKey(days.elementAt(i))){

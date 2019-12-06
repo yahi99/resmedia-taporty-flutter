@@ -27,6 +27,16 @@ class ShippingPage extends StatefulWidget {
 
 class _ShippingState extends State<ShippingPage>
     with AutomaticKeepAliveClientMixin {
+
+  StreamController dateStream,timeStream,dropStream;
+
+  TextEditingController _nameController;
+  TextEditingController _dateController;
+  TextEditingController _emailController;
+  TextEditingController _addressController;
+  TextEditingController _phoneController;
+  TextEditingController _capController;
+
   String toDate(DateTime date) {
     return (date.day.toString() +
         '/' +
@@ -43,25 +53,43 @@ class _ShippingState extends State<ShippingPage>
   }
 
   @override
+  void initState(){
+    super.initState();
+    dateStream = StreamController<DateTime>();
+    timeStream = StreamController<List<CalendarModel>>();
+    dropStream = StreamController<String>();
+    _nameController = TextEditingController();
+    _dateController = TextEditingController();
+    _emailController = TextEditingController();
+    _addressController = TextEditingController();
+    _phoneController = TextEditingController();
+    _capController = TextEditingController();
+  }
+
+  @override
+  void dispose(){
+    super.dispose();
+    dateStream.close();
+    timeStream.close();
+    dropStream.close();
+    _addressController.dispose();
+    _capController.dispose();
+    _dateController.dispose();
+    _emailController.dispose();
+    _phoneController.dispose();
+    _nameController.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    var dateStream = StreamController<DateTime>();
-    var timeStream = StreamController<List<CalendarModel>>();
-    var dropStream = StreamController<String>();
-    //StreamController.broadcast();
     final theme = Theme.of(context);
     final tt = theme.textTheme;
-    final TextEditingController _nameController = TextEditingController();
-    final TextEditingController _dateController = TextEditingController();
-    final TextEditingController _emailController = TextEditingController();
-    final TextEditingController _addressController = TextEditingController();
-    final TextEditingController _phoneController = TextEditingController();
-    final TextEditingController _capController = TextEditingController();
     //final name = user.nominative.split(' ');
     _nameController.value = TextEditingValue(text: widget.user.nominative);
     //_lastNameController.value = TextEditingValue(text: name[1]);
     _emailController.value = TextEditingValue(text: widget.user.email);
     _addressController.value = TextEditingValue(text: '');
-    _phoneController.value =
+    if(widget.user.phoneNumber!=null) _phoneController.value =
         TextEditingValue(text: widget.user.phoneNumber.toString());
     _capController.value = TextEditingValue(text: widget.address.postalCode);
     DateTime date;
@@ -255,6 +283,7 @@ class _ShippingState extends State<ShippingPage>
                 SizedBox(
                   height: 16.0,
                 ),
+                /*
                 InputField(
                   title: Text(
                     'INDIRIZZO DI FATTURAZIONE',
@@ -349,6 +378,7 @@ class _ShippingState extends State<ShippingPage>
                     ],
                   ),
                 ),
+                */
               ],
             ),
           ),

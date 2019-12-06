@@ -22,7 +22,7 @@ class CheckerField<V> extends CacheStreamBuilder<DataField<V>> {
           errorMaxLines: decoration.errorMaxLines??2,
         ),
         keyboardType: checker.keyboardType,
-        obscureText: data.obscureText,
+        obscureText: true,
 
         maxLength: checker.maxLength,
 

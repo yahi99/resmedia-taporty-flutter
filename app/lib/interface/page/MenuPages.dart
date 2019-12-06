@@ -6,30 +6,6 @@ import 'package:resmedia_taporty_flutter/logic/bloc/RestaurantBloc.dart';
 import 'package:resmedia_taporty_flutter/model/ProductModel.dart';
 import 'package:resmedia_taporty_flutter/model/RestaurantModel.dart';
 
-/*List<ProductModel> products = [
-  FoodModel(img: 'assets/img/food/onionrings.JPG', title: 'Onion rings', price: '4,90'),
-  FoodModel(img: 'assets/img/food/Chips.JPG', title: 'Chicken nuggets', price: '5,80'),
-  FoodModel(img: 'assets/img/food/chicken.JPG', title: 'Pollo arrosto', price: '5,80'),
-];
-
-
-Map<String, List<ProductModel>> foods = {
-  'ANTIPASTI': [
-    FoodModel(img: 'assets/img/food/onionrings.JPG', title: 'Onion rings', price: '4,90'),
-        DrinkModel(img: 'assets/img/drink/waterbottle.jpg', title: 'Acqua gassata 1lt', price: '1,50'),
-  ],
-
-  'PRIMI PIATTI': [
-    FoodModel(img: 'assets/img/food/pastaragu.png', title: 'Pasta al ragù', price: '7,20'),
-  ],
-  'SECONDI PIATTI':[
-    FoodModel(img: 'assets/img/food/chicken.JPG', title: 'Pollo arrosto', price: '5,80'),
-  ],
-  'DESSERT':[
-    FoodModel(img: 'assets/img/food/tiramisù.png', title: 'Tiramisù', price: '5,00'),
-  ],
-};*/
-
 class FoodsPage extends StatelessWidget {
   final RestaurantModel model;
 
@@ -51,31 +27,6 @@ class FoodsPage extends StatelessWidget {
     );
   }
 }
-/*Map<String, List<ProductModel>> _drinks = {
-  'BIBITE': [
-    DrinkModel(img: 'assets/img/drink/waterbottle.jpg', title: 'Acqua gassata 1lt', price: '1,50'),
-    DrinkModel(img: 'assets/img/drink/coke.jpg', title: 'Coca Cola 300 ml', price: '2,50'),
-  ],
-  'VINI E BIRRE' :[
-    DrinkModel(img: 'assets/img/drink/redwine.jpg', title: 'Vino Rosso', price: '4,50'),
-  ],
-  'DOPO PASTO':[
-    DrinkModel(img: 'assets/img/drink/caffè.jpg', title: 'Caffè espresso', price: '1,50'),
-  ]
-};*/
-
-/*class DrinksPage extends StatelessWidget {
-  final restaurantBloc=RestaurantBloc.of();
-  @override
-  Widget build(BuildContext context) {
-    return CacheStreamBuilder<RestaurantModel>(
-      stream: restaurantBloc.outRestaurant,
-      builder: (context, snap) {
-        return ProductsBuilder(products: _drinks,);
-      },
-    );
-  }
-}*/
 
 class DrinksPage extends StatelessWidget {
   final RestaurantModel model;
@@ -98,53 +49,8 @@ class DrinksPage extends StatelessWidget {
         );
       },
     );
-
-    //ProductsBuilder(products: _drinks,);
   }
 }
-
-/*
-StreamBuilder<Map<DrinkCategory, List<DrinkModel>>>(
-              stream: restaurantBloc.outCategorizedDrinks,
-              builder: (context, snapshot) {
-                if (!snapshot.hasData)
-                  return Center(child: CircularProgressIndicator(),);
-
-                return CustomScrollView(
-                  slivers: [
-                    ...snapshot.data.keys.map((category) {
-                      final models = snapshot.data[category];
-
-                      return Menu(
-                        title: translateDrinkCategory(category),
-                        childrenDelegate: SliverChildBuilderDelegate((_, index) {
-                          final model = models[index];
-
-                          return InkWell(
-                            onTap: () => EasyRouter.push(context, DrinkScreen(
-                              path: model.path,
-                            )),
-                            child: ProductCard(
-                              model: model,
-                            ),
-                          );
-                        },
-                          childCount: models.length,
-                        ),
-                      );
-                    }),
-                    SliverBottomMenu(
-                      left: backToRestaurant,
-                      right: RaisedButton(
-                        onPressed: () => EasyRouter.pop(context),
-                        child: FittedText("Ordina"),
-                      ),
-                    ),
-                  ],
-                );
-              },
-            ),
- */
 
 class ProductsDrinkBuilder extends StatelessWidget {
   final Map<DrinkCategory, List<DrinkModel>> drinks;

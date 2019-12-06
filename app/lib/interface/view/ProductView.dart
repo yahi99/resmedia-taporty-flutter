@@ -32,49 +32,9 @@ class ProductView extends StatelessWidget {
       @required this.update})
       : super(key: key);
 
-  Future<Null> downloadFile(String httpPath)async{
-    final RegExp regExp=RegExp('([^?/]*\.(jpg))');
-    final String fileName=regExp.stringMatch(httpPath);
-    final Directory tempDir= Directory.systemTemp;
-    final File file=File('${tempDir.path}/$fileName');
-    final StorageReference ref=FirebaseStorage.instance.ref().child(fileName);
-    final StorageFileDownloadTask downloadTask=ref.writeToFile(file);
-    final int byteNumber=(await downloadTask.future).totalByteCount;
-    print(byteNumber);
-    //put the file into the stream
-    //imgStream.add(file.path);
-  }
-
-  Future<String> uploadFile(String filePath) async {
-    try{
-      final data=await rootBundle.load(filePath);
-      final bytes=data.buffer.asUint8List();
-      //final Uint8List bytes = File(filePath).readAsBytesSync();
-      final Directory tempDir = Directory.systemTemp;
-      final String fileName = filePath.split('/').last;
-      final File file = File('${tempDir.path}/$fileName');
-      await file.writeAsBytes(bytes, mode: FileMode.write);
-      print(filePath);
-      final StorageReference ref = FirebaseStorage.instance.ref().child(fileName);
-      final StorageUploadTask task = ref.putFile(file);
-      final Uri downloadUrl = (await task.onComplete).uploadSessionUri;
-
-      //Database().updateImgProduct(await ref.getDownloadURL(), model);
-      //_path = downloadUrl.toString();
-      return 'ok';
-    }
-    catch(e){
-      print(e.toString());
-    }
-    return 'not ok';
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    if(model.isDisabled==null) Database().updateProdDis(model, category);
-    if(model.img.startsWith('assets')) uploadFile(model.img);
-    //if(model.number!=null) downloadFile(model.img);
     return Slidable(
       actionPane: SlidableDrawerActionPane(),
       actionExtentRatio: 0.25,
@@ -208,83 +168,3 @@ class CartStepperButton extends StatelessWidget {
     );
   }
 }
-
-/*class CartButton extends StatelessWidget {
-  final int val;
-  final ProductModel model;
-
-  const CartButton({Key key, this.val, this.model}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    //final cart = CartBloc();
-    final user = UserBloc.of();
-    var cartStorage = CartStorage(
-        storage:
-            InternalStorage.manager(versionManager: VersionManager("Drink")));
-    final cls = Theme.of(context).colorScheme;
-    return Container(
-      width: 40,
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(5.0),
-          color: cls.secondaryVariant),
-      child: Column(
-        children: <Widget>[
-          CacheStreamBuilder<FirebaseUser>(
-            stream: user.outFirebaseUser,
-            builder: (context, snap) {
-              if (!snap.hasData)
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
-              print(snap.hasData);
-              return Expanded(
-                child: IconButton(
-                  icon: Icon(Icons.add),
-                  color: Colors.white,
-                  onPressed: () {
-                    //cart.inIncrementDrink(model);
-                    List<ProductCart> temp = List<ProductCart>();
-                    temp.add(ProductCart(
-                        id: model.id,
-                        restaurantId: model.restaurantId,
-                        userId: snap.data.uid));
-                    cartStorage = CartStorage(
-                        storage: InternalStorage.manager(
-                            versionManager: VersionManager("Drink")),
-                        products: temp);
-                    cartStorage.increment(
-                        model.id,
-                        model.restaurantId,
-                        snap.data.uid,
-                        double.parse(model.price.replaceAll(',', '.')),
-                        ca);
-                  },
-                ),
-              );
-            },
-          ),
-          Expanded(
-            child: Container(
-              color: Colors.white,
-              alignment: Alignment.center,
-              child: Padding(
-                padding: const EdgeInsets.all(2.0),
-                child: Text('$val'),
-              ),
-            ),
-          ),
-          Expanded(
-            child: IconButton(
-              icon: Icon(Icons.remove),
-              color: Colors.white,
-              onPressed: () {
-                //cart.inIncrementDrink(model);
-              },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}*/

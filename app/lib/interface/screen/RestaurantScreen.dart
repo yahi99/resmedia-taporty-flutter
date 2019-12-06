@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:resmedia_taporty_flutter/control/interface/screen/LoginScreen.dart';
+import 'package:resmedia_taporty_flutter/interface/screen/LoginScreen.dart';
 import 'package:resmedia_taporty_flutter/data/config.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/screen/AccountScreen.dart';
 import 'package:resmedia_taporty_flutter/interface/page/InfoRestaurantPage.dart';
@@ -14,6 +14,7 @@ import 'package:resmedia_taporty_flutter/interface/screen/RestaurantListScreen.d
 import 'package:resmedia_taporty_flutter/logic/bloc/CartBloc.dart';
 import 'package:resmedia_taporty_flutter/logic/bloc/RestaurantBloc.dart';
 import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
+import 'package:resmedia_taporty_flutter/logic/database.dart';
 import 'package:resmedia_taporty_flutter/model/RestaurantModel.dart';
 import 'package:resmedia_taporty_flutter/model/UserModel.dart';
 
@@ -87,6 +88,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
   @override
   void dispose() {
     RestaurantBloc.close();
+    CartBloc.close();
     //UserBloc.of().dispose();
     super.dispose();
   }
@@ -122,12 +124,11 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                           if (drinks.hasData && foods.hasData && user.hasData) {
                             //if(user.data.model.type!='user') EasyRouter.pushAndRemoveAll(context, LoginScreen());
                             int count = drinks.data.getTotalItems(
-                                drinks.data.products,
-                                user.data.userFb.uid,
-                                widget.model.id)+foods.data.getTotalItems(
-                                foods.data.products,
-                                user.data.userFb.uid,
-                                widget.model.id);
+                                    drinks.data.products,
+                                    user.data.userFb.uid,
+                                    widget.model.id) +
+                                foods.data.getTotalItems(foods.data.products,
+                                    user.data.userFb.uid, widget.model.id);
                             print(count);
                             return Row(
                               children: <Widget>[
@@ -153,8 +154,15 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                                     });
                                   },
                                 ),
-                                Text(count.toString(),style: TextStyle(color: Colors.white,fontSize: 18.0,fontWeight: FontWeight.bold,
-                                  fontFamily: 'Comfortaa',),)
+                                Text(
+                                  count.toString(),
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18.0,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: 'Comfortaa',
+                                  ),
+                                )
                               ],
                             );
                           }
@@ -166,9 +174,9 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                                   UserBloc.of().outUser.first.then((user) {
                                     Geocoder.local
                                         .findAddressesFromCoordinates(
-                                        Coordinates(
-                                            widget.position.latitude,
-                                            widget.position.longitude))
+                                            Coordinates(
+                                                widget.position.latitude,
+                                                widget.position.longitude))
                                         .then((addresses) {
                                       EasyRouter.push(
                                           context,
@@ -182,8 +190,15 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                                   });
                                 },
                               ),
-                              Text('0',style: TextStyle(color: Colors.white,fontSize: 18.0,fontWeight: FontWeight.bold,
-                                fontFamily: 'Comfortaa',),)
+                              Text(
+                                '0',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18.0,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: 'Comfortaa',
+                                ),
+                              )
                             ],
                           );
                         },
@@ -237,33 +252,48 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
           ),
           body: StreamBuilder<User>(
             stream: UserBloc.of().outUser,
-            builder: (ctx,user){
+            builder: (ctx, user) {
+              if(!user.hasData) return Center(child: CircularProgressIndicator(),);
               return StreamBuilder<RestaurantModel>(
-                stream: RestaurantBloc.init(idRestaurant: widget.model.id).outRestaurant,
-                builder: (ctx,rest){
-                  if(user.hasData && rest.hasData){
-                    if(user.data.model.type!='user' && user.data.model.type!=null){
-                      return RaisedButton(
-                        child: Text('Sei stato disabilitato clicca per fare logout'),
-                        onPressed: (){
-                          UserBloc.of().logout();
-                          EasyRouter.pushAndRemoveAll(context, LoginScreen());
-                        },
-                      );
-                      //EasyRouter.pushAndRemoveAll(context, LoginScreen());
-                    }
-                    if(rest.data.isDisabled!=null && rest.data.isDisabled) {
-                      return Text('Ristorante non abilitato scegline un\'altro');
-                    }
-                    return TabBarView(
-                      children: <Widget>[
-                        InfoRestaurantPage(address: widget.address, model: widget.model),
-                        FoodsPage(model: widget.model),
-                        DrinksPage(model: widget.model),
-                      ],
-                    );
-                  }
-                  return Center(child: CircularProgressIndicator(),);
+                stream: RestaurantBloc.init(idRestaurant: widget.model.id)
+                    .outRestaurant,
+                builder: (ctx, rest) {
+                  return StreamBuilder(
+                      stream: Database().getUser(user.data.userFb),
+                      builder: (ctx, model) {
+                        if (user.hasData && rest.hasData && model.hasData) {
+                          if (model.data.type != 'user' &&
+                              model.data.type != null) {
+                            return RaisedButton(
+                              child: Text(
+                                  'Sei stato disabilitato clicca per fare logout'),
+                              onPressed: () {
+                                UserBloc.of().logout();
+                                LoginHelper().signOut();
+                                EasyRouter.pushAndRemoveAll(
+                                    context, LoginScreen());
+                              },
+                            );
+                            //EasyRouter.pushAndRemoveAll(context, LoginScreen());
+                          }
+                          if (rest.data.isDisabled != null &&
+                              rest.data.isDisabled) {
+                            return Text(
+                                'Ristorante non abilitato scegline un\'altro');
+                          }
+                          return TabBarView(
+                            children: <Widget>[
+                              InfoRestaurantPage(
+                                  address: widget.address, model: widget.model),
+                              FoodsPage(model: widget.model),
+                              DrinksPage(model: widget.model),
+                            ],
+                          );
+                        }
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      });
                 },
               );
             },

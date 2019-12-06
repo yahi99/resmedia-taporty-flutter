@@ -311,7 +311,7 @@ class _TurnWorkTabDriverState extends State<ManageRestPage> {
                                   path,
                                   (await UserBloc.of().outUser.first)
                                       .model
-                                      .restaurantId,img)
+                                      .restaurantId)
                               .then((value) {
                             Toast.show('Cambiato!', context, duration: 3);
                           });

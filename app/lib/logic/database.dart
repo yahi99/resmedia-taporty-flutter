@@ -13,6 +13,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:geocoder/model.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:mailer/mailer.dart';
+import 'package:mailer/smtp_server/gmail.dart';
 import 'package:resmedia_taporty_flutter/control/model/ControlUsersModel.dart';
 import 'package:resmedia_taporty_flutter/control/model/DriverRequestModel.dart';
 import 'package:resmedia_taporty_flutter/control/model/ProductRequestModel.dart';
@@ -29,6 +31,7 @@ import 'package:resmedia_taporty_flutter/model/OrderModel.dart';
 import 'package:resmedia_taporty_flutter/model/ProductModel.dart';
 import 'package:resmedia_taporty_flutter/model/RestaurantModel.dart';
 import 'package:resmedia_taporty_flutter/model/UserModel.dart';
+import 'package:mailer/src/entities/address.dart' as add;
 
 class Database extends FirebaseDatabase
     with MixinFirestoreStripeProvider, RestaurantDb, StripeProviderRule {
@@ -65,6 +68,13 @@ class Database extends FirebaseDatabase
         .collection(cl.USERS)
         .document(uid)
         .setData(model.toJson()..[users.fcmToken] = await fbMs.getToken());
+  }
+  Future<void> createUserGoogle(
+      {@required String uid, @required String nominative,@required String email}) async {
+    await fs
+        .collection(cl.USERS)
+        .document(uid)
+        .setData({'nominative':nominative,users.fcmToken: await fbMs.getToken(),'email':email});
   }
 
   Stream<List<UserOrderModel>> getUserOrders(String uid) {
@@ -180,11 +190,11 @@ class Database extends FirebaseDatabase
       //print(rest.lunch.toString());
       if(temp!=null) {
         temp.remove(day);
-        temp.putIfAbsent(day, () => startTime + ':' + endTime);
+        temp.putIfAbsent(day, () => startTime + '-' + endTime);
       }
       else{
         temp=new Map<String,String>();
-        temp.putIfAbsent(day, () => startTime + ':' + endTime);
+        temp.putIfAbsent(day, () => startTime + '-' + endTime);
       }
       await fs.collection('restaurants').document(restId).updateData({'lunch':temp});
     }
@@ -193,11 +203,11 @@ class Database extends FirebaseDatabase
       print(rest.dinner);
       if(temp!=null) {
         temp.remove(day);
-        temp.putIfAbsent(day, () => startTime + ':' + endTime);
+        temp.putIfAbsent(day, () => startTime + '-' + endTime);
       }
       else{
         temp=new Map<String,String>();
-        temp.putIfAbsent(day, () => startTime + ':' + endTime);
+        temp.putIfAbsent(day, () => startTime + '-' + endTime);
       }
       await fs.collection('restaurants').document(restId).updateData({'dinner':temp});
     }
@@ -265,10 +275,11 @@ class Database extends FirebaseDatabase
     });
   }
 
-  Future<void> updateImg(String path,String restId,String previous)async{
+  Future<void> updateImg(String path,String restId)async{
     //TODO delete previous image
+    final img=RestaurantModel.fromFirebase(await fs.collection('restaurants').document(restId).get()).img;
     await fs.collection('restaurants').document(restId).updateData({'img':path});
-    _deleteFile(previous.split('/').last.split('?').first);
+    _deleteFile(img.split('/').last.split('?').first);
   }
 
   Future<void> updateAccountImg(String path,String uid,String previous)async{
@@ -369,6 +380,22 @@ class Database extends FirebaseDatabase
     });
     //await fs.collection('users').document(model.id).updateData({'type':'driver'});
     await fs.collection('driver_requests').document(model.id).delete();
+    final mail= UserModel.fromFirebase(await fs.collection('users').document(model.id).get()).email;
+    String user='taporty.app@gmail.com';
+    String password='pwtaporty';
+    final smtpServer=gmail(user,password);
+    final message=Message()
+        ..from= add.Address(user,'Taporty Team')
+        ..recipients.add(mail)
+        ..subject='Richiesta fattorino accettata'
+        ..text='La tua richiesta di diventare un fattorino è stata accettata.\n Team Taporty';
+    try{
+      final sendReport=await send(message,smtpServer);
+      print('Message sent: '+sendReport.toString());
+    }
+    on MailerException catch(e){
+      print(e.message);
+    }
   }
 
   Future<void> changeStatus(ProductModel model)async{
@@ -396,6 +423,22 @@ class Database extends FirebaseDatabase
     await fs.collection(cl.USERS).document(model.id).updateData({'restaurantId':model.ragioneSociale,'type':'restaurant'});
     //await fs.collection('food_categories').document(model.category).setData({'translation':model.category});
     await fs.collection('restaurant_requests').document(model.ragioneSociale).delete();
+    final mail= UserModel.fromFirebase(await fs.collection('users').document(model.id).get()).email;
+    String user='taporty.app@gmail.com';
+    String password='pwtaporty';
+    final smtpServer=gmail(user,password);
+    final message=Message()
+      ..from= add.Address(user,'Taporty Team')
+      ..recipients.add(mail)
+      ..subject='Richiesta ristorante accettata'
+      ..text='La tua richiesta di diventare un ristoratore è stata accettata.\n Team Taporty';
+    try{
+      final sendReport=await send(message,smtpServer);
+      print('Message sent: '+sendReport.toString());
+    }
+    on MailerException catch(e){
+      print(e.message);
+    }
   }
 
   Stream<List<UserModel>> getUsersMod(){
@@ -698,6 +741,12 @@ class Database extends FirebaseDatabase
 
   Stream<UserModel> getUser(FirebaseUser user) {
     return fs.collection(cl.USERS).document(user.uid).snapshots().map((snap) {
+      return UserModel.fromFirebase(snap);
+    });
+  }
+
+  Stream<UserModel> getUserModel(String id) {
+    return fs.collection(cl.USERS).document(id).snapshots().map((snap) {
       return UserModel.fromFirebase(snap);
     });
   }

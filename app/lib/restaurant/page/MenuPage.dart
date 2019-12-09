@@ -18,14 +18,14 @@ import 'package:resmedia_taporty_flutter/restaurant/view/ProductViewRestaurant.d
 import 'package:toast/toast.dart';
 
 class MenuPage extends StatefulWidget implements WidgetRoute {
-  final foods, drinks;
+  final restBloc;
 
   static const ROUTE = "MenuPage";
 
   @override
   String get route => MenuPage.ROUTE;
 
-  MenuPage({@required this.foods, @required this.drinks});
+  MenuPage({@required this.restBloc});
 
   @override
   _MenuPageState createState() => _MenuPageState();
@@ -42,6 +42,10 @@ class _MenuPageState extends State<MenuPage> {
   final _dropKey = GlobalKey();
   final _dropCatKey=GlobalKey();
 
+  StreamController<String> dropStream;
+  StreamController<String> dropCatStream;
+  StreamController<String> _imgCtrl;
+
   String _path, _tempPath, cat,category;
   List<DropdownMenuItem> dropMenu;
   final values = ['Cibo', 'Bevande'];
@@ -57,6 +61,9 @@ class _MenuPageState extends State<MenuPage> {
   @override
   void initState() {
     super.initState();
+    dropStream = StreamController<String>.broadcast();
+    dropCatStream = StreamController<String>.broadcast();
+    _imgCtrl = StreamController<String>.broadcast();
     drop.add(DropdownMenuItem(
       child: Text(values[0]),
       value: values[0],
@@ -83,6 +90,9 @@ class _MenuPageState extends State<MenuPage> {
   @override
   void dispose() {
     super.dispose();
+    dropStream.close();
+    dropCatStream.close();
+    _imgCtrl.close();
   }
 
   String translate(String cat) {
@@ -110,7 +120,7 @@ class _MenuPageState extends State<MenuPage> {
     final Directory tempDir = Directory.systemTemp;
     final String fileName = filePath.split('/').last;
     final File file = File('${tempDir.path}/$fileName');
-    file.writeAsBytes(bytes, mode: FileMode.write);
+    await file.writeAsBytes(bytes, mode: FileMode.write);
 
     final StorageReference ref = FirebaseStorage.instance.ref().child(fileName);
     final StorageUploadTask task = ref.putFile(file);
@@ -123,12 +133,6 @@ class _MenuPageState extends State<MenuPage> {
   }
 
   void _addProduct(BuildContext context) {
-    final StreamController<String> dropStream = StreamController<
-        String>.broadcast();
-    final StreamController<String> dropCatStream = StreamController<
-        String>.broadcast();
-    final StreamController<String> _imgCtrl = StreamController<
-        String>.broadcast();
     showDialog(
         context: context,
         builder: (_context) {
@@ -390,18 +394,34 @@ class _MenuPageState extends State<MenuPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: ProductsFoodDrinkBuilder(
-        drinks: widget.drinks,
-        foods: widget.foods,
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _addProduct(context);
-        },
-        child: Icon(Icons.add),
-        backgroundColor: Colors.blue,
-      ),
+    return StreamBuilder<List<DrinkModel>>(
+        stream: widget.restBloc.outDrinks,
+        builder: (context, drinks) {
+          return StreamBuilder<List<FoodModel>>(
+              stream: widget.restBloc.outFoods,
+              builder: (context, foods) {
+                if(foods.hasData && drinks.hasData){
+                  return Scaffold(
+                    appBar: AppBar(
+                      title: Text('Listino'),
+                    ),
+                    body: ProductsFoodDrinkBuilder(
+                      drinks: drinks.data,
+                      foods: foods.data,
+                    ),
+                    floatingActionButton: FloatingActionButton(
+                      onPressed: () {
+                        _addProduct(context);
+                      },
+                      child: Icon(Icons.add),
+                      backgroundColor: Colors.blue,
+                    ),
+                  );
+                }
+                return Center(child: CircularProgressIndicator(),);
+              }
+          );
+        }
     );
   }
 }

@@ -51,9 +51,11 @@ class RestaurantOrderModel extends OrderModel {
   final String day;
   final String phone,restaurantId;
   final bool isPaid,isReviewed;
+  final int timeLeft;
 
   RestaurantOrderModel({
     String path,
+    this.timeLeft,
     this.restaurantId,
     this.isPaid,
     this.isReviewed,
@@ -92,11 +94,13 @@ class UserOrderModel extends OrderModel {
   final String endTime,day,phone;
   final bool isReviewed;
   final String restaurantId,driver,uid;
+  final int timeLeft;
 
   UserOrderModel({
     String path,
     @required this.restaurantId,
     @required this.driver,
+    this.timeLeft,
     this.isReviewed,
     this.uid,
     @required this.phone,

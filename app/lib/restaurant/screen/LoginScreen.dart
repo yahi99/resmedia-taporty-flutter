@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:easy_blocs/easy_blocs.dart';
 import 'package:easy_firebase/easy_firebase.dart';
 import 'package:easy_route/easy_route.dart';
@@ -14,6 +15,8 @@ import 'package:resmedia_taporty_flutter/interface/view/logo_view.dart';
 import 'package:resmedia_taporty_flutter/logic/bloc/OrdersBloc.dart';
 import 'package:resmedia_taporty_flutter/logic/bloc/RestaurantBloc.dart';
 import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
+import 'package:resmedia_taporty_flutter/logic/database.dart';
+import 'package:resmedia_taporty_flutter/model/UserModel.dart';
 import 'package:resmedia_taporty_flutter/restaurant/screen/HomeScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:toast/toast.dart';
@@ -75,29 +78,26 @@ class _LoginScreenState extends State<LoginScreen> {
         break;
     }
   }*/
-
+  /*
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    print('here');
     _submitBloc.submitController.solver = (res) async {
       if (!res) return;
-
-      final registrationLevel = await _userBloc.getRegistrationLevel();
-      /*if (registrationLevel == RegistrationLevel.LV2)
-        await EasyRouter.push(context, SignUpMoreScreen());*/
-      if (registrationLevel == RegistrationLevel.COMPLETE) {
         final type=(await _userBloc.outUser.first).model.type;
         String user = (await UserBloc.of().outUser.first).model.restaurantId;
-        if(user!=null && type=='restaurant' && remember) {
+        print(type);
+        if(user!=null && type=='restaurant') {
           final orderBloc = OrdersBloc.of();
           await orderBloc.setRestaurantStream();
           final restaurantBloc = RestaurantBloc.init(idRestaurant: user);
           await EasyRouter.pushAndRemoveAll(
               context, HomeScreen(restBloc: restaurantBloc,restId: user,));
         }
-      }
     };
   }
+   */
 
   @override
   void initState() {
@@ -112,6 +112,54 @@ class _LoginScreenState extends State<LoginScreen> {
     //registrationLevelSub?.cancel();
     rememberStream.close();
     super.dispose();
+  }
+
+
+  _showMailDialog(BuildContext context, FirebaseUser user) {
+    showDialog(
+      context: context,
+      builder: (_context) {
+        final theme = Theme.of(context);
+        final cls = theme.colorScheme;
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(20))),
+          content: Wrap(
+            alignment: WrapAlignment.center,
+            runSpacing: SPACE * 2,
+            children: <Widget>[
+              Column(
+                children: <Widget>[
+                  Text(
+                    "Account non confermato, clicca qui sotto per mandare la mail di conferma.",
+                    style: theme.textTheme.body2,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    //crossAxisAlignment:CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      RaisedButton(
+                        onPressed: () async {
+                          user.sendEmailVerification();
+                          UserBloc.of().logout();
+                          LoginHelper().signOut();
+                          EasyRouter.pop(context);
+                        },
+                        color: Colors.blue,
+                        textColor: Colors.white,
+                        child: Text(
+                          "Invia",
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   _read()async{
@@ -176,31 +224,37 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final cls = theme.colorScheme;
-    return Material(
-      child:Theme(
-      child: Form(
-        key: _submitBloc.formKey,
-        child: LogoView(
-          top: FittedBox(
-            fit: BoxFit.contain,
-            child: Icon(
-              Icons.lock_outline,
-              color: Colors.white,
-            ),
-          ),
-          children: [
-            EmailField(
-              checker: _submitBloc.emailChecker,
-            ),
-            SizedBox(
-              height: SPACE,
-            ),
-            PasswordField(
-              checker: _submitBloc.passwordChecker,
-            ),
-            Row(
-              children: <Widget>[
-                /*Expanded(
+    return StreamBuilder<FirebaseUser>(
+      stream: FirebaseAuth.instance.onAuthStateChanged,
+      builder: (context, userSnapshot) {
+        print('here');
+        if (userSnapshot.hasData) {
+          if (userSnapshot.data == null)
+            return Material(
+              child:Theme(
+                child: Form(
+                  key: _submitBloc.formKey,
+                  child: LogoView(
+                    top: FittedBox(
+                      fit: BoxFit.contain,
+                      child: Icon(
+                        Icons.lock_outline,
+                        color: Colors.white,
+                      ),
+                    ),
+                    children: [
+                      EmailField(
+                        checker: _submitBloc.emailChecker,
+                      ),
+                      SizedBox(
+                        height: SPACE,
+                      ),
+                      PasswordField(
+                        checker: _submitBloc.passwordChecker,
+                      ),
+                      Row(
+                        children: <Widget>[
+                          /*Expanded(
                   child: RaisedButton(
                     onPressed: () {
                       EasyRouter.push(context, SignUpScreen());
@@ -211,44 +265,44 @@ class _LoginScreenState extends State<LoginScreen> {
                 SizedBox(
                   width: SPACE,
                 ),*/
-                Expanded(
-                  child: SubmitButton.raised(
-                    controller: _submitBloc.submitController,
-                    child: FittedText('Login'),
-                  ),
-                ),
-              ],
-            ),
-            Row(
-              children: <Widget>[
-                StreamBuilder(
-                  stream: rememberStream.stream,
-                  builder: (ctx,snap){
-                    return Checkbox(
-                      checkColor: Colors.white,
-                      value: (snap.hasData)?snap.data:false,
-                      onChanged: (value){
-                        //privacy=value;
-                        _write(value);
-                        //rememberStream.add(value);
-                      },
-                      //activeColor: Colors.white,
-                    );
-                  },
-                ),
-                Text('Ricordami',style: TextStyle(color: Colors.white),),
-              ],
-            ),
-            SizedBox(
-              height: SPACE * 3,
-            ),
-            RaisedButton(
-              child: Text('Reset password'),
-              onPressed: (){
-                _showResetDialog(context);
-              },
-            )
-            /*
+                          Expanded(
+                            child: SubmitButton.raised(
+                              controller: _submitBloc.submitController,
+                              child: FittedText('Login'),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: <Widget>[
+                          StreamBuilder(
+                            stream: rememberStream.stream,
+                            builder: (ctx,snap){
+                              return Checkbox(
+                                checkColor: Colors.white,
+                                value: (snap.hasData)?snap.data:false,
+                                onChanged: (value){
+                                  //privacy=value;
+                                  _write(value);
+                                  //rememberStream.add(value);
+                                },
+                                //activeColor: Colors.white,
+                              );
+                            },
+                          ),
+                          Text('Ricordami',style: TextStyle(color: Colors.white),),
+                        ],
+                      ),
+                      SizedBox(
+                        height: SPACE * 3,
+                      ),
+                      RaisedButton(
+                        child: Text('Reset password'),
+                        onPressed: (){
+                          _showResetDialog(context);
+                        },
+                      )
+                      /*
             RaisedButton.icon(
               onPressed: () {},
               icon: Icon(FontAwesomeIcons.facebookF),
@@ -263,11 +317,332 @@ class _LoginScreenState extends State<LoginScreen> {
                 EasyRouter.push(context, GeoLocScreen());
               },
             )*/
-          ],
-        ),
-      ),
-        data: Theme.of(context).copyWith(unselectedWidgetColor: Colors.white),
-      ),
+                    ],
+                  ),
+                ),
+                data: Theme.of(context).copyWith(unselectedWidgetColor: Colors.white),
+              ),
+            );
+          return StreamBuilder<UserModel>(
+              stream: Database().getUser(userSnapshot.data),
+              builder: (ctx, userId) {
+                if (userId.hasData) {
+                  if (userSnapshot.data.isEmailVerified) {
+                    if(userId.data.type=='restaurant'){
+                      final orderBloc = OrdersBloc.of();
+                      orderBloc.setRestaurantStream(userId.data.restaurantId);
+                      final restaurantBloc = RestaurantBloc.init(idRestaurant: userId.data.restaurantId);
+                      return HomeScreen(restBloc: restaurantBloc,restId: userId.data.restaurantId,);
+                    }
+                    else return Material(
+                      child:Theme(
+                        child: Form(
+                          key: _submitBloc.formKey,
+                          child: LogoView(
+                            top: FittedBox(
+                              fit: BoxFit.contain,
+                              child: Icon(
+                                Icons.lock_outline,
+                                color: Colors.white,
+                              ),
+                            ),
+                            children: [
+                              EmailField(
+                                checker: _submitBloc.emailChecker,
+                              ),
+                              SizedBox(
+                                height: SPACE,
+                              ),
+                              PasswordField(
+                                checker: _submitBloc.passwordChecker,
+                              ),
+                              Row(
+                                children: <Widget>[
+                                  /*Expanded(
+                  child: RaisedButton(
+                    onPressed: () {
+                      EasyRouter.push(context, SignUpScreen());
+                    },
+                    child: FittedText('Sign up'),
+                  ),
+                ),
+                SizedBox(
+                  width: SPACE,
+                ),*/
+                                  Expanded(
+                                    child: SubmitButton.raised(
+                                      controller: _submitBloc.submitController,
+                                      child: FittedText('Login'),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                children: <Widget>[
+                                  StreamBuilder(
+                                    stream: rememberStream.stream,
+                                    builder: (ctx,snap){
+                                      return Checkbox(
+                                        checkColor: Colors.white,
+                                        value: (snap.hasData)?snap.data:false,
+                                        onChanged: (value){
+                                          //privacy=value;
+                                          _write(value);
+                                          //rememberStream.add(value);
+                                        },
+                                        //activeColor: Colors.white,
+                                      );
+                                    },
+                                  ),
+                                  Text('Ricordami',style: TextStyle(color: Colors.white),),
+                                ],
+                              ),
+                              SizedBox(
+                                height: SPACE * 3,
+                              ),
+                              RaisedButton(
+                                child: Text('Reset password'),
+                                onPressed: (){
+                                  _showResetDialog(context);
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                        data: Theme.of(context).copyWith(unselectedWidgetColor: Colors.white),
+                      ),
+                    );
+                  }
+                  return Material(
+                    child:Theme(
+                      child: Form(
+                        key: _submitBloc.formKey,
+                        child: LogoView(
+                          top: FittedBox(
+                            fit: BoxFit.contain,
+                            child: Icon(
+                              Icons.lock_outline,
+                              color: Colors.white,
+                            ),
+                          ),
+                          children: [
+                            EmailField(
+                              checker: _submitBloc.emailChecker,
+                            ),
+                            SizedBox(
+                              height: SPACE,
+                            ),
+                            PasswordField(
+                              checker: _submitBloc.passwordChecker,
+                            ),
+                            SizedBox(
+                              height: SPACE,
+                            ),
+                            RaisedButton.icon(
+                              onPressed: () {
+                                _showMailDialog(
+                                    context, userSnapshot.data);
+                              },
+                              icon: Icon(Icons.mail),
+                              label: Text('Conferma e-mail'),
+                            ),
+                            SizedBox(
+                              height: SPACE,
+                            ),
+                            Row(
+                              children: <Widget>[
+                                Expanded(
+                                  child: SubmitButton.raised(
+                                    controller: _submitBloc.submitController,
+                                    child: FittedText('Login'),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: <Widget>[
+                                StreamBuilder(
+                                  stream: rememberStream.stream,
+                                  builder: (ctx,snap){
+                                    return Checkbox(
+                                      checkColor: Colors.white,
+                                      value: (snap.hasData)?snap.data:false,
+                                      onChanged: (value){
+                                        //privacy=value;
+                                        _write(value);
+                                        //rememberStream.add(value);
+                                      },
+                                      //activeColor: Colors.white,
+                                    );
+                                  },
+                                ),
+                                Text('Ricordami',style: TextStyle(color: Colors.white),),
+                              ],
+                            ),
+                            SizedBox(
+                              height: SPACE * 3,
+                            ),
+                            RaisedButton(
+                              child: Text('Reset password'),
+                              onPressed: (){
+                                _showResetDialog(context);
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                      data: Theme.of(context).copyWith(unselectedWidgetColor: Colors.white),
+                    ),
+                  );
+                }
+                return Material(
+                  child:Theme(
+                    child: Form(
+                      key: _submitBloc.formKey,
+                      child: LogoView(
+                        top: FittedBox(
+                          fit: BoxFit.contain,
+                          child: Icon(
+                            Icons.lock_outline,
+                            color: Colors.white,
+                          ),
+                        ),
+                        children: [
+                          EmailField(
+                            checker: _submitBloc.emailChecker,
+                          ),
+                          SizedBox(
+                            height: SPACE,
+                          ),
+                          PasswordField(
+                            checker: _submitBloc.passwordChecker,
+                          ),
+                          Row(
+                            children: <Widget>[
+                              Expanded(
+                                child: SubmitButton.raised(
+                                  controller: _submitBloc.submitController,
+                                  child: FittedText('Login'),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: <Widget>[
+                              StreamBuilder(
+                                stream: rememberStream.stream,
+                                builder: (ctx,snap){
+                                  return Checkbox(
+                                    checkColor: Colors.white,
+                                    value: (snap.hasData)?snap.data:false,
+                                    onChanged: (value){
+                                      //privacy=value;
+                                      _write(value);
+                                      //rememberStream.add(value);
+                                    },
+                                    //activeColor: Colors.white,
+                                  );
+                                },
+                              ),
+                              Text('Ricordami',style: TextStyle(color: Colors.white),),
+                            ],
+                          ),
+                          SizedBox(
+                            height: SPACE * 3,
+                          ),
+                          RaisedButton(
+                            child: Text('Reset password'),
+                            onPressed: (){
+                              _showResetDialog(context);
+                            },
+                          )
+                        ],
+                      ),
+                    ),
+                    data: Theme.of(context).copyWith(unselectedWidgetColor: Colors.white),
+                  ),
+                );
+              });
+        }
+        return Material(
+          child:Theme(
+            child: Form(
+              key: _submitBloc.formKey,
+              child: LogoView(
+                top: FittedBox(
+                  fit: BoxFit.contain,
+                  child: Icon(
+                    Icons.lock_outline,
+                    color: Colors.white,
+                  ),
+                ),
+                children: [
+                  EmailField(
+                    checker: _submitBloc.emailChecker,
+                  ),
+                  SizedBox(
+                    height: SPACE,
+                  ),
+                  PasswordField(
+                    checker: _submitBloc.passwordChecker,
+                  ),
+                  Row(
+                    children: <Widget>[
+                      /*Expanded(
+                  child: RaisedButton(
+                    onPressed: () {
+                      EasyRouter.push(context, SignUpScreen());
+                    },
+                    child: FittedText('Sign up'),
+                  ),
+                ),
+                SizedBox(
+                  width: SPACE,
+                ),*/
+                      Expanded(
+                        child: SubmitButton.raised(
+                          controller: _submitBloc.submitController,
+                          child: FittedText('Login'),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: <Widget>[
+                      StreamBuilder(
+                        stream: rememberStream.stream,
+                        builder: (ctx,snap){
+                          return Checkbox(
+                            checkColor: Colors.white,
+                            value: (snap.hasData)?snap.data:false,
+                            onChanged: (value){
+                              //privacy=value;
+                              _write(value);
+                              //rememberStream.add(value);
+                            },
+                            //activeColor: Colors.white,
+                          );
+                        },
+                      ),
+                      Text('Ricordami',style: TextStyle(color: Colors.white),),
+                    ],
+                  ),
+                  SizedBox(
+                    height: SPACE * 3,
+                  ),
+                  RaisedButton(
+                    child: Text('Reset password'),
+                    onPressed: (){
+                      _showResetDialog(context);
+                    },
+                  )
+                ],
+              ),
+            ),
+            data: Theme.of(context).copyWith(unselectedWidgetColor: Colors.white),
+          ),
+        );
+      },
     );
   }
 }

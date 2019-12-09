@@ -9,6 +9,7 @@ part of 'OrderModel.dart';
 RestaurantOrderModel _$RestaurantOrderModelFromJson(Map json) {
   return RestaurantOrderModel(
       path: json['path'] as String,
+      timeLeft: json['timeLeft'] as int,
       restaurantId: json['restaurantId'] as String,
       isPaid: json['isPaid'] as bool,
       isReviewed: json['isReviewed'] as bool,
@@ -57,6 +58,7 @@ Map<String, dynamic> _$RestaurantOrderModelToJson(
   writeNotNull('restaurantId', instance.restaurantId);
   writeNotNull('isPaid', instance.isPaid);
   writeNotNull('isReviewed', instance.isReviewed);
+  writeNotNull('timeLeft', instance.timeLeft);
   return val;
 }
 
@@ -94,6 +96,7 @@ UserOrderModel _$UserOrderModelFromJson(Map json) {
       path: json['path'] as String,
       restaurantId: json['restaurantId'] as String,
       driver: json['driver'] as String,
+      timeLeft: json['timeLeft'] as int,
       isReviewed: json['isReviewed'] as bool,
       uid: json['uid'] as String,
       phone: json['phone'] as String,
@@ -129,5 +132,6 @@ Map<String, dynamic> _$UserOrderModelToJson(UserOrderModel instance) {
   writeNotNull('restaurantId', instance.restaurantId);
   writeNotNull('driver', instance.driver);
   writeNotNull('uid', instance.uid);
+  writeNotNull('timeLeft', instance.timeLeft);
   return val;
 }

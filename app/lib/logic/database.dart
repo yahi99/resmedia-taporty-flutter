@@ -406,6 +406,10 @@ class Database extends FirebaseDatabase
     await fs.collection('restaurants').document(model.id).updateData({'isDisabled':((model.isDisabled==null || !model.isDisabled)?true:false)});
   }
 
+  Future<void> updateTimeLeft(String uid,String oid,int timeLeft)async{
+    await fs.collection('users').document(uid).collection('user_orders').document(oid).updateData({'timeLeft':timeLeft});
+  }
+
   Future<void> addRestaurant(RestaurantRequestModel model)async{
     await fs.collection(cl.RESTAURANTS).document(model.ragioneSociale).setData({
       'km':model.km,

@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 
 class PasswordField extends StringField {
   PasswordField({
-    @required CheckerRule<String, String> checker,
+    @required CheckerRule<String, String> checker,bool isLast,
     InputDecoration decoration: const TranslationsInputDecoration(
       prefixIcon: const Icon(Icons.lock),
       translationsHintText: const TranslationsConst(
@@ -15,7 +15,7 @@ class PasswordField extends StringField {
       ),
     ),
   }) : super(
-      checker: checker, translator: translatorPasswordField,obscure:true,
+      checker: checker, translator: translatorPasswordField,obscure:true,isLast:isLast,
     decoration: decoration.copyWith(
       prefixIcon: CacheStreamBuilder<DataField>(
         stream: checker.outData,

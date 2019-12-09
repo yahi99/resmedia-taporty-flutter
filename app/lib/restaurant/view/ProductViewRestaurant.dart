@@ -116,20 +116,18 @@ class ProductViewRestaurant extends StatelessWidget {
                 children: <Widget>[
                   Padding(
                     padding: const EdgeInsets.all(4.0),
-                    child: AspectRatio(
-                      aspectRatio: 1,
-                      child: ClipRRect(
+                    child: ClipRRect(
                         borderRadius: BorderRadius.circular(16.0),
-                        child: (model.img.startsWith('assets'))?Image.asset(
+                        child: Image.asset('assets/img/home/fotoprofilo.jpg'),
+                      /*(model.img.startsWith('assets'))?Image.asset(
                           model.img,
                           fit: BoxFit.fitHeight,
                         ):Image.network(
                           model.img,
                           fit: BoxFit.fitHeight,
-                        ),
+                        ),*/
                       ),
                     ),
-                  ),
                   SizedBox(
                     width: 16.0,
                   ),

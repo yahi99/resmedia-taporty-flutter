@@ -92,6 +92,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     final theme = Theme.of(context);
     final cls = theme.colorScheme;
     return Material(
+        child:Theme(
       child: LogoView(
         top: FittedBox(
           fit: BoxFit.contain,
@@ -176,6 +177,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 PasswordField(
                   checker: _submitBloc.repeatPasswordChecker,
                   decoration: PASSWORD_REPEAT_DECORATION,
+                  isLast: true,
                 ),
                 SizedBox(
                   height: SPACE,
@@ -222,6 +224,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
           ),
         ],
       ),
+          data: Theme.of(context).copyWith(unselectedWidgetColor: Colors.white),
+        ),
     );
   }
 }

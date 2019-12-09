@@ -85,7 +85,7 @@ class _ShippingState extends State<ShippingPage>
     final theme = Theme.of(context);
     final tt = theme.textTheme;
     //final name = user.nominative.split(' ');
-    _nameController.value = TextEditingValue(text: widget.user.nominative);
+    if(widget.user.nominative!=null) _nameController.value = TextEditingValue(text: widget.user.nominative);
     //_lastNameController.value = TextEditingValue(text: name[1]);
     _emailController.value = TextEditingValue(text: widget.user.email);
     _addressController.value = TextEditingValue(text: '');

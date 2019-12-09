@@ -270,6 +270,13 @@ class _LoginScreenState extends State<TypeOrderView> {
                                     ' euro'),
                               ],
                             ),
+                            (model.endTime!=null && translateOrderCategory(model.state)!='Consegnato')?Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text('Tempo stimato(minuti): ', style: theme.textTheme.subtitle),
+                                Text(model.endTime),
+                                ],
+                            ):Container(),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[

@@ -46,7 +46,7 @@ class _TurnWorkTabDriverState extends State<EditRestTurns>{
 
   bool isAfter(TimeOfDay start,TimeOfDay end){
     if(start.hour<end.hour) return true;
-    if(start.minute<end.minute) return true;
+    if(start.hour==end.hour && start.minute<end.minute) return true;
     return false;
   }
 

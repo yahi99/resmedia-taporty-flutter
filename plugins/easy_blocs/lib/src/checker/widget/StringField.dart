@@ -10,10 +10,10 @@ class StringField extends CheckerField<String> {
     @required CheckerRule<String, String> checker,
     Translator translator: translatorStringField,
     InputDecoration decoration: const InputDecoration(),
-    bool defaultDecoration: true,@required bool obscure
+    bool defaultDecoration: true,@required bool obscure,bool isLast
   }) : assert(checker != null), assert(decoration != null), super(key: key,
     checker: checker, translator: translator,
-    decoration: decoration,obscure:obscure
+    decoration: decoration,obscure:obscure,isLast:isLast,
   );
 
 }

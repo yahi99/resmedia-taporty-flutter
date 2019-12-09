@@ -30,21 +30,23 @@ class HomeScreen extends StatefulWidget implements WidgetRoute {
   @override
   String get route => ROUTE;
 
-  HomeScreen({@required this.restBloc,@required this.restId});
+  HomeScreen({@required this.restBloc, @required this.restId});
 
   @override
   _HomeScreenRestaurantState createState() => _HomeScreenRestaurantState();
 }
 
 class _HomeScreenRestaurantState extends State<HomeScreen> {
-
   StreamController<DateTime> dateStream;
 
   BuildContext dialog;
 
+  var orderBloc;
+
   FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
-  void showNotification(BuildContext context, Map<String, dynamic> message) async {
+  void showNotification(
+      BuildContext context, Map<String, dynamic> message) async {
     print('Build dialog');
     showDialog(
       context: context,
@@ -69,7 +71,7 @@ class _HomeScreenRestaurantState extends State<HomeScreen> {
     _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
         print('on message $message');
-        if(dialog!=null) showNotification(dialog,message);
+        if (dialog != null) showNotification(dialog, message);
       },
       onResume: (Map<String, dynamic> message) async {
         print('on resume $message');
@@ -99,43 +101,65 @@ class _HomeScreenRestaurantState extends State<HomeScreen> {
   void initState() {
     super.initState();
     TurnBloc.of().setTurnRestStream();
-    dateStream= StreamController<DateTime>.broadcast();
+    dateStream = StreamController<DateTime>.broadcast();
+    orderBloc = OrdersBloc.of();
     firebaseCloudMessaging_Listeners();
   }
 
   @override
   Widget build(BuildContext context) {
-    dialog=context;
-    final orderBloc = OrdersBloc.of();
+    dialog = context;
     return DefaultTabController(
-      length: 4,
+      length: 2,
       child: Scaffold(
         drawer: Drawer(
           child: ListView(
             children: <Widget>[
               FlatButton(
+                child: Text('Inserisci Turni'),
+                onPressed: () {
+                  EasyRouter.push(
+                      context,
+                      TurnScreen(
+                        restId: widget.restId,
+                      ));
+                },
+              ),
+              FlatButton(
                 child: Text('Turni Inseriti'),
-                onPressed: (){
-                  EasyRouter.push(context, TurnsScreen(restId: widget.restId,));
+                onPressed: () {
+                  EasyRouter.push(
+                      context,
+                      TurnsScreen(
+                        restId: widget.restId,
+                      ));
                 },
               ),
               FlatButton(
                 child: Text('Orario Ristorante'),
-                onPressed: (){
-                  EasyRouter.push(context, TimetableScreen(restBloc: widget.restBloc));
+                onPressed: () {
+                  EasyRouter.push(
+                      context, TimetableScreen(restBloc: widget.restBloc));
+                },
+              ),
+              FlatButton(
+                child: Text('Listino'),
+                onPressed: () {
+                  EasyRouter.push(
+                      context, MenuPage(restBloc: widget.restBloc));
                 },
               ),
               FlatButton(
                 child: Text('Modifica Dati Ristorante'),
-                onPressed: (){
+                onPressed: () {
                   EasyRouter.push(context, EditRestScreen());
                 },
               ),
               FlatButton(
                 child: Text('Log Out'),
-                onPressed: ()async{
-                  await UserBloc.of().logout();
-                  EasyRouter.pushAndRemoveAll(context, LoginScreen());
+                onPressed: () async {
+                  UserBloc.of().logout();
+                  //EasyRouter.pushAndRemoveAll(context, LoginScreen());
                 },
               ),
             ],
@@ -143,18 +167,11 @@ class _HomeScreenRestaurantState extends State<HomeScreen> {
         ),
         appBar: AppBar(
           title: Text("Home"),
-          actions: <Widget>[
-          ],
+          actions: <Widget>[],
           bottom: TabBar(
             tabs: [
               Tab(
                 text: 'Ordini',
-              ),
-              Tab(
-                text: 'Listino',
-              ),
-              Tab(
-                text: 'Turni',
               ),
               Tab(
                 text: 'Saldo',
@@ -162,39 +179,38 @@ class _HomeScreenRestaurantState extends State<HomeScreen> {
             ],
           ),
         ),
-        body: CacheStreamBuilder<List<RestaurantOrderModel>>(
+        body: StreamBuilder<List<RestaurantOrderModel>>(
           stream: orderBloc.outOrders,
           builder: (context, orders) {
-            return StreamBuilder<List<DrinkModel>>(
-              stream: widget.restBloc.outDrinks,
-              builder: (context, drinks) {
-                return StreamBuilder<List<FoodModel>>(
-                  stream: widget.restBloc.outFoods,
-                  builder: (context, foods) {
-                    if (!orders.hasData || !foods.hasData || !drinks.hasData)
-                      return Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    return TabBarView(
-                      physics: const NeverScrollableScrollPhysics(),
-                      children: <Widget>[
-                        OrdersPage(list: orders.data),
-                        MenuPage(
+            if (!orders.hasData)
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            return TabBarView(
+              physics: const NeverScrollableScrollPhysics(),
+              children: <Widget>[
+                OrdersPage(list: orders.data),
+                /*MenuPage(
                           foods: foods.data,
                           drinks: drinks.data,
                         ),
-                        TurnScreen(restId: widget.restId),
-                        StreamBuilder<DateTime>(
-                          stream: dateStream.stream,
-                          builder: (ctx,snap){
-                            return IncomeScreen(restId:widget.restId,date: snap.hasData?snap.data:DateTime(DateTime.now().year,DateTime.now().month,DateTime.now().day),dateStream: dateStream,);
-                          },
-                        )
-                      ],
+
+                         */
+                //TurnScreen(restId: widget.restId),
+                StreamBuilder<DateTime>(
+                  stream: dateStream.stream,
+                  builder: (ctx, snap) {
+                    return IncomeScreen(
+                      restId: widget.restId,
+                      date: snap.hasData
+                          ? snap.data
+                          : DateTime(DateTime.now().year, DateTime.now().month,
+                              DateTime.now().day),
+                      dateStream: dateStream,
                     );
                   },
-                );
-              },
+                )
+              ],
             );
           },
         ),

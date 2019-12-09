@@ -68,10 +68,12 @@ class OrdersBloc implements Bloc {
     _restaurantsControlMod.listen(print);
   }
 
-  void setRestaurantStream() async {
-    final user = UserBloc.of();
+  void setRestaurantStream(String restId) async {
+    /*final user = UserBloc.of();
     final restUser = await user.outFirebaseUser.first;
     final restId = await _db.getRestaurantId(restUser.uid);
+
+     */
     //final str=await _db.getRestaurantOrders(restUser.uid, restId).first;
     //print('lol');
     _restaurantsControl =

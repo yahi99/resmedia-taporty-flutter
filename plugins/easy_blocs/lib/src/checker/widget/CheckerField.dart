@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 class CheckerField<V> extends CacheStreamBuilder<DataField<V>> {
   CheckerField({Key key,
     @required CheckerRule<V, String> checker, Translator translator,
-    InputDecoration decoration: const InputDecoration(), @required bool obscure
+    InputDecoration decoration: const InputDecoration(), @required bool obscure, bool isLast
   }) : super(
     key: key,
     stream: checker.outData,
@@ -26,7 +26,12 @@ class CheckerField<V> extends CacheStreamBuilder<DataField<V>> {
 
         maxLength: checker.maxLength,
 
-        onFieldSubmitted: (_) => checker.nextFinger(context),
+        onFieldSubmitted: (_) {
+            if(isLast==null || !isLast) checker.nextFinger(context);
+            else{
+              checker.focusNode.unfocus();
+            }
+          },
         onSaved: checker.onSaved, //(value) => checker.add(data.copyWith(value: onSaved(value))),//(text) => checker.add(data.copyWith(text: text)),
         validator: (value) => translator(checker.validate(value))?.text,
         inputFormatters: checker.inputFormatters,

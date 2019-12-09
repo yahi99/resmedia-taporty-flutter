@@ -28,17 +28,20 @@ class _TurnScreenPanelState extends State<TurnScreen> {
   DateTime date;
   //final CalendarBloc _calendarBloc = CalendarBloc.of();
   var user;
+  final TextEditingController _quantityController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
   var dateStream = StreamController<DateTime>();
-  var timeStream = StreamController<List<CalendarModel>>();
-  var dropStreamHour = StreamController<String>();
-  var dropStreamTime = StreamController<String>();
-  final _dropKey = GlobalKey();
-  final _dropTimeKey = GlobalKey();
+  //var timeStream = StreamController<List<CalendarModel>>();
+  //var dropStreamHour = StreamController<String>();
+  //var dropStreamTime = StreamController<String>();
+  //final _dropKey = GlobalKey();
+  //final _dropTimeKey = GlobalKey();
   final _dateKey = GlobalKey();
   final _quantityKey = GlobalKey<FormFieldState>();
   var hour;
   var time;
+
+  StreamController _startTime,_endTime;
   List<DropdownMenuItem> drop = List<DropdownMenuItem>();
   List<DropdownMenuItem> dropTime = List<DropdownMenuItem>();
   final startTime = ['00', '15', '30', '45'];
@@ -69,12 +72,25 @@ class _TurnScreenPanelState extends State<TurnScreen> {
     '23'
   ];
   final endTime = ['15', '30', '45', '00'];
+  TimeOfDay sTime,eTime;
+
+  String  timeToString(TimeOfDay value){
+    return ((value.hour<10)?'0'+value.hour.toString():value.hour.toString())+':'+((value.minute<10)?'0'+value.minute.toString():value.minute.toString());
+  }
+
+  bool isAfter(TimeOfDay start,TimeOfDay end){
+    if(start.hour<end.hour) return true;
+    if(start.hour==end.hour && start.minute<end.minute) return true;
+    return false;
+  }
 
   @override
   void dispose() {
     //_driverBloc.close();
     //_calendarBloc.close();
     super.dispose();
+    _startTime.close();
+    _endTime.close();
   }
 
   String toDate(DateTime date) {
@@ -111,13 +127,17 @@ class _TurnScreenPanelState extends State<TurnScreen> {
     super.initState();
     //final bloc=TurnBloc.of();
     //bloc.setTurnStream();
+    _startTime=new StreamController<String>.broadcast();
+    _endTime=new StreamController<String>.broadcast();
   }
 
   @override
   Widget build(BuildContext context) {
-    final TextEditingController _quantityController = TextEditingController();
-    _quantityController.value = TextEditingValue(text: '');
-    return Column(
+    return Scaffold(
+      appBar: AppBar(
+        title: new Text('Inserisci turni'),
+      ),
+        body:Column(
       children: <Widget>[
         StreamBuilder<DateTime>(
             stream: dateStream.stream,
@@ -143,6 +163,7 @@ class _TurnScreenPanelState extends State<TurnScreen> {
                         ).then((day) {
                           if (day != null) {
                             date = day;
+                            print(day.toIso8601String());
                             _dateController.value =
                                 TextEditingValue(text: toDate(date));
                             dateStream.add(day);
@@ -164,7 +185,41 @@ class _TurnScreenPanelState extends State<TurnScreen> {
               ),
             ],
           ),*/
-        Padding(
+        StreamBuilder<String>(
+          stream: _startTime.stream,
+          builder: (ctx, sp1) {
+            return Padding(
+              child:FlatButton(
+                child: Text(sp1.hasData?sp1.data:'Inserisci Ora Inizio'),
+                onPressed: (){
+                  showTimePicker(context: context,initialTime: TimeOfDay.now()).then((value){
+                    sTime=value;
+                    _startTime.add(timeToString(value));
+                  });
+                },
+              ),
+              padding: EdgeInsets.only(bottom: SPACE),
+            );
+          },
+        ),
+        StreamBuilder<String>(
+          stream: _endTime.stream,
+          builder: (ctx, sp1) {
+            return Padding(
+              child:FlatButton(
+                child: Text(sp1.hasData?sp1.data:'Inserisci Ora Fine'),
+                onPressed: (){
+                  showTimePicker(context: context,initialTime: TimeOfDay.now()).then((value){
+                    eTime=value;
+                    _endTime.add(timeToString(value));
+                  });
+                },
+              ),
+              padding: EdgeInsets.only(bottom: SPACE),
+            );
+          },
+        ),
+        /*Padding(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
@@ -206,43 +261,92 @@ class _TurnScreenPanelState extends State<TurnScreen> {
           ),
           padding: EdgeInsets.all(SPACE),
         ),
+         */
         Padding(
           child: TextFormField(
             decoration: InputDecoration(
               labelText: 'Numero corrieri',
             ),
             validator: (value) {
+              int temp=int.tryParse(value);
+              if(temp==null) return 'Inserisci un numero';
               if (value.length == 0) return 'Campo non valido';
               return null;
             },
             key: _quantityKey,
-            controller: _quantityController,
+            //controller: _quantityController,
             keyboardType: TextInputType.number,
           ),
           padding: EdgeInsets.all(SPACE),
         ),
         FlatButton(
-          child: Text('Aggiungi Turno'),
+          child: Text('Aggiungi Turni'),
           onPressed: () {
             if (date != null && _quantityKey.currentState.validate()) {
-              if (time == null) time = startTime.elementAt(0);
-              if (hour == null) hour = hours.elementAt(0);
-              Database()
-                  .addShift(
-                      hour + ':' + time,
-                      ((time == '45')
-                              ? hours.elementAt(hours.indexOf(hour) + 1)
-                              : hour) +
-                          ':' +
-                          endTime.elementAt(startTime.indexOf(time)),
-                      date.toIso8601String(),
-                      _quantityKey.currentState.value,widget.restId)
-                  .then((isPresent) {
-                if (isPresent) {
-                  Toast.show('Orario già presente!', context, duration: 3);
-                } else
-                  Toast.show('Orario inserito.', context, duration: 3);
-              });
+              if(eTime!=null && sTime!=null && isAfter(sTime, eTime)){
+                final startHour=sTime.hour;
+                final startMin=sTime.minute;
+                final endHour=eTime.hour;
+                final endMin=eTime.minute;
+                int startIndex=int.tryParse(hours.elementAt(hours.indexOf(startHour.toString())));
+                int endIndex=int.tryParse(hours.elementAt(hours.indexOf(endHour.toString())));
+                if(startIndex!=null){
+                  for(int i=startIndex;i<=endIndex;i++){
+                    for(int j=0;j<endTime.length;j++){
+                      if(startIndex==endIndex){
+                        if(int.tryParse(endTime.elementAt(j))>=startMin && int.tryParse(endTime.elementAt(j))<=endMin){
+                          Database()
+                              .addShift(
+                              hours.elementAt(i) + ':' + startTime.elementAt(j),
+                              ((startTime.elementAt(j) == '45')
+                                  ? hours.elementAt(i + 1)
+                                  : hours.elementAt(i)) +
+                                  ':' +
+                                  endTime.elementAt(j),
+                              date.toIso8601String(),
+                              _quantityKey.currentState.value,widget.restId);
+                        }
+                      }
+                      else if(i==startIndex && int.tryParse(endTime.elementAt(j))>=startMin){
+                        Database()
+                            .addShift(
+                            hours.elementAt(i) + ':' + startTime.elementAt(j),
+                            ((startTime.elementAt(j) == '45')
+                                ? hours.elementAt(i + 1)
+                                : hours.elementAt(i)) +
+                                ':' +
+                                endTime.elementAt(j),
+                            date.toIso8601String(),
+                            _quantityKey.currentState.value,widget.restId);
+                      }
+                      else if(i==endIndex && int.tryParse(endTime.elementAt(j))<=endMin){
+                        Database()
+                            .addShift(
+                            hours.elementAt(i) + ':' + startTime.elementAt(j),
+                            ((startTime.elementAt(j) == '45')
+                                ? hours.elementAt(i + 1)
+                                : hours.elementAt(i)) +
+                                ':' +
+                                endTime.elementAt(j),
+                            date.toIso8601String(),
+                            _quantityKey.currentState.value,widget.restId);
+                      }
+                      else if(i!=endIndex && i!=startIndex){
+                        Database()
+                            .addShift(
+                            hours.elementAt(i) + ':' + startTime.elementAt(j),
+                            ((startTime.elementAt(j) == '45')
+                                ? hours.elementAt(i + 1)
+                                : hours.elementAt(i)) +
+                                ':' +
+                                endTime.elementAt(j),
+                            date.toIso8601String(),
+                            _quantityKey.currentState.value,widget.restId);
+                      }
+                    }
+                  }
+                }
+              }
             }
           },
         ),
@@ -304,6 +408,7 @@ class _TurnScreenPanelState extends State<TurnScreen> {
             },
           ),*/
       ],
+        ),
     );
   }
 }

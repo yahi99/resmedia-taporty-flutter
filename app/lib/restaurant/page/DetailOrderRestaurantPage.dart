@@ -27,6 +27,9 @@ class DetailOrderRestaurantPage extends StatefulWidget implements WidgetRoute {
 class _DetailOrderRestaurantPageState extends State<DetailOrderRestaurantPage> {
   bool isDeactivate = false;
 
+  //TextFieldController _timeLeft;
+  final _leftKey = new GlobalKey<FormFieldState>();
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -38,21 +41,10 @@ class _DetailOrderRestaurantPageState extends State<DetailOrderRestaurantPage> {
     isDeactivate = !isDeactivate;
   }
 
-  /*initMap(BuildContext context) async {
-    if (isDeactivate) return;
-    await PrimaryGoogleMapsController.of(context).future
-    ..setMarkers(widget.model.subjects.map((subject) {
-      return Marker(
-        markerId: MarkerId(subject.title),
-        position: subject.toLatLng(),
-        infoWindow: InfoWindow(
-          title: subject.title,
-          onTap: () => EasyRouter.push(context, SubjectOrderPageDriver(model: subject,)),
-        ),
-      );
-    }).toSet())
-    ..animateToCenter(widget.model.positions);
-  }*/
+  @override
+  void initState(){
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -79,6 +71,27 @@ class _DetailOrderRestaurantPageState extends State<DetailOrderRestaurantPage> {
                           "DETTAGLIO ORDINE",
                           style: tt.title,
                         ),
+                        (translateOrderCategory(order.data.state)!='Consegnato' && translateOrderCategory(order.data.state)!='In Accettazione' && translateOrderCategory(order.data.state)!='Ordine Cancellato' && translateOrderCategory(order.data.state)!='Ordine rifiutato')?Column(
+                          children: <Widget>[
+                            TextFormField(
+                              key: _leftKey,
+                              decoration: InputDecoration(
+                                hintText: "Tempo in minuti",
+                              ),
+                              validator: (value){
+                                int temp=int.tryParse(value);
+                                if(value==null) return 'Inserisci un numero';
+                                return null;
+                              },
+                            ),
+                            RaisedButton(
+                              child: Text('Aggiorna'),
+                              onPressed: (){
+                                if(_leftKey.currentState.validate()) Database().updateTimeLeft(widget.model.uid,widget.model.id,_leftKey.currentState.value);
+                              },
+                            )
+                          ],
+                        ):Container(),
                         Text('Inidirizzo cliente: ', style: tt.subtitle),
                         Text(widget.model.addressR),
                         Text('Prodotti: ', style: tt.subtitle),

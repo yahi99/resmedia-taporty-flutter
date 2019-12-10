@@ -13,7 +13,7 @@ part 'OrderModel.g.dart';
 class DriverOrderModel extends FirebaseModel {
   final String titleR, titleS, addressR, addressS, timeR, timeS;
   final double latR, lngR;
-  String id, restId, uid, nominative,day,endTime,startTime,phone;
+  String  restId, uid, nominative,day,endTime,startTime,phone;
   StateCategory state;
 
   DriverOrderModel({
@@ -22,7 +22,6 @@ class DriverOrderModel extends FirebaseModel {
     @required this.day,
     @required this.startTime,
     @required this.endTime,
-    @required this.id,
     @required this.titleR,
     @required this.titleS,
     @required this.addressS,

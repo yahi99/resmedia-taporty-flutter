@@ -35,7 +35,7 @@ class _TurnWorkTabDriverState extends State<TurnWorkTabDriver>
         builder: (ctx,snap){
           if(!snap.hasData) return Center(child: CircularProgressIndicator(),);*/
     return Scaffold(
-      body: CustomScrollView(
+      body: (widget.model.length>0)?CustomScrollView(
         slivers: widget.model.keys.map<Widget>((nameGroup) {
           final products = widget.model[nameGroup];
           return SliverPadding(
@@ -54,7 +54,7 @@ class _TurnWorkTabDriverState extends State<TurnWorkTabDriver>
             ),
           );
         }).toList(),
-      ),
+      ):Padding(child: Text('Non ci sono turni.'),padding: EdgeInsets.all(8.0),),
     );
     /*},
     );*/

@@ -42,6 +42,10 @@ class ManageOrders extends StatefulWidget implements WidgetRoute {
 
   String get route => ROUTE;
 
+  final list;
+
+  ManageOrders({this.list});
+
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
@@ -51,7 +55,7 @@ class _LoginScreenState extends State<ManageOrders> {
   @override
   void initState() {
     super.initState();
-    OrdersBloc.of().setCtrlStream();
+
   }
 
   @override
@@ -64,29 +68,17 @@ class _LoginScreenState extends State<ManageOrders> {
     final theme = Theme.of(context);
     final cls = theme.colorScheme;
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Gestisci ordini"),
-        actions: <Widget>[],
-      ),
-      body: StreamBuilder<List<RestaurantOrderModel>>(
-        stream: OrdersBloc.of().outOrdersCtrl,
-        builder: (ctx,snap){
-          if(!snap.hasData) return Center(child: CircularProgressIndicator(),);
-          if(snap.data.length>0)
-          return ListView.separated(
-            itemCount: snap.data.length,
+      body:ListView.separated(
+            itemCount: widget.list.length,
             shrinkWrap: true,
             itemBuilder: (ctx,index){
-              final order=snap.data.elementAt(index);
+              final order=widget.list.elementAt(index);
               return Padding(child:TypeCtrlOrderView(model: order,),padding: EdgeInsets.only(top: 8.0),);
             },
             separatorBuilder: (ctx,index){
               return Divider(height: 4.0,);
             },
-          );
-          return Padding(child: Text('Non ci sono ordini.'),padding: EdgeInsets.all(8.0),);
-        },
-      )
+          ),
     );
   }
 }

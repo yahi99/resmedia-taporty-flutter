@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:resmedia_taporty_flutter/control/interface/screen/TurnScreen.dart';
 import 'package:resmedia_taporty_flutter/drivers/logic/bloc/TurnBloc.dart';
+import 'package:resmedia_taporty_flutter/interface/screen/LoginScreen.dart';
 import 'package:resmedia_taporty_flutter/logic/bloc/OrdersBloc.dart';
 import 'package:resmedia_taporty_flutter/logic/bloc/RestaurantBloc.dart';
 import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
@@ -19,6 +20,7 @@ import 'package:resmedia_taporty_flutter/restaurant/page/OrdersPage.dart';
 import 'package:resmedia_taporty_flutter/restaurant/screen/EditRestScreen.dart';
 import 'package:resmedia_taporty_flutter/restaurant/screen/LoginScreen.dart';
 import 'package:resmedia_taporty_flutter/restaurant/screen/TurnsScreen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'TimetableScreen.dart';
 
@@ -26,11 +28,12 @@ class HomeScreen extends StatefulWidget implements WidgetRoute {
   static const ROUTE = 'HomeScreenRestaurant';
   final restBloc;
   final String restId;
+  final bool remember;
 
   @override
   String get route => ROUTE;
 
-  HomeScreen({@required this.restBloc, @required this.restId});
+  HomeScreen({@required this.restBloc, @required this.restId,@required this.remember});
 
   @override
   _HomeScreenRestaurantState createState() => _HomeScreenRestaurantState();
@@ -93,6 +96,11 @@ class _HomeScreenRestaurantState extends State<HomeScreen> {
 
   @override
   void dispose() {
+    print(widget.remember);
+    if(!widget.remember){
+      UserBloc.of().logout();
+      LoginHelper().signOut();
+    }
     super.dispose();
     dateStream.close();
   }
@@ -159,6 +167,7 @@ class _HomeScreenRestaurantState extends State<HomeScreen> {
                 child: Text('Log Out'),
                 onPressed: () async {
                   UserBloc.of().logout();
+                  LoginHelper().signOut();
                   //EasyRouter.pushAndRemoveAll(context, LoginScreen());
                 },
               ),

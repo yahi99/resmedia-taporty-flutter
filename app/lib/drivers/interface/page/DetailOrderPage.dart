@@ -95,6 +95,7 @@ class _DetailOrderPageDriverState extends State<DetailOrderPageDriver> {
                       SubjectOrderPageDriver(
                         orderModel: widget.model,
                         model: sub[0],
+                        isRest: true,
                       )),
                   child: Order(
                     children: <Widget>[
@@ -110,6 +111,7 @@ class _DetailOrderPageDriverState extends State<DetailOrderPageDriver> {
                       SubjectOrderPageDriver(
                         orderModel: widget.model,
                         model: sub[1],
+                        isRest: false,
                       )),
                   child: Order(
                     children: <Widget>[

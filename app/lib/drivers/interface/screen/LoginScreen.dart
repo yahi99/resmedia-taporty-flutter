@@ -1,9 +1,11 @@
 import 'package:easy_blocs/easy_blocs.dart';
 import 'package:easy_firebase/easy_firebase.dart';
 import 'package:easy_route/easy_route.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:resmedia_taporty_flutter/control/interface/screen/HomeScreenPanel.dart';
 import 'package:resmedia_taporty_flutter/data/config.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/screen/HomeScreen.dart';
 import 'package:resmedia_taporty_flutter/drivers/logic/bloc/CalendarBloc.dart';
@@ -11,6 +13,8 @@ import 'package:resmedia_taporty_flutter/drivers/logic/bloc/TurnBloc.dart';
 import 'package:resmedia_taporty_flutter/interface/view/logo_view.dart';
 import 'package:resmedia_taporty_flutter/logic/bloc/OrdersBloc.dart';
 import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
+import 'package:resmedia_taporty_flutter/logic/database.dart';
+import 'package:resmedia_taporty_flutter/model/UserModel.dart';
 import 'package:toast/toast.dart';
 
 //import 'package:flutter_facebook_login/flutter_facebook_login.dart';
@@ -65,18 +69,28 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }*/
 
+  Future<void> setDriver(String uid)async{
+    final orderBloc = OrdersBloc.of();
+    await orderBloc.setDriverStream();
+    final turnBloc = TurnBloc.of();
+    await turnBloc.setTurnStream(uid);
+    final calendarBloc = CalendarBloc.of();
+    final date = DateTime.now();
+    await calendarBloc.setDate(DateTime(date.year, date.month, date.day));
+  }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _submitBloc.submitController.solver = (res) async {
+    /*_submitBloc.submitController.solver = (res) async {
       if (!res) return;
       //final user=(await _userBloc.outUser.first);
       //if(user.model.isDriver!=null && user.model.isDriver) {
-      final registrationLevel = await _userBloc.getRegistrationLevel();
-      final type=(await _userBloc.outUser.first).model.type;
+      //final registrationLevel = await _userBloc.getRegistrationLevel();
+      final type = (await _userBloc.outUser.first).model.type;
       /*if (registrationLevel == RegistrationLevel.LV2)
         await EasyRouter.push(context, SignUpMoreScreen());*/
-      if (registrationLevel == RegistrationLevel.COMPLETE && type=='driver') {
+      if (type == 'driver') {
         final orderBloc = OrdersBloc.of();
         await orderBloc.setDriverStream();
         final turnBloc = TurnBloc.of();
@@ -92,6 +106,8 @@ class _LoginScreenState extends State<LoginScreen> {
         Toast.show('Utente non abilitato', context);
       }
     };
+
+     */
     //else{
     // if(user!=null) _userBloc.logout();
     //   Toast.show('Utente non abilitato', context,duration: 3);
@@ -112,6 +128,160 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final cls = theme.colorScheme;
+    return StreamBuilder<FirebaseUser>(
+      stream: FirebaseAuth.instance.onAuthStateChanged,
+      builder: (ctx, userSnapshot) {
+        if (userSnapshot.hasData) {
+          if (userSnapshot.data == null)
+            return Material(
+              child: Form(
+                key: _submitBloc.formKey,
+                child: LogoView(
+                  top: FittedBox(
+                    fit: BoxFit.contain,
+                    child: Icon(
+                      Icons.lock_outline,
+                      color: Colors.white,
+                    ),
+                  ),
+                  children: [
+                    EmailField(
+                      checker: _submitBloc.emailChecker,
+                    ),
+                    SizedBox(
+                      height: SPACE,
+                    ),
+                    PasswordField(
+                      checker: _submitBloc.passwordChecker,
+                    ),
+                    Row(
+                      children: <Widget>[
+                        /*Expanded(
+                  child: RaisedButton(
+                    onPressed: () {
+                      EasyRouter.push(context, SignUpScreen());
+                    },
+                    child: FittedText('Sign up'),
+                  ),
+                ),
+                SizedBox(
+                  width: SPACE,
+                ),*/
+                        Expanded(
+                          child: SubmitButton.raised(
+                            controller: _submitBloc.submitController,
+                            child: FittedText('Login'),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            );
+          return StreamBuilder<UserModel>(
+              stream: Database().getUser(userSnapshot.data),
+              builder: (ctx, userId) {
+                if (userId.hasData && userId.data.type=='driver') {
+                  setDriver(userId.data.id);
+                  return HomeScreenDriver();
+                }
+                return Material(
+                  child: Form(
+                    key: _submitBloc.formKey,
+                    child: LogoView(
+                      top: FittedBox(
+                        fit: BoxFit.contain,
+                        child: Icon(
+                          Icons.lock_outline,
+                          color: Colors.white,
+                        ),
+                      ),
+                      children: [
+                        EmailField(
+                          checker: _submitBloc.emailChecker,
+                        ),
+                        SizedBox(
+                          height: SPACE,
+                        ),
+                        PasswordField(
+                          checker: _submitBloc.passwordChecker,
+                        ),
+                        Row(
+                          children: <Widget>[
+                            /*Expanded(
+                  child: RaisedButton(
+                    onPressed: () {
+                      EasyRouter.push(context, SignUpScreen());
+                    },
+                    child: FittedText('Sign up'),
+                  ),
+                ),
+                SizedBox(
+                  width: SPACE,
+                ),*/
+                            Expanded(
+                              child: SubmitButton.raised(
+                                controller: _submitBloc.submitController,
+                                child: FittedText('Login'),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              });
+        }
+        return Material(
+          child: Form(
+            key: _submitBloc.formKey,
+            child: LogoView(
+              top: FittedBox(
+                fit: BoxFit.contain,
+                child: Icon(
+                  Icons.lock_outline,
+                  color: Colors.white,
+                ),
+              ),
+              children: [
+                EmailField(
+                  checker: _submitBloc.emailChecker,
+                ),
+                SizedBox(
+                  height: SPACE,
+                ),
+                PasswordField(
+                  checker: _submitBloc.passwordChecker,
+                ),
+                Row(
+                  children: <Widget>[
+                    /*Expanded(
+                  child: RaisedButton(
+                    onPressed: () {
+                      EasyRouter.push(context, SignUpScreen());
+                    },
+                    child: FittedText('Sign up'),
+                  ),
+                ),
+                SizedBox(
+                  width: SPACE,
+                ),*/
+                    Expanded(
+                      child: SubmitButton.raised(
+                        controller: _submitBloc.submitController,
+                        child: FittedText('Login'),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
     return Material(
       child: Form(
         key: _submitBloc.formKey,

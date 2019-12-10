@@ -96,7 +96,6 @@ class _ConfirmState extends State<ConfirmPage>
     if (state.name == null ||
         state.email == null ||
         state.phone == null ||
-        state.cap == null ||
         state.date == null ||
         state.time == null ||
         state.fingerprint==null ||

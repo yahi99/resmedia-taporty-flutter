@@ -410,7 +410,7 @@ class _ShippingState extends State<ShippingPage>
                     state.phone = _phoneKey.currentState.value.toString();
                     state.email = _emailKey.currentState.value.toString();
                     state.name = _nameKey.currentState.value.toString();
-                    state.cap = _capKey.currentState.value.toString();
+                    //state.cap = _capKey.currentState.value.toString();
                     widget.controller.animateTo(widget.controller.index + 1);
                   }
                   else if(difference>48.0){

@@ -71,23 +71,31 @@ class _DetailOrderRestaurantPageState extends State<DetailOrderRestaurantPage> {
                           "DETTAGLIO ORDINE",
                           style: tt.title,
                         ),
-                        (translateOrderCategory(order.data.state)!='Consegnato' && translateOrderCategory(order.data.state)!='In Accettazione' && translateOrderCategory(order.data.state)!='Ordine Cancellato' && translateOrderCategory(order.data.state)!='Ordine rifiutato')?Column(
+                        (translateOrderCategory(order.data.state)!='Consegnato' && translateOrderCategory(order.data.state)!='In Accettazione' && translateOrderCategory(order.data.state)!='Ordine Cancellato' && translateOrderCategory(order.data.state)!='Ordine rifiutato')?Row(
                           children: <Widget>[
-                            TextFormField(
+                            Container(
+                              child:TextFormField(
                               key: _leftKey,
                               decoration: InputDecoration(
-                                hintText: "Tempo in minuti",
+                                hintText: "Tempo(min)",
                               ),
                               validator: (value){
                                 int temp=int.tryParse(value);
-                                if(value==null) return 'Inserisci un numero';
+                                if(temp==null) return 'Inserisci un numero';
                                 return null;
                               },
+                            ),
+                              width: MediaQuery.of(context).size.width/2,
+                              padding: EdgeInsets.only(right: 16.0),
                             ),
                             RaisedButton(
                               child: Text('Aggiorna'),
                               onPressed: (){
-                                if(_leftKey.currentState.validate()) Database().updateTimeLeft(widget.model.uid,widget.model.id,_leftKey.currentState.value);
+                                if(_leftKey.currentState.validate()) {
+                                  Database().updateTimeLeft(
+                                      widget.model.uid, widget.model.id,
+                                      int.tryParse(_leftKey.currentState.value));
+                                }
                               },
                             )
                           ],

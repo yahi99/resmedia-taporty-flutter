@@ -144,7 +144,7 @@ class _LoginScreenState extends State<ManageUsers> {
                               children: <Widget>[
                                 Padding(
                                   child: Text(
-                                    user.nominative,
+                                    (user.nominative!=null)?user.nominative:'Senza nome',
                                     style: theme.textTheme.subtitle,
                                   ),
                                   padding: EdgeInsets.all(4.0),

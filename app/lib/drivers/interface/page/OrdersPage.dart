@@ -145,11 +145,7 @@ class _OrdersPageDriverState extends State<OrdersPageDriver> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const RubberConcierge(),
-      ),
-      body: CustomScrollView(
+      body: (widget.model.length>0)?CustomScrollView(
         //controller: RubberScrollController.of(context),
         //physics: NeverScrollableScrollPhysics(),
         shrinkWrap: true,
@@ -176,7 +172,7 @@ class _OrdersPageDriverState extends State<OrdersPageDriver> {
             ),
           );
         }).toList(),
-      ),
+      ):Padding(child: Text('Non ci sono ordini.'),padding: EdgeInsets.all(8.0),),
     );
   }
 }

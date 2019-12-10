@@ -15,8 +15,10 @@ import 'package:resmedia_taporty_flutter/drivers/logic/bloc/TurnBloc.dart';
 import 'package:resmedia_taporty_flutter/drivers/model/CalendarModel.dart';
 import 'package:resmedia_taporty_flutter/drivers/model/OrderModel.dart';
 import 'package:resmedia_taporty_flutter/drivers/model/TurnModel.dart';
+import 'package:resmedia_taporty_flutter/interface/screen/LoginScreen.dart';
 import 'package:resmedia_taporty_flutter/logic/bloc/OrdersBloc.dart';
 import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
+import 'package:resmedia_taporty_flutter/logic/database.dart';
 import 'package:resmedia_taporty_flutter/model/OrderModel.dart';
 
 class HomeScreenDriver extends StatefulWidget implements WidgetRoute {
@@ -87,6 +89,8 @@ class _HomeScreenDriverState extends State<HomeScreenDriver> {
 
   @override
   void dispose() {
+    UserBloc.of().logout();
+    LoginHelper().signOut();
     _driverBloc.close();
     _calendarBloc.close();
     super.dispose();
@@ -142,11 +146,11 @@ class _HomeScreenDriverState extends State<HomeScreenDriver> {
               ],
             ),
           ),
-          body: StreamBuilder<Map<MonthCategory, List<TurnModel>>>(
-            stream: turnBloc.outCategorizedTurns,
+          body: StreamBuilder<List<TurnModel>>(
+            stream: Database().getTurns(user),
             builder: (ctx, snap1) {
-              return StreamBuilder<Map<StateCategory, List<DriverOrderModel>>>(
-                stream: orderBloc.outCategorizedOrders,
+              return StreamBuilder<List<DriverOrderModel>>(
+                stream: Database().getDriverOrders(user),
                 builder: (context, snap2) {
                   return StreamBuilder<DateTime>(
                     stream: dateStream.stream,
@@ -159,10 +163,12 @@ class _HomeScreenDriverState extends State<HomeScreenDriver> {
                         physics: const NeverScrollableScrollPhysics(),
                         children: <Widget>[
                           OrdersPageDriver(
-                            model: snap2.data,
+                            model: categorized(
+                                StateCategory.values, snap2.data, (model) => model.state),
                           ),
                           TurnWorkTabDriver(
-                            model: snap1.data,
+                            model: categorized(
+                          MonthCategory.values, snap1.data, (model) => model.month),
                           ),
                           CalendarTabDriver(
                             //model: (!snap4.hasData)?snap4.data:List<CalendarModel>(),
@@ -186,4 +192,23 @@ class _HomeScreenDriverState extends State<HomeScreenDriver> {
       ),
     );
   }
+}
+
+
+
+Map<C, List<M>> categorized<C, M>(
+    List<C> allCategories, List<M> models, C getterCategory(M model),
+    ) {
+
+  final categories = allCategories.where((category) {
+    return models.map(getterCategory)
+        .any((modelCategory) => category == modelCategory);
+  });
+  return Map.fromIterable(categories,
+    key: (category) {
+      return category;
+    },  value: (category) {
+      return models.where((model) => getterCategory(model) == category).toList();
+    },
+  );
 }

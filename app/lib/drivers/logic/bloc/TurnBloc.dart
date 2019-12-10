@@ -38,13 +38,13 @@ class TurnBloc implements Bloc {
             MonthCategory.values, models, (model) => model.month);
       });
 
-  void setTurnStream() async {
-    final user = UserBloc.of();
-    final restUser = await user.outFirebaseUser.first;
+  void setTurnStream(String uid) async {
+    //final user = UserBloc.of();
+    //final restUser = await user.outFirebaseUser.first;
     //final str=await _db.getDriverOrders(restUser.uid).first;
     print('lol');
     _turnControl =
-        PublishController.catchStream(source: _db.getTurns(restUser.uid));
+        PublishController.catchStream(source: _db.getTurns(uid));
     _turnControl.listen(print);
   }
   void setTurnRestStream() async {

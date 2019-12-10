@@ -332,7 +332,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       final orderBloc = OrdersBloc.of();
                       orderBloc.setRestaurantStream(userId.data.restaurantId);
                       final restaurantBloc = RestaurantBloc.init(idRestaurant: userId.data.restaurantId);
-                      return HomeScreen(restBloc: restaurantBloc,restId: userId.data.restaurantId,);
+                      return HomeScreen(restBloc: restaurantBloc,restId: userId.data.restaurantId,remember: remember,);
                     }
                     else return Material(
                       child:Theme(

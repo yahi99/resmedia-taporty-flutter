@@ -15,10 +15,14 @@ class TotalIncomeScreen extends StatefulWidget implements WidgetRoute {
 
   String get route => TotalIncomeScreen.ROUTE;
 
+  final DateTime date;
+  final StreamController dateStream;
+
   TotalIncomeScreen({
     Key key,
+    @required this.dateStream,
+    @required this.date,
   }) : super(key: key);
-
   @override
   _DetailOrderRestaurantPageState createState() =>
       _DetailOrderRestaurantPageState();
@@ -26,18 +30,15 @@ class TotalIncomeScreen extends StatefulWidget implements WidgetRoute {
 
 class _DetailOrderRestaurantPageState extends State<TotalIncomeScreen> {
 
-  StreamController dateStream;
 
   @override
   void initState(){
     super.initState();
-    dateStream=StreamController<DateTime>.broadcast();
   }
 
   @override
   void dispose(){
     super.dispose();
-    dateStream.close();
   }
 
   @override
@@ -45,34 +46,25 @@ class _DetailOrderRestaurantPageState extends State<TotalIncomeScreen> {
     final theme = Theme.of(context);
     final tt = theme.textTheme;
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Saldo Totale'),
-      ),
-      body: StreamBuilder<DateTime>(
-          stream: dateStream.stream,
+      body: StreamBuilder<IncomeModel>(
+          stream: Database().getTotalIncome(widget.date),
           builder: (ctx, snap4) {
             return Container(
               child: Column(
                 children: <Widget>[
                   MonthPicker(
-                    selectedDate: snap4.hasData?snap4.data:DateTime(DateTime.now().year,DateTime.now().month,DateTime.now().day),
+                    selectedDate: widget.date,
                     firstDate: DateTime(DateTime.now().year-1,
                         DateTime.now().month, DateTime.now().day - 1),
                     lastDate: DateTime(2020),
                     //displayedMonth: DateTime.now(),
                     //currentDate: DateTime.now(),
                     onChanged: (DateTime date){
-                      dateStream.add(date);
+                      widget.dateStream.add(date);
                     },
                   ),
-                  StreamBuilder(
-                    stream: snap4.hasData?Database().getTotalIncome(snap4.data):Database().getTotalIncome(DateTime(DateTime.now().year,
-                        DateTime.now().month, DateTime.now().day)),
-                    builder: (ctx,snap){
-                      //if(!snap.hasData) return Center(child: CircularProgressIndicator(),);
-                      return Text('Saldo Giornaliero '+((snap.data!=null)?snap.data.dailyTotal.toString():'0.0')+' euro');
-                    },
-                  )
+                  Text('Saldo Giornaliero '+((snap4.data!=null)?snap4.data.dailyTotal.toString():'0.0')+' euro'),
+
                 ],
               ),
             );

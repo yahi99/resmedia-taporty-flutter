@@ -4,9 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:resmedia_taporty_flutter/interface/view/CardListView.dart';
 import 'package:resmedia_taporty_flutter/interface/view/TypeOrderView.dart';
+import 'package:resmedia_taporty_flutter/model/OrderModel.dart';
 
 class OrdersPage extends StatefulWidget implements WidgetRoute {
-  final list;
+  final List<RestaurantOrderModel> list;
 
   static const ROUTE = "OrdersPage";
 
@@ -33,7 +34,7 @@ class OrdersPageState extends State<OrdersPage> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
+    return (widget.list.length>0)? SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: CardListView(
@@ -45,6 +46,6 @@ class OrdersPageState extends State<OrdersPage> {
           }).toList(),
         ),
       ),
-    );
+    ):Padding(child: Text('Non ci sono ordini'),padding: EdgeInsets.all(8.0),);
   }
 }

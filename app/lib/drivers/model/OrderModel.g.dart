@@ -13,7 +13,6 @@ DriverOrderModel _$DriverOrderModelFromJson(Map json) {
       day: json['day'] as String,
       startTime: json['startTime'] as String,
       endTime: json['endTime'] as String,
-      id: json['id'] as String,
       titleR: json['titleR'] as String,
       titleS: json['titleS'] as String,
       addressS: json['addressS'] as String,
@@ -46,7 +45,6 @@ Map<String, dynamic> _$DriverOrderModelToJson(DriverOrderModel instance) {
   writeNotNull('timeS', instance.timeS);
   writeNotNull('latR', instance.latR);
   writeNotNull('lngR', instance.lngR);
-  writeNotNull('id', instance.id);
   writeNotNull('restId', instance.restId);
   writeNotNull('uid', instance.uid);
   writeNotNull('nominative', instance.nominative);

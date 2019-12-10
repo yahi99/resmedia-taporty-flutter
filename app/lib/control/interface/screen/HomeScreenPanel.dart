@@ -5,6 +5,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:resmedia_taporty_flutter/control/interface/screen/DriverRequests.dart';
+import 'package:resmedia_taporty_flutter/control/interface/screen/LoginScreen.dart';
 import 'package:resmedia_taporty_flutter/control/interface/screen/ManageOrders.dart';
 import 'package:resmedia_taporty_flutter/control/interface/screen/ProductRequestsScreen.dart';
 import 'package:resmedia_taporty_flutter/control/interface/screen/ResetPasswordAdmin.dart';
@@ -12,9 +13,12 @@ import 'package:resmedia_taporty_flutter/control/interface/screen/RestaurantRequ
 import 'package:resmedia_taporty_flutter/control/interface/screen/TurnScreen.dart';
 import 'package:resmedia_taporty_flutter/drivers/logic/bloc/CalendarBloc.dart';
 import 'package:resmedia_taporty_flutter/drivers/logic/bloc/DriverBloc.dart';
+import 'package:resmedia_taporty_flutter/interface/screen/LoginScreen.dart';
+import 'package:resmedia_taporty_flutter/logic/bloc/OrdersBloc.dart';
 import 'package:resmedia_taporty_flutter/logic/bloc/RestaurantBloc.dart';
 import 'package:resmedia_taporty_flutter/logic/bloc/RestaurantsBloc.dart';
 import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
+import 'package:resmedia_taporty_flutter/model/OrderModel.dart';
 
 import 'CreateAdminScreen.dart';
 import 'ManageRestaurants.dart';
@@ -32,12 +36,16 @@ class HomeScreenPanel extends StatefulWidget implements WidgetRoute {
 }
 
 class _HomeScreenPanelState extends State<HomeScreenPanel> {
+  StreamController<DateTime> dateStream;
 
   BuildContext dialog;
 
+  OrdersBloc orderBloc;
+
   FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
-  void showNotification(BuildContext context, Map<String, dynamic> message) async {
+  void showNotification(
+      BuildContext context, Map<String, dynamic> message) async {
     print('Build dialog');
     showDialog(
       context: context,
@@ -62,7 +70,7 @@ class _HomeScreenPanelState extends State<HomeScreenPanel> {
     _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
         print('on message $message');
-        if(dialog!=null) showNotification(dialog,message);
+        if (dialog != null) showNotification(dialog, message);
       },
       onResume: (Map<String, dynamic> message) async {
         print('on resume $message');
@@ -86,7 +94,10 @@ class _HomeScreenPanelState extends State<HomeScreenPanel> {
   void dispose() {
     //_driverBloc.close();
     //_calendarBloc.close();
+    UserBloc.of().logout();
+    LoginHelper().signOut();
     super.dispose();
+    dateStream.close();
   }
 
   /*void setUser() async {
@@ -98,6 +109,9 @@ class _HomeScreenPanelState extends State<HomeScreenPanel> {
   void initState() {
     //stream=_calendarBloc.outCalendar;
     //setUser();
+    dateStream = StreamController<DateTime>.broadcast();
+    orderBloc = OrdersBloc.of();
+    firebaseCloudMessaging_Listeners();
     firebaseCloudMessaging_Listeners();
     super.initState();
     //final bloc=TurnBloc.of();
@@ -106,71 +120,110 @@ class _HomeScreenPanelState extends State<HomeScreenPanel> {
 
   @override
   Widget build(BuildContext context) {
-    dialog=context;
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Home"),
-        actions: <Widget>[
-        ],
-      ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          FlatButton(
-            child: Text('  Richieste Ristoratori  '),
-            onPressed: (){
-              EasyRouter.push(context, RestaurantRequestsScreen());
-            },
+    dialog = context;
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        drawer: Drawer(
+          child: ListView(
+            children: <Widget>[
+              FlatButton(
+                child: Text('  Richieste Ristoratori  '),
+                onPressed: () {
+                  EasyRouter.push(context, RestaurantRequestsScreen());
+                },
+              ),
+              FlatButton(
+                child: Text('  Richieste Fattorini  '),
+                onPressed: () {
+                  EasyRouter.push(context, DriverRequestsScreen());
+                },
+              ),
+              FlatButton(
+                child: Text('  Richieste Prodotti  '),
+                onPressed: () {
+                  EasyRouter.push(context, ProductRequestsScreen());
+                },
+              ),
+              FlatButton(
+                child: Text('  Crea amministratore  '),
+                onPressed: () {
+                  EasyRouter.push(context, CreateAdminScreen());
+                },
+              ),
+              FlatButton(
+                child: Text('  Reset Password Admin  '),
+                onPressed: () async {
+                  EasyRouter.push(
+                      context,
+                      ResetPasswordAdmin(
+                        userId: (await UserBloc.of().outFirebaseUser.first).uid,
+                      ));
+                },
+              ),
+              FlatButton(
+                child: Text('Gestisci utenti'),
+                onPressed: () {
+                  EasyRouter.push(context, ManageUsers());
+                },
+              ),
+              FlatButton(
+                child: Text('Gestisci ristoranti'),
+                onPressed: () {
+                  EasyRouter.push(context, ManageRestaurants());
+                },
+              ),
+              FlatButton(
+                child: Text('Log Out'),
+                onPressed: () async {
+                  UserBloc.of().logout();
+                  //EasyRouter.pushAndRemoveAll(context, LoginScreen());
+                },
+              ),
+            ],
           ),
-          FlatButton(
-            child: Text('  Richieste Fattorini  '),
-            onPressed: (){
-              EasyRouter.push(context, DriverRequestsScreen());
-            },
+        ),
+        appBar: AppBar(
+          title: Text("Home"),
+          actions: <Widget>[],
+          bottom: TabBar(
+            tabs: [
+              Tab(
+                text: 'Ordini',
+              ),
+              Tab(
+                text: 'Saldo',
+              )
+            ],
           ),
-          FlatButton(
-            child: Text('  Richieste Prodotti  '),
-            onPressed: (){
-              EasyRouter.push(context, ProductRequestsScreen());
-            },
-          ),
-          FlatButton(
-            child: Text('  Crea amministratore  '),
-            onPressed: (){
-              EasyRouter.push(context, CreateAdminScreen());
-            },
-          ),
-          FlatButton(
-            child: Text('  Reset Password Admin  '),
-            onPressed: ()async{
-              EasyRouter.push(context, ResetPasswordAdmin(userId: (await UserBloc.of().outFirebaseUser.first).uid,));
-            },
-          ),
-          FlatButton(
-            child: Text('Gestisci utenti'),
-            onPressed: (){
-              EasyRouter.push(context, ManageUsers());
-            },
-          ),
-          FlatButton(
-            child: Text('Gestisci ristoranti'),
-            onPressed: (){
-              EasyRouter.push(context, ManageRestaurants());
-            },
-          ),
-          FlatButton(
-            child: Text('Gestisci ordini'),
-            onPressed: (){
-              EasyRouter.push(context, ManageOrders());
-            },
-          ),
-          FlatButton(
-            child: Text('Saldo Totale'),
-            onPressed: (){
-              EasyRouter.push(context, TotalIncomeScreen());
-            },
-          )
-        ],
+        ),
+        body: StreamBuilder<List<RestaurantOrderModel>>(
+          stream: orderBloc.outOrdersCtrl,
+          builder: (context, orders) {
+            if (!orders.hasData)
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            return TabBarView(
+              physics: const NeverScrollableScrollPhysics(),
+              children: <Widget>[
+                ManageOrders(list: orders.data),
+                StreamBuilder<DateTime>(
+                  stream: dateStream.stream,
+                  builder: (ctx, snap) {
+                    return TotalIncomeScreen(
+                      date: snap.hasData
+                          ? snap.data
+                          : DateTime(DateTime.now().year, DateTime.now().month,
+                              DateTime.now().day),
+                      dateStream: dateStream,
+                    );
+                  },
+                )
+              ],
+            );
+          },
+        ),
       ),
     );
   }

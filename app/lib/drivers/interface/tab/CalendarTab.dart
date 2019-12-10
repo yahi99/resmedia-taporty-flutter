@@ -92,7 +92,11 @@ class _CalendarState extends State<CalendarTabDriver>
                   onChanged: change,
                 ),
                 (snap4.data.isNotEmpty)
-                    ? ListView.builder(
+                    ? Container(
+                    child:ListView.separated(
+                      separatorBuilder: (ctx,index){
+                        return Divider(height: 4.0,);
+                      },
                         shrinkWrap: true,
                         itemCount: snap4.data.length,
                         itemBuilder: (ctx, index) {
@@ -100,8 +104,10 @@ class _CalendarState extends State<CalendarTabDriver>
                             count++;
                             var temp = snap4.data.elementAt(index).free;
                             //temp.add(cb.user());
-                            return Row(
-                              mainAxisSize: MainAxisSize.min,
+                            return Padding(
+                                child:Row(
+                              //mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 Column(
@@ -139,14 +145,14 @@ class _CalendarState extends State<CalendarTabDriver>
                                               temp)
                                         }),
                               ],
-                            );
+                            ),padding: EdgeInsets.only(top: 16.0),);
                           }
                           print(snap4.data.length);
                           print(index);
                           if(snap4.data.length-1==index && count==0) return Text('Non ci sono turni disponibili per questo giorno.');
                           return Container();
 
-                        })
+                        }),height: 200.0,padding: EdgeInsets.all(16.0),)
                     : Text('Non ci sono turni disponibili per questo giorno.'),
               ],
             ),

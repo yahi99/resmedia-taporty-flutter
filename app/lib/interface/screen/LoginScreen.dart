@@ -555,7 +555,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 return StreamBuilder<UserModel>(
                     stream: Database().getUser(userSnapshot.data),
                     builder: (ctx, userId) {
-                      if (userId.hasData) {
+                      if (userId.hasData && (userId.data.type==null || userId.data.type=='user')) {
                         if (userSnapshot.data.isEmailVerified) {
                           if (pos != null)
                             return RestaurantListScreen(

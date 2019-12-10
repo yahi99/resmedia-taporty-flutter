@@ -162,50 +162,48 @@ class _AdminScreenState extends State<CreateAdminScreen> {
               itemCount: snap.data.length,
               itemBuilder: (ctx, index) {
                 final user = snap.data.elementAt(index);
-                if (user.email != null && user.nominative != null)
-                  return Row(
-                    children: <Widget>[
-                      Container(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Padding(
-                              child: Text(
-                                user.nominative,
-                                style: theme.textTheme.subtitle,
-                              ),
-                              padding: EdgeInsets.all(4.0),
+                return Row(
+                  children: <Widget>[
+                    Container(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Padding(
+                            child: Text(
+                              (user.nominative != null)
+                                  ? user.nominative
+                                  : 'Senza nome',
+                              style: theme.textTheme.subtitle,
                             ),
-                            Padding(
-                              child: Text(user.email),
-                              padding: EdgeInsets.all(4.0),
-                            ),
-                            user.type != null
-                                ? Padding(
-                                    child: Text('Tipologia: ' + user.type),
-                                    padding: EdgeInsets.all(4.0),
-                                  )
-                                : Container(),
-                          ],
-                        ),
-                        width: MediaQuery.of(context).size.width * 2 / 3,
-                      ),
-                      Expanded(
-                        child: Padding(
-                          child: RaisedButton(
-                            child: Text('Cambia'),
-                            onPressed: () {
-                              //permits=false;
-                              _showPaymentDialog(
-                                  context, user.nominative, user.id, user.type);
-                            },
+                            padding: EdgeInsets.all(4.0),
                           ),
-                          padding: EdgeInsets.only(right:4.0),
-                        ),
+                          Padding(
+                            child: Text(user.email),
+                            padding: EdgeInsets.all(4.0),
+                          ),
+                          Padding(
+                                  child: Text('Tipologia: ' + ((user.type!=null)?user.type:'user')),
+                                  padding: EdgeInsets.all(4.0),
+                                ),
+                        ],
                       ),
-                    ],
-                  );
-                return Container();
+                      width: MediaQuery.of(context).size.width * 2 / 3,
+                    ),
+                    Expanded(
+                      child: Padding(
+                        child: RaisedButton(
+                          child: Text('Cambia'),
+                          onPressed: () {
+                            //permits=false;
+                            _showPaymentDialog(
+                                context, user.nominative, user.id, user.type);
+                          },
+                        ),
+                        padding: EdgeInsets.only(right: 4.0),
+                      ),
+                    ),
+                  ],
+                );
               },
               separatorBuilder: (ctx, index) {
                 return Divider(

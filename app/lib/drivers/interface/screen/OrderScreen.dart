@@ -41,10 +41,6 @@ class OrderListScreenState extends State<OrderListScreen> {
         backgroundColor: red,
         centerTitle: true,
         actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.account_circle),
-            onPressed: () {},
-          )
         ],
       ),
       body: TypesRestaurantView(),

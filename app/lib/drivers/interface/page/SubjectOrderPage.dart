@@ -19,9 +19,11 @@ class SubjectOrderPageDriver extends StatefulWidget implements WidgetRoute {
 
   final SubjectModel model;
   final DriverOrderModel orderModel;
+  final bool isRest;
+  final LatLng userPos;
 
   SubjectOrderPageDriver(
-      {Key key, @required this.model, @required this.orderModel})
+      {Key key, @required this.model, @required this.orderModel,@required this.isRest,this.userPos})
       : super(key: key);
 
   @override
@@ -79,6 +81,7 @@ class _SubjectOrderPageDriverState extends State<SubjectOrderPageDriver> {
                         icon: Icon(Icons.check),
                         onPressed: () async {
                           EasyRouter.pop(context);
+                          print(widget.orderModel);
                           Database().updateState(
                               state,
                               widget.orderModel.uid,
@@ -213,7 +216,7 @@ class _SubjectOrderPageDriverState extends State<SubjectOrderPageDriver> {
                         final driverLat =
                             LatLng(driverPos.latitude, driverPos.longitude);
 
-                        routeBloc.getRouteTo(driverLat, restPos, context);
+                        routeBloc.getRouteTo(driverLat, widget.isRest?restPos:LatLng(widget.orderModel.latR,widget.orderModel.lngR), context);
                       },
                       child: Text(
                         "Start",
@@ -222,15 +225,15 @@ class _SubjectOrderPageDriverState extends State<SubjectOrderPageDriver> {
                     ),
                   ),
                   SizedBox(
-                    width: 16.0,
+                    width: 4.0,
                   ),
                   Expanded(
                     child: RaisedButton(
                       onPressed: () {
-                        //_askPermission(context, 'PICKED_UP');
+                        _askPermission(context, widget.isRest?'PICKED_UP':'DELIVERED');
                       },
                       child: Text(
-                        "Ritirato",
+                        widget.isRest?"Ritirato":"Consegnato",
                         style: tt.button,
                       ),
                     ),

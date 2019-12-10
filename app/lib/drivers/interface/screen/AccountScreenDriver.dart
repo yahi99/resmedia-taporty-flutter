@@ -11,6 +11,7 @@ import 'package:geocoder/geocoder.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:resmedia_taporty_flutter/data/config.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/screen/LoginScreen.dart';
+import 'package:resmedia_taporty_flutter/interface/screen/LoginScreen.dart';
 import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
 import 'package:resmedia_taporty_flutter/logic/database.dart';
 import 'package:resmedia_taporty_flutter/model/UserModel.dart';
@@ -145,10 +146,10 @@ class AccountScreenDriver extends StatelessWidget implements WidgetRoute {
                     color: Colors.grey,
                   ),
                   children: <Widget>[
-                    Text(
+                    (snap.data.model.nominative!=null)?Text(
                       snap.data.model.nominative,
                       style: theme.textTheme.subhead,
-                    ),
+                    ):Container(),
                     Text(
                       snap.data.model.email,
                       style: theme.textTheme.subhead,
@@ -160,11 +161,9 @@ class AccountScreenDriver extends StatelessWidget implements WidgetRoute {
                             child:
                             Text('Log Out', style: theme.textTheme.subhead),
                             onPressed: () {
-                              user.logout().then((onValue) {
-                                EasyRouter.pushAndRemoveAll(
-                                    context, LoginScreen());
-                                UserBloc.close();
-                              });
+                              UserBloc.of().logout();
+                              LoginHelper().signOut();
+                              EasyRouter.pop(context);
                             }),
                       ],
                     ),

@@ -105,7 +105,7 @@ class _AdminScreenState extends State<ResetPasswordAdmin> {
             runSpacing: SPACE * 2,
             children: <Widget>[
               Text(
-                "Vuoi veramente resettare la password a " + nominative + ' ?',
+          (nominative!=null)?"Vuoi veramente resettare la password a " + nominative + ' ?':'Vuoi veramente resettare la password?',
                 style: theme.textTheme.body2,
               ),
               Row(
@@ -185,9 +185,15 @@ class _AdminScreenState extends State<ResetPasswordAdmin> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-                            Padding(
+                            (user.nominative!=null)?Padding(
                               child: Text(
                                 user.nominative,
+                                style: theme.textTheme.subtitle,
+                              ),
+                              padding: EdgeInsets.all(4.0),
+                            ):Padding(
+                              child: Text(
+                                'Senza nome',
                                 style: theme.textTheme.subtitle,
                               ),
                               padding: EdgeInsets.all(4.0),

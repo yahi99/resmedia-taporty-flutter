@@ -73,7 +73,7 @@ class TypesRestaurantView extends StatelessWidget {
             child: CircularProgressIndicator(),
           );
         print(snap.hasData);
-        return SingleChildScrollView(
+        return (snap.data.length>0)?SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: CardListView(
@@ -85,7 +85,7 @@ class TypesRestaurantView extends StatelessWidget {
               }).toList(),
             ),
           ),
-        );
+        ):Padding(child: Text('Non ci sono ordini.',style: Theme.of(context).textTheme.subtitle,),padding: EdgeInsets.all(8.0),);
       },
     );
   }

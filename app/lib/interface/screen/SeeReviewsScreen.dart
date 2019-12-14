@@ -55,7 +55,7 @@ class _CheckoutScreenState extends State<SeeReviewsScreen> {
         builder: (ctx, snap) {
           if (!snap.hasData) return Center(child: CircularProgressIndicator(),);
           if(snap.data.length==0) return Padding(
-              child: Text('Non ci sono recensioni per questo ristorante'),
+              child: Text('Non ci sono recensioni per questo ristorante',style: Theme.of(context).textTheme.subtitle,),
               padding: EdgeInsets.all(8.0),
             );
           print(snap.data.length);

@@ -73,10 +73,11 @@ class _LoginScreenState extends State<ManageRestaurants> {
                       ),
                       RaisedButton(
                         onPressed: () {
+                          EasyRouter.pop(context);
                           CloudFunctions.instance.getHttpsCallable(functionName: 'deleteRestaurant').call({
                             'restaurantId':restId
                           }).then((isDone){
-
+                            Toast.show('Ristorante cancellato!', context);
                           });
                           //Database().deleteRestaurant(restId);
                         },

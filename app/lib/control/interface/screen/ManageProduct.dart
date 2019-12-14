@@ -234,16 +234,19 @@ class _LoginScreenState extends State<ManageProduct> {
                     child: RaisedButton(
                       child: Text('Cambia'),
                       onPressed: () async {
+                        //print(path);
                         if (path != null) {
                           if (path.split('.').last != 'jpg') {
                             Toast.show('Il formato dell\'immagine deve essere .jpg',
                                 context,
                                 duration: 3);
                           } else {
-                            final imgPath=(await widget.prod.outRequests.first).img;
+                            print('lol');
+                            //final imgPath=(await widget.prod.outRequests.first).img;
+                            //print(imgPath);
                             uploadFile(path).then((path) async {
                               Database()
-                                  .updateImgProduct(path, snapshot.data,imgPath)
+                                  .updateImgProduct(path, snapshot.data)
                                   .then((value) {
                                 Toast.show('Cambiato!', context, duration: 3);
                               });

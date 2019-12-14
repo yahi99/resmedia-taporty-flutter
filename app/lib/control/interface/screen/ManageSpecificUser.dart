@@ -131,7 +131,7 @@ class _LoginScreenState extends State<ManageSpecificUser> {
     final cls = theme.colorScheme;
     return Scaffold(
       appBar: AppBar(
-        title: Text("Gestisci utente "+widget.user.nominative),
+        title: Text("Gestisci utente "+((widget.user.nominative!=null)?widget.user.nominative:'')),
         actions: <Widget>[],
       ),
       body: ListView(

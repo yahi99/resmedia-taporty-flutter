@@ -79,7 +79,7 @@ class _CalendarState extends State<CalendarTabDriver>
         builder: (ctx, snap4) {
           if (!snap4.hasData) return Center(child: CircularProgressIndicator());
           return Container(
-            child: Column(
+            child: ListView(
               children: <Widget>[
                 MonthPicker(
                   selectedDate: widget.date,
@@ -93,10 +93,7 @@ class _CalendarState extends State<CalendarTabDriver>
                 ),
                 (snap4.data.isNotEmpty)
                     ? Container(
-                    child:ListView.separated(
-                      separatorBuilder: (ctx,index){
-                        return Divider(height: 4.0,);
-                      },
+                    child:ListView.builder(
                         shrinkWrap: true,
                         itemCount: snap4.data.length,
                         itemBuilder: (ctx, index) {

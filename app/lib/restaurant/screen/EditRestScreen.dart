@@ -39,11 +39,11 @@ class _TurnWorkTabDriverState extends State<EditRestScreen> {
 
   Future<String> uploadFile(String filePath) async {
     //final Uint8List bytes = File(filePath).readAsBytesSync();
-    final data=await rootBundle.load(filePath);
+    final Uint8List bytes = File(filePath).readAsBytesSync();
     final Directory tempDir = Directory.systemTemp;
     final String fileName = filePath.split('/').last;
     final File file = File('${tempDir.path}/$fileName');
-    await file.writeAsBytes(data.buffer.asInt8List(), mode: FileMode.write);
+    await file.writeAsBytes(bytes, mode: FileMode.write);
 
     final StorageReference ref = FirebaseStorage.instance.ref().child(fileName);
     final StorageUploadTask task = ref.putFile(file);

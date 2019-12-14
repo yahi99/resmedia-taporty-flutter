@@ -60,7 +60,7 @@ class ProductsDrinkBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GroupsVoid(
+    return (drinks.isNotEmpty)?GroupsVoid(
       children: drinks.map<Widget, List<Widget>>((nameGroup, products) {
         return MapEntry(
           Text(translateDrinkCategory(nameGroup)),
@@ -74,7 +74,7 @@ class ProductsDrinkBuilder extends StatelessWidget {
               .toList(),
         );
       }),
-    );
+    ):Padding(child: Text('Non ci sono prodotti',style: Theme.of(context).textTheme.subtitle,),padding: EdgeInsets.all(8.0));
   }
 }
 
@@ -86,7 +86,7 @@ class ProductsFoodBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GroupsVoid(
+    return (foods.isNotEmpty)?GroupsVoid(
       children: foods.map<Widget, List<Widget>>((nameGroup, products) {
         return MapEntry(
           Text(translateFoodCategory(nameGroup)),
@@ -100,7 +100,7 @@ class ProductsFoodBuilder extends StatelessWidget {
               .toList(),
         );
       }),
-    );
+    ):Padding(child: Text('Non ci sono prodotti',style: Theme.of(context).textTheme.subtitle,),padding: EdgeInsets.all(8.0),);
   }
 }
 

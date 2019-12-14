@@ -143,7 +143,8 @@ class _TurnScreenPanelState extends State<TurnScreen> {
             stream: dateStream.stream,
             builder: (ctx, sp) {
               //if(!sp.hasData) return Center(child: CircularProgressIndicator(),);
-              return Column(
+              return ListView(
+                shrinkWrap: true,
                 children: <Widget>[
                   Padding(
                     child: TextField(
@@ -345,6 +346,7 @@ class _TurnScreenPanelState extends State<TurnScreen> {
                       }
                     }
                   }
+                  Toast.show('Turni aggiunti!', context);
                 }
               }
             }

@@ -74,7 +74,7 @@ class _TurnWorkTabDriverState extends State<TurnsScreen>{
         }).toList(),
       );
     }
-      else return Padding(child: Text('Non ci sono turni inseriti'),padding: EdgeInsets.all(8.0),);
+      else return Padding(child: Text('Non ci sono turni inseriti',style: Theme.of(context).textTheme.subtitle,),padding: EdgeInsets.all(8.0),);
     }
     ),
     );

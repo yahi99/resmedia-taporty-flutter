@@ -50,8 +50,8 @@ class _RestaurantDetailedState extends State<RestaurantDetailedRequest> {
     downloadFile(widget.model.img);
     return Scaffold(
       appBar: new AppBar(title: Text('Dettaglio Richiesta')),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      body: ListView(
+        shrinkWrap: true,
         children: <Widget>[
           Image.network(
             widget.model.img,
@@ -183,8 +183,11 @@ class _RestaurantDetailedState extends State<RestaurantDetailedRequest> {
             children: <Widget>[
               RaisedButton(
                 onPressed: () {
-                  if(!widget.isArchived) Database().archiveVendor(widget.model);
                   EasyRouter.pop(context);
+                  if(!widget.isArchived) Database().archiveVendor(widget.model);
+                  else{
+                    Database().deleteRestaurantRequest(widget.model);
+                  }
                 },
                 textColor: Colors.white,
                 color: Colors.red,

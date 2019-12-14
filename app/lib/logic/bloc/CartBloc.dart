@@ -155,7 +155,7 @@ class CartBloc extends Bloc {
   }
 
   Future<bool> signer(String restaurantId, String driver, Position userPos,String phone,
-      String userAddress, String startTime, String endTime,String fingerprint,String day) async {
+      String userAddress, String startTime, String endTime,String fingerprint,String day,String nominative) async {
     final userBloc = UserBloc.of();
     final firebaseUser = await userBloc.outUser.first;
     inDeleteCart(restaurantId).then((cart) async {
@@ -168,7 +168,7 @@ class CartBloc extends Bloc {
           userPos: userPos,
           addressR: userAddress,
           startTime: startTime,
-          nominative: firebaseUser.model.nominative,
+          nominative: nominative,
           endTime: endTime,
           fingerprint:fingerprint,
           restAdd: (await Geocoder.local.findAddressesFromCoordinates(

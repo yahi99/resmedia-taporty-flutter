@@ -102,8 +102,8 @@ class _AdminScreenState extends State<CreateAdminScreen> {
               Text(
                 "Vuoi veramente " +
                     ((type == 'control') ? 'togliere' : 'dare') +
-                    " i permessi a " +
-                    nominative,
+                    " i permessi" +
+                    ((nominative!=null)?' a '+nominative+' ?':'?'),
                 style: theme.textTheme.body2,
               ),
               Row(

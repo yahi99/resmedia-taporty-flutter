@@ -146,8 +146,8 @@ class _CheckoutScreenState extends State<CheckoutScreen>
                           }
                           if (rest.data.isDisabled != null &&
                               rest.data.isDisabled) {
-                            return Text(
-                                'Ristorante non abilitato scegline un\'altro');
+                            return Padding(child:Text(
+                                'Ristorante non abilitato scegline un\'altro'),padding: EdgeInsets.all(8.0),);
                           }
                           return MyInheritedWidget(
                             child: TabBarView(

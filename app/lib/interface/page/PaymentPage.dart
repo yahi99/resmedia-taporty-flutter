@@ -248,13 +248,13 @@ class _PaymentState extends State<PaymentPage>
                               keyboardType: TextInputType.text,
                               enabled: false,
                             ),
-                            TextField(
+                            /*TextField(
                               decoration: InputDecoration(
                                 hintText: "Numero di Telefono",
                               ),
                               keyboardType: TextInputType.number,
                               maxLength: 10,
-                            ),
+                            ),*/
                           ],
                         ),
                       ),

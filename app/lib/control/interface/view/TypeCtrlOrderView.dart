@@ -136,8 +136,8 @@ class TypeCtrlOrderView extends StatelessWidget {
       actionExtentRatio: 0.25,
       secondaryActions: <Widget>[
         IconSlideAction(
-          //color: Colors.black12,
-          icon: Icons.delete,
+          icon: Icons.close,
+          color: theme.accentColor,
           onTap: () async {
             _showPositionDialog(context);
           },

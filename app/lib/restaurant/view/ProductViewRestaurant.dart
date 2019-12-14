@@ -66,9 +66,9 @@ class ProductViewRestaurant extends StatelessWidget {
                       ),
                       RaisedButton(
                         onPressed: () {
+                          EasyRouter.pop(context);
                           Database().deleteProduct(model.id, model.restaurantId, model.path.contains('foods')?'foods':'drinks').then((value) {
                             Toast.show('Prodotto cancellato', context);
-                            EasyRouter.pop(context);
                           });
                         },
                         color: Colors.green,
@@ -118,14 +118,13 @@ class ProductViewRestaurant extends StatelessWidget {
                     padding: const EdgeInsets.all(4.0),
                     child: ClipRRect(
                         borderRadius: BorderRadius.circular(16.0),
-                        child: Image.asset('assets/img/home/fotoprofilo.jpg'),
-                      /*(model.img.startsWith('assets'))?Image.asset(
+                        child: (model.img.startsWith('assets'))?Image.asset(
                           model.img,
                           fit: BoxFit.fitHeight,
                         ):Image.network(
                           model.img,
                           fit: BoxFit.fitHeight,
-                        ),*/
+                        ),
                       ),
                     ),
                   SizedBox(

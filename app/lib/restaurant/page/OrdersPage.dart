@@ -46,6 +46,6 @@ class OrdersPageState extends State<OrdersPage> {
           }).toList(),
         ),
       ),
-    ):Padding(child: Text('Non ci sono ordini'),padding: EdgeInsets.all(8.0),);
+    ):Padding(child: Text('Non ci sono ordini',style: Theme.of(context).textTheme.subtitle,),padding: EdgeInsets.all(8.0),);
   }
 }

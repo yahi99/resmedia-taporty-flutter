@@ -36,8 +36,8 @@ class _DriverDetailedState extends State<DriverDetailedRequest> {
     return Scaffold(
       appBar: new AppBar(title:Text('Dettaglio Richiesta')),
       body:Padding(
-              child:Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              child:ListView(
+                shrinkWrap: true,
                 children: <Widget>[
                   Container(child:Row(
                     //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -117,8 +117,11 @@ class _DriverDetailedState extends State<DriverDetailedRequest> {
                     children: <Widget>[
                       RaisedButton(
                         onPressed: () {
-                          if(!widget.isArchived) Database().archiveDriver(widget.model);
                           EasyRouter.pop(context);
+                          if(!widget.isArchived) Database().archiveDriver(widget.model);
+                          else{
+                            Database().deleteDriverRequest(widget.model);
+                          }
                         },
                         textColor: Colors.white,
                         color: Colors.red,

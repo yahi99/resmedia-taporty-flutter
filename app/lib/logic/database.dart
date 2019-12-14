@@ -33,6 +33,8 @@ import 'package:resmedia_taporty_flutter/model/RestaurantModel.dart';
 import 'package:resmedia_taporty_flutter/model/UserModel.dart';
 import 'package:mailer/src/entities/address.dart' as add;
 
+import 'bloc/UserBloc.dart';
+
 class Database extends FirebaseDatabase
     with MixinFirestoreStripeProvider, RestaurantDb, StripeProviderRule {
   static Database _db;
@@ -257,11 +259,11 @@ class Database extends FirebaseDatabase
   }
 
   //if the order deletes and the user has already paid the control panel can reimburs the user
-  void deleteOrder(UserOrderModel order,String uid)async{
-    await fs.collection('users').document(uid).collection('user_orders').document(order.id).updateData({'state':'DELETED'});
-    await fs.collection('restaurants').document(order.restaurantId).collection('restaurant_orders').document(order.id).updateData({'state':'DELETED'});
-    await fs.collection('users').document(order.driver).collection('driver_orders').document(order.id).updateData({'state':'DELETED'});
-    await fs.collection('control_orders').document(order.id).updateData({'state':'DELETED'});
+  Future <void> deleteOrder(UserOrderModel order,String uid)async{
+    await fs.collection('users').document(uid).collection('user_orders').document(order.id).updateData({'state':'CANCELLED'});
+    await fs.collection('restaurants').document(order.restaurantId).collection('restaurant_orders').document(order.id).updateData({'state':'CANCELLED'});
+    await fs.collection('users').document(order.driver).collection('driver_orders').document(order.id).updateData({'state':'CANCELLED'});
+    await fs.collection('control_orders').document(order.id).updateData({'state':'CANCELLED'});
   }
 
   Future<void> putUser(FirebaseUser user)async{
@@ -295,10 +297,20 @@ class Database extends FirebaseDatabase
     return 'ok';
   }
 
-  Future<void> updateImgProduct(String path,ProductModel model,String previous)async{
+  Future<void> updateImgProduct(String path,FoodModel model)async{
     //TODO delete previous image
+    final previous=model.img;
     await fs.collection('restaurants').document(model.restaurantId).collection(model.path.contains('foods')?'foods':'drinks').document(model.id).updateData({'img':path});
-    _deleteFile(previous.split('/').last.split('?').first);
+    try {
+      _deleteFile(previous
+          .split('/')
+          .last
+          .split('?')
+          .first);
+    }
+    catch(e){
+      print(e.toString());
+    }
   }
 
   Future<void> deleteProduct(String product,String restId,String type)async{
@@ -341,6 +353,18 @@ class Database extends FirebaseDatabase
       'cat': model.cat
     });
     await fs.collection('product_requests').document(model.id).delete();
+  }
+
+  Future<void> deleteProductRequest(ProductRequestModel model) async {
+    await fs.collection('archived_product_requests').document(model.id).delete();
+  }
+
+  Future<void> deleteDriverRequest(DriverRequestModel model) async {
+    await fs.collection('archived_driver_requests').document(model.id).delete();
+  }
+
+  Future<void> deleteRestaurantRequest(RestaurantRequestModel model) async {
+    await fs.collection('archived_restaurant_requests').document(model.id).delete();
   }
 
   void saveToken(String fcmToken,String uid)async{
@@ -426,7 +450,7 @@ class Database extends FirebaseDatabase
     });
     await fs.collection(cl.USERS).document(model.id).updateData({'restaurantId':model.ragioneSociale,'type':'restaurant'});
     //await fs.collection('food_categories').document(model.category).setData({'translation':model.category});
-    await fs.collection('restaurant_requests').document(model.ragioneSociale).delete();
+    await fs.collection('restaurant_requests').document(model.id).delete();
     final mail= UserModel.fromFirebase(await fs.collection('users').document(model.id).get()).email;
     String user='taporty.app@gmail.com';
     String password='pwtaporty';
@@ -468,6 +492,11 @@ class Database extends FirebaseDatabase
     if (month == 10) return 'OCTOBER';
     if (month == 11) return 'NOVEMBER';
     return 'DECEMBER';
+  }
+
+  Future <void> updateRemember(bool remember)async{
+    final uid=(await UserBloc.of().outFirebaseUser.first).uid;
+    await fs.collection('users').document(uid).updateData({'remember':remember});
   }
 
   //TODO handle what happens to the orders maybe add a feature to the control panel that can assign a driver to an order

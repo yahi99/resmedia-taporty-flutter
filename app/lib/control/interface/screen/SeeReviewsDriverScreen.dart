@@ -1,19 +1,10 @@
 import 'package:easy_route/easy_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:geocoder/model.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:resmedia_taporty_flutter/drivers/interface/screen/AccountScreen.dart';
-import 'package:resmedia_taporty_flutter/interface/page/CartPage.dart';
-import 'package:resmedia_taporty_flutter/interface/page/ConfirmPage.dart';
-import 'package:resmedia_taporty_flutter/interface/page/PaymentPage.dart';
-import 'package:resmedia_taporty_flutter/interface/page/ShippingPage.dart';
-import 'package:resmedia_taporty_flutter/logic/bloc/RestaurantBloc.dart';
-import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
+import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
 import 'package:resmedia_taporty_flutter/mainRestaurant.dart';
-import 'package:resmedia_taporty_flutter/model/RestaurantModel.dart';
-import 'package:resmedia_taporty_flutter/model/ReviewModel.dart';
-import 'package:resmedia_taporty_flutter/model/UserModel.dart';
+import 'package:resmedia_taporty_flutter/common/model/ReviewModel.dart';
+import 'package:resmedia_taporty_flutter/common/model/UserModel.dart';
 
 class SeeReviewsDriverScreen extends StatefulWidget implements WidgetRoute {
   static const String ROUTE = "SeeReviewsDriverScreen";

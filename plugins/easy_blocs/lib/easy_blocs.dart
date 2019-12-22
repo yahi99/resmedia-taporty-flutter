@@ -11,7 +11,6 @@ export 'src/cart/CounterProductCart.dart';
 
 export 'src/checker/checkers/AddressChecker.dart';
 export 'src/checker/checkers/Checker.dart';
-export 'src/checker/checkers/DateTimeChecker.dart';
 export 'src/checker/checkers/EmailChecker.dart';
 export 'src/checker/checkers/IntChecker.dart';
 export 'src/checker/checkers/NominativeChecker.dart';
@@ -27,7 +26,6 @@ export 'src/checker/controllers/SubmitController.dart';
 
 export 'src/checker/widget/AddressField.dart';
 export 'src/checker/widget/CheckerField.dart';
-export 'src/checker/widget/DateField.dart';
 export 'src/checker/widget/EmailField.dart';
 export 'src/checker/widget/IntField.dart';
 export 'src/checker/widget/NominativeField.dart';

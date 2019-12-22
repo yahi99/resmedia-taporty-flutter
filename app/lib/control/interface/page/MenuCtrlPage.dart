@@ -1,22 +1,11 @@
-import 'dart:async';
-import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:easy_route/easy_route.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:resmedia_taporty_flutter/control/interface/view/ProductViewCtrl.dart';
-import 'package:resmedia_taporty_flutter/data/config.dart';
-import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
-import 'package:resmedia_taporty_flutter/logic/database.dart';
-import 'package:resmedia_taporty_flutter/model/ProductModel.dart';
-import 'package:resmedia_taporty_flutter/restaurant/view/ProductViewRestaurant.dart';
-import 'package:toast/toast.dart';
+import 'package:resmedia_taporty_flutter/common/model/ProductModel.dart';
 
 class MenuCtrlPage extends StatefulWidget implements WidgetRoute {
   final foods, drinks;

@@ -5,7 +5,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/screen/LoginScreen.dart';
-import 'package:resmedia_taporty_flutter/logic/bloc/FlavourBloc.dart';
 
 /// flutter build --flavor development -t lib/main-dev.dart
 
@@ -19,11 +18,9 @@ const red = Color(0xFFd50000),
 const STRIPE_PUBLIC_KEY = "pk_test_bI6Z2I2jFP7Tfjfm0AvIyWV500cS2fKdCO";
 
 void main() {
-  // TODO: Intervenire qui.
-  FlavorBloc.of().init(Flavor.DRIVER);
   runApp(RepositoryBuilder(
     backgroundTask: (context, sharedPreferences) async {
-      final assetHandler = await AssetHandler.init(context);
+      await AssetHandler.init(context);
     },
     builder: (_) => Taporty(),
   ));

@@ -8,7 +8,6 @@ import 'package:flutter/widgets.dart';
 import 'package:resmedia_taporty_flutter/control/logic/bloc/RequestsBloc.dart';
 import 'package:resmedia_taporty_flutter/control/model/ProductRequestModel.dart';
 import 'package:resmedia_taporty_flutter/data/config.dart';
-import 'package:resmedia_taporty_flutter/logic/database.dart';
 
 import 'ProductDetailedRequest.dart';
 
@@ -80,60 +79,6 @@ class ItemBuilder extends StatelessWidget{
     @required this.model
   });
 
-  void _showDialog(BuildContext context){
-    showDialog(
-      context: context,
-      builder: (_context) {
-        final theme = Theme.of(context);
-        final cls = theme.colorScheme;
-        return AlertDialog(
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(20))),
-          content: Wrap(
-            alignment: WrapAlignment.center,
-            runSpacing: SPACE * 2,
-            children: <Widget>[
-              Column(
-                children: <Widget>[
-                  Text(
-                    "Consenti aggiunta prodotto?",
-                    style: theme.textTheme.body2,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    //crossAxisAlignment:CrossAxisAlignment.stretch,
-                    children: <Widget>[
-                      RaisedButton(
-                        onPressed: () {
-                          EasyRouter.pop(context);
-                        },
-                        textColor: Colors.white,
-                        color: Colors.red,
-                        child: Text(
-                          "Nega",
-                        ),
-                      ),
-                      RaisedButton(
-                        onPressed: () {
-                          Database().addProduct(model);
-                          EasyRouter.pop(context);
-                        },
-                        color: Colors.green,
-                        textColor: Colors.white,
-                        child: Text(
-                          "Consenti",
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
 
   Future<Null> downloadFile(String httpPath)async{
     final RegExp regExp=RegExp('([^?/]*\.(jpg))');

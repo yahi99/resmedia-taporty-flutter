@@ -3,7 +3,6 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:easy_route/easy_route.dart';
-import 'package:easy_widget/easy_widget.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,9 +11,9 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:resmedia_taporty_flutter/data/config.dart';
-import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
-import 'package:resmedia_taporty_flutter/logic/database.dart';
-import 'package:resmedia_taporty_flutter/model/UserModel.dart';
+import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
+import 'package:resmedia_taporty_flutter/common/logic/database.dart';
+import 'package:resmedia_taporty_flutter/common/model/UserModel.dart';
 import 'package:toast/toast.dart';
 
 class BecomeRestaurantScreen extends StatefulWidget implements WidgetRoute {
@@ -70,8 +69,6 @@ class NewDriverState extends State<BecomeRestaurantScreen> {
     file.writeAsBytes(bytes.buffer.asInt8List(), mode: FileMode.write);
 
     final StorageReference ref = FirebaseStorage.instance.ref().child(fileName);
-    final StorageUploadTask task = ref.putFile(file);
-    final Uri downloadUrl = (await task.onComplete).uploadSessionUri;
 
     //_path = downloadUrl.toString();
     _path = (await ref.getDownloadURL());
@@ -161,7 +158,6 @@ class NewDriverState extends State<BecomeRestaurantScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final user = UserBloc.of();
     return Scaffold(
       appBar: AppBar(

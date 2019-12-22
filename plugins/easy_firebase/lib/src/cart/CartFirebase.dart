@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_blocs/easy_blocs.dart';
-import 'package:easy_firebase/easy_firebase.dart';
 import 'package:flutter/cupertino.dart';
 
 typedef void ProductCartFirebaseUpdater(String productId, valuesOrDelete);

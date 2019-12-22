@@ -4,8 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:resmedia_taporty_flutter/data/config.dart';
-import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
-import 'package:resmedia_taporty_flutter/model/UserModel.dart';
+import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
+import 'package:resmedia_taporty_flutter/common/model/UserModel.dart';
 
 class ChangePasswordScreen extends StatefulWidget implements WidgetRoute {
   static const ROUTE = 'ChangePasswordScreen';
@@ -38,12 +38,11 @@ class SnackBarPage extends StatelessWidget {
   Future<FirebaseUser> _handleSignIn(String email, value) async {
     final FirebaseAuth _fAuth = FirebaseAuth.instance;
     return (await _fAuth.signInWithEmailAndPassword(
-        email: email, password: value));
+        email: email, password: value)).user;
   }
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final user = UserBloc.of();
     return StreamBuilder<User>(
       stream: user.outUser,

@@ -3,11 +3,7 @@ import 'package:easy_route/easy_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:resmedia_taporty_flutter/data/config.dart';
-import 'package:resmedia_taporty_flutter/drivers/logic/bloc/CalendarBloc.dart';
-import 'package:resmedia_taporty_flutter/drivers/logic/bloc/DriverBloc.dart';
-import 'package:resmedia_taporty_flutter/drivers/model/CalendarModel.dart';
-import 'package:resmedia_taporty_flutter/logic/database.dart';
-import 'package:toast/toast.dart';
+import 'package:resmedia_taporty_flutter/common/logic/database.dart';
 
 class TurnScreen extends StatefulWidget implements WidgetRoute {
   static const ROUTE = 'TurnScreenPanel';
@@ -28,7 +24,6 @@ class _TurnScreenPanelState extends State<TurnScreen> {
   DateTime date;
   //final CalendarBloc _calendarBloc = CalendarBloc.of();
   var user;
-  final TextEditingController _quantityController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
   var dateStream = StreamController<DateTime>();
   //var timeStream = StreamController<List<CalendarModel>>();

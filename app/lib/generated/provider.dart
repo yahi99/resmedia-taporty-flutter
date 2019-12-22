@@ -9,26 +9,18 @@ import 'package:resmedia_taporty_flutter/control/logic/bloc/UsersBloc.dart';
 import 'package:resmedia_taporty_flutter/drivers/logic/bloc/CalendarBloc.dart';
 import 'package:resmedia_taporty_flutter/drivers/logic/bloc/TimeBloc.dart';
 import 'package:resmedia_taporty_flutter/drivers/logic/bloc/TurnBloc.dart';
-import 'package:resmedia_taporty_flutter/logic/bloc/CartBloc.dart';
-import 'package:resmedia_taporty_flutter/logic/bloc/DrinkBloc.dart';
-import 'package:resmedia_taporty_flutter/logic/bloc/FlavourBloc.dart';
-import 'package:resmedia_taporty_flutter/logic/bloc/FoodBloc.dart';
-import 'package:resmedia_taporty_flutter/logic/bloc/OrdersBloc.dart';
-import 'package:resmedia_taporty_flutter/logic/bloc/RestaurantBloc.dart';
-import 'package:resmedia_taporty_flutter/logic/bloc/RestaurantsBloc.dart';
-import 'package:resmedia_taporty_flutter/logic/bloc/SignUpMoreBloc.dart';
-import 'package:resmedia_taporty_flutter/logic/bloc/TypesRestaurantsBloc.dart';
-import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
+import 'package:resmedia_taporty_flutter/client/logic/bloc/CartBloc.dart';
+import 'package:resmedia_taporty_flutter/common/logic/bloc/OrdersBloc.dart';
+import 'package:resmedia_taporty_flutter/common/logic/bloc/RestaurantBloc.dart';
+import 'package:resmedia_taporty_flutter/common/logic/bloc/RestaurantsBloc.dart';
+import 'package:resmedia_taporty_flutter/client/logic/bloc/SignUpMoreBloc.dart';
+import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
 
 part 'provider.g.dart';
 
-@BlocProvider.register(FlavorBloc)
 @BlocProvider.register(UserBloc)
-@BlocProvider.register(FoodBloc)
-@BlocProvider.register(DrinkBloc)
 @BlocProvider.register(RestaurantBloc)
 @BlocProvider.register(RestaurantsBloc)
-@BlocProvider.register(TypesRestaurantBloc)
 @BlocProvider.register(RepositoryBloc)
 @BlocProvider.register(SignUpMoreBloc)
 @BlocProvider.register(CartBloc)

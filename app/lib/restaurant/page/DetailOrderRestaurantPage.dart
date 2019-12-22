@@ -3,9 +3,9 @@ import 'package:easy_blocs/easy_blocs.dart';
 import 'package:easy_route/easy_route.dart';
 import 'package:flutter/material.dart';
 import 'package:resmedia_taporty_flutter/data/config.dart';
-import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
-import 'package:resmedia_taporty_flutter/logic/database.dart';
-import 'package:resmedia_taporty_flutter/model/OrderModel.dart';
+import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
+import 'package:resmedia_taporty_flutter/common/logic/database.dart';
+import 'package:resmedia_taporty_flutter/common/model/OrderModel.dart';
 
 class DetailOrderRestaurantPage extends StatefulWidget implements WidgetRoute {
   static const ROUTE = "DetailOrderPageDriver";
@@ -229,9 +229,6 @@ class ProductView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    //if(model.number!=null) downloadFile(model.img);
-
-    TextEditingController ctrl=new TextEditingController();
     return DefaultTextStyle(
       style: theme.textTheme.body1,
       child: SizedBox(

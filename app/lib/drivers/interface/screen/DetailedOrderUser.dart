@@ -1,11 +1,8 @@
-import 'package:cloud_functions/cloud_functions.dart';
 import 'package:easy_blocs/easy_blocs.dart';
 import 'package:easy_route/easy_route.dart';
 import 'package:flutter/material.dart';
 import 'package:resmedia_taporty_flutter/data/config.dart';
-import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
-import 'package:resmedia_taporty_flutter/logic/database.dart';
-import 'package:resmedia_taporty_flutter/model/OrderModel.dart';
+import 'package:resmedia_taporty_flutter/common/model/OrderModel.dart';
 
 class DetailedOrderUser extends StatefulWidget implements WidgetRoute {
   static const ROUTE = "DetailedOrderUser";
@@ -110,7 +107,6 @@ class ProductView extends StatelessWidget {
     final theme = Theme.of(context);
     //if(model.number!=null) downloadFile(model.img);
 
-    TextEditingController ctrl=new TextEditingController();
     return DefaultTextStyle(
       style: theme.textTheme.body1,
       child: SizedBox(

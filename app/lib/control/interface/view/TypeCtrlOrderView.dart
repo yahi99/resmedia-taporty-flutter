@@ -6,11 +6,9 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:resmedia_taporty_flutter/control/interface/page/DetailedOrderCtrlPage.dart';
 import 'package:resmedia_taporty_flutter/data/config.dart';
-import 'package:resmedia_taporty_flutter/logic/database.dart';
-import 'package:resmedia_taporty_flutter/model/OrderModel.dart';
-import 'package:resmedia_taporty_flutter/restaurant/page/DetailOrderRestaurantPage.dart';
+import 'package:resmedia_taporty_flutter/common/logic/database.dart';
+import 'package:resmedia_taporty_flutter/common/model/OrderModel.dart';
 import 'package:toast/toast.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class TypeCtrlOrderView extends StatelessWidget {
   final RestaurantOrderModel model;
@@ -33,7 +31,6 @@ class TypeCtrlOrderView extends StatelessWidget {
       context: context,
       builder: (_context) {
         final theme = Theme.of(context);
-        final cls = theme.colorScheme;
         return AlertDialog(
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(20))),

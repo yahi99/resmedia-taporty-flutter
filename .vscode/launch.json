@@ -1,0 +1,48 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Client",
+            "program": "app/lib/main.dart",
+            "request": "launch",
+            "type": "dart",
+            "args": [
+                "--flavor",
+                "client"
+            ]
+        },
+        {
+            "name": "Restaurant",
+            "program": "app/lib/mainRestaurant.dart",
+            "request": "launch",
+            "type": "dart",
+            "args": [
+                "--flavor",
+                "restaurant"
+            ]
+        },
+        {
+            "name": "Control",
+            "program": "app/lib/mainControl.dart",
+            "request": "launch",
+            "type": "dart",
+            "args": [
+                "--flavor",
+                "control"
+            ]
+        },
+        {
+            "name": "Driver",
+            "program": "app/lib/mainDriver.dart",
+            "request": "launch",
+            "type": "dart",
+            "args": [
+                "--flavor",
+                "driver"
+            ]
+        }
+    ]
+}

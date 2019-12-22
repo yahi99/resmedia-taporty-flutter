@@ -4,8 +4,8 @@ import 'package:easy_firebase/easy_firebase.dart';
 import 'package:meta/meta.dart';
 import 'package:resmedia_taporty_flutter/drivers/model/TurnModel.dart';
 import 'package:resmedia_taporty_flutter/generated/provider.dart';
-import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
-import 'package:resmedia_taporty_flutter/logic/database.dart';
+import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
+import 'package:resmedia_taporty_flutter/common/logic/database.dart';
 import 'package:rxdart/rxdart.dart';
 
 class TimetableBloc implements Bloc {

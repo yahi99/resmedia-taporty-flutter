@@ -9,25 +9,24 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:resmedia_taporty_flutter/control/interface/screen/ManageProduct.dart';
 import 'package:resmedia_taporty_flutter/control/logic/bloc/ProductBloc.dart';
 import 'package:resmedia_taporty_flutter/data/config.dart';
-import 'package:resmedia_taporty_flutter/logic/database.dart';
-import 'package:resmedia_taporty_flutter/model/ProductModel.dart';
+import 'package:resmedia_taporty_flutter/common/logic/database.dart';
+import 'package:resmedia_taporty_flutter/common/model/ProductModel.dart';
 import 'package:toast/toast.dart';
 
 class ProductViewCtrl extends StatelessWidget {
   final ProductModel model;
   //final StreamController<String> imgStream=new StreamController.broadcast();
 
-  ProductViewCtrl({Key key, @required this.model})
-      : super(key: key);
+  ProductViewCtrl({Key key, @required this.model}) : super(key: key);
 
-  Future<Null> downloadFile(String httpPath)async{
-    final RegExp regExp=RegExp('([^?/]*\.(jpg))');
-    final String fileName=regExp.stringMatch(httpPath);
-    final Directory tempDir= Directory.systemTemp;
-    final File file=File('${tempDir.path}/$fileName');
-    final StorageReference ref=FirebaseStorage.instance.ref().child(fileName);
-    final StorageFileDownloadTask downloadTask=ref.writeToFile(file);
-    final int byteNumber=(await downloadTask.future).totalByteCount;
+  Future<Null> downloadFile(String httpPath) async {
+    final RegExp regExp = RegExp('([^?/]*\.(jpg))');
+    final String fileName = regExp.stringMatch(httpPath);
+    final Directory tempDir = Directory.systemTemp;
+    final File file = File('${tempDir.path}/$fileName');
+    final StorageReference ref = FirebaseStorage.instance.ref().child(fileName);
+    final StorageFileDownloadTask downloadTask = ref.writeToFile(file);
+    final int byteNumber = (await downloadTask.future).totalByteCount;
     print(byteNumber);
     //put the file into the stream
     //imgStream.add(file.path);
@@ -38,7 +37,6 @@ class ProductViewCtrl extends StatelessWidget {
       context: context,
       builder: (_context) {
         final theme = Theme.of(context);
-        final cls = theme.colorScheme;
         return AlertDialog(
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(20))),
@@ -68,7 +66,14 @@ class ProductViewCtrl extends StatelessWidget {
                       ),
                       RaisedButton(
                         onPressed: () {
-                          Database().deleteProduct(model.id, model.restaurantId, model.path.contains('foods')?'foods':'drinks').then((value) {
+                          Database()
+                              .deleteProduct(
+                                  model.id,
+                                  model.restaurantId,
+                                  model.path.contains('foods')
+                                      ? 'foods'
+                                      : 'drinks')
+                              .then((value) {
                             Toast.show('Prodotto cancellato', context);
                             EasyRouter.pop(context);
                           });
@@ -107,7 +112,7 @@ class ProductViewCtrl extends StatelessWidget {
         ),
       ],
       child: InkWell(
-        child:DefaultTextStyle(
+        child: DefaultTextStyle(
           style: theme.textTheme.body1,
           child: SizedBox(
             height: 110,
@@ -122,13 +127,15 @@ class ProductViewCtrl extends StatelessWidget {
                         aspectRatio: 1,
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(16.0),
-                          child: (model.img.startsWith('assets'))?Image.asset(
-                            model.img,
-                            fit: BoxFit.fitHeight,
-                          ):Image.network(
-                            model.img,
-                            fit: BoxFit.fitHeight,
-                          ),
+                          child: (model.img.startsWith('assets'))
+                              ? Image.asset(
+                                  model.img,
+                                  fit: BoxFit.fitHeight,
+                                )
+                              : Image.network(
+                                  model.img,
+                                  fit: BoxFit.fitHeight,
+                                ),
                         ),
                       ),
                     ),
@@ -139,7 +146,11 @@ class ProductViewCtrl extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Flexible(child:Container(child: Text(model.id),width: MediaQuery.of(context).size.width*2/5),),
+                        Flexible(
+                          child: Container(
+                              child: Text(model.id),
+                              width: MediaQuery.of(context).size.width * 2 / 5),
+                        ),
                         Text('€ ${model.price}'),
                       ],
                     ),
@@ -149,8 +160,12 @@ class ProductViewCtrl extends StatelessWidget {
             ),
           ),
         ),
-        onTap: (){
-          EasyRouter.push(context, ManageProduct(prod: ProductBloc.init(model:model),));
+        onTap: () {
+          EasyRouter.push(
+              context,
+              ManageProduct(
+                prod: ProductBloc.init(model: model),
+              ));
         },
       ),
     );

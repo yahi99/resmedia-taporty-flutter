@@ -9,14 +9,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:resmedia_taporty_flutter/data/config.dart';
-import 'package:resmedia_taporty_flutter/drivers/interface/sliver/SliverOrderVoid.dart';
-import 'package:resmedia_taporty_flutter/drivers/interface/view/TurnView.dart';
-import 'package:resmedia_taporty_flutter/drivers/logic/bloc/TurnBloc.dart';
-import 'package:resmedia_taporty_flutter/drivers/model/TurnModel.dart';
-import 'package:resmedia_taporty_flutter/interface/screen/SeeReviewsScreen.dart';
-import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
-import 'package:resmedia_taporty_flutter/logic/database.dart';
-import 'package:resmedia_taporty_flutter/model/RestaurantModel.dart';
+import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
+import 'package:resmedia_taporty_flutter/common/logic/database.dart';
+import 'package:resmedia_taporty_flutter/common/model/RestaurantModel.dart';
 import 'package:toast/toast.dart';
 
 class ManageRestPage extends StatefulWidget implements WidgetRoute {
@@ -51,10 +46,6 @@ class _TurnWorkTabDriverState extends State<ManageRestPage> {
     await file.writeAsBytes(bytes, mode: FileMode.write);
 
     final StorageReference ref = FirebaseStorage.instance.ref().child(fileName);
-    final StorageUploadTask task = ref.putFile(file);
-    //final Uri downloadUrl = (await task.onComplete).uploadSessionUri;
-
-    //_path = downloadUrl.toString();
     _path = (await ref.getDownloadURL());
     print(_path);
     return _path;
@@ -304,7 +295,6 @@ class _TurnWorkTabDriverState extends State<ManageRestPage> {
                             context,
                             duration: 3);
                       } else {
-                        final img=widget.rest.img;
                         uploadFile(path).then((path) async {
                           Database()
                               .updateImg(

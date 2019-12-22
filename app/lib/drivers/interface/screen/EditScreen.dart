@@ -1,18 +1,14 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_blocs/easy_blocs.dart';
 import 'package:easy_route/easy_route.dart';
 import 'package:easy_widget/easy_widget.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:resmedia_taporty_flutter/data/config.dart';
-import 'package:resmedia_taporty_flutter/interface/screen/LoginScreen.dart';
-import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
-import 'package:resmedia_taporty_flutter/logic/database.dart';
-import 'package:resmedia_taporty_flutter/model/UserModel.dart';
+import 'package:resmedia_taporty_flutter/drivers/interface/screen/LoginScreen.dart';
+import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
+import 'package:resmedia_taporty_flutter/common/logic/database.dart';
+import 'package:resmedia_taporty_flutter/common/model/UserModel.dart';
 
 class EditScreen extends StatefulWidget implements WidgetRoute {
   static const ROUTE = 'EditScreen';
@@ -40,7 +36,6 @@ class SnackBarPage extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
   final _passKey = GlobalKey<FormFieldState>();
   final _nameKey = GlobalKey<FormFieldState>();
-  final _lastKey = GlobalKey<FormFieldState>();
 
   @override
   Widget build(BuildContext context) {

@@ -8,8 +8,8 @@ import 'package:resmedia_taporty_flutter/data/config.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/widget/GoogleMapsUI.dart';
 import 'package:resmedia_taporty_flutter/drivers/model/OrderModel.dart';
 import 'package:resmedia_taporty_flutter/drivers/model/SubjectModel.dart';
-import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
-import 'package:resmedia_taporty_flutter/logic/database.dart';
+import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
+import 'package:resmedia_taporty_flutter/common/logic/database.dart';
 import 'package:resmedia_taporty_flutter/utility/google_maps_widget.dart';
 
 class SubjectOrderPageDriver extends StatefulWidget implements WidgetRoute {
@@ -23,7 +23,7 @@ class SubjectOrderPageDriver extends StatefulWidget implements WidgetRoute {
   final LatLng userPos;
 
   SubjectOrderPageDriver(
-      {Key key, @required this.model, @required this.orderModel,@required this.isRest,this.userPos})
+      {Key key, this.model, this.orderModel, this.isRest, this.userPos})
       : super(key: key);
 
   @override
@@ -54,8 +54,6 @@ class _SubjectOrderPageDriverState extends State<SubjectOrderPageDriver> {
     showDialog(
       context: context,
       builder: (_context) {
-        final theme = Theme.of(context);
-        final cls = theme.colorScheme;
         return AlertDialog(
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(20))),
@@ -216,7 +214,13 @@ class _SubjectOrderPageDriverState extends State<SubjectOrderPageDriver> {
                         final driverLat =
                             LatLng(driverPos.latitude, driverPos.longitude);
 
-                        routeBloc.getRouteTo(driverLat, widget.isRest?restPos:LatLng(widget.orderModel.latR,widget.orderModel.lngR), context);
+                        routeBloc.getRouteTo(
+                            driverLat,
+                            widget.isRest
+                                ? restPos
+                                : LatLng(widget.orderModel.latR,
+                                    widget.orderModel.lngR),
+                            context);
                       },
                       child: Text(
                         "Start",
@@ -230,10 +234,11 @@ class _SubjectOrderPageDriverState extends State<SubjectOrderPageDriver> {
                   Expanded(
                     child: RaisedButton(
                       onPressed: () {
-                        _askPermission(context, widget.isRest?'PICKED_UP':'DELIVERED');
+                        _askPermission(
+                            context, widget.isRest ? 'PICKED_UP' : 'DELIVERED');
                       },
                       child: Text(
-                        widget.isRest?"Ritirato":"Consegnato",
+                        widget.isRest ? "Ritirato" : "Consegnato",
                         style: tt.button,
                       ),
                     ),

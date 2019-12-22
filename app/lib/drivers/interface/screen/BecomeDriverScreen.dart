@@ -1,15 +1,14 @@
 import 'dart:async';
 
 import 'package:easy_route/easy_route.dart';
-import 'package:easy_widget/easy_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:resmedia_taporty_flutter/data/config.dart';
-import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
-import 'package:resmedia_taporty_flutter/logic/database.dart';
-import 'package:resmedia_taporty_flutter/model/UserModel.dart';
+import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
+import 'package:resmedia_taporty_flutter/common/logic/database.dart';
+import 'package:resmedia_taporty_flutter/common/model/UserModel.dart';
 import 'package:toast/toast.dart';
 
 class BecomeDriverScreen extends StatefulWidget implements WidgetRoute {
@@ -97,16 +96,17 @@ class NewDriverState extends State<BecomeDriverScreen> {
     }
   }
 
-  Future<void> _upgrade(String uid,BuildContext context,String nominative){
+  Future _upgrade(String uid,BuildContext context,String nominative){
     if(_formKey.currentState.validate()) {
       //Can add all the data that is required in the future
-      Database().upgradeToDriver(uid: uid,car: _carKey.currentState.value,
+      return Database().upgradeToDriver(uid: uid,car: _carKey.currentState.value,
           codiceFiscale: _fiscKey.currentState.value,address: _resKey.currentState.value,
           km: double.tryParse(_copKey.currentState.value),exp:_expKey.currentState.value,
           pos: pos,nominative: nominative).then((value){
         Toast.show('Richiesta andata a buon fine!', context,duration: 3);
       });
     }
+    return null;
   }
 
   void _changeFocus(
@@ -117,7 +117,6 @@ class NewDriverState extends State<BecomeDriverScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final user = UserBloc.of();
     return Scaffold(
       appBar: AppBar(

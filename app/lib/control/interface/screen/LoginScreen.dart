@@ -7,15 +7,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:resmedia_taporty_flutter/control/interface/screen/HomeScreenPanel.dart';
 import 'package:resmedia_taporty_flutter/data/config.dart';
-import 'package:resmedia_taporty_flutter/drivers/interface/screen/HomeScreen.dart';
-import 'package:resmedia_taporty_flutter/drivers/logic/bloc/CalendarBloc.dart';
-import 'package:resmedia_taporty_flutter/drivers/logic/bloc/TurnBloc.dart';
-import 'package:resmedia_taporty_flutter/interface/view/logo_view.dart';
-import 'package:resmedia_taporty_flutter/logic/bloc/OrdersBloc.dart';
-import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
-import 'package:resmedia_taporty_flutter/logic/database.dart';
-import 'package:resmedia_taporty_flutter/model/UserModel.dart';
-import 'package:toast/toast.dart';
+import 'package:resmedia_taporty_flutter/common/interface/view/LogoView.dart';
+import 'package:resmedia_taporty_flutter/common/logic/bloc/OrdersBloc.dart';
+import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
+import 'package:resmedia_taporty_flutter/common/logic/database.dart';
+import 'package:resmedia_taporty_flutter/common/model/UserModel.dart';
 
 //import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 //import 'package:firebase_auth/firebase_auth.dart';
@@ -39,7 +35,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   final FirebaseSignInBloc _submitBloc =
   FirebaseSignInBloc.init(controller: UserBloc.of());
-  final _userBloc = UserBloc.of();
 
   //StreamSubscription registrationLevelSub;
 
@@ -104,8 +99,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final cls = theme.colorScheme;
     return StreamBuilder<FirebaseUser>(
       stream: FirebaseAuth.instance.onAuthStateChanged,
       builder: (ctx,userSnapshot){

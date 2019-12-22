@@ -1,16 +1,12 @@
 import 'dart:async';
 
 import 'package:cloud_functions/cloud_functions.dart';
-import 'package:easy_blocs/easy_blocs.dart';
 import 'package:easy_route/easy_route.dart';
 import 'package:flutter/material.dart';
 import 'package:resmedia_taporty_flutter/data/config.dart';
-import 'package:resmedia_taporty_flutter/drivers/interface/screen/DetailedOrderUser.dart';
-import 'package:resmedia_taporty_flutter/logic/bloc/CartBloc.dart';
-import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
-import 'package:resmedia_taporty_flutter/logic/database.dart';
-import 'package:resmedia_taporty_flutter/model/OrderModel.dart';
-import 'package:resmedia_taporty_flutter/model/UserModel.dart';
+import 'package:resmedia_taporty_flutter/common/logic/database.dart';
+import 'package:resmedia_taporty_flutter/common/model/OrderModel.dart';
+import 'package:resmedia_taporty_flutter/common/model/UserModel.dart';
 import 'package:toast/toast.dart';
 
 class DetailOrderCtrlPage extends StatefulWidget implements WidgetRoute {
@@ -66,7 +62,6 @@ class _DetailOrderRestaurantPageState extends State<DetailOrderCtrlPage> {
       context: context,
       builder: (_context) {
         final theme = Theme.of(context);
-        final cls = theme.colorScheme;
         return AlertDialog(
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(20))),
@@ -144,7 +139,6 @@ class _DetailOrderRestaurantPageState extends State<DetailOrderCtrlPage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final tt = theme.textTheme;
-    final cart = Cart(products: widget.model.products);
     return StreamBuilder(
       stream: Database().getCtrlOrder(widget.model.id),
       builder: (ctx,order){

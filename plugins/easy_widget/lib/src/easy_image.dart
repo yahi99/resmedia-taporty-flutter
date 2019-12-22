@@ -113,7 +113,7 @@ class _EasyImageState extends State<EasyImage> {
         return Center(child: CircularProgressIndicator(),
         );
         break;
-      case ImageStatus.ERROR:
+      default:
         return Center(
           child: IconButton(
             onPressed: _reloading,

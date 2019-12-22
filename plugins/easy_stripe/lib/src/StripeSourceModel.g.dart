@@ -56,8 +56,8 @@ Map<String, dynamic> _$StripeCardModelToJson(StripeCardModel instance) {
   writeNotNull('brand', StripeCardModel.brandToJson(instance.brand));
   writeNotNull('fingerprint', instance.fingerprint);
   writeNotNull('last4', instance.last4);
-  writeNotNull('exp_month', instance.exp_month);
-  writeNotNull('exp_year', instance.exp_year);
+  writeNotNull('exp_month', instance.expMonth);
+  writeNotNull('exp_year', instance.expYear);
   writeNotNull('name', instance.name);
   return val;
 }

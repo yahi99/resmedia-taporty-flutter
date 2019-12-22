@@ -4,14 +4,13 @@ import 'package:easy_blocs/easy_blocs.dart';
 import 'package:meta/meta.dart';
 import 'package:resmedia_taporty_flutter/drivers/model/CalendarModel.dart';
 import 'package:resmedia_taporty_flutter/generated/provider.dart';
-import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
-import 'package:resmedia_taporty_flutter/logic/database.dart';
+import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
+import 'package:resmedia_taporty_flutter/common/logic/database.dart';
 import 'package:rxdart/rxdart.dart';
 
 class CalendarBloc implements Bloc {
   final _db = Database();
 
-  @protected
   static CalendarBloc instance() => CalendarBloc();
 
   @protected

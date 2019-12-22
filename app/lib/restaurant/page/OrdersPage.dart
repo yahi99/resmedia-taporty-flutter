@@ -2,9 +2,9 @@ import 'package:easy_route/easy_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:resmedia_taporty_flutter/interface/view/CardListView.dart';
-import 'package:resmedia_taporty_flutter/interface/view/TypeOrderView.dart';
-import 'package:resmedia_taporty_flutter/model/OrderModel.dart';
+import 'package:resmedia_taporty_flutter/common/interface/view/CardListView.dart';
+import 'package:resmedia_taporty_flutter/restaurant/interface/view/TypeOrderView.dart';
+import 'package:resmedia_taporty_flutter/common/model/OrderModel.dart';
 
 class OrdersPage extends StatefulWidget implements WidgetRoute {
   final List<RestaurantOrderModel> list;

@@ -2,19 +2,15 @@ import 'dart:async';
 
 import 'package:easy_blocs/easy_blocs.dart';
 import 'package:easy_route/easy_route.dart';
-import 'package:easy_widget/easy_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:resmedia_taporty_flutter/data/config.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/screen/DetailedOrderUser.dart';
-import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
-import 'package:resmedia_taporty_flutter/logic/database.dart';
-import 'package:resmedia_taporty_flutter/model/OrderModel.dart';
-import 'package:resmedia_taporty_flutter/model/ProductModel.dart';
-import 'package:toast/toast.dart';
-import 'package:vibration/vibration.dart';
+import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
+import 'package:resmedia_taporty_flutter/common/logic/database.dart';
+import 'package:resmedia_taporty_flutter/common/model/OrderModel.dart';
 
 class TypeOrderView extends StatefulWidget implements WidgetRoute {
 static const String ROUTE = "TypeOrderView";
@@ -84,8 +80,6 @@ class _LoginScreenState extends State<TypeOrderView> {
     showDialog(
         context: context,
         builder: (_context) {
-          final theme = Theme.of(context);
-          final cls = theme.colorScheme;
           return AlertDialog(
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(20))),
@@ -215,7 +209,6 @@ class _LoginScreenState extends State<TypeOrderView> {
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
-    var textButtonTheme = theme.textTheme.title.copyWith(color: Colors.white);
     final cart = Cart(products: widget.model.products);
     return StreamBuilder<UserOrderModel>(
       stream: Database().getUserOrder(widget.model.uid, widget.model.id),

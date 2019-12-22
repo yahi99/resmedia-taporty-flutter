@@ -41,12 +41,6 @@ class PapyrusController {
       _listeners.forEach((listener) => listener());
     }
   }
-
-  void _listener(int page) {
-    if (_children.length-1 != page) {
-      pop();
-    }
-  }
 }
 
 @deprecated

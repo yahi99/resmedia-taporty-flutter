@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "84538476825-gdq9ed7ata61t59vf1e0kuas9dt4m4h6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "it.resmedia.taporty.client",
+            "certificate_hash": "f59e3286bd86a2712f5cb9f21a325b0da84b2719"
+          }
+        },
+        {
           "client_id": "84538476825-78c067p5ptpie5r5pbc1fp2e0seg9aoo.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -59,6 +67,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "84538476825-ll92qe1epaopipe8do51ip0o7h2uo266.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "it.resmedia.taporty.control",
+            "certificate_hash": "f59e3286bd86a2712f5cb9f21a325b0da84b2719"
+          }
+        },
+        {
+          "client_id": "84538476825-ba4n1i22i2gsr0gn8m41835rh8s8jr2h.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "it.resmedia.taporty.control",
+            "certificate_hash": "6b6ddc63b409361a3ee6c6a947c8d3d79bbad25d"
+          }
+        },
+        {
           "client_id": "84538476825-1r0ma4t1g54gr5j95vk1b3e356pursm1.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -95,6 +119,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "84538476825-1t029v10b8vr11c0vmk74b49re8hkapb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "it.resmedia.taporty.driver",
+            "certificate_hash": "f59e3286bd86a2712f5cb9f21a325b0da84b2719"
+          }
+        },
+        {
+          "client_id": "84538476825-e8rc88gtais9n808l8u6j0cahrphjkke.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "it.resmedia.taporty.driver",
+            "certificate_hash": "6b6ddc63b409361a3ee6c6a947c8d3d79bbad25d"
+          }
+        },
+        {
           "client_id": "84538476825-1r0ma4t1g54gr5j95vk1b3e356pursm1.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -130,6 +170,22 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "84538476825-f1ct6ms57cq2anl2tjihuta083vjkp5s.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "it.resmedia.taporty.restaurant",
+            "certificate_hash": "f59e3286bd86a2712f5cb9f21a325b0da84b2719"
+          }
+        },
+        {
+          "client_id": "84538476825-nt1t85rbmd37tov2m9qi6k7ajlf0fpj3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "it.resmedia.taporty.restaurant",
+            "certificate_hash": "6b6ddc63b409361a3ee6c6a947c8d3d79bbad25d"
+          }
+        },
         {
           "client_id": "84538476825-1r0ma4t1g54gr5j95vk1b3e356pursm1.apps.googleusercontent.com",
           "client_type": 3

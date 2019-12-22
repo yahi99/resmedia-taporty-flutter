@@ -9,25 +9,10 @@ part of 'provider.dart';
 class $Provider extends Provider {
   static T of<T extends Bloc>() {
     switch (T) {
-      case FlavorBloc:
-        {
-          return BlocCache.getBlocInstance(
-              "FlavorBloc", () => FlavorBloc.instance());
-        }
       case UserBloc:
         {
           return BlocCache.getBlocInstance(
               "UserBloc", () => UserBloc.instance());
-        }
-      case FoodBloc:
-        {
-          return BlocCache.getBlocInstance(
-              "FoodBloc", () => FoodBloc.instance());
-        }
-      case DrinkBloc:
-        {
-          return BlocCache.getBlocInstance(
-              "DrinkBloc", () => DrinkBloc.instance());
         }
       case RestaurantBloc:
         {
@@ -38,11 +23,6 @@ class $Provider extends Provider {
         {
           return BlocCache.getBlocInstance(
               "RestaurantsBloc", () => RestaurantsBloc.instance());
-        }
-      case TypesRestaurantBloc:
-        {
-          return BlocCache.getBlocInstance(
-              "TypesRestaurantBloc", () => TypesRestaurantBloc.instance());
         }
       case RepositoryBloc:
         {
@@ -115,24 +95,9 @@ class $Provider extends Provider {
 
   static void dispose<T extends Bloc>() {
     switch (T) {
-      case FlavorBloc:
-        {
-          BlocCache.dispose("FlavorBloc");
-          break;
-        }
       case UserBloc:
         {
           BlocCache.dispose("UserBloc");
-          break;
-        }
-      case FoodBloc:
-        {
-          BlocCache.dispose("FoodBloc");
-          break;
-        }
-      case DrinkBloc:
-        {
-          BlocCache.dispose("DrinkBloc");
           break;
         }
       case RestaurantBloc:
@@ -143,11 +108,6 @@ class $Provider extends Provider {
       case RestaurantsBloc:
         {
           BlocCache.dispose("RestaurantsBloc");
-          break;
-        }
-      case TypesRestaurantBloc:
-        {
-          BlocCache.dispose("TypesRestaurantBloc");
           break;
         }
       case RepositoryBloc:

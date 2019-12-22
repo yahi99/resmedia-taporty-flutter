@@ -1,16 +1,13 @@
-import 'dart:async';
 
 import 'package:easy_route/easy_route.dart';
 import 'package:easy_widget/easy_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:pocket_map/pocket_map.dart';
 import 'package:resmedia_taporty_flutter/data/config.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/page/OrdersPage.dart';
-import 'package:resmedia_taporty_flutter/drivers/logic/bloc/DriverBloc.dart';
 import 'package:resmedia_taporty_flutter/drivers/model/OrderModel.dart';
 import 'package:resmedia_taporty_flutter/drivers/model/SubjectModel.dart';
-import 'package:resmedia_taporty_flutter/model/OrderModel.dart';
+import 'package:resmedia_taporty_flutter/common/model/OrderModel.dart';
 import 'package:rubber/rubber.dart';
 
 final house = LatLngModel(lat: 45.386485, lng: 11.895141);
@@ -106,10 +103,8 @@ class OrdersTabDriver extends StatefulWidget {
 
 class _OrdersTabDriverState extends State<OrdersTabDriver>
     with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
-  final DriverBloc _driverBloc = DriverBloc.of();
   ScrollController _scrollController;
   RubberAnimationController _rubberController;
-  Completer<PocketMapController> _mapController = Completer();
 
   @override
   void initState() {
@@ -224,7 +219,7 @@ class _OrdersTabDriverState extends State<OrdersTabDriver>
   }
 
   @override
-  // TODO: implement wantKeepAlive
+  
   bool get wantKeepAlive => true;
 }
 

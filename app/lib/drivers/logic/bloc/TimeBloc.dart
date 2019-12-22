@@ -3,13 +3,12 @@ import 'package:easy_blocs/easy_blocs.dart';
 import 'package:meta/meta.dart';
 import 'package:resmedia_taporty_flutter/drivers/model/ShiftModel.dart';
 import 'package:resmedia_taporty_flutter/generated/provider.dart';
-import 'package:resmedia_taporty_flutter/logic/database.dart';
+import 'package:resmedia_taporty_flutter/common/logic/database.dart';
 import 'package:rxdart/rxdart.dart';
 
 class TimeBloc implements Bloc {
   final _db = Database();
 
-  @protected
   static TimeBloc instance() => TimeBloc();
 
   @protected

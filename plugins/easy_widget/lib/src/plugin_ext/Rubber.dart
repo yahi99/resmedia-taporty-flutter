@@ -62,7 +62,7 @@ class PrimaryRubberController extends InheritedWidget {
         super(key: key, child: child);
 
   static RubberAnimationController of(BuildContext context) {
-    return (context.inheritFromWidgetOfExactType(
+    return (context.dependOnInheritedWidgetOfExactType(aspect: 
         PrimaryRubberController) as PrimaryRubberController).controller;
   }
 

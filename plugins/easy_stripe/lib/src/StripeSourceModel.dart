@@ -29,11 +29,11 @@ class StripeCardModel {
   final BrandOfPaymentCard brand;
   final String fingerprint;
   final String last4;
-  final int exp_month;
-  final int exp_year;
+  final int expMonth;
+  final int expYear;
   final String name;
 
-  StripeCardModel(this.brand, this.fingerprint, this.last4, this.exp_month,this.exp_year,this.name);
+  StripeCardModel(this.brand, this.fingerprint, this.last4, this.expMonth,this.expYear,this.name);
 
   static StripeCardModel fromJson(Map json) => _$StripeCardModelFromJson(json);
   Map<String, dynamic> toJson() => _$StripeCardModelToJson(this);

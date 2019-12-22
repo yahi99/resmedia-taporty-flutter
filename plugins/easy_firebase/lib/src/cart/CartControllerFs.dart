@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:easy_blocs/easy_blocs.dart';
 import 'package:easy_firebase/src/cart/CartFirebase.dart';
-import 'package:easy_firebase/src/database/Models.dart';
 import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 

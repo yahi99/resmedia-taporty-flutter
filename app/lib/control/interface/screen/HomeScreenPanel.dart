@@ -4,21 +4,15 @@ import 'package:easy_route/easy_route.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:resmedia_taporty_flutter/common/helper/LoginHelper.dart';
 import 'package:resmedia_taporty_flutter/control/interface/screen/DriverRequests.dart';
-import 'package:resmedia_taporty_flutter/control/interface/screen/LoginScreen.dart';
 import 'package:resmedia_taporty_flutter/control/interface/screen/ManageOrders.dart';
 import 'package:resmedia_taporty_flutter/control/interface/screen/ProductRequestsScreen.dart';
 import 'package:resmedia_taporty_flutter/control/interface/screen/ResetPasswordAdmin.dart';
 import 'package:resmedia_taporty_flutter/control/interface/screen/RestaurantRequestScreen.dart';
-import 'package:resmedia_taporty_flutter/control/interface/screen/TurnScreen.dart';
-import 'package:resmedia_taporty_flutter/drivers/logic/bloc/CalendarBloc.dart';
-import 'package:resmedia_taporty_flutter/drivers/logic/bloc/DriverBloc.dart';
-import 'package:resmedia_taporty_flutter/interface/screen/LoginScreen.dart';
-import 'package:resmedia_taporty_flutter/logic/bloc/OrdersBloc.dart';
-import 'package:resmedia_taporty_flutter/logic/bloc/RestaurantBloc.dart';
-import 'package:resmedia_taporty_flutter/logic/bloc/RestaurantsBloc.dart';
-import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
-import 'package:resmedia_taporty_flutter/model/OrderModel.dart';
+import 'package:resmedia_taporty_flutter/common/logic/bloc/OrdersBloc.dart';
+import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
+import 'package:resmedia_taporty_flutter/common/model/OrderModel.dart';
 
 import 'CreateAdminScreen.dart';
 import 'ManageRestaurants.dart';
@@ -64,8 +58,8 @@ class _HomeScreenPanelState extends State<HomeScreenPanel> {
     );
   }
 
-  void firebaseCloudMessaging_Listeners() {
-    if (Platform.isIOS) iOS_Permission();
+  void firebaseCloudMessagingListeners() {
+    if (Platform.isIOS) iOSPermission();
     print('ok');
     _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
@@ -81,7 +75,7 @@ class _HomeScreenPanelState extends State<HomeScreenPanel> {
     );
   }
 
-  void iOS_Permission() {
+  void iOSPermission() {
     _firebaseMessaging.requestNotificationPermissions(
         IosNotificationSettings(sound: true, badge: true, alert: true));
     _firebaseMessaging.onIosSettingsRegistered
@@ -111,8 +105,8 @@ class _HomeScreenPanelState extends State<HomeScreenPanel> {
     //setUser();
     dateStream = StreamController<DateTime>.broadcast();
     orderBloc = OrdersBloc.of();
-    firebaseCloudMessaging_Listeners();
-    firebaseCloudMessaging_Listeners();
+    firebaseCloudMessagingListeners();
+    firebaseCloudMessagingListeners();
     super.initState();
     //final bloc=TurnBloc.of();
     //bloc.setTurnStream();
@@ -177,7 +171,6 @@ class _HomeScreenPanelState extends State<HomeScreenPanel> {
                 child: Text('Log Out'),
                 onPressed: () async {
                   UserBloc.of().logout();
-                  //EasyRouter.pushAndRemoveAll(context, LoginScreen());
                 },
               ),
             ],

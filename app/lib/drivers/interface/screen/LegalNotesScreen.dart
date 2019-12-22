@@ -16,7 +16,6 @@ class _LegalNotesState extends State<LegalNotesScreen> {
   var cookie = false;
   var conditions = false;
   var privacy = false;
-  var _bodyHeight = 100.0;
 
   @override
   Widget build(BuildContext context) {

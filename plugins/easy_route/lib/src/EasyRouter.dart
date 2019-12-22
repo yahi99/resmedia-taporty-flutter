@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:bloc_provider/bloc_provider.dart';
 import 'package:easy_route/src/Common.dart';
 import 'package:flutter/cupertino.dart' as cp;
 import 'package:flutter/widgets.dart';

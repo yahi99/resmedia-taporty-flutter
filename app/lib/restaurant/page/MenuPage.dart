@@ -11,9 +11,9 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:resmedia_taporty_flutter/data/config.dart';
-import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
-import 'package:resmedia_taporty_flutter/logic/database.dart';
-import 'package:resmedia_taporty_flutter/model/ProductModel.dart';
+import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
+import 'package:resmedia_taporty_flutter/common/logic/database.dart';
+import 'package:resmedia_taporty_flutter/common/model/ProductModel.dart';
 import 'package:resmedia_taporty_flutter/restaurant/view/ProductViewRestaurant.dart';
 import 'package:toast/toast.dart';
 
@@ -36,9 +36,7 @@ class _MenuPageState extends State<MenuPage> {
   final _formKey = GlobalKey<FormState>();
   final _nameKey = GlobalKey<FormFieldState>();
   final _quantityKey = GlobalKey<FormFieldState>();
-  final _categoryKey = GlobalKey<FormFieldState>();
   final _priceKey = GlobalKey<FormFieldState>();
-  final _imageKey = GlobalKey<FormFieldState>();
   final _dropKey = GlobalKey();
   final _dropCatKey=GlobalKey();
 
@@ -123,8 +121,6 @@ class _MenuPageState extends State<MenuPage> {
     await file.writeAsBytes(bytes, mode: FileMode.write);
 
     final StorageReference ref = FirebaseStorage.instance.ref().child(fileName);
-    final StorageUploadTask task = ref.putFile(file);
-    final Uri downloadUrl = (await task.onComplete).uploadSessionUri;
 
     //_path = downloadUrl.toString();
     _path=(await ref.getDownloadURL());
@@ -136,8 +132,6 @@ class _MenuPageState extends State<MenuPage> {
     showDialog(
         context: context,
         builder: (_context) {
-          final theme = Theme.of(context);
-          final cls = theme.colorScheme;
           return AlertDialog(
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(20))),

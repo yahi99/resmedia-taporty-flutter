@@ -1,14 +1,9 @@
 import 'dart:async';
 
-import 'package:cloud_functions/cloud_functions.dart';
-import 'package:easy_blocs/easy_blocs.dart';
 import 'package:easy_route/easy_route.dart';
 import 'package:flutter/material.dart';
-import 'package:resmedia_taporty_flutter/data/config.dart';
-import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
-import 'package:resmedia_taporty_flutter/logic/database.dart';
-import 'package:resmedia_taporty_flutter/model/IncomeModel.dart';
-import 'package:resmedia_taporty_flutter/model/OrderModel.dart';
+import 'package:resmedia_taporty_flutter/common/logic/database.dart';
+import 'package:resmedia_taporty_flutter/common/model/IncomeModel.dart';
 
 class IncomeScreen extends StatefulWidget implements WidgetRoute {
   static const ROUTE = "IncomeScreen";
@@ -34,8 +29,6 @@ class IncomeScreen extends StatefulWidget implements WidgetRoute {
 class _DetailOrderRestaurantPageState extends State<IncomeScreen> {
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final tt = theme.textTheme;
     return Scaffold(
       body: StreamBuilder<IncomeModel>(
           stream: Database().getRestIncome(widget.date,widget.restId),

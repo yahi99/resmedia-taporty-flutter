@@ -5,17 +5,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:resmedia_taporty_flutter/control/interface/screen/HomeScreenPanel.dart';
 import 'package:resmedia_taporty_flutter/data/config.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/screen/HomeScreen.dart';
 import 'package:resmedia_taporty_flutter/drivers/logic/bloc/CalendarBloc.dart';
 import 'package:resmedia_taporty_flutter/drivers/logic/bloc/TurnBloc.dart';
-import 'package:resmedia_taporty_flutter/interface/view/logo_view.dart';
-import 'package:resmedia_taporty_flutter/logic/bloc/OrdersBloc.dart';
-import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
-import 'package:resmedia_taporty_flutter/logic/database.dart';
-import 'package:resmedia_taporty_flutter/model/UserModel.dart';
-import 'package:toast/toast.dart';
+import 'package:resmedia_taporty_flutter/common/interface/view/LogoView.dart';
+import 'package:resmedia_taporty_flutter/common/logic/bloc/OrdersBloc.dart';
+import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
+import 'package:resmedia_taporty_flutter/common/logic/database.dart';
+import 'package:resmedia_taporty_flutter/common/model/UserModel.dart';
 
 //import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 //import 'package:firebase_auth/firebase_auth.dart';
@@ -281,69 +279,6 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         );
       },
-    );
-    return Material(
-      child: Form(
-        key: _submitBloc.formKey,
-        child: LogoView(
-          top: FittedBox(
-            fit: BoxFit.contain,
-            child: Icon(
-              Icons.lock_outline,
-              color: Colors.white,
-            ),
-          ),
-          children: [
-            EmailField(
-              checker: _submitBloc.emailChecker,
-            ),
-            SizedBox(
-              height: SPACE,
-            ),
-            PasswordField(
-              checker: _submitBloc.passwordChecker,
-            ),
-            Row(
-              children: <Widget>[
-                /*Expanded(
-                  child: RaisedButton(
-                    onPressed: () {
-                      EasyRouter.push(context, SignUpScreen());
-                    },
-                    child: FittedText('Sign up'),
-                  ),
-                ),
-                SizedBox(
-                  width: SPACE,
-                ),*/
-                Expanded(
-                  child: SubmitButton.raised(
-                    controller: _submitBloc.submitController,
-                    child: FittedText('Login'),
-                  ),
-                ),
-              ],
-            ),
-            /*SizedBox(
-              height: SPACE * 3,
-            ),
-            RaisedButton.icon(
-              onPressed: () {},
-              icon: Icon(FontAwesomeIcons.facebookF),
-              label: Text('Login with Facebook'),
-            ),
-            RaisedButton(
-              color: Colors.white,
-              child: Text(
-                'Continua senza registrazione',
-              ),
-              onPressed: () {
-                EasyRouter.push(context, GeoLocScreen());
-              },
-            )*/
-          ],
-        ),
-      ),
     );
   }
 }

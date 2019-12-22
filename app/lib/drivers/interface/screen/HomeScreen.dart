@@ -5,6 +5,7 @@ import 'package:easy_widget/easy_widget.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:resmedia_taporty_flutter/common/helper/LoginHelper.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/page/OrdersPage.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/screen/AccountScreenDriver.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/tab/CalendarTab.dart';
@@ -15,11 +16,10 @@ import 'package:resmedia_taporty_flutter/drivers/logic/bloc/TurnBloc.dart';
 import 'package:resmedia_taporty_flutter/drivers/model/CalendarModel.dart';
 import 'package:resmedia_taporty_flutter/drivers/model/OrderModel.dart';
 import 'package:resmedia_taporty_flutter/drivers/model/TurnModel.dart';
-import 'package:resmedia_taporty_flutter/interface/screen/LoginScreen.dart';
-import 'package:resmedia_taporty_flutter/logic/bloc/OrdersBloc.dart';
-import 'package:resmedia_taporty_flutter/logic/bloc/UserBloc.dart';
-import 'package:resmedia_taporty_flutter/logic/database.dart';
-import 'package:resmedia_taporty_flutter/model/OrderModel.dart';
+import 'package:resmedia_taporty_flutter/common/logic/bloc/OrdersBloc.dart';
+import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
+import 'package:resmedia_taporty_flutter/common/logic/database.dart';
+import 'package:resmedia_taporty_flutter/common/model/OrderModel.dart';
 
 class HomeScreenDriver extends StatefulWidget implements WidgetRoute {
   static const ROUTE = 'HomeScreenDriver';
@@ -61,8 +61,8 @@ class _HomeScreenDriverState extends State<HomeScreenDriver> {
     );
   }
 
-  void firebaseCloudMessaging_Listeners() {
-    if (Platform.isIOS) iOS_Permission();
+  void firebaseCloudMessagingListeners() {
+    if (Platform.isIOS) iOSPermission();
     print('ok');
     _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
@@ -78,7 +78,7 @@ class _HomeScreenDriverState extends State<HomeScreenDriver> {
     );
   }
 
-  void iOS_Permission() {
+  void iOSPermission() {
     _firebaseMessaging.requestNotificationPermissions(
         IosNotificationSettings(sound: true, badge: true, alert: true));
     _firebaseMessaging.onIosSettingsRegistered
@@ -106,7 +106,7 @@ class _HomeScreenDriverState extends State<HomeScreenDriver> {
     //stream=_calendarBloc.outCalendar;
     setUser();
     super.initState();
-    firebaseCloudMessaging_Listeners();
+    firebaseCloudMessagingListeners();
     //final bloc=TurnBloc.of();
     //bloc.setTurnStream();
   }

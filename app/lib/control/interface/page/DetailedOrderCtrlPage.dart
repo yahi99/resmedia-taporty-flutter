@@ -167,7 +167,7 @@ class _DetailOrderRestaurantPageState extends State<DetailOrderCtrlPage> {
                         Row(
                           children: <Widget>[
                             StreamBuilder<List<UserModel>>(
-                              stream: Database().driversList(),
+                              stream: Database().getDriverList(),
                               builder: (ctx,drivers){
                                 if(drivers.hasData){
                                   List<DropdownMenuItem> dropDrivers = List<DropdownMenuItem>();

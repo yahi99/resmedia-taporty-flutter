@@ -169,7 +169,7 @@ class _DetailOrderRestaurantPageState extends State<DetailOrderRestaurantPage> {
                                         .model
                                         .id;
                                 Database()
-                                    .getDriverCalModel(
+                                    .getDriverCalendarModel(
                                     user,
                                     time.toIso8601String(),
                                     widget.model.startTime)

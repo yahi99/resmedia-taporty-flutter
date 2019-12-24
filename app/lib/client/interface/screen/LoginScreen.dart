@@ -42,40 +42,11 @@ class _LoginScreenState extends State<LoginScreen> {
   var permission;
   var pos;
 
-  //static final FacebookLogin facebookSignIn = FacebookLogin();
-
-  //my code
-  //final FirebaseAuth _fAuth = FirebaseAuth.instance;
-  //end my code
-
   final FirebaseSignInBloc _submitBloc =
       FirebaseSignInBloc.init(controller: UserBloc.of());
   final _userBloc = UserBloc.of();
 
   StreamSubscription registrationLevelSub;
-
-  /*void _signIn(BuildContext context) async {
-    var facebookLogin=FacebookLogin();
-    var result= await facebookLogin.logInWithReadPermissions(['email','public_profile']);
-    FirebaseUser firebaseUser;
-    switch(result.status){
-      case FacebookLoginStatus.loggedIn:
-        FacebookAccessToken myToken = result.accessToken;
-        AuthCredential credential =
-        FacebookAuthProvider.getCredential(accessToken: myToken.token);
-        firebaseUser =
-        await FirebaseAuth.instance.signInWithCredential(credential);
-        print('Done');
-        print(firebaseUser.toString());
-        break;
-      case FacebookLoginStatus.cancelledByUser:
-        print('Cancelled by user');
-        break;
-      case FacebookLoginStatus.error:
-        print('Error');
-        break;
-    }
-  }*/
 
   _showPositionDialog(BuildContext context, bool isAnon) {
     showDialog(
@@ -194,89 +165,6 @@ class _LoginScreenState extends State<LoginScreen> {
         );
       },
     );
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    /*print('changed');
-    _submitBloc.submitController.solver = (res) async {
-      if (!res) return;
-      print('not here');
-      final registrationLevel = await _userBloc.getRegistrationLevel();
-      final user = await _userBloc.outFirebaseUser.first;
-      //print(user.uid);
-      Database().getUser(user).first.then((userId) async {
-        print(userId.type);
-        //final user = await _userBloc.outFirebaseUser.first;
-        print('here');
-        if (registrationLevel == RegistrationLevel.COMPLETE &&
-            (userId.type == 'user' || userId.type == null)) {
-          print('not here');
-          if (user.isEmailVerified) {
-            if ((await PermissionHandler()
-                    .checkPermissionStatus(PermissionGroup.location)) !=
-                PermissionStatus.granted)
-              _showPositionDialog(context, false);
-            else
-              Geolocator()
-                  .getCurrentPosition()
-                  .then(
-                    (position) async => await EasyRouter.pushAndRemoveAll(
-                      context,
-                      RestaurantListScreen(
-                        position: position,
-                        user: (await _userBloc.outUser.first).model,
-                      ),
-                    ),
-                  )
-                  .catchError(
-                (error) {
-                  if (error is PlatformException) {
-                    print(error.code);
-                  }
-                },
-              );
-          } else {
-            //Toast.show('Devi confermare il tuo account per accedere', context);
-            _showMailDialog(context);
-          }
-        } else {
-          Toast.show('Utente non abilitato', context);
-        }
-      });
-      if (registrationLevel == RegistrationLevel.LV2)
-        await EasyRouter.push(context, SignUpMoreScreen());
-    };
-
-     */
-  }
-
-  //TODO: Sistemare login automatico e senza registrazione
-  @override
-  void initState() {
-    getPos();
-    /*final FirebaseAuth _fAuth = FirebaseAuth.instance;
-    _fAuth.currentUser().then((user) {
-      if (user != null) {
-        _userBloc.outUser.first.then((user) {
-          if (user.userFb.isAnonymous)
-            _showPositionDialog(context, true);
-          else
-            _showPositionDialog(context, false);
-        });
-        /*user.getIdToken().then((token){
-          _userBloc.inSignInWithCostumToken(token).then((user){
-            _userBloc.outUser.first.then((user){
-              if(user.userFb.isAnonymous) _showPositionDialog(context,true);
-              else _showPositionDialog(context,false);
-            });
-          });
-        });*/
-      }
-    });*/
-    isVerified = false;
-    super.initState();
   }
 
   void _showDialog(BuildContext context) {
@@ -405,26 +293,6 @@ class _LoginScreenState extends State<LoginScreen> {
                               icon: Icon(FontAwesomeIcons.google),
                               label: Text('Login with Google'),
                             ),
-                            /*
-                    RaisedButton(
-                      color: Colors.white,
-                      child: Container(
-                        width: double.infinity,
-                        child: Center(
-                          child: AutoSizeText(
-                            "Continua senza registrazione",
-                            maxLines: 1,
-                            minFontSize: 6.0,
-                          ),
-                        ),
-                      ),
-                      onPressed: () {
-                        Toast.show("Disponibile in futuro", context,
-                            duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
-                        //_userBloc.inSignInAnonymously();
-                      },
-                    ),
-                    */
                             RaisedButton(
                               color: Colors.white,
                               child: Container(

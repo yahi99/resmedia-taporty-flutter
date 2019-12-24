@@ -1,4 +1,3 @@
-
 import 'package:easy_blocs/easy_blocs.dart';
 import 'package:easy_widget/easy_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -10,7 +9,6 @@ import 'package:resmedia_taporty_flutter/common/model/ProductModel.dart';
 import 'package:toast/toast.dart';
 import 'package:vibration/vibration.dart';
 
-
 class ProductView extends StatelessWidget {
   final ProductModel model;
   final CartControllerRule cartController;
@@ -20,7 +18,8 @@ class ProductView extends StatelessWidget {
 
   ProductView(
       {Key key,
-      @required this.model,@required this.category,
+      @required this.model,
+      @required this.category,
       @required this.cartController,
       @required this.update})
       : super(key: key);
@@ -56,13 +55,15 @@ class ProductView extends StatelessWidget {
                       aspectRatio: 1,
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(16.0),
-                        child: (model.img.startsWith('assets'))?Image.asset(
-                          model.img,
-                          fit: BoxFit.fitHeight,
-                        ):Image.network(
-                          model.img,
-                          fit: BoxFit.fitHeight,
-                        ),
+                        child: (model.img.startsWith('assets'))
+                            ? Image.asset(
+                                model.img,
+                                fit: BoxFit.fitHeight,
+                              )
+                            : Image.network(
+                                model.img,
+                                fit: BoxFit.fitHeight,
+                              ),
                       ),
                     ),
                   ),
@@ -73,7 +74,11 @@ class ProductView extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      Flexible(child:Container(child: Text(model.id),width: MediaQuery.of(context).size.width*2/5),),
+                      Flexible(
+                        child: Container(
+                            child: Text(model.id),
+                            width: MediaQuery.of(context).size.width * 2 / 5),
+                      ),
                       Text('€ ${model.price}'),
                     ],
                   ),
@@ -123,9 +128,10 @@ class CartStepperButton extends StatelessWidget {
                 child: CircularProgressIndicator(),
               );
             print(snap.data.uid);
-            final product=cart.getProduct(model.id, model.restaurantId, snap.data.uid);
-            if (product!=null && product.delete) {
-              print(product.id+'  '+product.delete.toString()+'  menu');
+            final product =
+                cart.getProduct(model.id, model.restaurantId, snap.data.uid);
+            if (product != null && product.delete) {
+              print(product.id + '  ' + product.delete.toString() + '  menu');
               cartController.inRemove(
                   model.id, model.restaurantId, snap.data.uid);
             }
@@ -140,10 +146,11 @@ class CartStepperButton extends StatelessWidget {
               },
               onIncrement: () {
                 print(model.number);
-                final prod=cart.getProduct(model.id, model.restaurantId, snap.data.uid);
-                final count=(prod!=null)?prod.countProducts:0;
-                if(model.number!=null && int.parse(model.number)<=count)
-                  Toast.show('Limite massimo prodotti',context,duration: 3);
+                final prod = cart.getProduct(
+                    model.id, model.restaurantId, snap.data.uid);
+                final count = (prod != null) ? prod.countProducts : 0;
+                if (model.number != null && int.parse(model.number) <= count)
+                  Toast.show('Limite massimo prodotti', context, duration: 3);
                 else {
                   Vibration.vibrate(duration: 65);
                   cartController.inIncrement(

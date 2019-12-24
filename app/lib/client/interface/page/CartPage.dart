@@ -18,7 +18,6 @@ class CartPage extends StatefulWidget {
   final RestaurantModel model;
   final TabController controller;
 
-
   CartPage({Key key, @required this.model, @required this.controller})
       : super(key: key);
 
@@ -27,7 +26,6 @@ class CartPage extends StatefulWidget {
 }
 
 class _CartState extends State<CartPage> with AutomaticKeepAliveClientMixin {
-
   int count;
 
   @override
@@ -36,8 +34,8 @@ class _CartState extends State<CartPage> with AutomaticKeepAliveClientMixin {
   }
 
   @override
-  void initState(){
-    count=0;
+  void initState() {
+    count = 0;
     super.initState();
   }
 
@@ -62,7 +60,6 @@ class _CartState extends State<CartPage> with AutomaticKeepAliveClientMixin {
                     child: CircularProgressIndicator(),
                   );
                 return Scaffold(
-
                     body: StreamBuilder<List<DrinkModel>>(
                       stream: restaurantBloc.outDrinks,
                       builder: (context, snapshot) {
@@ -91,7 +88,7 @@ class _CartState extends State<CartPage> with AutomaticKeepAliveClientMixin {
                               }
                             }
                             final state = MyInheritedWidget.of(context);
-                            state.count=sp1.data.getTotalItems(cartCounter);
+                            state.count = sp1.data.getTotalItems(cartCounter);
                             return ProductsFoodDrinkBuilder(
                               drinks: snapshot.data,
                               foods: snap.data,
@@ -114,9 +111,13 @@ class _CartState extends State<CartPage> with AutomaticKeepAliveClientMixin {
                           //print(Continue.isContinued);
 
                           //TODO block if zero items in the cart maybe use a stream ans pass it toProductsFoodDrinkBuilder and stream the whole bar
-                          if(state.count>0) widget.controller
-                              .animateTo(widget.controller.index + 1);
-                          else Toast.show('Non hai elementi nel carrello!', context,duration: 3);
+                          if (state.count > 0)
+                            widget.controller
+                                .animateTo(widget.controller.index + 1);
+                          else
+                            Toast.show(
+                                'Non hai elementi nel carrello!', context,
+                                duration: 3);
                         },
                       ),
                     ));
@@ -162,7 +163,7 @@ class ProductsFoodDrinkBuilder extends StatelessWidget {
                       if (snap.hasData && snapshot.hasData && sp.hasData) {
                         list.clear();
                         prod.clear();
-                      for (int i = 0; i < drinks.length; i++) {
+                        for (int i = 0; i < drinks.length; i++) {
                           var temp = drinks.elementAt(i);
                           var find = sp.data.getProduct(
                               temp.id, temp.restaurantId, snap.data.uid);
@@ -200,7 +201,8 @@ class ProductsFoodDrinkBuilder extends StatelessWidget {
                                     (carrello
                                         .getTotalPrice(carrello.products,
                                             snap.data.uid, id)
-                                        .toString()),
+                                        .toStringAsFixed(2)) +
+                                    "€",
                               ),
                             ),
                           ),

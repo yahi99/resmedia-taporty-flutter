@@ -172,7 +172,7 @@ class CartBloc extends Bloc {
           endTime: endTime,
           fingerprint:fingerprint,
           restAdd: (await Geocoder.local.findAddressesFromCoordinates(
-                  (await Database().getPosition(restaurantId))))
+                  (await Database().getRestaurantPosition(restaurantId))))
               .first
               .addressLine);
       RestaurantScreen.isOrdered = true;

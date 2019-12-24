@@ -28,7 +28,7 @@ class FirebaseNotificationFunctions {
 
 class FirebaseDatabase {
   final Firestore fs;
-  final CloudFunctions cf;
+  final CloudFunctions cloudFunctions;
   final FirebaseMessaging fbMs;
 
   final UsersCollectionRule users;
@@ -38,7 +38,7 @@ class FirebaseDatabase {
     CloudFunctions cf,
     FirebaseMessaging fbMs,
   }) : this.fs = fs??Firestore(),
-        this.cf = cf?? CloudFunctions(),
+        this.cloudFunctions = cf?? CloudFunctions(),
         this.fbMs = fbMs??FirebaseMessaging();
 
   Future<void> setUser(FirebaseUser user, JsonRule json, {bool merge: false}) {

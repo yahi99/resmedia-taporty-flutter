@@ -131,7 +131,6 @@ class _AdminScreenState extends State<CreateAdminScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final cls = theme.colorScheme;
     return Scaffold(
       appBar: AppBar(
         title: Text('Lista Utenti'),

@@ -24,13 +24,13 @@ class RestaurantScreen extends StatefulWidget implements WidgetRoute {
 
   String get route => ROUTE;
   static bool isOrdered = false;
-  final RestaurantModel model;
+  final RestaurantModel restaurantModel;
   final Position position;
   final String address;
 
   RestaurantScreen(
       {Key key,
-      @required this.model,
+      @required this.restaurantModel,
       @required this.position,
       @required this.address})
       : super(key: key);
@@ -39,58 +39,13 @@ class RestaurantScreen extends StatefulWidget implements WidgetRoute {
   _RestaurantScreenState createState() => _RestaurantScreenState();
 }
 
-/*class _RestaurantScreenState extends State<RestaurantScreen> {
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Prova'),
-      ),
-      body: Center(
-        child: Container(
-            padding: const EdgeInsets.all(10.0),
-            child: StreamBuilder<QuerySnapshot>(
-              stream: Firestore.instance.collection('restaurants')
-                  .snapshots(),
-              builder: (BuildContext context,
-                  AsyncSnapshot<QuerySnapshot> snapshot) {
-                if (snapshot.hasError)
-                  return Text('Error: ${snapshot.error}');
-                switch (snapshot.connectionState) {
-                  case ConnectionState.waiting:
-                    return Text('Loading...');
-                  default:
-                    return ListView(
-                      children: snapshot.data.documents
-                          .map((DocumentSnapshot document) {
-                        return Column(
-                          children:<Widget>[
-                            Text(document['id']),
-                            Text(document['description']),
-                          ],
-                        );
-                      }).toList(),
-                    );
-                }
-              },
-            )),
-      ),
-    );
-  }
-
-}*/
-
 class _RestaurantScreenState extends State<RestaurantScreen> {
   final double iconSize = 32;
-
-  final RestaurantBloc _restaurantBloc = RestaurantBloc.of();
 
   @override
   void dispose() {
     RestaurantBloc.close();
     CartBloc.close();
-    //UserBloc.of().dispose();
     super.dispose();
   }
 
@@ -104,55 +59,73 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final cls = theme.colorScheme;
-    List<ProductCart> cartCounter = List<ProductCart>();
-    final restaurantBloc = RestaurantBloc.init(idRestaurant: widget.model.id);
+    final colorScheme = theme.colorScheme;
+    List<ProductCart> productCartList = List<ProductCart>();
+    final restaurantBloc =
+        RestaurantBloc.init(idRestaurant: widget.restaurantModel.id);
     return DefaultTabController(
         length: 3,
         child: Scaffold(
           appBar: AppBar(
-            backgroundColor: cls.primary,
+            backgroundColor: colorScheme.primary,
             centerTitle: true,
-            title: Text(widget.model.id),
+            title: Text(widget.restaurantModel.id),
             actions: <Widget>[
               StreamBuilder<Cart>(
                 stream: CartBloc.of().outDrinksCart,
-                builder: (ctx, drinks) {
+                builder: (context, drinkCartSnapshot) {
                   return StreamBuilder<Cart>(
                     stream: CartBloc.of().outFoodsCart,
-                    builder: (ctx, foods) {
+                    builder: (context, foodCartSnapshot) {
                       return StreamBuilder<User>(
                         stream: UserBloc.of().outUser,
-                        builder: (ctx, user) {
+                        builder: (context, userSnapshot) {
                           return StreamBuilder<List<DrinkModel>>(
                               stream: restaurantBloc.outDrinks,
-                              builder: (context, snapshot) {
+                              builder: (context, drinkListSnapshot) {
                                 return StreamBuilder<List<FoodModel>>(
                                     stream: restaurantBloc.outFoods,
-                                    builder: (context, snap) {
-                                      if (drinks.hasData &&
-                                          foods.hasData &&
-                                          user.hasData && snap.hasData && snapshot.hasData) {
+                                    builder: (context, foodListSnapshot) {
+                                      if (drinkCartSnapshot.hasData &&
+                                          foodCartSnapshot.hasData &&
+                                          userSnapshot.hasData &&
+                                          foodListSnapshot.hasData &&
+                                          drinkListSnapshot.hasData) {
                                         //if(user.data.model.type!='user') EasyRouter.pushAndRemoveAll(context, LoginScreen());
-                                        cartCounter.clear();
-                                        for (int i = 0; i < snapshot.data.length; i++) {
-                                          var temp = snapshot.data.elementAt(i);
-                                          var find = drinks.data.getProduct(
-                                              temp.id, temp.restaurantId, user.data.model.id);
-                                          if (find != null && find.countProducts > 0) {
-                                            cartCounter.add(find);
+                                        productCartList.clear();
+                                        for (int i = 0;
+                                            i < drinkListSnapshot.data.length;
+                                            i++) {
+                                          var temp = drinkListSnapshot.data
+                                              .elementAt(i);
+                                          var find = drinkCartSnapshot.data
+                                              .getProduct(
+                                                  temp.id,
+                                                  temp.restaurantId,
+                                                  userSnapshot.data.model.id);
+                                          if (find != null &&
+                                              find.countProducts > 0) {
+                                            productCartList.add(find);
                                           }
                                         }
-                                        for (int i = 0; i < snap.data.length; i++) {
-                                          var temp = snap.data.elementAt(i);
-                                          var find = foods.data.getProduct(
-                                              temp.id, temp.restaurantId, user.data.model.id);
-                                          if (find != null && find.countProducts > 0) {
-                                            cartCounter.add(find);
+                                        for (int i = 0;
+                                            i < foodListSnapshot.data.length;
+                                            i++) {
+                                          var temp = foodListSnapshot.data
+                                              .elementAt(i);
+                                          var find = foodCartSnapshot.data
+                                              .getProduct(
+                                                  temp.id,
+                                                  temp.restaurantId,
+                                                  userSnapshot.data.model.id);
+                                          if (find != null &&
+                                              find.countProducts > 0) {
+                                            productCartList.add(find);
                                           }
                                         }
                                         //final state = MyInheritedWidget.of(context);
-                                        int count=drinks.data.getTotalItems(cartCounter);
+                                        int count = drinkCartSnapshot.data
+                                            .getTotalItems(productCartList);
                                         return Row(
                                           children: <Widget>[
                                             IconButton(
@@ -173,7 +146,8 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                                                     EasyRouter.push(
                                                         context,
                                                         CheckoutScreen(
-                                                          model: widget.model,
+                                                          model: widget
+                                                              .restaurantModel,
                                                           user: user.model,
                                                           position:
                                                               widget.position,
@@ -216,7 +190,8 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                                                   EasyRouter.push(
                                                       context,
                                                       CheckoutScreen(
-                                                        model: widget.model,
+                                                        model: widget
+                                                            .restaurantModel,
                                                         user: user.model,
                                                         position:
                                                             widget.position,
@@ -292,18 +267,19 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
           ),
           body: StreamBuilder<User>(
             stream: UserBloc.of().outUser,
-            builder: (ctx, user) {
+            builder: (context, user) {
               if (!user.hasData)
                 return Center(
                   child: CircularProgressIndicator(),
                 );
               return StreamBuilder<RestaurantModel>(
-                stream: RestaurantBloc.init(idRestaurant: widget.model.id)
-                    .outRestaurant,
-                builder: (ctx, rest) {
+                stream:
+                    RestaurantBloc.init(idRestaurant: widget.restaurantModel.id)
+                        .outRestaurant,
+                builder: (context, rest) {
                   return StreamBuilder(
                       stream: Database().getUser(user.data.userFb),
-                      builder: (ctx, model) {
+                      builder: (context, model) {
                         if (user.hasData && rest.hasData && model.hasData) {
                           if (model.data.type != 'user' &&
                               model.data.type != null) {
@@ -330,9 +306,10 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                           return TabBarView(
                             children: <Widget>[
                               InfoRestaurantPage(
-                                  address: widget.address, model: widget.model),
-                              FoodsPage(model: widget.model),
-                              DrinksPage(model: widget.model),
+                                  model: widget.restaurantModel,
+                                  address: widget.address),
+                              FoodPage(model: widget.restaurantModel),
+                              DrinkPage(model: widget.restaurantModel),
                             ],
                           );
                         }
@@ -346,64 +323,43 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
           ),
           bottomNavigationBar: BottomAppBar(
             child: Container(
-                padding: const EdgeInsets.symmetric(
-                    vertical: SPACE / 2, horizontal: SPACE * 2),
-                color: cls.primary,
-                child: SafeArea(
-                  top: false,
-                  right: false,
-                  left: false,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          FlatButton(
-                            color: theme.primaryColor,
-                            child: Text('Vai al carrello'),
-                            onPressed: () {
-                              UserBloc.of().outUser.first.then((user) {
-                                Geocoder.local
-                                    .findAddressesFromCoordinates(Coordinates(
-                                        widget.position.latitude,
-                                        widget.position.longitude))
-                                    .then((addresses) {
-                                  EasyRouter.push(
-                                      context,
-                                      CheckoutScreen(
-                                        model: widget.model,
-                                        user: user.model,
-                                        position: widget.position,
-                                        description: addresses.first,
-                                      ));
-                                });
-                              });
-                            },
-                          ),
-                        ],
-                      ),
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Icon(
-                              Icons.history,
-                              color: Colors.white,
-                              size: iconSize,
-                            ),
-                          ),
-                          Text(
-                            '15 min c/a',
-                            style: theme.textTheme.button,
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                )),
+              padding: const EdgeInsets.symmetric(
+                  vertical: SPACE / 2, horizontal: SPACE * 2),
+              color: colorScheme.primary,
+              child: SafeArea(
+                top: false,
+                right: false,
+                left: false,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    FlatButton(
+                      color: theme.primaryColor,
+                      child: Text('Vai al carrello'),
+                      onPressed: () {
+                        UserBloc.of().outUser.first.then((user) {
+                          Geocoder.local
+                              .findAddressesFromCoordinates(Coordinates(
+                                  widget.position.latitude,
+                                  widget.position.longitude))
+                              .then((addresses) {
+                            EasyRouter.push(
+                                context,
+                                CheckoutScreen(
+                                  model: widget.restaurantModel,
+                                  user: user.model,
+                                  position: widget.position,
+                                  description: addresses.first,
+                                ));
+                          });
+                        });
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ),
         ));
   }

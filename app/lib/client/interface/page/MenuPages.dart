@@ -6,10 +6,10 @@ import 'package:resmedia_taporty_flutter/common/logic/bloc/RestaurantBloc.dart';
 import 'package:resmedia_taporty_flutter/common/model/ProductModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/RestaurantModel.dart';
 
-class FoodsPage extends StatelessWidget {
+class FoodPage extends StatelessWidget {
   final RestaurantModel model;
 
-  FoodsPage({Key key, @required this.model}) : super(key: key);
+  FoodPage({Key key, @required this.model}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -22,16 +22,16 @@ class FoodsPage extends StatelessWidget {
             child: CircularProgressIndicator(),
           );
 
-        return ProductsFoodBuilder(foods: snapshot.data);
+        return ProductsFoodBuilder(food: snapshot.data);
       },
     );
   }
 }
 
-class DrinksPage extends StatelessWidget {
+class DrinkPage extends StatelessWidget {
   final RestaurantModel model;
 
-  DrinksPage({Key key, @required this.model}) : super(key: key);
+  DrinkPage({Key key, @required this.model}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -60,47 +60,62 @@ class ProductsDrinkBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return (drinks.isNotEmpty)?GroupsVoid(
-      children: drinks.map<Widget, List<Widget>>((nameGroup, products) {
-        return MapEntry(
-          Text(translateDrinkCategory(nameGroup)),
-          products
-              .map((product) => ProductView(
-                    update: null,
-                    model: product,
-                    cartController: cartBloc.drinksCartController,
-                    category: 'drinks',
-                  ))
-              .toList(),
-        );
-      }),
-    ):Padding(child: Text('Non ci sono prodotti',style: Theme.of(context).textTheme.subtitle,),padding: EdgeInsets.all(8.0));
+    return (drinks.isNotEmpty)
+        ? GroupsVoid(
+            children: drinks.map<Widget, List<Widget>>((nameGroup, products) {
+              return MapEntry(
+                Text(translateDrinkCategory(nameGroup)),
+                products
+                    .map((product) => ProductView(
+                          update: null,
+                          model: product,
+                          cartController: cartBloc.drinksCartController,
+                          category: 'drinks',
+                        ))
+                    .toList(),
+              );
+            }),
+          )
+        : Padding(
+            child: Text(
+              'Non ci sono prodotti',
+              style: Theme.of(context).textTheme.subtitle,
+            ),
+            padding: EdgeInsets.all(16.0));
   }
 }
 
 class ProductsFoodBuilder extends StatelessWidget {
-  final Map<FoodCategory, List<FoodModel>> foods;
+  final Map<FoodCategory, List<FoodModel>> food;
   final CartBloc cartBloc = CartBloc.of();
 
-  ProductsFoodBuilder({Key key, @required this.foods}) : super(key: key);
+  ProductsFoodBuilder({Key key, @required this.food}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return (foods.isNotEmpty)?GroupsVoid(
-      children: foods.map<Widget, List<Widget>>((nameGroup, products) {
-        return MapEntry(
-          Text(translateFoodCategory(nameGroup)),
-          products
-              .map((product) => ProductView(
-                    update: null,
-                    model: product,
-                    cartController: cartBloc.foodsCartController,
-                    category: 'foods',
-                  ))
-              .toList(),
-        );
-      }),
-    ):Padding(child: Text('Non ci sono prodotti',style: Theme.of(context).textTheme.subtitle,),padding: EdgeInsets.all(8.0),);
+    return (food.isNotEmpty)
+        ? GroupsVoid(
+            children: food.map<Widget, List<Widget>>((nameGroup, products) {
+              return MapEntry(
+                Text(translateFoodCategory(nameGroup)),
+                products
+                    .map((product) => ProductView(
+                          update: null,
+                          model: product,
+                          cartController: cartBloc.foodsCartController,
+                          category: 'foods',
+                        ))
+                    .toList(),
+              );
+            }),
+          )
+        : Padding(
+            child: Text(
+              'Non ci sono prodotti',
+              style: Theme.of(context).textTheme.subtitle,
+            ),
+            padding: EdgeInsets.all(16.0),
+          );
   }
 }
 
@@ -134,10 +149,12 @@ class GroupsVoid extends StatelessWidget {
           sliver: SliverList(
             delegate: SliverChildBuilderDelegate(
               (context, index) {
-                if(index==0) return Padding(
-                  padding: EdgeInsets.only(top:42.0,bottom: 16.0,left: 16.0,right: 16.0),
-                  child: products[index],
-                );
+                if (index == 0)
+                  return Padding(
+                    padding: EdgeInsets.only(
+                        top: 42.0, bottom: 16.0, left: 16.0, right: 16.0),
+                    child: products[index],
+                  );
                 return Padding(
                   padding: EdgeInsets.all(16.0),
                   child: products[index],

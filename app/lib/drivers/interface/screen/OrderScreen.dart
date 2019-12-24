@@ -4,7 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/view/TypeUserOrderView.dart';
-import 'package:resmedia_taporty_flutter/common/interface/view/CardListView.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/OrdersBloc.dart';
 import 'package:resmedia_taporty_flutter/mainRestaurant.dart';
 import 'package:resmedia_taporty_flutter/common/model/OrderModel.dart';
@@ -76,13 +75,15 @@ class TypesRestaurantView extends StatelessWidget {
             ? SingleChildScrollView(
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: CardListView(
-                    children: snap.data.map<Widget>((_model) {
-                      //return Center(child: CircularProgressIndicator(),);
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: snap.data.length,
+                    itemBuilder: (context, index) {
                       return TypeOrderView(
-                        model: _model,
+                        model: snap.data[index],
                       );
-                    }).toList(),
+                    },
                   ),
                 ),
               )

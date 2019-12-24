@@ -15,7 +15,6 @@ import 'package:resmedia_taporty_flutter/drivers/interface/screen/AccountScreen.
 import 'package:resmedia_taporty_flutter/client/interface/screen/GeolocalizationScreen.dart';
 import 'package:resmedia_taporty_flutter/client/interface/screen/LoginScreen.dart';
 import 'package:resmedia_taporty_flutter/client/interface/screen/RestaurantScreen.dart';
-import 'package:resmedia_taporty_flutter/common/interface/view/CardListView.dart';
 import 'package:resmedia_taporty_flutter/client/interface/widget/SearchBar.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/RestaurantsBloc.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
@@ -50,7 +49,10 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
 
   FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
-  StreamController barStream;
+  StreamController searchBarStream;
+
+  final UserBloc userBloc = UserBloc.of();
+  final RestaurantsBloc _restaurantsBloc = RestaurantsBloc.instance();
 
   void showNotification(
       BuildContext context, Map<String, dynamic> message) async {
@@ -101,22 +103,20 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
   @override
   void dispose() {
     RestaurantsBloc.close();
-    barStream.close();
+    searchBarStream.close();
     super.dispose();
   }
 
   @override
   void initState() {
     super.initState();
-    barStream = new StreamController<String>.broadcast();
+    searchBarStream = new StreamController<String>.broadcast();
     firebaseCloudMessagingListeners();
   }
 
   @override
   Widget build(BuildContext context) {
     dialog = context;
-    final UserBloc userBloc = UserBloc.of();
-    final RestaurantsBloc _restaurantsBloc = RestaurantsBloc.instance();
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -138,28 +138,31 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
           ),
         ],
         bottom: SearchBar(
-          barStream: barStream,
+          searchBarStream: searchBarStream,
         ),
       ),
       body: CacheStreamBuilder<List<RestaurantModel>>(
           stream: _restaurantsBloc.outRestaurants,
-          builder: (context, snap) {
+          builder: (context,
+              AsyncSnapshot<List<RestaurantModel>> restaurantListSnapshot) {
             return StreamBuilder<User>(
               stream: UserBloc.of().outUser,
-              builder: (ctx, user) {
-                if (!snap.hasData)
+              builder: (context, userSnapshot) {
+                if (!restaurantListSnapshot.hasData)
                   return Center(
                     child: CircularProgressIndicator(),
                   );
                 return StreamBuilder<String>(
-                  stream: barStream.stream,
-                  builder: (ctx, bar) {
+                  stream: searchBarStream.stream,
+                  builder: (context, searchBarSnapshot) {
                     return StreamBuilder(
-                      stream: Database().getUser(user.data.userFb),
-                      builder: (ctx, model) {
-                        if (snap.hasData && user.hasData && model.hasData) {
-                          if (model.data.type != 'user' &&
-                              model.data.type != null) {
+                      stream: Database().getUser(userSnapshot.data.userFb),
+                      builder: (context, userModelSnapshot) {
+                        if (restaurantListSnapshot.hasData &&
+                            userSnapshot.hasData &&
+                            userModelSnapshot.hasData) {
+                          if (userModelSnapshot.data.type != 'user' &&
+                              userModelSnapshot.data.type != null) {
                             return RaisedButton(
                               child: Text(
                                   'Sei stato disabilitato clicca per fare logout'),
@@ -171,66 +174,13 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
                               },
                             );
                           }
+
                           return SingleChildScrollView(
                             child: Padding(
                               padding: const EdgeInsets.all(16.0),
-                              child: CardListView(
-                                children: snap.data.map<Widget>((_model) {
-                                  //final distance=Distance();
-                                  if (bar.hasData &&
-                                      !_model.id
-                                          .toLowerCase()
-                                          .contains(bar.data.toLowerCase()))
-                                    return Container();
-                                  var stream;
-                                  if (_model.getPos() != null &&
-                                      widget.position != null) {
-                                    final LatLng start = _model.getPos();
-                                    final LatLng end = LatLng(
-                                        widget.position.latitude,
-                                        widget.position.longitude);
-                                    stream = userBloc
-                                        .getDistance(start, end)
-                                        .asStream();
-                                    // TODO: Rimuovere l'else che permette un comportamento scorretto.
-                                  } else
-                                    stream =
-                                        userBloc.getMockDistance().asStream();
-                                  return StreamBuilder<double>(
-                                      stream: stream,
-                                      builder: (ctx, snap) {
-                                        if (!snap.hasData) return Container();
-                                        // TODO: Ripristinare a tempo debito.
-                                        // if(snap.data/1000<_model.km) {
-                                        if (_model.isDisabled != null &&
-                                            _model.isDisabled)
-                                          return Container();
-                                        return InkWell(
-                                          onTap: () async {
-                                            EasyRouter.push(
-                                              context,
-                                              RestaurantScreen(
-                                                address: (await Geocoder.local
-                                                        .findAddressesFromCoordinates(
-                                                            new Coordinates(
-                                                                widget.position
-                                                                    .latitude,
-                                                                widget.position
-                                                                    .longitude)))
-                                                    .first
-                                                    .addressLine,
-                                                position: widget.position,
-                                                model: _model,
-                                              ),
-                                            );
-                                          },
-                                          child: RestaurantView(
-                                            model: _model,
-                                          ),
-                                        );
-                                      });
-                                }).toList(),
-                              ),
+                              child: _buildRestaurantListView(
+                                  restaurantListSnapshot.data,
+                                  searchBarSnapshot),
                             ),
                           );
                         }
@@ -244,6 +194,64 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
               },
             );
           }),
+    );
+  }
+
+  _buildRestaurantListView(var restaurantList, var searchBarSnapshot) {
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
+      itemCount: restaurantList.length,
+      itemBuilder: (context, int index) {
+        //final distance=Distance();
+        if (searchBarSnapshot.hasData &&
+            !restaurantList[index]
+                .id
+                .toLowerCase()
+                .contains(searchBarSnapshot.data.toLowerCase()))
+          return Container();
+        var stream;
+        if (restaurantList[index].getPos() != null && widget.position != null) {
+          final LatLng start = restaurantList[index].getPos();
+          final LatLng end =
+              LatLng(widget.position.latitude, widget.position.longitude);
+          stream = userBloc.getDistance(start, end).asStream();
+          // TODO: Rimuovere l'else che permette un comportamento scorretto.
+        } else
+          stream = userBloc.getMockDistance().asStream();
+        return StreamBuilder<double>(
+            stream: stream,
+            builder: (ctx, snap) {
+              if (!snap.hasData) return Container();
+              // TODO: Ripristinare a tempo debito.
+              // if(snap.data/1000<restaurantList[index].km) {
+              if (restaurantList[index].isDisabled != null &&
+                  restaurantList[index].isDisabled) return Container();
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4.0),
+                child: InkWell(
+                  onTap: () async {
+                    EasyRouter.push(
+                      context,
+                      RestaurantScreen(
+                        address: (await Geocoder.local
+                                .findAddressesFromCoordinates(new Coordinates(
+                                    restaurantList[index].lat,
+                                    restaurantList[index].lng)))
+                            .first
+                            .addressLine,
+                        position: widget.position,
+                        restaurantModel: restaurantList[index],
+                      ),
+                    );
+                  },
+                  child: RestaurantView(
+                    model: restaurantList[index],
+                  ),
+                ),
+              );
+            });
+      },
     );
   }
 }

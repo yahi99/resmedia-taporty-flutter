@@ -64,7 +64,7 @@ class OrdersBloc implements Bloc {
   }
 
   void setCtrlStream(){
-    _restaurantsControlMod=PublishController.catchStream(source: _db.getCtrlOrders());
+    _restaurantsControlMod=PublishController.catchStream(source: _db.getControlOrders());
     _restaurantsControlMod.listen(print);
   }
 

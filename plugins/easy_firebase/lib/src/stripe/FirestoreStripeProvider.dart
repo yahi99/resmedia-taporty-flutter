@@ -6,7 +6,7 @@ mixin MixinFirestoreStripeProvider implements FirebaseDatabase {
   StripeCollection get stripe;
 
   Future<String> addStripeSource(String userId, Map<String, dynamic> map) async {
-    final res = await cf.getHttpsCallable(functionName: "addPaymentSource").call(map);
+    final res = await cloudFunctions.getHttpsCallable(functionName: "addPaymentSource").call(map);
     return res.data['documentId'];
   }
 

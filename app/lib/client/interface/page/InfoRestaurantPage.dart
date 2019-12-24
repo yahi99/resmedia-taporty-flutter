@@ -10,7 +10,8 @@ class InfoRestaurantPage extends StatelessWidget {
   final RestaurantModel model;
   final String address;
 
-  InfoRestaurantPage({Key key, @required this.model,@required this.address}) : super(key: key);
+  InfoRestaurantPage({Key key, @required this.model, @required this.address})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -22,13 +23,15 @@ class InfoRestaurantPage extends StatelessWidget {
             children: <Widget>[
               AspectRatio(
                 aspectRatio: 1.5,
-                child: (model.img.startsWith('assets'))?Image.asset(
-                  model.img,
-                  fit: BoxFit.fitHeight,
-                ):Image.network(
-                  model.img,
-                  fit: BoxFit.fitHeight,
-                ),
+                child: (model.img.startsWith('assets'))
+                    ? Image.asset(
+                        model.img,
+                        fit: BoxFit.fitHeight,
+                      )
+                    : Image.network(
+                        model.img,
+                        fit: BoxFit.fitHeight,
+                      ),
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(
@@ -47,33 +50,45 @@ class InfoRestaurantPage extends StatelessWidget {
                     ),
                     // Città - Indirizzo, civico
                     SizedBox(height: 16),
-                    model.description!=null?Text(
-                      model.description,
-                      style: theme.textTheme.body1,
-                      textAlign: TextAlign.justify,
-                    ):Container(),
+                    model.description != null
+                        ? Text(
+                            model.description,
+                            style: theme.textTheme.body1,
+                            textAlign: TextAlign.justify,
+                          )
+                        : Container(),
                     SizedBox(height: 16),
                     InkWell(
-                      child:Row(
+                      child: Row(
                         children: <Widget>[
                           Icon(Icons.star),
                           Icon(Icons.star),
-                          model.averageReviews!=null?Text(' '+model.averageReviews.toString()):Container(),
+                          model.averageReviews != null
+                              ? Text(' ' + model.averageReviews.toString())
+                              : Container(),
                           Text(' Buono')
                         ],
                       ),
-                      onTap: (){
-                        EasyRouter.push(context,SeeReviewsScreen(model: model,));
+                      onTap: () {
+                        EasyRouter.push(
+                            context,
+                            SeeReviewsScreen(
+                              model: model,
+                            ));
                       },
                     ),
                     SizedBox(height: 16),
-                    model.deliveryFee!=null?Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'Costo consegna:\n'+ model.deliveryFee.toString()+'\n',
-                        style: theme.textTheme.overline,
-                      ),
-                    ):Container(),
+                    model.deliveryFee != null
+                        ? Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              'Costo consegna:\n' +
+                                  model.deliveryFee.toString() +
+                                  '\n',
+                              style: theme.textTheme.overline,
+                            ),
+                          )
+                        : Container(),
                   ],
                 ),
               ),

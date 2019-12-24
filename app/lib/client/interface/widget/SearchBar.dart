@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 
 class SearchBar extends StatelessWidget implements PreferredSizeWidget {
   final Widget trailing;
-  final StreamController barStream;
+  final StreamController searchBarStream;
 
-  const SearchBar({Key key, this.trailing,this.barStream}) : super(key: key);
+  const SearchBar({Key key, this.trailing,this.searchBarStream}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +15,7 @@ class SearchBar extends StatelessWidget implements PreferredSizeWidget {
       Expanded(
         child: TextField(
           onChanged: (value){
-            barStream.add(value);
+            searchBarStream.add(value);
           },
           scrollPadding: EdgeInsets.all(2.0),
           decoration: InputDecoration(

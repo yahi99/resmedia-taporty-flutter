@@ -67,7 +67,7 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }*/
 
-  Future<void> setDriver(String uid)async{
+  Future<void> setDriver(String uid) async {
     final orderBloc = OrdersBloc.of();
     await orderBloc.setDriverStream();
     final turnBloc = TurnBloc.of();
@@ -178,36 +178,36 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             );
           return StreamBuilder<UserModel>(
-              stream: Database().getUser(userSnapshot.data),
-              builder: (ctx, userId) {
-                if (userId.hasData && userId.data.type=='driver') {
-                  setDriver(userId.data.id);
-                  return HomeScreenDriver();
-                }
-                return Material(
-                  child: Form(
-                    key: _submitBloc.formKey,
-                    child: LogoView(
-                      top: FittedBox(
-                        fit: BoxFit.contain,
-                        child: Icon(
-                          Icons.lock_outline,
-                          color: Colors.white,
-                        ),
+            stream: Database().getUser(userSnapshot.data),
+            builder: (ctx, userId) {
+              if (userId.hasData && userId.data.type == 'driver') {
+                setDriver(userId.data.id);
+                return HomeScreenDriver();
+              }
+              return Material(
+                child: Form(
+                  key: _submitBloc.formKey,
+                  child: LogoView(
+                    top: FittedBox(
+                      fit: BoxFit.contain,
+                      child: Icon(
+                        Icons.lock_outline,
+                        color: Colors.white,
                       ),
-                      children: [
-                        EmailField(
-                          checker: _submitBloc.emailChecker,
-                        ),
-                        SizedBox(
-                          height: SPACE,
-                        ),
-                        PasswordField(
-                          checker: _submitBloc.passwordChecker,
-                        ),
-                        Row(
-                          children: <Widget>[
-                            /*Expanded(
+                    ),
+                    children: [
+                      EmailField(
+                        checker: _submitBloc.emailChecker,
+                      ),
+                      SizedBox(
+                        height: SPACE,
+                      ),
+                      PasswordField(
+                        checker: _submitBloc.passwordChecker,
+                      ),
+                      Row(
+                        children: <Widget>[
+                          /*Expanded(
                   child: RaisedButton(
                     onPressed: () {
                       EasyRouter.push(context, SignUpScreen());
@@ -218,19 +218,20 @@ class _LoginScreenState extends State<LoginScreen> {
                 SizedBox(
                   width: SPACE,
                 ),*/
-                            Expanded(
-                              child: SubmitButton.raised(
-                                controller: _submitBloc.submitController,
-                                child: FittedText('Login'),
-                              ),
+                          Expanded(
+                            child: SubmitButton.raised(
+                              controller: _submitBloc.submitController,
+                              child: FittedText('Login'),
                             ),
-                          ],
-                        ),
-                      ],
-                    ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
-                );
-              });
+                ),
+              );
+            },
+          );
         }
         return Material(
           child: Form(

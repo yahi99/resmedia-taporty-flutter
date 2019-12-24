@@ -13,7 +13,7 @@ part 'OrderModel.g.dart';
 class DriverOrderModel extends FirebaseModel {
   final String titleR, titleS, addressR, addressS, timeR, timeS;
   final double latR, lngR;
-  String  restId, uid, nominative,day,endTime,startTime,phone;
+  String restId, uid, nominative, day, endTime, startTime, phone;
   StateCategory state;
 
   DriverOrderModel({
@@ -43,6 +43,7 @@ class DriverOrderModel extends FirebaseModel {
           title: restId,
           address: addressS,
           deliveryTime: startTime,
+          displayName: restId,
           time: (timeS != null) ? timeS : 'Ordine non accettato',
         ),
         SubjectModel(
@@ -51,6 +52,7 @@ class DriverOrderModel extends FirebaseModel {
             address: addressR,
             time: timeR,
             deliveryTime: endTime,
+            displayName: nominative,
             position: LatLngModel(lat: latR, lng: lngR))
       ];
 

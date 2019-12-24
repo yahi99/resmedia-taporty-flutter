@@ -77,7 +77,6 @@ class _DetailOrderPageDriverState extends State<DetailOrderPageDriver> {
         //title: const RubberConcierge(),
       ),
       body: ListView(
-        //controller: RubberScrollController.of(context),
         physics: NeverScrollableScrollPhysics(),
         children: <Widget>[
           Padding(
@@ -91,16 +90,19 @@ class _DetailOrderPageDriverState extends State<DetailOrderPageDriver> {
                 ),
                 InkWell(
                   onTap: () => EasyRouter.push(
-                      context,
-                      SubjectOrderPageDriver(
-                        orderModel: widget.model,
-                        model: sub[0],
-                        isRest: true,
-                      )),
+                    context,
+                    SubjectOrderPageDriver(
+                      orderModel: widget.model,
+                      model: sub[0],
+                      isRest: true,
+                    ),
+                  ),
                   child: Order(
                     children: <Widget>[
-                      SubjectVoid(
-                        model: sub[0],
+                      Expanded(
+                        child: SubjectVoid(
+                          model: sub[0],
+                        ),
                       ),
                     ],
                   ),
@@ -115,9 +117,11 @@ class _DetailOrderPageDriverState extends State<DetailOrderPageDriver> {
                       )),
                   child: Order(
                     children: <Widget>[
-                      SubjectVoid(
-                        model: sub[1],
-                        subject: Subject.RECEIVER,
+                      Expanded(
+                        child: SubjectVoid(
+                          model: sub[1],
+                          subject: Subject.RECEIVER,
+                        ),
                       ),
                     ],
                   ),

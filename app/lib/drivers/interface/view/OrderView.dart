@@ -4,24 +4,34 @@ import 'package:flutter/widgets.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/widget/Order.dart';
 import 'package:resmedia_taporty_flutter/drivers/model/OrderModel.dart';
 import 'package:resmedia_taporty_flutter/drivers/model/SubjectModel.dart';
+import 'package:resmedia_taporty_flutter/main.dart';
 
 class OrderView extends StatelessWidget {
-  final DriverOrderModel model;
+  final DriverOrderModel driverOrderModel;
 
-  OrderView({Key key, @required this.model}) : super(key: key);
+  OrderView({Key key, @required this.driverOrderModel}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final sub = model.subjects;
-    final temp=model.endTime.split(':');
-    final day=DateTime.parse(model.day);
-    final time=DateTime(day.year,day.month,day.day,int.parse(temp.elementAt(0)),int.parse(temp.elementAt(1)));
+    final sub = driverOrderModel.subjects;
+    final temp = driverOrderModel.endTime.split(':');
+    final day = DateTime.parse(driverOrderModel.day);
+    final time = DateTime(day.year, day.month, day.day,
+        int.parse(temp.elementAt(0)), int.parse(temp.elementAt(1)));
     return Order(
-      isNear:(time.difference(DateTime.now()).inMinutes>0 && time.difference(DateTime.now()).inMinutes <=45)?true:false,
-      endTime: model.endTime,
-      date: model.day,
+      isNear: (time.difference(DateTime.now()).inMinutes > 0 &&
+              time.difference(DateTime.now()).inMinutes <= 45)
+          ? true
+          : false,
+      endTime: driverOrderModel.endTime,
+      date: driverOrderModel.day,
       children: <Widget>[
-        Padding(child:Divider(height: 4.0,),padding: EdgeInsets.only(top:8.0,bottom: 8.0),),
+        Padding(
+          child: Divider(
+            height: 4.0,
+          ),
+          padding: EdgeInsets.only(top: 8.0, bottom: 8.0),
+        ),
         Expanded(
           child: SubjectVoid(
             model: sub[0],
@@ -62,34 +72,34 @@ class SubjectVoid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final tt = theme.textTheme;
+    final textTheme = theme.textTheme;
 
     final title = subject == Subject.SUPPLIER ? "Fornitore" : "Cliente";
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Text(
-          '$title',
-          style: tt.subhead,
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Flexible(
-                child: Text(
-                  "${(model.address.length > 30) ? model.address.substring(0, 28) + '\n' + model.address.substring(28) : model.address}",
-                  style: tt.body1,
-                ),
-              ),
-            ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.only(bottom: 4.0),
+            child: Text(
+              title,
+              style: textTheme.subhead
+                  .copyWith(fontWeight: FontWeight.bold, color: red),
+            ),
           ),
-        )
-      ],
+          Text(
+            model.displayName,
+            style: textTheme.subhead.copyWith(fontWeight: FontWeight.bold),
+          ),
+          Text(
+            model.address,
+            style: textTheme.body1,
+          ),
+        ],
+      ),
     );
   }
 }

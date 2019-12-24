@@ -136,25 +136,27 @@ class _SubjectOrderPageDriverState extends State<SubjectOrderPageDriver> {
                 color: Colors.grey[300],
                 child: Row(
                   children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            widget.model.title,
-                            style: tt.subtitle,
-                          ),
-                          Text(
-                            "${(widget.model.address.length > 28) ? widget.model.address.substring(0, 28) + '\n' + widget.model.address.substring(28) : widget.model.address}",
-                            style: tt.subhead,
-                          ),
-                          Text(
-                            "${(widget.model.time.length > 10) ? widget.model.time.substring(0, 10) + '\n' + widget.model.time.substring(10) : widget.model.time}",
-                            style: tt.subhead,
-                          ),
-                        ],
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              widget.model.title,
+                              style: tt.subtitle,
+                            ),
+                            Text(
+                              widget.model.address,
+                              style: tt.subhead,
+                            ),
+                            Text(
+                              widget.model.time,
+                              style: tt.subhead,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                     /*Padding(
@@ -182,7 +184,7 @@ class _SubjectOrderPageDriverState extends State<SubjectOrderPageDriver> {
                       style: tt.subtitle,
                     ),
                     Text(
-                      "${(widget.model.address.length > 30) ? widget.model.address.substring(0, 28) + '\n' + widget.model.address.substring(28) : widget.model.address}",
+                      widget.model.address,
                       style: tt.subhead,
                     ),
                     Text(

@@ -42,7 +42,8 @@ class _HomeScreenDriverState extends State<HomeScreenDriver> {
 
   FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
-  void showNotification(BuildContext context, Map<String, dynamic> message) async {
+  void showNotification(
+      BuildContext context, Map<String, dynamic> message) async {
     print('Build dialog');
     showDialog(
       context: context,
@@ -67,7 +68,7 @@ class _HomeScreenDriverState extends State<HomeScreenDriver> {
     _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
         print('on message $message');
-        if(dialog!=null) showNotification(dialog,message);
+        if (dialog != null) showNotification(dialog, message);
       },
       onResume: (Map<String, dynamic> message) async {
         print('on resume $message');
@@ -113,7 +114,7 @@ class _HomeScreenDriverState extends State<HomeScreenDriver> {
 
   @override
   Widget build(BuildContext context) {
-    dialog=context;
+    dialog = context;
     final turnBloc = TurnBloc.of();
     final orderBloc = OrdersBloc.of();
     //final timeBloc = TimeBloc.of();
@@ -151,11 +152,11 @@ class _HomeScreenDriverState extends State<HomeScreenDriver> {
             builder: (ctx, snap1) {
               return StreamBuilder<List<DriverOrderModel>>(
                 stream: Database().getDriverOrders(user),
-                builder: (context, snap2) {
+                builder: (context, driverOrderListSnapshot) {
                   return StreamBuilder<DateTime>(
                     stream: dateStream.stream,
                     builder: (context, snap3) {
-                      if (!snap1.hasData || !snap2.hasData)
+                      if (!snap1.hasData || !driverOrderListSnapshot.hasData)
                         return Center(
                           child: CircularProgressIndicator(),
                         );
@@ -164,11 +165,13 @@ class _HomeScreenDriverState extends State<HomeScreenDriver> {
                         children: <Widget>[
                           OrdersPageDriver(
                             model: categorized(
-                                StateCategory.values, snap2.data, (model) => model.state),
+                                StateCategory.values,
+                                driverOrderListSnapshot.data,
+                                (model) => model.state),
                           ),
                           TurnWorkTabDriver(
-                            model: categorized(
-                          MonthCategory.values, snap1.data, (model) => model.month),
+                            model: categorized(MonthCategory.values, snap1.data,
+                                (model) => model.month),
                           ),
                           CalendarTabDriver(
                             //model: (!snap4.hasData)?snap4.data:List<CalendarModel>(),
@@ -194,21 +197,25 @@ class _HomeScreenDriverState extends State<HomeScreenDriver> {
   }
 }
 
-
-
 Map<C, List<M>> categorized<C, M>(
-    List<C> allCategories, List<M> models, C getterCategory(M model),
-    ) {
-
+  List<C> allCategories,
+  List<M> models,
+  C getterCategory(M model),
+) {
   final categories = allCategories.where((category) {
-    return models.map(getterCategory)
+    return models
+        .map(getterCategory)
         .any((modelCategory) => category == modelCategory);
   });
-  return Map.fromIterable(categories,
+  return Map.fromIterable(
+    categories,
     key: (category) {
       return category;
-    },  value: (category) {
-      return models.where((model) => getterCategory(model) == category).toList();
+    },
+    value: (category) {
+      return models
+          .where((model) => getterCategory(model) == category)
+          .toList();
     },
   );
 }

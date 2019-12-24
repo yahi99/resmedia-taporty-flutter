@@ -57,7 +57,7 @@ class OrdersBloc implements Bloc {
     final restUser = await user.outFirebaseUser.first;
     //final restId= await _db.getRestaurantId(restUser.uid);
     //final str=await _db.getUserOrders(restUser.uid).first;
-    //print('lol');
+    //
     _userControl =
         PublishController.catchStream(source: _db.getUserOrders(restUser.uid));
     _userControl.listen(print);
@@ -75,7 +75,7 @@ class OrdersBloc implements Bloc {
 
      */
     //final str=await _db.getRestaurantOrders(restUser.uid, restId).first;
-    //print('lol');
+    //
     _restaurantsControl =
         PublishController.catchStream(source: _db.getRestaurantOrders(restId));
     _restaurantsControl.listen(print);
@@ -85,7 +85,6 @@ class OrdersBloc implements Bloc {
     final user = UserBloc.of();
     final restUser = await user.outFirebaseUser.first;
     //final str=await _db.getDriverOrders(restUser.uid).first;
-    print('lol');
     _driverControl = PublishController.catchStream(
         source: _db.getDriverOrders(restUser.uid));
     _driverControl.listen(print);

@@ -173,7 +173,7 @@ class _ConfirmState extends State<ConfirmPage>
                           state.endTime,
                           state.fingerprint,
                           state.date,
-
+                          state.name
                         )
                             .then((isDone) {
                           RestaurantScreen.isOrdered = false;

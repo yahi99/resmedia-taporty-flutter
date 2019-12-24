@@ -11,6 +11,7 @@ import 'package:resmedia_taporty_flutter/drivers/interface/screen/DetailedOrderU
 import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
 import 'package:resmedia_taporty_flutter/common/logic/database.dart';
 import 'package:resmedia_taporty_flutter/common/model/OrderModel.dart';
+import 'package:toast/toast.dart';
 
 class TypeOrderView extends StatefulWidget implements WidgetRoute {
 static const String ROUTE = "TypeOrderView";
@@ -227,7 +228,13 @@ class _LoginScreenState extends State<TypeOrderView> {
               color: theme.accentColor,
               onTap: () async{
                 //TODO:DELETE ORDER
-                Database().deleteOrder(order.data,(await UserBloc.of().outUser.first).model.id);
+                if(translateOrderCategory(order.data.state)!='Ordine Cancellato') 
+                Database().deleteOrder(order.data,(await UserBloc.of().outUser.first).model.id).then((value){
+                  Toast.show('Ordine cancellato!', context);
+                });
+                else {
+                  Toast.show('Ordine già cancellato!', context);
+                }
               },
             )
           ],

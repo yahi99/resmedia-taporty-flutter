@@ -1,10 +1,9 @@
-
 import 'package:easy_route/easy_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:resmedia_taporty_flutter/common/logic/database.dart';
 import 'package:resmedia_taporty_flutter/control/model/DriverRequestModel.dart';
 import 'package:resmedia_taporty_flutter/data/config.dart';
-import 'package:resmedia_taporty_flutter/common/logic/database.dart';
 
 class DriverDetailedRequest extends StatefulWidget implements WidgetRoute {
   static const ROUTE = 'DriverDetailedRequest';
@@ -29,8 +28,8 @@ class _DriverDetailedState extends State<DriverDetailedRequest> {
     return Scaffold(
       appBar: new AppBar(title:Text('Dettaglio Richiesta')),
       body:Padding(
-              child:Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              child:ListView(
+                shrinkWrap: true,
                 children: <Widget>[
                   Container(child:Row(
                     //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -110,8 +109,11 @@ class _DriverDetailedState extends State<DriverDetailedRequest> {
                     children: <Widget>[
                       RaisedButton(
                         onPressed: () {
-                          if(!widget.isArchived) Database().archiveDriver(widget.model);
                           EasyRouter.pop(context);
+                          if(!widget.isArchived) Database().archiveDriver(widget.model);
+                          else{
+                            Database().deleteDriverRequest(widget.model);
+                          }
                         },
                         textColor: Colors.white,
                         color: Colors.red,

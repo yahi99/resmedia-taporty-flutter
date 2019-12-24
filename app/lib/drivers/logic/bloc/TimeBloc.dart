@@ -22,7 +22,7 @@ class TimeBloc implements Bloc {
   Stream<List<ShiftModel>> get outTurns => _outControl.stream;
 
   void setDay(DateTime day) async {
-    print('lol');
+    
     _outControl = PublishController.catchStream(
         source: _db.getUsersTurn(day.toIso8601String()));
     _outControl.listen(print);

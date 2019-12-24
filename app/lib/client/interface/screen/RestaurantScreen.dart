@@ -6,6 +6,7 @@ import 'package:geocoder/geocoder.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:resmedia_taporty_flutter/client/interface/screen/LoginScreen.dart';
 import 'package:resmedia_taporty_flutter/common/helper/LoginHelper.dart';
+import 'package:resmedia_taporty_flutter/common/model/ProductModel.dart';
 import 'package:resmedia_taporty_flutter/data/config.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/screen/AccountScreen.dart';
 import 'package:resmedia_taporty_flutter/client/interface/page/InfoRestaurantPage.dart';
@@ -83,6 +84,8 @@ class RestaurantScreen extends StatefulWidget implements WidgetRoute {
 class _RestaurantScreenState extends State<RestaurantScreen> {
   final double iconSize = 32;
 
+  final RestaurantBloc _restaurantBloc = RestaurantBloc.of();
+
   @override
   void dispose() {
     RestaurantBloc.close();
@@ -102,6 +105,8 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final cls = theme.colorScheme;
+    List<ProductCart> cartCounter = List<ProductCart>();
+    final restaurantBloc = RestaurantBloc.init(idRestaurant: widget.model.id);
     return DefaultTabController(
         length: 3,
         child: Scaffold(
@@ -119,86 +124,123 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                       return StreamBuilder<User>(
                         stream: UserBloc.of().outUser,
                         builder: (ctx, user) {
-                          if (drinks.hasData && foods.hasData && user.hasData) {
-                            //if(user.data.model.type!='user') EasyRouter.pushAndRemoveAll(context, LoginScreen());
-                            int count = drinks.data.getTotalItems(
-                                    drinks.data.products,
-                                    user.data.userFb.uid,
-                                    widget.model.id) +
-                                foods.data.getTotalItems(foods.data.products,
-                                    user.data.userFb.uid, widget.model.id);
-                            print(count);
-                            return Row(
-                              children: <Widget>[
-                                IconButton(
-                                  icon: Icon(Icons.shopping_cart),
-                                  onPressed: () {
-                                    UserBloc.of().outUser.first.then((user) {
-                                      Geocoder.local
-                                          .findAddressesFromCoordinates(
-                                              Coordinates(
-                                                  widget.position.latitude,
-                                                  widget.position.longitude))
-                                          .then((addresses) {
-                                        EasyRouter.push(
-                                            context,
-                                            CheckoutScreen(
-                                              model: widget.model,
-                                              user: user.model,
-                                              position: widget.position,
-                                              description: addresses.first,
-                                            ));
-                                      });
+                          return StreamBuilder<List<DrinkModel>>(
+                              stream: restaurantBloc.outDrinks,
+                              builder: (context, snapshot) {
+                                return StreamBuilder<List<FoodModel>>(
+                                    stream: restaurantBloc.outFoods,
+                                    builder: (context, snap) {
+                                      if (drinks.hasData &&
+                                          foods.hasData &&
+                                          user.hasData && snap.hasData && snapshot.hasData) {
+                                        //if(user.data.model.type!='user') EasyRouter.pushAndRemoveAll(context, LoginScreen());
+                                        cartCounter.clear();
+                                        for (int i = 0; i < snapshot.data.length; i++) {
+                                          var temp = snapshot.data.elementAt(i);
+                                          var find = drinks.data.getProduct(
+                                              temp.id, temp.restaurantId, user.data.model.id);
+                                          if (find != null && find.countProducts > 0) {
+                                            cartCounter.add(find);
+                                          }
+                                        }
+                                        for (int i = 0; i < snap.data.length; i++) {
+                                          var temp = snap.data.elementAt(i);
+                                          var find = foods.data.getProduct(
+                                              temp.id, temp.restaurantId, user.data.model.id);
+                                          if (find != null && find.countProducts > 0) {
+                                            cartCounter.add(find);
+                                          }
+                                        }
+                                        //final state = MyInheritedWidget.of(context);
+                                        int count=drinks.data.getTotalItems(cartCounter);
+                                        return Row(
+                                          children: <Widget>[
+                                            IconButton(
+                                              icon: Icon(Icons.shopping_cart),
+                                              onPressed: () {
+                                                UserBloc.of()
+                                                    .outUser
+                                                    .first
+                                                    .then((user) {
+                                                  Geocoder.local
+                                                      .findAddressesFromCoordinates(
+                                                          Coordinates(
+                                                              widget.position
+                                                                  .latitude,
+                                                              widget.position
+                                                                  .longitude))
+                                                      .then((addresses) {
+                                                    EasyRouter.push(
+                                                        context,
+                                                        CheckoutScreen(
+                                                          model: widget.model,
+                                                          user: user.model,
+                                                          position:
+                                                              widget.position,
+                                                          description:
+                                                              addresses.first,
+                                                        ));
+                                                  });
+                                                });
+                                              },
+                                            ),
+                                            Text(
+                                              count.toString(),
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 18.0,
+                                                fontWeight: FontWeight.bold,
+                                                fontFamily: 'Comfortaa',
+                                              ),
+                                            )
+                                          ],
+                                        );
+                                      }
+                                      return Row(
+                                        children: <Widget>[
+                                          IconButton(
+                                            icon: Icon(Icons.shopping_cart),
+                                            onPressed: () {
+                                              UserBloc.of()
+                                                  .outUser
+                                                  .first
+                                                  .then((user) {
+                                                Geocoder.local
+                                                    .findAddressesFromCoordinates(
+                                                        Coordinates(
+                                                            widget.position
+                                                                .latitude,
+                                                            widget.position
+                                                                .longitude))
+                                                    .then((addresses) {
+                                                  EasyRouter.push(
+                                                      context,
+                                                      CheckoutScreen(
+                                                        model: widget.model,
+                                                        user: user.model,
+                                                        position:
+                                                            widget.position,
+                                                        description:
+                                                            addresses.first,
+                                                      ));
+                                                });
+                                              });
+                                            },
+                                          ),
+                                          Text(
+                                            '0',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 18.0,
+                                              fontWeight: FontWeight.bold,
+                                              fontFamily: 'Comfortaa',
+                                            ),
+                                          )
+                                        ],
+                                      );
+                                      //here
                                     });
-                                  },
-                                ),
-                                Text(
-                                  count.toString(),
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 18.0,
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: 'Comfortaa',
-                                  ),
-                                )
-                              ],
-                            );
-                          }
-                          return Row(
-                            children: <Widget>[
-                              IconButton(
-                                icon: Icon(Icons.shopping_cart),
-                                onPressed: () {
-                                  UserBloc.of().outUser.first.then((user) {
-                                    Geocoder.local
-                                        .findAddressesFromCoordinates(
-                                            Coordinates(
-                                                widget.position.latitude,
-                                                widget.position.longitude))
-                                        .then((addresses) {
-                                      EasyRouter.push(
-                                          context,
-                                          CheckoutScreen(
-                                            model: widget.model,
-                                            user: user.model,
-                                            position: widget.position,
-                                            description: addresses.first,
-                                          ));
-                                    });
-                                  });
-                                },
-                              ),
-                              Text(
-                                '0',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 18.0,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: 'Comfortaa',
-                                ),
-                              )
-                            ],
-                          );
+                              });
                         },
                       );
                     },
@@ -251,7 +293,10 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
           body: StreamBuilder<User>(
             stream: UserBloc.of().outUser,
             builder: (ctx, user) {
-              if(!user.hasData) return Center(child: CircularProgressIndicator(),);
+              if (!user.hasData)
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
               return StreamBuilder<RestaurantModel>(
                 stream: RestaurantBloc.init(idRestaurant: widget.model.id)
                     .outRestaurant,
@@ -276,8 +321,11 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                           }
                           if (rest.data.isDisabled != null &&
                               rest.data.isDisabled) {
-                            return Text(
-                                'Ristorante non abilitato scegline un\'altro');
+                            return Padding(
+                              child: Text(
+                                  'Ristorante non abilitato scegline un\'altro'),
+                              padding: EdgeInsets.all(8.0),
+                            );
                           }
                           return TabBarView(
                             children: <Widget>[

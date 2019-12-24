@@ -18,6 +18,7 @@ class CartPage extends StatefulWidget {
   final RestaurantModel model;
   final TabController controller;
 
+
   CartPage({Key key, @required this.model, @required this.controller})
       : super(key: key);
 
@@ -42,11 +43,11 @@ class _CartState extends State<CartPage> with AutomaticKeepAliveClientMixin {
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     final tt = Theme.of(context);
     final restaurantBloc = RestaurantBloc.init(idRestaurant: widget.model.id);
     final cartBloc = CartBloc.of();
     final user = UserBloc.of();
+    List<ProductCart> cartCounter = List<ProductCart>();
     return StreamBuilder<FirebaseUser>(
       stream: user.outFirebaseUser,
       builder: (context, uid) {
@@ -72,9 +73,25 @@ class _CartState extends State<CartPage> with AutomaticKeepAliveClientMixin {
                               return Center(
                                 child: CircularProgressIndicator(),
                               );
+                            cartCounter.clear();
+                            for (int i = 0; i < snapshot.data.length; i++) {
+                              var temp = snapshot.data.elementAt(i);
+                              var find = sp1.data.getProduct(
+                                  temp.id, temp.restaurantId, uid.data.uid);
+                              if (find != null && find.countProducts > 0) {
+                                cartCounter.add(find);
+                              }
+                            }
+                            for (int i = 0; i < snap.data.length; i++) {
+                              var temp = snap.data.elementAt(i);
+                              var find = sp2.data.getProduct(
+                                  temp.id, temp.restaurantId, uid.data.uid);
+                              if (find != null && find.countProducts > 0) {
+                                cartCounter.add(find);
+                              }
+                            }
                             final state = MyInheritedWidget.of(context);
-                            state.count=sp1.data.getTotalItems(sp1.data.products, uid.data.uid, widget.model.id)+
-                                sp2.data.getTotalItems(sp2.data.products, uid.data.uid, widget.model.id);
+                            state.count=sp1.data.getTotalItems(cartCounter);
                             return ProductsFoodDrinkBuilder(
                               drinks: snapshot.data,
                               foods: snap.data,
@@ -112,6 +129,7 @@ class _CartState extends State<CartPage> with AutomaticKeepAliveClientMixin {
   }
 
   @override
+  // TODO: implement wantKeepAlive
   bool get wantKeepAlive => true;
 }
 

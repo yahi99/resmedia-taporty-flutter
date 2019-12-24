@@ -42,7 +42,8 @@ class _DetailOrderRestaurantPageState extends State<TotalIncomeScreen> {
           stream: Database().getTotalIncome(widget.date),
           builder: (ctx, snap4) {
             return Container(
-              child: Column(
+              child: ListView(
+                shrinkWrap: true,
                 children: <Widget>[
                   MonthPicker(
                     selectedDate: widget.date,

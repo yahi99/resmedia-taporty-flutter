@@ -27,7 +27,7 @@ class CalendarBloc implements Bloc {
     //final user=UserBloc.of();
     //final restUser=await user.outFirebaseUser.first;
     //final str=await _db.getDriverOrders(restUser.uid).first;
-    print('lol');
+    
     print(now.toIso8601String());
     _calendarControl =
         PublishController.catchStream(source: _db.getShifts(now));

@@ -91,7 +91,7 @@ class DefaultNavigationController extends StatefulWidget {
   /// TabController controller = DefaultTabBarController.of(context);
   /// ```
   static TabController of(BuildContext context) {
-    final _NavigationControllerScope scope = context.dependOnInheritedWidgetOfExactType(aspect: _NavigationControllerScope);
+    final _NavigationControllerScope scope = context.inheritFromWidgetOfExactType(_NavigationControllerScope);
     return scope?.controller;
   }
 

@@ -41,7 +41,7 @@ class TurnBloc implements Bloc {
     //final user = UserBloc.of();
     //final restUser = await user.outFirebaseUser.first;
     //final str=await _db.getDriverOrders(restUser.uid).first;
-    print('lol');
+    
     _turnControl =
         PublishController.catchStream(source: _db.getTurns(uid));
     _turnControl.listen(print);
@@ -50,7 +50,7 @@ class TurnBloc implements Bloc {
     final user = UserBloc.of();
     final restUser = await user.outUser.first;
     //final str=await _db.getDriverOrders(restUser.uid).first;
-    print('lol');
+    
     _turnControlRest =
         PublishController.catchStream(source: _db.getTurnsRest(restUser.model.restaurantId));
     _turnControlRest.listen(print);

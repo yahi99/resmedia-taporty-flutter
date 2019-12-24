@@ -71,6 +71,7 @@ class CartBloc extends Bloc {
     final drink = await outDrinksCart.first;
     final firebaseUser = await user.outFirebaseUser.first;
     var temp = food.products;
+    Cart cart=Cart(products: temp);
     List<ProductCart> products = List<ProductCart>();
     List<ProductCart> foods = List<ProductCart>();
     List<ProductCart> drinks = List<ProductCart>();
@@ -85,6 +86,7 @@ class CartBloc extends Bloc {
       }
     }
     temp = drink.products;
+    cart=Cart(products: temp);
     for (int i = 0; i < temp.length; i++) {
       if (temp.elementAt(i).userId == firebaseUser.uid &&
           temp.elementAt(i).restaurantId == restaurantId) {
@@ -128,6 +130,17 @@ class CartBloc extends Bloc {
     );
   }*/
 
+  Future<void> inDecrementDrink(ProductModel model) async {
+    return CacheStreamBuilder<FirebaseUser>(
+        stream: user.outFirebaseUser,
+        builder: (context, snap) {
+          if (snap.hasData) {
+            _drinksCartController.inDecrease(
+                model.id, model.restaurantId, snap.data.uid);
+          }
+        });
+  }
+
   Future<String> isAvailable(String date, String time,String restId) async {
     final model = await _db.getUsers(date, time);
     if (model.free.length > 1) {
@@ -142,7 +155,7 @@ class CartBloc extends Bloc {
   }
 
   Future<bool> signer(String restaurantId, String driver, Position userPos,String phone,
-      String userAddress, String startTime, String endTime,String fingerprint,String day) async {
+      String userAddress, String startTime, String endTime,String fingerprint,String day,String nominative) async {
     final userBloc = UserBloc.of();
     final firebaseUser = await userBloc.outUser.first;
     inDeleteCart(restaurantId).then((cart) async {
@@ -155,7 +168,7 @@ class CartBloc extends Bloc {
           userPos: userPos,
           addressR: userAddress,
           startTime: startTime,
-          nominative: firebaseUser.model.nominative,
+          nominative: nominative,
           endTime: endTime,
           fingerprint:fingerprint,
           restAdd: (await Geocoder.local.findAddressesFromCoordinates(

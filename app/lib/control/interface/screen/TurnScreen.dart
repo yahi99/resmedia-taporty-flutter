@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:resmedia_taporty_flutter/data/config.dart';
 import 'package:resmedia_taporty_flutter/common/logic/database.dart';
+import 'package:toast/toast.dart';
 
 class TurnScreen extends StatefulWidget implements WidgetRoute {
   static const ROUTE = 'TurnScreenPanel';
@@ -24,6 +25,7 @@ class _TurnScreenPanelState extends State<TurnScreen> {
   DateTime date;
   //final CalendarBloc _calendarBloc = CalendarBloc.of();
   var user;
+  final TextEditingController _quantityController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
   var dateStream = StreamController<DateTime>();
   //var timeStream = StreamController<List<CalendarModel>>();
@@ -138,7 +140,8 @@ class _TurnScreenPanelState extends State<TurnScreen> {
             stream: dateStream.stream,
             builder: (ctx, sp) {
               //if(!sp.hasData) return Center(child: CircularProgressIndicator(),);
-              return Column(
+              return ListView(
+                shrinkWrap: true,
                 children: <Widget>[
                   Padding(
                     child: TextField(
@@ -340,6 +343,7 @@ class _TurnScreenPanelState extends State<TurnScreen> {
                       }
                     }
                   }
+                  Toast.show('Turni aggiunti!', context);
                 }
               }
             }

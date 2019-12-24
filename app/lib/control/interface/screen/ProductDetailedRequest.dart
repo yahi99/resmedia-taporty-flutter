@@ -45,8 +45,8 @@ class _ProductDetailedState extends State<ProductDetailedRequest> {
     //downloadFile(widget.model.img);
     return Scaffold(
       appBar: new AppBar(title: Text('Dettaglio Richiesta')),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      body: ListView(
+        shrinkWrap: true,
         children: <Widget>[
           Image.network(
             widget.model.img,
@@ -178,8 +178,11 @@ class _ProductDetailedState extends State<ProductDetailedRequest> {
             children: <Widget>[
               RaisedButton(
                 onPressed: () {
-                  if(!widget.isArchive) Database().archiveProduct(widget.model);
                   EasyRouter.pop(context);
+                  if(!widget.isArchive) Database().archiveProduct(widget.model);
+                  else{
+                    Database().deleteProductRequest(widget.model);
+                  }
                 },
                 textColor: Colors.white,
                 color: Colors.red,

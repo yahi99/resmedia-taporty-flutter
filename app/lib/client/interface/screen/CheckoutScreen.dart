@@ -146,8 +146,8 @@ class _CheckoutScreenState extends State<CheckoutScreen>
                           }
                           if (rest.data.isDisabled != null &&
                               rest.data.isDisabled) {
-                            return Text(
-                                'Ristorante non abilitato scegline un altro');
+                            return Padding(child:Text(
+                                'Ristorante non abilitato scegline un\'altro'),padding: EdgeInsets.all(8.0),);
                           }
                           return MyInheritedWidget(
                             child: TabBarView(
@@ -199,7 +199,7 @@ class MyInheritedWidget extends InheritedWidget {
         super(key: key, child: child);
 
   static MyInheritedWidgetData of(BuildContext context) =>
-      (context.dependOnInheritedWidgetOfExactType(aspect: MyInheritedWidget)
+      (context.inheritFromWidgetOfExactType(MyInheritedWidget)
               as MyInheritedWidget)
           .data;
 

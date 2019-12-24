@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:easy_blocs/easy_blocs.dart';
 import 'package:easy_route/easy_route.dart';
 import 'package:flutter/material.dart';
 import 'package:resmedia_taporty_flutter/data/config.dart';
@@ -62,6 +63,7 @@ class _DetailOrderRestaurantPageState extends State<DetailOrderCtrlPage> {
       context: context,
       builder: (_context) {
         final theme = Theme.of(context);
+        final cls = theme.colorScheme;
         return AlertDialog(
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(20))),
@@ -72,7 +74,7 @@ class _DetailOrderRestaurantPageState extends State<DetailOrderCtrlPage> {
               Column(
                 children: <Widget>[
                   Text(
-                    "Sicuro di volere assegnare "+driverModel.nominative+" all'ordine?",
+                    "Sicuro di volere assegnare "+driverModel.id+" all'ordine?",
                     style: theme.textTheme.body2,
                   ),
                   Row(
@@ -93,7 +95,7 @@ class _DetailOrderRestaurantPageState extends State<DetailOrderCtrlPage> {
                         onPressed: () {
                           isAvailable(widget.model.day, widget.model.startTime, widget.model.restaurantId,driverModel);
                           Database().updateOrderDriver(widget.model, driverModel.id).then((value) {
-                            Toast.show('Ordine cancellato', context);
+                            Toast.show('Fattorino assegnato', context);
                             EasyRouter.pop(context);
                           });
                         },
@@ -139,6 +141,7 @@ class _DetailOrderRestaurantPageState extends State<DetailOrderCtrlPage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final tt = theme.textTheme;
+    final cart = Cart(products: widget.model.products);
     return StreamBuilder(
       stream: Database().getCtrlOrder(widget.model.id),
       builder: (ctx,order){
@@ -146,21 +149,21 @@ class _DetailOrderRestaurantPageState extends State<DetailOrderCtrlPage> {
         final model=order.data;
         return Scaffold(
           appBar: AppBar(),
-          body: ListView(
-            physics: NeverScrollableScrollPhysics(),
+          body: Container(
+          child:ListView(
             children: <Widget>[
               Padding(
                 padding: const EdgeInsets.all(SPACE),
-                child: Column(
+                child: ListView(
+                  shrinkWrap: true,
                   children: <Widget>[
-                    Wrap(
-                      runSpacing: 16.0,
-                      children: <Widget>[
                         Text(
                           "DETTAGLIO ORDINE",
                           style: tt.title,
                         ),
+                        SizedBox(height: 16.0,),
                         Text('Assegna ordine al fattorino', style: tt.subtitle),
+                        SizedBox(height: 16.0,),
                         Row(
                           children: <Widget>[
                             StreamBuilder<List<UserModel>>(
@@ -170,7 +173,7 @@ class _DetailOrderRestaurantPageState extends State<DetailOrderCtrlPage> {
                                   List<DropdownMenuItem> dropDrivers = List<DropdownMenuItem>();
                                   for (int i = 0; i < drivers.data.length; i++) {
                                     dropDrivers.add(DropdownMenuItem(
-                                      child: Text(drivers.data[i].nominative),
+                                      child: Text(drivers.data[i].id.substring(0,10)+'...'),
                                       value: drivers.data[i],
                                     ));
                                   }
@@ -211,8 +214,11 @@ class _DetailOrderRestaurantPageState extends State<DetailOrderCtrlPage> {
                             )
                           ],
                         ),
+                    SizedBox(height: 16.0,),
                         Text('Stato ordine: ', style: tt.subtitle),
+                    SizedBox(height: 16.0,),
                         Text(translateOrderCategory(model.state)),
+                    SizedBox(height: 16.0,),
                         Row(
                           children: <Widget>[
                             StreamBuilder(
@@ -260,6 +266,7 @@ class _DetailOrderRestaurantPageState extends State<DetailOrderCtrlPage> {
                             ),
                           ],
                         ),
+                    SizedBox(height: 16.0,),
                         Row(
                           children: <Widget>[
                             Text(model.isPaid?'Pagato':'Da Pagare'),
@@ -305,7 +312,9 @@ class _DetailOrderRestaurantPageState extends State<DetailOrderCtrlPage> {
                             },),
                           ],
                         ),
+                    SizedBox(height: 16.0,),
                         Text('Inidirizzo cliente: ', style: tt.subtitle),
+                    SizedBox(height: 16.0,),
                         Text(widget.model.addressR),
                         /*
                         Text('Prodotti: ', style: tt.subtitle),
@@ -321,10 +330,10 @@ class _DetailOrderRestaurantPageState extends State<DetailOrderCtrlPage> {
                          */
                       ],
                     ),
-                  ],
-                ),
               ),
             ],
+          ),
+            height: MediaQuery.of(context).size.height*4/5,
           ),
         );
       },

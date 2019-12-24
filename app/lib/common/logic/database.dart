@@ -31,6 +31,8 @@ import 'package:resmedia_taporty_flutter/common/model/RestaurantModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/UserModel.dart';
 import 'package:mailer/src/entities/address.dart' as add;
 
+import 'bloc/UserBloc.dart';
+
 class Database extends FirebaseDatabase
     with MixinFirestoreStripeProvider, RestaurantDb, StripeProviderRule {
   static Database _db;
@@ -67,25 +69,18 @@ class Database extends FirebaseDatabase
         .document(uid)
         .setData(model.toJson()..[users.fcmToken] = await fbMs.getToken());
   }
-
   Future<void> createUserGoogle(
-      {@required String uid,
-      @required String nominative,
-      @required String email}) async {
-    await fs.collection(cl.USERS).document(uid).setData({
-      'nominative': nominative,
-      users.fcmToken: await fbMs.getToken(),
-      'email': email
-    });
+      {@required String uid, @required String nominative,@required String email}) async {
+    await fs
+        .collection(cl.USERS)
+        .document(uid)
+        .setData({'nominative':nominative,users.fcmToken: await fbMs.getToken(),'email':email});
   }
 
   Stream<List<UserOrderModel>> getUserOrders(String uid) {
-    final data = fs
-        .collection(cl.USERS)
-        .document(uid)
-        .collection('user_orders')
-        .snapshots();
-    print('lol');
+    final data =
+        fs.collection(cl.USERS).document(uid).collection('user_orders').snapshots();
+    
     return data.map((query) {
       return query.documents
           .map((snap) => UserOrderModel.fromFirebase(snap))
@@ -94,8 +89,9 @@ class Database extends FirebaseDatabase
   }
 
   Stream<List<RestaurantOrderModel>> getCtrlOrders() {
-    final data = fs.collection('control_orders').snapshots();
-    print('lol');
+    final data =
+    fs.collection('control_orders').snapshots();
+    
     return data.map((query) {
       return query.documents
           .map((snap) => RestaurantOrderModel.fromFirebase(snap))
@@ -103,13 +99,12 @@ class Database extends FirebaseDatabase
     });
   }
 
-  Stream<List<UserModel>> driversList() {
-    final data =
-        fs.collection('users').where('type', isEqualTo: 'driver').snapshots();
+  Stream<List<UserModel>> driversList(){
+    final data=fs.collection('users').where('type',isEqualTo: 'driver').snapshots();
     return data.map((query) {
-      return query.documents
-          .map((snap) => UserModel.fromFirebase(snap))
-          .toList();
+    return query.documents
+        .map((snap) => UserModel.fromFirebase(snap))
+        .toList();
     });
   }
 
@@ -129,31 +124,20 @@ class Database extends FirebaseDatabase
     return Coordinates(model.lat, model.lng);
   }
 
-  Future<CalendarModel> getRestId(String day, String startTime) async {
-    final list = (await fs
-            .collection(cl.DAYS)
-            .document(day)
-            .collection(cl.TIMES)
-            .document(startTime)
-            .collection('restaurant_turns')
-            .where('isEmpty', isEqualTo: false)
-            .getDocuments())
-        .documents;
-    var min = CalendarModel.fromFirebase(list.first);
-    for (int i = 1; i < list.length; i++) {
-      var temp = CalendarModel.fromFirebase(list.elementAt(i));
-      if (temp.occupied.length < min.occupied.length) min = temp;
+  Future<CalendarModel> getRestId(String day,String startTime)async{
+    final list=(await fs.collection(cl.DAYS).document(day).collection(cl.TIMES).document(startTime).collection('restaurant_turns').where('isEmpty',isEqualTo: false).getDocuments()).documents;
+    var min=CalendarModel.fromFirebase(list.first);
+    for(int i=1;i<list.length;i++){
+      var temp=CalendarModel.fromFirebase(list.elementAt(i));
+      if(temp.occupied.length<min.occupied.length) min=temp;
     }
     return min;
   }
 
   Future<void> createRequestProduct(String id, String img, String category,
       String price, String quantity, String restaurantId, String cat) async {
-    await fs
-        .collection('product_requests')
-        .document(id + '§' + restaurantId)
-        .setData({
-      'title': id,
+    await fs.collection('product_requests').document(id+'§'+restaurantId).setData({
+      'title':id,
       'img': img,
       'category': category,
       'price': price,
@@ -163,254 +147,145 @@ class Database extends FirebaseDatabase
     });
   }
 
-  Future<void> pushReviewRest(String restId, int points, String strPoints,
-      String oid, String uid, String nominative) async {
-    final model = RestaurantModel.fromFirebase(
-        await fs.collection('restaurants').document(restId).get());
+  Future<void> pushReviewRest(String restId,int points,String strPoints,String oid,String uid,String nominative)async{
+    final model=RestaurantModel.fromFirebase(await fs.collection('restaurants').document(restId).get());
     double average;
     int number;
-    if (model.numberOfReviews != null) {
-      average = (model.averageReviews * model.numberOfReviews + points) /
-          (model.numberOfReviews + 1);
-      number = model.numberOfReviews + 1;
-    } else {
-      average = points / 1.0;
-      number = 1;
+    if(model.numberOfReviews!=null ) {
+      average=(model.averageReviews*model.numberOfReviews+points)/(model.numberOfReviews+1);
+      number=model.numberOfReviews+1;
     }
-    await fs
-        .collection('restaurants')
-        .document(restId)
-        .updateData({'numberOfReviews': number, 'averageReviews': average});
-    await fs
-        .collection('restaurants')
-        .document(restId)
-        .collection('reviews')
-        .add({
-      'points': points,
-      'strPoints': strPoints,
-      'oid': oid,
-      'userId': uid,
-      'nominative': nominative
-    });
+    else {
+      average = points/1.0;
+      number=1;
+    }
+    await fs.collection('restaurants').document(restId).updateData({'numberOfReviews':number,'averageReviews':average});
+    await fs.collection('restaurants').document(restId).collection('reviews').add({'points':points,'strPoints':strPoints,'oid':oid,'userId':uid,'nominative':nominative});
   }
 
-  Future<void> pushReviewDriver(String did, int points, String strPoints,
-      String uid, String oid, String nominative) async {
-    final model = UserModel.fromFirebase(
-        await fs.collection('users').document(did).get());
+  Future<void> pushReviewDriver(String did,int points,String strPoints,String uid,String oid,String nominative)async{
+    final model=UserModel.fromFirebase(await fs.collection('users').document(did).get());
     double average;
     int number;
-    if (model.numberOfReviews != null) {
-      average = (model.averageReviews * model.numberOfReviews + points) /
-          (model.numberOfReviews + 1);
-      number = model.numberOfReviews + 1;
-    } else {
-      average = points / 1.0;
-      number = 1;
+    if(model.numberOfReviews!=null ) {
+      average=(model.averageReviews*model.numberOfReviews+points)/(model.numberOfReviews+1);
+      number=model.numberOfReviews+1;
     }
-    await fs
-        .collection('users')
-        .document(did)
-        .updateData({'numberOfReviews': number, 'averageReviews': average});
-    await fs.collection('users').document(did).collection('reviews').add({
-      'points': points,
-      'strPoints': strPoints,
-      'oid': oid,
-      'userId': uid,
-      'nominative': nominative
-    });
+    else {
+      average = points/1.0;
+      number=1;
+    }
+    await fs.collection('users').document(did).updateData({'numberOfReviews':number,'averageReviews':average});
+    await fs.collection('users').document(did).collection('reviews').add({'points':points,'strPoints':strPoints,'oid':oid,'userId':uid,'nominative':nominative});
   }
 
-  Future<void> setReviewed(String uid, String oid) async {
-    await fs
-        .collection('users')
-        .document(uid)
-        .collection('user_orders')
-        .document(oid)
-        .updateData({'isReviewed': true});
+  Future<void> setReviewed(String uid,String oid)async{
+    await fs.collection('users').document(uid).collection('user_orders').document(oid).updateData({'isReviewed':true});
   }
 
-  Future<void> updateTime(String day, String isLunch, String startTime,
-      String endTime, String restId) async {
-    final rest = RestaurantModel.fromFirebase(
-        await fs.collection('restaurants').document(restId).get());
-    if (isLunch == 'Pranzo') {
-      Map<String, String> temp = rest.lunch;
+  Future<void> updateTime(String day,String isLunch,String startTime,String endTime,String restId)async{
+    final rest=RestaurantModel.fromFirebase(await fs.collection('restaurants').document(restId).get());
+    if(isLunch=='Pranzo'){
+      Map<String,String> temp=rest.lunch;
       //print(rest.lunch.toString());
-      if (temp != null) {
+      if(temp!=null) {
         temp.remove(day);
         temp.putIfAbsent(day, () => startTime + '-' + endTime);
-      } else {
-        temp = new Map<String, String>();
+      }
+      else{
+        temp=new Map<String,String>();
         temp.putIfAbsent(day, () => startTime + '-' + endTime);
       }
-      await fs
-          .collection('restaurants')
-          .document(restId)
-          .updateData({'lunch': temp});
-    } else {
-      Map<String, String> temp = rest.dinner;
+      await fs.collection('restaurants').document(restId).updateData({'lunch':temp});
+    }
+    else{
+      Map<String,String> temp=rest.dinner;
       print(rest.dinner);
-      if (temp != null) {
+      if(temp!=null) {
         temp.remove(day);
         temp.putIfAbsent(day, () => startTime + '-' + endTime);
-      } else {
-        temp = new Map<String, String>();
+      }
+      else{
+        temp=new Map<String,String>();
         temp.putIfAbsent(day, () => startTime + '-' + endTime);
       }
-      await fs
-          .collection('restaurants')
-          .document(restId)
-          .updateData({'dinner': temp});
+      await fs.collection('restaurants').document(restId).updateData({'dinner':temp});
     }
   }
 
-  Future<void> deleteUser(String uid, String img) async {
-    final turns = await fs
-        .collection('users')
-        .document(uid)
-        .collection('turns')
-        .getDocuments();
-    final orders = await fs
-        .collection('users')
-        .document(uid)
-        .collection('user_orders')
-        .getDocuments();
-    final driverOrders = await fs
-        .collection('users')
-        .document(uid)
-        .collection('driver_orders')
-        .getDocuments();
-    final reviews = await fs
-        .collection('users')
-        .document(uid)
-        .collection('reviews')
-        .getDocuments();
-    for (int i = 0; i < turns.documents.length; i++) {
-      await fs
-          .collection('users')
-          .document(uid)
-          .collection('turns')
-          .document(turns.documents.elementAt(i).documentID)
-          .delete();
+  Future<void> deleteUser(String uid,String img)async{
+    final turns=await fs.collection('users').document(uid).collection('turns').getDocuments();
+    final orders=await fs.collection('users').document(uid).collection('user_orders').getDocuments();
+    final driverOrders=await fs.collection('users').document(uid).collection('driver_orders').getDocuments();
+    final reviews=await fs.collection('users').document(uid).collection('reviews').getDocuments();
+    for(int i=0;i<turns.documents.length;i++){
+      await fs.collection('users').document(uid).collection('turns').document(turns.documents.elementAt(i).documentID).delete();
     }
-    for (int i = 0; i < orders.documents.length; i++) {
-      await fs
-          .collection('users')
-          .document(uid)
-          .collection('user_orders')
-          .document(orders.documents.elementAt(i).documentID)
-          .delete();
+    for(int i=0;i<orders.documents.length;i++){
+      await fs.collection('users').document(uid).collection('user_orders').document(orders.documents.elementAt(i).documentID).delete();
     }
-    for (int i = 0; i < driverOrders.documents.length; i++) {
-      await fs
-          .collection('users')
-          .document(uid)
-          .collection('driver_orders')
-          .document(driverOrders.documents.elementAt(i).documentID)
-          .delete();
+    for(int i=0;i<driverOrders.documents.length;i++){
+      await fs.collection('users').document(uid).collection('driver_orders').document(driverOrders.documents.elementAt(i).documentID).delete();
     }
-    for (int i = 0; i < reviews.documents.length; i++) {
-      await fs
-          .collection('users')
-          .document(uid)
-          .collection('reviews')
-          .document(reviews.documents.elementAt(i).documentID)
-          .delete();
+    for(int i=0;i<reviews.documents.length;i++){
+      await fs.collection('users').document(uid).collection('reviews').document(reviews.documents.elementAt(i).documentID).delete();
     }
-    if (img != null) _deleteFile(img.split('/').last.split('?').first);
+    if(img!=null) _deleteFile(img.split('/').last.split('?').first);
     await fs.collection('users').document(uid).delete();
   }
 
-  Future<void> cancelTime(String day, String isLunch, String restId) async {
-    final rest = RestaurantModel.fromFirebase(
-        await fs.collection('restaurants').document(restId).get());
-    if (isLunch == 'Pranzo') {
-      Map<String, String> temp = rest.lunch;
+  Future<void> cancelTime(String day,String isLunch,String restId)async{
+    final rest=RestaurantModel.fromFirebase(await fs.collection('restaurants').document(restId).get());
+    if(isLunch=='Pranzo'){
+      Map<String,String> temp=rest.lunch;
       //print(rest.lunch.toString());
-      if (temp != null) {
+      if(temp!=null) {
         temp.remove(day);
         //temp.putIfAbsent(day, () => startTime + ':' + endTime);
       }
-      await fs
-          .collection('restaurants')
-          .document(restId)
-          .updateData({'lunch': temp});
-    } else {
-      Map<String, String> temp = rest.dinner;
+      await fs.collection('restaurants').document(restId).updateData({'lunch':temp});
+    }
+    else{
+      Map<String,String> temp=rest.dinner;
       print(rest.dinner);
-      if (temp != null) {
+      if(temp!=null) {
         temp.remove(day);
         //temp.putIfAbsent(day, () => startTime + ':' + endTime);
       }
-      await fs
-          .collection('restaurants')
-          .document(restId)
-          .updateData({'dinner': temp});
+      await fs.collection('restaurants').document(restId).updateData({'dinner':temp});
     }
   }
 
   //if the order deletes and the user has already paid the control panel can reimburs the user
-  void deleteOrder(UserOrderModel order, String uid) async {
-    await fs
-        .collection('users')
-        .document(uid)
-        .collection('user_orders')
-        .document(order.id)
-        .updateData({'state': 'DELETED'});
-    await fs
-        .collection('restaurants')
-        .document(order.restaurantId)
-        .collection('restaurant_orders')
-        .document(order.id)
-        .updateData({'state': 'DELETED'});
-    await fs
-        .collection('users')
-        .document(order.driver)
-        .collection('driver_orders')
-        .document(order.id)
-        .updateData({'state': 'DELETED'});
-    await fs
-        .collection('control_orders')
-        .document(order.id)
-        .updateData({'state': 'DELETED'});
+  Future <void> deleteOrder(UserOrderModel order,String uid)async{
+    await fs.collection('users').document(uid).collection('user_orders').document(order.id).updateData({'state':'CANCELLED'});
+    await fs.collection('restaurants').document(order.restaurantId).collection('restaurant_orders').document(order.id).updateData({'state':'CANCELLED'});
+    await fs.collection('users').document(order.driver).collection('driver_orders').document(order.id).updateData({'state':'CANCELLED'});
+    await fs.collection('control_orders').document(order.id).updateData({'state':'CANCELLED'});
   }
 
-  Future<void> putUser(FirebaseUser user) async {
-    final userModel = await fs.collection('users').document(user.uid);
-    if (userModel == null)
-      await fs.collection('users').document(user.uid).setData({
-        'email': user.email,
-        'nominative': 'not given',
-        'address': 'not given',
-        'phoneNumber': 'not given'
-      });
+  Future<void> putUser(FirebaseUser user)async{
+    final userModel=await fs.collection('users').document(user.uid);
+    if(userModel==null) await fs.collection('users').document(user.uid).setData({'email':user.email,'nominative':'not given','address':'not given','phoneNumber':'not given'});
   }
 
-  Stream<UserModel> getUserImg(String id) {
+  Stream<UserModel> getUserImg(String id){
     return fs.collection('users').document(id).snapshots().map((snap) {
       return UserModel.fromFirebase(snap);
     });
   }
 
-  Future<void> updateImg(String path, String restId) async {
+  Future<void> updateImg(String path,String restId)async{
     //TODO delete previous image
-    final img = RestaurantModel.fromFirebase(
-            await fs.collection('restaurants').document(restId).get())
-        .img;
-    await fs
-        .collection('restaurants')
-        .document(restId)
-        .updateData({'img': path});
+    final img=RestaurantModel.fromFirebase(await fs.collection('restaurants').document(restId).get()).img;
+    await fs.collection('restaurants').document(restId).updateData({'img':path});
     _deleteFile(img.split('/').last.split('?').first);
   }
 
-  Future<void> updateAccountImg(
-      String path, String uid, String previous) async {
+  Future<void> updateAccountImg(String path,String uid,String previous)async{
     //TODO delete previous image
-    await fs.collection('users').document(uid).updateData({'img': path});
-    if (previous != null)
-      _deleteFile(previous.split('/').last.split('?').first);
+    await fs.collection('users').document(uid).updateData({'img':path});
+    if(previous!=null) _deleteFile(previous.split('/').last.split('?').first);
   }
 
   String _deleteFile(String path) {
@@ -420,101 +295,54 @@ class Database extends FirebaseDatabase
     return 'ok';
   }
 
-  Future<void> updateImgProduct(
-      String path, ProductModel model, String previous) async {
+  Future<void> updateImgProduct(String path,FoodModel model)async{
     //TODO delete previous image
-    await fs
-        .collection('restaurants')
-        .document(model.restaurantId)
-        .collection(model.path.contains('foods') ? 'foods' : 'drinks')
-        .document(model.id)
-        .updateData({'img': path});
-    _deleteFile(previous.split('/').last.split('?').first);
+    final previous=model.img;
+    await fs.collection('restaurants').document(model.restaurantId).collection(model.path.contains('foods')?'foods':'drinks').document(model.id).updateData({'img':path});
+    try {
+      _deleteFile(previous
+          .split('/')
+          .last
+          .split('?')
+          .first);
+    }
+    catch(e){
+      print(e.toString());
+    }
   }
 
-  Future<void> deleteProduct(String product, String restId, String type) async {
+  Future<void> deleteProduct(String product,String restId,String type)async{
     //TODO delete image
-    await fs
-        .collection('restaurants')
-        .document(restId)
-        .collection(type)
-        .document(product)
-        .delete();
+    await fs.collection('restaurants').document(restId).collection(type).document(product).delete();
   }
 
-  Future<void> deleteOrderFinal(RestaurantOrderModel model) async {
-    await fs
-        .collection('users')
-        .document(model.uid)
-        .collection('user_orders')
-        .document(model.id)
-        .delete();
-    await fs
-        .collection('users')
-        .document(model.driver)
-        .collection('driver_orders')
-        .document(model.id)
-        .delete();
-    await fs
-        .collection('restaurants')
-        .document(model.restaurantId)
-        .collection('restaurant_orders')
-        .document(model.id)
-        .delete();
+  Future<void> deleteOrderFinal(RestaurantOrderModel model)async{
+    await fs.collection('users').document(model.uid).collection('user_orders').document(model.id).delete();
+    await fs.collection('users').document(model.driver).collection('driver_orders').document(model.id).delete();
+    await fs.collection('restaurants').document(model.restaurantId).collection('restaurant_orders').document(model.id).delete();
     await fs.collection('control_orders').document(model.id).delete();
   }
 
-  Future<void> updateBank(RestaurantOrderModel model, double total) async {
-    final restInc = IncomeModel.fromFirebase(await fs
-        .collection('restaurants')
-        .document(model.restaurantId)
-        .collection('income')
-        .document(model.day)
-        .get());
-    final totalInc = IncomeModel.fromFirebase(
-        await fs.collection('income').document(model.day).get());
-    if (restInc == null) {
-      await fs
-          .collection('restaurants')
-          .document(model.restaurantId)
-          .collection('income')
-          .document(model.day)
-          .setData(
-              {'totalTransactions': 1, 'dailyTotal': total, 'day': model.day});
-      if (totalInc == null) {
-        await fs.collection('income').document(model.day).setData(
-            {'totalTransactions': 1, 'dailyTotal': total, 'day': model.day});
-      } else {
-        await fs.collection('income').document(model.day).updateData({
-          'totalTransactions': totalInc.totalTransactions + 1,
-          'dailyTotal': totalInc.dailyTotal + total,
-          'day': model.day
-        });
+  Future<void> updateBank(RestaurantOrderModel model,double total)async{
+    final restInc=IncomeModel.fromFirebase(await fs.collection('restaurants').document(model.restaurantId).collection('income').document(model.day).get());
+    final totalInc=IncomeModel.fromFirebase(await fs.collection('income').document(model.day).get());
+    if(restInc==null){
+      await fs.collection('restaurants').document(model.restaurantId).collection('income').document(model.day).setData({'totalTransactions':1,'dailyTotal':total,'day':model.day});
+      if(totalInc==null){
+        await fs.collection('income').document(model.day).setData({'totalTransactions':1,'dailyTotal':total,'day':model.day});
       }
-    } else {
-      await fs
-          .collection('restaurants')
-          .document(model.restaurantId)
-          .collection('income')
-          .document(model.day)
-          .updateData({
-        'totalTransactions': restInc.totalTransactions + 1,
-        'dailyTotal': restInc.dailyTotal + total,
-        'day': model.day
-      });
-      await fs.collection('income').document(model.day).updateData({
-        'totalTransactions': restInc.totalTransactions + 1,
-        'dailyTotal': restInc.dailyTotal + total,
-        'day': model.day
-      });
+      else{
+        await fs.collection('income').document(model.day).updateData({'totalTransactions':totalInc.totalTransactions+1,'dailyTotal':totalInc.dailyTotal+total,'day':model.day});
+      }
+    }
+    else{
+      await fs.collection('restaurants').document(model.restaurantId).collection('income').document(model.day).updateData({'totalTransactions':restInc.totalTransactions+1,'dailyTotal':restInc.dailyTotal+total,'day':model.day});
+      await fs.collection('income').document(model.day).updateData({'totalTransactions':restInc.totalTransactions+1,'dailyTotal':restInc.dailyTotal+total,'day':model.day});
     }
   }
 
   Future<void> archiveProduct(ProductRequestModel model) async {
-    await fs
-        .collection('archived_product_requests')
-        .document(model.id)
-        .setData({
+    await fs.collection('archived_product_requests').document(model.id).setData({
       'img': model.img,
       'category': model.category,
       'price': model.price,
@@ -525,7 +353,19 @@ class Database extends FirebaseDatabase
     await fs.collection('product_requests').document(model.id).delete();
   }
 
-  void saveToken(String fcmToken, String uid) async {
+  Future<void> deleteProductRequest(ProductRequestModel model) async {
+    await fs.collection('archived_product_requests').document(model.id).delete();
+  }
+
+  Future<void> deleteDriverRequest(DriverRequestModel model) async {
+    await fs.collection('archived_driver_requests').document(model.id).delete();
+  }
+
+  Future<void> deleteRestaurantRequest(RestaurantRequestModel model) async {
+    await fs.collection('archived_restaurant_requests').document(model.id).delete();
+  }
+
+  void saveToken(String fcmToken,String uid)async{
     var tokens = fs
         .collection('users')
         .document(uid)
@@ -538,125 +378,98 @@ class Database extends FirebaseDatabase
     });
   }
 
-  Future<void> addProduct(ProductRequestModel model) async {
-    await fs
-        .collection(cl.RESTAURANTS)
-        .document(model.restaurantId)
-        .collection(model.cat)
-        .document(model.title)
-        .setData({
-      'img': model.img,
-      'category': model.category,
-      'price': model.price,
-      'number': model.quantity,
-      'restaurantId': model.restaurantId,
-      'isDisabled': false,
+  Future<void> addProduct(ProductRequestModel model)async{
+    await fs.collection(cl.RESTAURANTS).document(model.restaurantId).collection(model.cat).document(model.title).setData({
+      'img':model.img,
+      'category':model.category,
+      'price':model.price,
+      'number':model.quantity,
+      'restaurantId':model.restaurantId,
+      'isDisabled':false,
     });
     //await fs.collection('food_categories').document(model.category).setData({'translation':model.category});
     await fs.collection('product_requests').document(model.id).delete();
   }
 
+
   //TODO
-  Future<void> addDriver(DriverRequestModel model) async {
+  Future<void> addDriver(DriverRequestModel model)async{
     await fs.collection(cl.USERS).document(model.id).updateData({
-      'km': model.km,
-      'lat': model.lat,
-      'lng': model.lng,
-      'type': 'driver',
+      'km':model.km,
+      'lat':model.lat,
+      'lng':model.lng,
+      'type':'driver',
     });
     //await fs.collection('users').document(model.id).updateData({'type':'driver'});
     await fs.collection('driver_requests').document(model.id).delete();
-    final mail = UserModel.fromFirebase(
-            await fs.collection('users').document(model.id).get())
-        .email;
-    String user = 'taporty.app@gmail.com';
-    String password = 'pwtaporty';
-    final smtpServer = gmail(user, password);
-    final message = Message()
-      ..from = add.Address(user, 'Taporty Team')
-      ..recipients.add(mail)
-      ..subject = 'Richiesta fattorino accettata'
-      ..text =
-          'La tua richiesta di diventare un fattorino è stata accettata.\n Team Taporty';
-    try {
-      final sendReport = await send(message, smtpServer);
-      print('Message sent: ' + sendReport.toString());
-    } on MailerException catch (e) {
+    final mail= UserModel.fromFirebase(await fs.collection('users').document(model.id).get()).email;
+    String user='taporty.app@gmail.com';
+    String password='pwtaporty';
+    final smtpServer=gmail(user,password);
+    final message=Message()
+        ..from= add.Address(user,'Taporty Team')
+        ..recipients.add(mail)
+        ..subject='Richiesta fattorino accettata'
+        ..text='La tua richiesta di diventare un fattorino è stata accettata.\n Team Taporty';
+    try{
+      final sendReport=await send(message,smtpServer);
+      print('Message sent: '+sendReport.toString());
+    }
+    on MailerException catch(e){
       print(e.message);
     }
   }
 
-  Future<void> changeStatus(ProductModel model) async {
-    await fs
-        .collection('restaurants')
-        .document(model.restaurantId)
-        .collection(model.path.contains('foods') ? 'foods' : 'drinks')
-        .document(model.id)
-        .updateData({'isDisabled': model.isDisabled ? false : true});
+  Future<void> changeStatus(ProductModel model)async{
+    await fs.collection('restaurants').document(model.restaurantId).collection(model.path.contains('foods')?'foods':'drinks').document(model.id).updateData({'isDisabled':model.isDisabled?false:true});
   }
 
-  Future<void> changeStatusRest(RestaurantModel model) async {
-    await fs.collection('restaurants').document(model.id).updateData({
-      'isDisabled':
-          ((model.isDisabled == null || !model.isDisabled) ? true : false)
-    });
+  Future<void> changeStatusRest(RestaurantModel model)async{
+    await fs.collection('restaurants').document(model.id).updateData({'isDisabled':((model.isDisabled==null || !model.isDisabled)?true:false)});
   }
 
-  Future<void> updateTimeLeft(String uid, String oid, int timeLeft) async {
-    await fs
-        .collection('users')
-        .document(uid)
-        .collection('user_orders')
-        .document(oid)
-        .updateData({'timeLeft': timeLeft});
+  Future<void> updateTimeLeft(String uid,String oid,int timeLeft)async{
+    await fs.collection('users').document(uid).collection('user_orders').document(oid).updateData({'timeLeft':timeLeft});
   }
 
-  Future<void> addRestaurant(RestaurantRequestModel model) async {
+  Future<void> addRestaurant(RestaurantRequestModel model)async{
     await fs.collection(cl.RESTAURANTS).document(model.ragioneSociale).setData({
-      'km': model.km,
-      'lat': model.lat,
-      'lng': model.lng,
-      'img': model.img,
-      'partitaIva': model.partitaIva,
-      'prodType': model.prodType,
-      'tipoEsercizio': model.tipoEsercizio,
-      'address': model.address,
-      'id': model.id,
-      'lunch': Map<String, String>(),
-      'dinner': Map<String, String>()
+      'km':model.km,
+      'lat':model.lat,
+      'lng':model.lng,
+      'img':model.img,
+      'partitaIva':model.partitaIva,
+      'prodType':model.prodType,
+      'tipoEsercizio':model.tipoEsercizio,
+      'address':model.address,
+      'id':model.id,
+      'lunch':Map<String,String>(),
+      'dinner':Map<String,String>()
     });
-    await fs.collection(cl.USERS).document(model.id).updateData(
-        {'restaurantId': model.ragioneSociale, 'type': 'restaurant'});
+    await fs.collection(cl.USERS).document(model.id).updateData({'restaurantId':model.ragioneSociale,'type':'restaurant'});
     //await fs.collection('food_categories').document(model.category).setData({'translation':model.category});
-    await fs
-        .collection('restaurant_requests')
-        .document(model.ragioneSociale)
-        .delete();
-    final mail = UserModel.fromFirebase(
-            await fs.collection('users').document(model.id).get())
-        .email;
-    String user = 'taporty.app@gmail.com';
-    String password = 'pwtaporty';
-    final smtpServer = gmail(user, password);
-    final message = Message()
-      ..from = add.Address(user, 'Taporty Team')
+    await fs.collection('restaurant_requests').document(model.id).delete();
+    final mail= UserModel.fromFirebase(await fs.collection('users').document(model.id).get()).email;
+    String user='taporty.app@gmail.com';
+    String password='pwtaporty';
+    final smtpServer=gmail(user,password);
+    final message=Message()
+      ..from= add.Address(user,'Taporty Team')
       ..recipients.add(mail)
-      ..subject = 'Richiesta ristorante accettata'
-      ..text =
-          'La tua richiesta di diventare un ristoratore è stata accettata.\n Team Taporty';
-    try {
-      final sendReport = await send(message, smtpServer);
-      print('Message sent: ' + sendReport.toString());
-    } on MailerException catch (e) {
+      ..subject='Richiesta ristorante accettata'
+      ..text='La tua richiesta di diventare un ristoratore è stata accettata.\n Team Taporty';
+    try{
+      final sendReport=await send(message,smtpServer);
+      print('Message sent: '+sendReport.toString());
+    }
+    on MailerException catch(e){
       print(e.message);
     }
   }
 
-  Stream<List<UserModel>> getUsersMod() {
-    final data = fs
-        .collection('users')
-        .where('type', isEqualTo: 'restaurants')
-        .snapshots();
+  Stream<List<UserModel>> getUsersMod(){
+    final data =
+    fs.collection('users').where('type',isEqualTo:'restaurants').snapshots();
     return data.map((query) {
       return query.documents
           .map((snap) => UserModel.fromFirebase(snap))
@@ -679,68 +492,35 @@ class Database extends FirebaseDatabase
     return 'DECEMBER';
   }
 
+  Future <void> updateRemember(bool remember)async{
+    final uid=(await UserBloc.of().outFirebaseUser.first).uid;
+    await fs.collection('users').document(uid).updateData({'remember':remember});
+  }
+
   //TODO handle what happens to the orders maybe add a feature to the control panel that can assign a driver to an order
-  Future<bool> removeShiftRest(
-      String startTime, String day, String restId) async {
-    await fs
-        .collection('restaurants')
-        .document(restId)
-        .collection('turns')
-        .document(day + '§' + startTime)
-        .delete();
-    final modelRest = CalendarModel.fromFirebase(await fs
-        .collection('days')
-        .document(day)
-        .collection('times')
-        .document(startTime)
-        .collection('restaurant_turns')
-        .document(restId)
-        .get());
-    final model = CalendarModel.fromFirebase(await fs
-        .collection('days')
-        .document(day)
-        .collection('times')
-        .document(startTime)
-        .get());
-    final tempRest = modelRest.number;
-    final temp = model.number;
+  Future<bool> removeShiftRest(String startTime,String day,String restId)async{
+    await fs.collection('restaurants').document(restId)
+          .collection('turns')
+          .document(day + '§' + startTime)
+          .delete();
+    final modelRest=CalendarModel.fromFirebase(await fs.collection('days').document(day).collection('times').document(startTime).collection('restaurant_turns').document(restId).get());
+    final model=CalendarModel.fromFirebase(await fs.collection('days').document(day).collection('times').document(startTime).get());
+    final tempRest=modelRest.number;
+    final temp=model.number;
     /*
     final free=modelRest.occupied;
     for(int i=1;i<free.length;i++){
       removeShiftDriver(startTime, day, free.elementAt(i));
     }
      */
-    if (temp == tempRest) {
-      await fs
-          .collection('days')
-          .document(day)
-          .collection('times')
-          .document(startTime)
-          .collection('restaurant_turns')
-          .document(restId)
-          .delete();
-      fs
-          .collection('days')
-          .document(day)
-          .collection('times')
-          .document(startTime)
-          .delete();
+    if(temp==tempRest){
+      await fs.collection('days').document(day).collection('times').document(startTime).collection('restaurant_turns').document(restId).delete();
+      fs.collection('days').document(day).collection('times').document(startTime).delete();
       fs.collection('days').document(day).delete();
-    } else {
-      await fs
-          .collection('days')
-          .document(day)
-          .collection('times')
-          .document(startTime)
-          .collection('restaurant_turns')
-          .document(restId)
-          .delete();
-      fs
-          .collection('days')
-          .document(day)
-          .collection('times')
-          .document(startTime)
-          .updateData({'number': (temp - tempRest)});
+    }
+    else{
+      await fs.collection('days').document(day).collection('times').document(startTime).collection('restaurant_turns').document(restId).delete();
+      fs.collection('days').document(day).collection('times').document(startTime).updateData({'number':(temp-tempRest)});
     }
 
     /*
@@ -775,64 +555,34 @@ class Database extends FirebaseDatabase
     return true;
   }
 
-  Future<bool> removeShiftDriver(
-      String startTime, String day, String driver) async {
+  Future<bool> removeShiftDriver(String startTime,String day,String driver)async{
     print(day + '§' + startTime);
-    await fs
-        .collection('users')
-        .document(driver)
+    await fs.collection('users').document(driver)
         .collection('turns')
         .document(day + '§' + startTime)
         .delete();
-    final model = CalendarModel.fromFirebase(await fs
-        .collection('days')
-        .document(day)
-        .collection('times')
-        .document(startTime)
-        .get());
-    final temp = model.free;
+    final model=CalendarModel.fromFirebase(await fs.collection('days').document(day).collection('times').document(startTime).get());
+    final temp=model.free;
     temp.remove(driver);
-    await fs
-        .collection('days')
-        .document(day)
-        .collection('times')
-        .document(startTime)
-        .updateData({'free': temp});
+    await fs.collection('days').document(day).collection('times').document(startTime).updateData({'free':temp});
     return true;
   }
 
-  Future<bool> addShift(String startTime, String endTime, String day,
-      String number, String restId) async {
-    final id = await fs
-        .collection('days')
-        .document(day)
-        .collection('times')
-        .document(startTime)
-        .get();
-    final rest = await fs
-        .collection('days')
-        .document(day)
-        .collection('times')
-        .document(startTime)
-        .collection('restaurant_turns')
-        .document(restId)
-        .get();
-    final days = await fs.collection('days').document(day).get();
+  Future<bool> addShift(String startTime,String endTime,String day,String number,String restId)async{
+    final id=await fs.collection('days').document(day).collection('times').document(startTime).get();
+    final rest=await fs.collection('days').document(day).collection('times').document(startTime).collection('restaurant_turns').document(restId).get();
+    final days= await fs.collection('days').document(day).get();
     //already tried to insert!!!
     print(id.exists);
     print(rest.exists);
-    final month = DateTime.tryParse(day).month.toString();
-    if (id.exists && rest.exists) return true;
-    if (!days.exists) await fs.collection('days').document(day).setData({});
+    final month=DateTime.tryParse(day).month.toString();
+    if(id.exists && rest.exists) return true;
+    if(!days.exists) await fs.collection('days').document(day).setData({});
     //no data for this time and day
-    if (!id.exists) {
+    if(!id.exists) {
       //await fs.collection('days').document(day).setData({});
-      await fs
-          .collection('days')
-          .document(day)
-          .collection('times')
-          .document(startTime)
-          .setData({
+      await fs.collection('days').document(day).collection('times').document(
+          startTime).setData({
         'startTime': startTime,
         'endTime': endTime,
         'day': day,
@@ -841,188 +591,94 @@ class Database extends FirebaseDatabase
         'free': [''],
         'occupied': [''],
       });
-      await fs
-          .collection('restaurants')
-          .document(restId)
-          .collection('turns')
-          .document(day + '§' + startTime)
-          .setData({
-        'startTime': startTime,
-        'endTime': endTime,
-        'day': day,
-        'year': DateTime.tryParse(day).year,
-        'month': toMonth(int.parse(month))
-      });
+      await fs.collection('restaurants').document(restId).collection('turns').document(day+'§'+startTime).setData({'startTime':startTime,'endTime':endTime,'day':day,'year':DateTime.tryParse(day).year,'month':toMonth(int.parse(month))});
       //fails if somehow there is data on this time and date but no document for startTime
-      await fs
-          .collection('days')
-          .document(day)
-          .collection('times')
-          .document(startTime)
-          .collection('restaurant_turns')
-          .document(restId)
-          .setData({
-        'startTime': startTime,
-        'endTime': endTime,
-        'day': day,
-        'number': int.tryParse(number),
-        'isEmpty': true,
-        'free': [''],
-        'occupied': [''],
+      await fs.collection('days').document(day).collection('times').document(startTime).collection('restaurant_turns').document(restId).setData({
+        'startTime':startTime,
+        'endTime':endTime,
+        'day':day,
+        'number':int.tryParse(number),
+        'isEmpty':true,
+        'free':[''] ,
+        'occupied':[''],
       });
       return false;
     }
     //id present so we update the start time document and add the restaurant document, which fails in case that it is present
     final model = CalendarModel.fromFirebase(id);
-    fs
-        .collection('days')
-        .document(day)
-        .collection('times')
-        .document(startTime)
-        .updateData({
-      'startTime': startTime,
-      'endTime': endTime,
-      'day': day,
-      'number': model.number + int.tryParse(number),
-      'isEmpty': model.isEmpty,
-      'free': model.free,
-      'occupied': model.occupied,
+    fs.collection('days').document(day).collection('times').document(startTime).updateData({
+      'startTime':startTime,
+      'endTime':endTime,
+      'day':day,
+      'number':model.number+int.tryParse(number),
+      'isEmpty':model.isEmpty,
+      'free':model.free ,
+      'occupied':model.occupied,
     });
-    await fs
-        .collection('restaurants')
-        .document(restId)
-        .collection('turns')
-        .document(day + '§' + startTime)
-        .setData({
-      'startTime': startTime,
-      'endTime': endTime,
-      'day': day,
-      'month': toMonth(int.parse(month))
-    });
-    fs
-        .collection('days')
-        .document(day)
-        .collection('times')
-        .document(startTime)
-        .collection('restaurant_turns')
-        .document(restId)
-        .setData({
-      'startTime': startTime,
-      'endTime': endTime,
-      'day': day,
-      'number': int.tryParse(number),
-      'isEmpty': true,
-      'free': [''],
-      'occupied': [''],
+    await fs.collection('restaurants').document(restId).collection('turns').document(day+'§'+startTime).setData({'startTime':startTime,'endTime':endTime,'day':day,'month':toMonth(int.parse(month))});
+    fs.collection('days').document(day).collection('times').document(startTime).collection('restaurant_turns').document(restId).setData({
+      'startTime':startTime,
+      'endTime':endTime,
+      'day':day,
+      'number':int.tryParse(number),
+      'isEmpty':true,
+      'free':[''] ,
+      'occupied':[''],
     });
     return false;
   }
 
-  Future<void> deleteRestaurant(String restId) async {
+  Future<void> deleteRestaurant(String restId)async{
     //TODO we need to delete everything in the collections inside plus the images stored
     await fs.collection('restaurants').document(restId).delete();
   }
 
-  Future<void> upgradeToDriver(
-      {@required String uid,
-      @required codiceFiscale,
-      @required address,
-      @required km,
-      @required car,
-      @required exp,
-      @required Position pos,
-      @required nominative}) async {
+  Future<void> upgradeToDriver({@required String uid,@required codiceFiscale,
+      @required address,@required km,@required car,@required exp,@required Position pos,
+      @required nominative})async{
     //await fs.collection(cl.USERS).document(uid).updateData({'isDriver':true});
-    await fs.collection('driver_requests').document(uid).setData({
-      'codiceFiscale': codiceFiscale,
-      'address': address,
-      'km': km,
-      'mezzo': car,
-      'experience': exp,
-      'lat': pos.latitude,
-      'lng': pos.longitude,
-      'nominative': nominative
-    });
+    await fs.collection('driver_requests').document(uid).setData({'codiceFiscale':codiceFiscale,
+        'address':address,'km':km,'mezzo':car,'experience':exp,'lat':pos.latitude,
+        'lng':pos.longitude,'nominative':nominative});
   }
-
-  Future<void> archiveDriver(DriverRequestModel model) async {
+  Future<void> archiveDriver(DriverRequestModel model)async{
     //await fs.collection(cl.USERS).document(uid).updateData({'isDriver':true});
-    await fs.collection('archived_driver_requests').document(model.id).setData({
-      'codiceFiscale': model.codiceFiscale,
-      'address': model.address,
-      'km': model.km,
-      'mezzo': model.mezzo,
-      'experience': model.experience,
-      'lat': model.lat,
-      'lng': model.lng,
-      'nominative': model.nominative
-    });
+    await fs.collection('archived_driver_requests').document(model.id).setData({'codiceFiscale':model.codiceFiscale,
+      'address':model.address,'km':model.km,'mezzo':model.mezzo,'experience':model.experience,'lat':model.lat,
+      'lng':model.lng,'nominative':model.nominative});
     await fs.collection('driver_requests').document(model.id).delete();
   }
 
-  Future<void> upgradeToVendor(
-      {@required String uid,
-      @required String img,
-      @required Position pos,
-      @required double cop,
-      @required rid,
-      @required ragSociale,
-      @required partitaIva,
-      @required address,
-      @required eseType,
-      @required prodType}) async {
+  Future<void> upgradeToVendor({@required String uid,@required String img,@required Position pos,
+    @required double cop,@required rid,@required ragSociale,@required partitaIva,@required address,
+    @required eseType,@required prodType})async{
     //await fs.collection(cl.USERS).document(uid).updateData({'restaurantId':rid});
-    await fs.collection('restaurant_requests').document(uid).setData({
-      'img': img,
-      'lat': pos.latitude,
-      'lng': pos.longitude,
-      'km': cop,
-      'ragioneSociale': ragSociale,
-      'partitaIva': partitaIva,
-      'address': address,
-      'tipoEsercizio': eseType,
-      'prodType': prodType
-    });
+    await fs.collection('restaurant_requests').document(uid).setData({'img':img,'lat':pos.latitude,
+    'lng':pos.longitude,'km':cop,'ragioneSociale':ragSociale,'partitaIva':partitaIva,
+    'address':address,'tipoEsercizio':eseType,'prodType':prodType});
   }
 
-  Future<void> archiveVendor(RestaurantRequestModel model) async {
+  Future<void> archiveVendor(RestaurantRequestModel model)async{
     //await fs.collection(cl.USERS).document(uid).updateData({'restaurantId':rid});
-    await fs
-        .collection('archived_restaurant_requests')
-        .document(model.id)
-        .setData({
-      'img': model.img,
-      'lat': model.lat,
-      'lng': model.lng,
-      'km': model.km,
-      'ragioneSociale': model.ragioneSociale,
-      'partitaIva': model.partitaIva,
-      'address': model.address,
-      'tipoEsercizio': model.tipoEsercizio,
-      'prodType': model.prodType
-    });
+    await fs.collection('archived_restaurant_requests').document(model.id).setData({'img':model.img,'lat':model.lat,
+      'lng':model.lng,'km':model.km,'ragioneSociale':model.ragioneSociale,'partitaIva':model.partitaIva,
+      'address':model.address,'tipoEsercizio':model.tipoEsercizio,'prodType':model.prodType});
     await fs.collection('restaurant_requests').document(model.id).delete();
   }
 
-  Future<void> editUser(String id, String type) async {
-    await fs.collection('users').document(id).updateData({'type': type});
+  Future<void> editUser(String id,String type)async{
+    await fs.collection('users').document(id).updateData({'type':type});
   }
 
-  Stream<FoodModel> getProduct(ProductModel model) {
-    return fs
-        .collection('restaurants')
-        .document(model.restaurantId)
-        .collection(((model.path.contains('foods')) ? 'foods' : 'drinks'))
-        .document(model.id)
-        .snapshots()
-        .map((snap) {
+  Stream<FoodModel> getProduct(ProductModel model){
+    return fs.collection('restaurants').document(model.restaurantId).collection(((model.path.contains('foods'))?'foods':'drinks')).document(model.id).snapshots().map((snap) {
       return FoodModel.fromFirebase(snap);
     });
   }
 
   Future<void> createOrder(
       {@required String uid,
-      @required String phone,
+        @required String phone,
       @required Cart model,
       @required String driver,
       @required Position userPos,
@@ -1047,11 +703,11 @@ class Database extends FirebaseDatabase
               ..['nominative'] = nominative
               ..['endTime'] = endTime
               ..['addressR'] = addressR
-              ..['fingerprint'] = fingerprint
-              ..['day'] = day
-              ..['phone'] = phone
-              ..['isPaid'] = false
-              ..['isReviewed'] = false))
+              ..['fingerprint']=fingerprint
+              ..['day']=day
+              ..['phone']=phone
+              ..['isPaid']=false
+              ..['isReviewed']=false))
         .documentID;
     await fs
         .collection(cl.USERS)
@@ -1064,9 +720,9 @@ class Database extends FirebaseDatabase
           ..['state'] = 'PENDING'
           ..['driver'] = driver
           ..['uid'] = uid
-          ..['endTime'] = endTime
-          ..['day'] = day
-          ..['phone'] = phone);
+          ..['endTime']=endTime
+          ..['day']=day
+          ..['phone']=phone);
     await fs
         .collection(cl.USERS)
         .document(driver)
@@ -1082,12 +738,15 @@ class Database extends FirebaseDatabase
           ..['addressR'] = addressR
           ..['latR'] = userPos.latitude
           ..['lngR'] = userPos.longitude
-          ..['phone'] = phone
+          ..['phone']=phone
           ..['uid'] = uid
           ..['restId'] = model.products.first.restaurantId
-          ..['day'] = day
-          ..['endTime'] = endTime);
-    await fs.collection('control_orders').document(id).setData(model.toJson()
+          ..['day']=day
+          ..['endTime']=endTime);
+    await fs
+        .collection('control_orders')
+        .document(id)
+        .setData(model.toJson()
       ..['restaurantId'] = model.products.first.restaurantId
       ..['timeR'] = DateTime.now().toString()
       ..['state'] = 'PENDING'
@@ -1097,11 +756,11 @@ class Database extends FirebaseDatabase
       ..['nominative'] = nominative
       ..['endTime'] = endTime
       ..['addressR'] = addressR
-      ..['fingerprint'] = fingerprint
-      ..['day'] = day
-      ..['phone'] = phone
-      ..['isPaid'] = false
-      ..['isReviewed'] = false);
+      ..['fingerprint']=fingerprint
+      ..['day']=day
+      ..['phone']=phone
+      ..['isPaid']=false
+      ..['isReviewed']=false);
   }
 
   /*Future<void> updateState({@required String uid, @required Cart model}) async {
@@ -1147,7 +806,6 @@ class Database extends FirebaseDatabase
         .document(restaurantId)
         .collection('restaurant_orders')
         .snapshots();
-    print('lol');
     return data.map((query) {
       return query.documents
           .map((snap) => RestaurantOrderModel.fromFirebase(snap))
@@ -1155,49 +813,40 @@ class Database extends FirebaseDatabase
     });
   }
 
-  Stream<RestaurantOrderModel> getRestaurantOrder(
-      String restaurantId, String oid) {
+  Stream<RestaurantOrderModel> getRestaurantOrder(String restaurantId,String oid) {
     return fs
         .collection(cl.RESTAURANTS)
         .document(restaurantId)
         .collection('restaurant_orders')
         .document(oid)
-        .snapshots()
-        .map((snap) {
+        .snapshots().map((snap) {
       return RestaurantOrderModel.fromFirebase(snap);
     });
   }
-
   Stream<RestaurantOrderModel> getCtrlOrder(String oid) {
     return fs
         .collection('control_orders')
         .document(oid)
-        .snapshots()
-        .map((snap) {
+        .snapshots().map((snap) {
       return RestaurantOrderModel.fromFirebase(snap);
     });
   }
 
-  Stream<UserOrderModel> getUserOrder(String uid, String oid) {
+  Stream<UserOrderModel> getUserOrder(String uid,String oid) {
     return fs
         .collection(cl.USERS)
         .document(uid)
         .collection('user_orders')
         .document(oid)
-        .snapshots()
-        .map((snap) {
+        .snapshots().map((snap) {
       return UserOrderModel.fromFirebase(snap);
     });
   }
 
   Stream<List<TurnModel>> getTurns(String uid) {
-    final data = fs
-        .collection(cl.USERS)
-        .document(uid)
-        .collection(cl.TURNS)
-        .where('year', isEqualTo: DateTime.now().year)
-        .snapshots();
-    print('lol');
+    final data =
+        fs.collection(cl.USERS).document(uid).collection(cl.TURNS).where('year',isEqualTo: DateTime.now().year).snapshots();
+    
     return data.map((query) {
       return query.documents
           .map((snap) => TurnModel.fromFirebase(snap))
@@ -1206,13 +855,9 @@ class Database extends FirebaseDatabase
   }
 
   Stream<List<TurnModel>> getTurnsRest(String restId) {
-    final data = fs
-        .collection(cl.RESTAURANTS)
-        .document(restId)
-        .collection(cl.TURNS)
-        .where('year', isEqualTo: DateTime.now().year)
-        .snapshots();
-    print('lol');
+    final data =
+    fs.collection(cl.RESTAURANTS).document(restId).collection(cl.TURNS).where('year',isEqualTo: DateTime.now().year).snapshots();
+    
     return data.map((query) {
       return query.documents
           .map((snap) => TurnModel.fromFirebase(snap))
@@ -1223,7 +868,7 @@ class Database extends FirebaseDatabase
   Stream<List<ShiftModel>> getUsersTurn(String day) {
     final data =
         fs.collection(cl.DAYS).document(day).collection(cl.TIMES).snapshots();
-    print('lol');
+    
     return data.map((query) {
       return query.documents
           .map((snap) => ShiftModel.fromFirebase(snap))
@@ -1231,24 +876,16 @@ class Database extends FirebaseDatabase
     });
   }
 
-  Future<void> updateDeliveryFee(double fee, String restId) async {
-    await fs
-        .collection('restaurants')
-        .document(restId)
-        .updateData({'deliveryFee': fee});
+  Future<void> updateDeliveryFee(double fee,String restId)async{
+    await fs.collection('restaurants').document(restId).updateData({'deliveryFee':fee});
   }
 
-  Future<void> updateProductPrice(double price, ProductModel model) async {
-    await fs
-        .collection('restaurants')
-        .document(model.restaurantId)
-        .collection(model.path.contains('foods') ? 'foods' : 'drinks')
-        .document(model.id)
-        .updateData({'price': price.toString()});
+  Future<void> updateProductPrice(double price,ProductModel model)async{
+    await fs.collection('restaurants').document(model.restaurantId).collection(model.path.contains('foods')?'foods':'drinks').document(model.id).updateData({'price':price.toString()});
   }
 
-  Future<void> updateKm(double km, String restId) async {
-    await fs.collection('restaurants').document(restId).updateData({'km': km});
+  Future<void> updateKm(double km,String restId)async{
+    await fs.collection('restaurants').document(restId).updateData({'km':km});
   }
 
   Stream<List<CalendarModel>> getShifts(DateTime now) {
@@ -1258,7 +895,7 @@ class Database extends FirebaseDatabase
         .document(now.toIso8601String())
         .collection(cl.TIMES)
         .snapshots();
-    print('lol');
+    
     return data.map((query) {
       return query.documents
           .map((snap) => CalendarModel.fromFirebase(snap))
@@ -1266,26 +903,24 @@ class Database extends FirebaseDatabase
     });
   }
 
-  Stream<IncomeModel> getRestIncome(DateTime now, String restId) {
+  Stream<IncomeModel> getRestIncome(DateTime now,String restId) {
     //final temp=.replaceAll(' ', 'T');
     return fs
         .collection('restaurants')
         .document(restId)
         .collection('income')
         .document(now.toIso8601String())
-        .snapshots()
-        .map((snap) {
-      return IncomeModel.fromFirebase(snap);
-    });
+        .snapshots().map((snap) {
+          return IncomeModel.fromFirebase(snap);
+        });
   }
 
-  Stream<IncomeModel> getTotalIncome(DateTime now) {
+  Stream<IncomeModel> getTotalIncome(DateTime now){
     //final temp=.replaceAll(' ', 'T');
     return fs
         .collection('income')
         .document(now.toIso8601String())
-        .snapshots()
-        .map((snap) {
+        .snapshots().map((snap) {
       return IncomeModel.fromFirebase(snap);
     });
   }
@@ -1324,7 +959,7 @@ class Database extends FirebaseDatabase
         .collection(cl.TIMES)
         .where('isEmpty', isEqualTo: false)
         .snapshots();
-    print('lol');
+    
     return data.map((query) {
       return query.documents
           .map((snap) => CalendarModel.fromFirebase(snap))
@@ -1333,12 +968,9 @@ class Database extends FirebaseDatabase
   }
 
   Stream<List<DriverOrderModel>> getDriverOrders(String uid) {
-    final data = fs
-        .collection(cl.USERS)
-        .document(uid)
-        .collection('driver_orders')
-        .snapshots();
-    print('lol');
+    final data =
+        fs.collection(cl.USERS).document(uid).collection('driver_orders').snapshots();
+    
     return data.map((query) {
       return query.documents
           .map((snap) => DriverOrderModel.fromFirebase(snap))
@@ -1347,7 +979,8 @@ class Database extends FirebaseDatabase
   }
 
   Stream<List<ProductRequestModel>> getRequests() {
-    final data = fs.collection('product_requests').snapshots();
+    final data =
+    fs.collection('product_requests').snapshots();
     return data.map((query) {
       return query.documents
           .map((snap) => ProductRequestModel.fromFirebase(snap))
@@ -1355,15 +988,13 @@ class Database extends FirebaseDatabase
     });
   }
 
-  Future<void> updateDescription(String description, String restId) async {
-    await fs
-        .collection('restaurants')
-        .document(restId)
-        .updateData({'description': description});
+  Future<void> updateDescription(String description,String restId)async{
+    await fs.collection('restaurants').document(restId).updateData({'description':description});
   }
 
   Stream<List<ProductRequestModel>> getArchivedRequests() {
-    final data = fs.collection('archived_product_requests').snapshots();
+    final data =
+    fs.collection('archived_product_requests').snapshots();
     return data.map((query) {
       return query.documents
           .map((snap) => ProductRequestModel.fromFirebase(snap))
@@ -1372,7 +1003,8 @@ class Database extends FirebaseDatabase
   }
 
   Stream<List<UserModel>> getUsersControl() {
-    final data = fs.collection('users').snapshots();
+    final data =
+    fs.collection('users').snapshots();
     return data.map((query) {
       return query.documents
           .map((snap) => UserModel.fromFirebase(snap))
@@ -1382,7 +1014,7 @@ class Database extends FirebaseDatabase
 
   Stream<List<UserModel>> getAdminsControl() {
     final data =
-        fs.collection('users').where('type', isEqualTo: 'control').snapshots();
+    fs.collection('users').where('type',isEqualTo:'control').snapshots();
     return data.map((query) {
       return query.documents
           .map((snap) => UserModel.fromFirebase(snap))
@@ -1391,7 +1023,8 @@ class Database extends FirebaseDatabase
   }
 
   Stream<List<DriverRequestModel>> getDriverRequests() {
-    final data = fs.collection('driver_requests').snapshots();
+    final data =
+    fs.collection('driver_requests').snapshots();
     return data.map((query) {
       return query.documents
           .map((snap) => DriverRequestModel.fromFirebase(snap))
@@ -1400,7 +1033,8 @@ class Database extends FirebaseDatabase
   }
 
   Stream<List<DriverRequestModel>> getArchivedDriverRequests() {
-    final data = fs.collection('archived_driver_requests').snapshots();
+    final data =
+    fs.collection('archived_driver_requests').snapshots();
     return data.map((query) {
       return query.documents
           .map((snap) => DriverRequestModel.fromFirebase(snap))
@@ -1409,7 +1043,8 @@ class Database extends FirebaseDatabase
   }
 
   Stream<List<RestaurantRequestModel>> getRestaurantRequests() {
-    final data = fs.collection('restaurant_requests').snapshots();
+    final data =
+    fs.collection('restaurant_requests').snapshots();
     return data.map((query) {
       return query.documents
           .map((snap) => RestaurantRequestModel.fromFirebase(snap))
@@ -1418,7 +1053,8 @@ class Database extends FirebaseDatabase
   }
 
   Stream<List<RestaurantRequestModel>> getArchivedRestaurantRequests() {
-    final data = fs.collection('archived_restaurant_requests').snapshots();
+    final data =
+    fs.collection('archived_restaurant_requests').snapshots();
     return data.map((query) {
       return query.documents
           .map((snap) => RestaurantRequestModel.fromFirebase(snap))
@@ -1469,29 +1105,24 @@ class Database extends FirebaseDatabase
         .updateData({'state': state});
   }
 
-  Future<void> givePermission(String uid, String type) async {
+  Future<void> givePermission(String uid,String type) async {
     await fs
         .collection(cl.USERS)
         .document(uid)
-        .updateData({'type': (type == 'control') ? 'user' : 'control'});
-    if (type != 'control') {
+        .updateData({'type': (type=='control')?'user':'control'});
+    if(type!='control') {
       final users = (await ControlUsersModel.fromFirebase(
-              await fs.collection('control_users').document('users').get()))
-          .users;
+          await fs.collection('control_users').document('users').get())).users;
       users.add(uid);
-      await fs
-          .collection('control_users')
-          .document('users')
-          .updateData({'users': users});
-    } else {
+      await fs.collection('control_users').document('users').updateData(
+          {'users': users});
+    }
+    else{
       final users = (await ControlUsersModel.fromFirebase(
-              await fs.collection('control_users').document('users').get()))
-          .users;
+          await fs.collection('control_users').document('users').get())).users;
       users.remove(uid);
-      await fs
-          .collection('control_users')
-          .document('users')
-          .updateData({'users': users});
+      await fs.collection('control_users').document('users').updateData(
+          {'users': users});
     }
   }
 
@@ -1505,48 +1136,18 @@ class Database extends FirebaseDatabase
     //final data=res.data;
     return CalendarModel.fromJson(res.data);
   }
-
-  Future<void> updateOrderDriver(
-      RestaurantOrderModel model, String driver) async {
-    final orderDriver = await fs
-        .collection('users')
-        .document(model.driver)
-        .collection('driver_orders')
-        .document(model.id)
-        .get();
-    await fs
-        .collection('users')
-        .document(model.driver)
-        .collection('driver_orders')
-        .document(model.id)
-        .delete();
-    await fs
-        .collection('users')
-        .document(driver)
-        .collection('driver_orders')
-        .document(model.id)
-        .setData(orderDriver.data);
-    await fs
-        .collection('users')
-        .document(model.uid)
-        .collection('user_orders')
-        .document(model.id)
-        .updateData({'driver': driver});
-    await fs
-        .collection('control_orders')
-        .document(model.id)
-        .updateData({'driver': driver});
-    await fs
-        .collection('restaurants')
-        .document(model.restaurantId)
-        .collection('restaurant_orders')
-        .document(model.id)
-        .updateData({'driver': driver});
+  Future <void> updateOrderDriver(RestaurantOrderModel model,String driver)async{
+    final orderDriver=await fs.collection('users').document(model.driver).collection('driver_orders').document(model.id).get();
+    await fs.collection('users').document(model.driver).collection('driver_orders').document(model.id).delete();
+    await fs.collection('users').document(driver).collection('driver_orders').document(model.id).setData(orderDriver.data);
+    await fs.collection('users').document(model.uid).collection('user_orders').document(model.id).updateData({'driver':driver});
+    await fs.collection('control_orders').document(model.id).updateData({'driver':driver});
+    await fs.collection('restaurants').document(model.restaurantId).collection('restaurant_orders').document(model.id).updateData({'driver':driver});
   }
 
   Future<void> occupyDriver(String date, String time, List<String> free,
-      List<String> occupied, String restId, String did) async {
-    final model = CalendarModel.fromFirebase(await fs
+      List<String> occupied,String restId,String did) async {
+    final model=CalendarModel.fromFirebase(await fs
         .collection(cl.DAYS)
         .document(date)
         .collection(cl.TIMES)
@@ -1576,7 +1177,7 @@ class Database extends FirebaseDatabase
         .document(time)
         .collection('restaurant_turns')
         .document(restId)
-        .updateData({'occupied': model.occupied});
+        .updateData({'occupied':model.occupied});
     //final data=res.data;
     //return CalendarModel.fromJson(res.data);
   }

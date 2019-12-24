@@ -1,4 +1,3 @@
-
 import 'package:easy_route/easy_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -81,6 +80,7 @@ class _AdminScreenState extends State<CreateAdminScreen> {
       context: context,
       builder: (_context) {
         final theme = Theme.of(context);
+        final cls = theme.colorScheme;
         return AlertDialog(
           content: Wrap(
             alignment: WrapAlignment.center,
@@ -89,8 +89,8 @@ class _AdminScreenState extends State<CreateAdminScreen> {
               Text(
                 "Vuoi veramente " +
                     ((type == 'control') ? 'togliere' : 'dare') +
-                    " i permessi a " +
-                    nominative,
+                    " i permessi" +
+                    ((nominative!=null)?' a '+nominative+' ?':'?'),
                 style: theme.textTheme.body2,
               ),
               Row(
@@ -131,6 +131,7 @@ class _AdminScreenState extends State<CreateAdminScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final cls = theme.colorScheme;
     return Scaffold(
       appBar: AppBar(
         title: Text('Lista Utenti'),

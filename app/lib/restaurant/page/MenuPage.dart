@@ -397,7 +397,6 @@ class _MenuPageState extends State<MenuPage> {
                 if(foods.hasData && drinks.hasData){
                   return Scaffold(
                     appBar: AppBar(
-                      title: Text('Listino'),
                     ),
                     body: ProductsFoodDrinkBuilder(
                       drinks: drinks.data,

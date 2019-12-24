@@ -1,4 +1,3 @@
-
 import 'package:easy_route/easy_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -89,7 +88,7 @@ class GroupsVoid extends StatelessWidget {
       slivers: <Widget>[
         SliverStickyHeader(
           header: Container(
-            color: Colors.black12,
+            color: Colors.grey,
             child: Padding(
               padding:
               const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),

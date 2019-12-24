@@ -39,7 +39,7 @@ dependencies:
   google_maps_flutter: ^0.5.21
   location: ^2.3.5
   permission_handler: ^4.0.0
-  cached_network_image: ^2.0.0-rc.1
+  cached_network_image: ^2.0.0-rc
   vibration: ^1.2.2
   file_picker: ^1.4.3
   cupertino_icons: ^0.1.3

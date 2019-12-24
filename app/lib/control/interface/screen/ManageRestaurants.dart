@@ -8,6 +8,7 @@ import 'package:resmedia_taporty_flutter/data/config.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/RestaurantBloc.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/RestaurantsBloc.dart';
 import 'package:resmedia_taporty_flutter/common/model/RestaurantModel.dart';
+import 'package:toast/toast.dart';
 
 import 'ManageSpecificRestaurant.dart';
 
@@ -58,10 +59,11 @@ class _LoginScreenState extends State<ManageRestaurants> {
                       ),
                       RaisedButton(
                         onPressed: () {
+                          EasyRouter.pop(context);
                           CloudFunctions.instance.getHttpsCallable(functionName: 'deleteRestaurant').call({
                             'restaurantId':restId
                           }).then((isDone){
-
+                            Toast.show('Ristorante cancellato!', context);
                           });
                           //Database().deleteRestaurant(restId);
                         },

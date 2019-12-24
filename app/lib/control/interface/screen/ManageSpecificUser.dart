@@ -118,7 +118,7 @@ class _LoginScreenState extends State<ManageSpecificUser> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Gestisci utente "+widget.user.nominative),
+        title: Text("Gestisci utente "+((widget.user.nominative!=null)?widget.user.nominative:'')),
         actions: <Widget>[],
       ),
       body: ListView(

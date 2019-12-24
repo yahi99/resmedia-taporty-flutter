@@ -86,13 +86,14 @@ class _AdminScreenState extends State<ResetPasswordAdmin> {
       context: context,
       builder: (_context) {
         final theme = Theme.of(context);
+        final cls = theme.colorScheme;
         return AlertDialog(
           content: Wrap(
             alignment: WrapAlignment.center,
             runSpacing: SPACE * 2,
             children: <Widget>[
               Text(
-                "Vuoi veramente resettare la password a " + nominative + ' ?',
+          (nominative!=null)?"Vuoi veramente resettare la password a " + nominative + ' ?':'Vuoi veramente resettare la password?',
                 style: theme.textTheme.body2,
               ),
               Row(
@@ -148,6 +149,7 @@ class _AdminScreenState extends State<ResetPasswordAdmin> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final cls = theme.colorScheme;
     return Scaffold(
       appBar: AppBar(
         title: Text('Recupero Password'),
@@ -171,9 +173,15 @@ class _AdminScreenState extends State<ResetPasswordAdmin> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-                            Padding(
+                            (user.nominative!=null)?Padding(
                               child: Text(
                                 user.nominative,
+                                style: theme.textTheme.subtitle,
+                              ),
+                              padding: EdgeInsets.all(4.0),
+                            ):Padding(
+                              child: Text(
+                                'Senza nome',
                                 style: theme.textTheme.subtitle,
                               ),
                               padding: EdgeInsets.all(4.0),

@@ -40,8 +40,7 @@ class OrderListScreenState extends State<OrderListScreen> {
         title: Text('Lista Ordini'),
         backgroundColor: red,
         centerTitle: true,
-        actions: <Widget>[
-        ],
+        actions: <Widget>[],
       ),
       body: TypesRestaurantView(),
     );
@@ -73,19 +72,27 @@ class TypesRestaurantView extends StatelessWidget {
             child: CircularProgressIndicator(),
           );
         print(snap.hasData);
-        return SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: CardListView(
-              children: snap.data.map<Widget>((_model) {
-                //return Center(child: CircularProgressIndicator(),);
-                return TypeOrderView(
-                  model: _model,
-                );
-              }).toList(),
-            ),
-          ),
-        );
+        return (snap.data.length > 0)
+            ? SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: CardListView(
+                    children: snap.data.map<Widget>((_model) {
+                      //return Center(child: CircularProgressIndicator(),);
+                      return TypeOrderView(
+                        model: _model,
+                      );
+                    }).toList(),
+                  ),
+                ),
+              )
+            : Padding(
+                child: Text(
+                  'Non ci sono ordini.',
+                  style: Theme.of(context).textTheme.subtitle,
+                ),
+                padding: EdgeInsets.all(8.0),
+              );
       },
     );
   }

@@ -142,8 +142,10 @@ class _TurnWorkTabDriverState extends State<EditRestTurns>{
                   child: Text(sp1.hasData?sp1.data:'Inserisci Ora Inizio'),
                   onPressed: (){
                     showTimePicker(context: context,initialTime: TimeOfDay.now()).then((value){
-                      sTime=value;
-                      startTime.add(timeToString(value));
+                      if(value!=null) {
+                        sTime = value;
+                        startTime.add(timeToString(value));
+                      }
                     });
                   },
                 ),
@@ -159,8 +161,10 @@ class _TurnWorkTabDriverState extends State<EditRestTurns>{
                   child: Text(sp1.hasData?sp1.data:'Inserisci Ora Fine'),
                   onPressed: (){
                     showTimePicker(context: context,initialTime: TimeOfDay.now()).then((value){
-                      eTime=value;
-                      endTime.add(timeToString(value));
+                      if(value!=null) {
+                        eTime = value;
+                        endTime.add(timeToString(value));
+                      }
                     });
                   },
                 ),

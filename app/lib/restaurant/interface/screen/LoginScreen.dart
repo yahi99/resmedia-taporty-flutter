@@ -321,7 +321,9 @@ class _LoginScreenState extends State<LoginScreen> {
               builder: (ctx, userId) {
                 if (userId.hasData) {
                   if (userSnapshot.data.isEmailVerified) {
-                    if(userId.data.type=='restaurant'){
+                    if(userId.data.type=='restaurant'){ 
+                      print(remember);
+                      Database().updateRemember(remember);
                       final orderBloc = OrdersBloc.of();
                       orderBloc.setRestaurantStream(userId.data.restaurantId);
                       final restaurantBloc = RestaurantBloc.init(idRestaurant: userId.data.restaurantId);

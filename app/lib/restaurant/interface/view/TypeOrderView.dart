@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:resmedia_taporty_flutter/common/logic/database.dart';
 import 'package:resmedia_taporty_flutter/common/model/OrderModel.dart';
-import 'package:resmedia_taporty_flutter/restaurant/page/DetailOrderRestaurantPage.dart'; // TODO
+import 'package:resmedia_taporty_flutter/restaurant/interface/page/DetailOrderRestaurantPage.dart'; // TODO
 import 'package:url_launcher/url_launcher.dart';
 
 class TypeOrderView extends StatelessWidget {
@@ -24,9 +24,13 @@ class TypeOrderView extends StatelessWidget {
     return sum;
   }
 
-  String toDate(String date){
-    final DateTime dateTime=DateTime.parse(date);
-    return(dateTime.day.toString()+'/'+dateTime.month.toString()+'/'+dateTime.year.toString());
+  String toDate(String date) {
+    final DateTime dateTime = DateTime.parse(date);
+    return (dateTime.day.toString() +
+        '/' +
+        dateTime.month.toString() +
+        '/' +
+        dateTime.year.toString());
   }
 
   @override
@@ -36,83 +40,97 @@ class TypeOrderView extends StatelessWidget {
     final cart = Cart(products: model.products);
     return StreamBuilder<RestaurantOrderModel>(
       stream: Database().getRestaurantOrder(model.restaurantId, model.id),
-      builder: (ctx,order){
-        if(!order.hasData) return Center(child: CircularProgressIndicator(),);
-        final model=order.data;
-        final temp=model.endTime.split(':');
-        final day=DateTime.parse(model.day);
-        final time=DateTime(day.year,day.month,day.day,int.parse(temp.elementAt(0)),int.parse(temp.elementAt(1)));
+      builder: (ctx, order) {
+        if (!order.hasData)
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        final model = order.data;
+        final temp = model.endTime.split(':');
+        final day = DateTime.parse(model.day);
+        final time = DateTime(day.year, day.month, day.day,
+            int.parse(temp.elementAt(0)), int.parse(temp.elementAt(1)));
         return Stack(
           alignment: Alignment.center,
           children: <Widget>[
             GestureDetector(
               onTap: () {
-                EasyRouter.push(context, DetailOrderRestaurantPage(model: model));
+                EasyRouter.push(
+                    context, DetailOrderRestaurantPage(model: model));
               },
               child: ConstrainedBox(
                 constraints: BoxConstraints(
                   minWidth: 186,
                   minHeight: 48,
                 ),
-                child: Container(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Wrap(
-                        runSpacing: 16.0,
-                        children: <Widget>[
-                          Text('Cliente: ', style: tt.subtitle),
-                          Text(model.nominative),
-                          Text('Giorno di consegna: ', style: tt.subtitle),
-                          Text(toDate(model.day)),
-                          Text('Ora di consegna: ', style: tt.subtitle),
-                          Text(model.endTime),
-                          Text('Numero di prodotti: ', style: tt.subtitle),
-                          Text(totalProducts(model.products).toString()),
-                          Text('Prezzo totale: ', style: tt.subtitle),
-                          Text(cart
-                              .getTotalPrice(
-                              cart.products,
-                              cart.products.first.userId,
-                              cart.products.first.restaurantId)
-                              .toString() +
-                              ' euro'),
-                          Text('Stato dell\'ordine: ', style: tt.subtitle),
-                          Text(translateOrderCategory(model.state)),
-                          Center(
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                              child: RaisedButton(
-                                color: theme.colorScheme.secondaryVariant,
-                                onPressed: () {
-                                  print(model.phone);
-                                  launch('tel:'+model.phone);
-                                },
-                                child: Text(
-                                  "Chiama",
-                                  style: tt.button,
-                                ),
+                child: Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        _buildRichText("Cliente: ", model.nominative, tt),
+                        _buildRichText(
+                            'Giorno di consegna: ', toDate(model.day), tt),
+                        _buildRichText('Ora di consegna: ', model.endTime, tt),
+                        _buildRichText('Numero di prodotti: ',
+                            totalProducts(model.products).toString(), tt),
+                        _buildRichText(
+                            'Prezzo totale: ',
+                            cart
+                                    .getTotalPrice(
+                                        cart.products,
+                                        cart.products.first.userId,
+                                        cart.products.first.restaurantId)
+                                    .toString() +
+                                ' €',
+                            tt),
+                        _buildRichText('Stato dell\'ordine: ',
+                            translateOrderCategory(model.state), tt),
+                        Center(
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 16.0),
+                            child: RaisedButton(
+                              color: theme.colorScheme.secondaryVariant,
+                              onPressed: () {
+                                print(model.phone);
+                                launch('tel:' + model.phone);
+                              },
+                              child: Text(
+                                "Chiama",
+                                style: tt.button,
                               ),
                             ),
                           ),
-                        ],
-                      ),
-                    ],
+                        ),
+                      ],
+                    ),
                   ),
-                  padding: EdgeInsets.all(4.0),
-                  decoration: BoxDecoration(
-                      border: Border.all(
-                        color:
-                        (time.difference(DateTime.now()).inMinutes>0 && time.difference(DateTime.now()).inMinutes <=45)
-                            ? Colors.red
-                            : Colors.black,
-                      )),
                 ),
               ),
             ),
           ],
         );
       },
+    );
+  }
+
+  _buildRichText(String title, String description, TextTheme tt) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 4.0),
+      child: RichText(
+        text: TextSpan(
+          text: title,
+          style: tt.subtitle,
+          children: <TextSpan>[
+            TextSpan(
+              text: description,
+              style: TextStyle(fontWeight: FontWeight.normal),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

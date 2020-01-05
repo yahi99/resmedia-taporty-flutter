@@ -8,7 +8,6 @@ import 'package:resmedia_taporty_flutter/common/logic/database.dart';
 import 'package:toast/toast.dart';
 
 class EditRestTurns extends StatefulWidget implements WidgetRoute {
-
   static const ROUTE = 'EditTurnsRestaurant';
 
   @override
@@ -18,60 +17,59 @@ class EditRestTurns extends StatefulWidget implements WidgetRoute {
   _TurnWorkTabDriverState createState() => _TurnWorkTabDriverState();
 }
 
-class _TurnWorkTabDriverState extends State<EditRestTurns>{
-
+class _TurnWorkTabDriverState extends State<EditRestTurns> {
   StreamController day;
   StreamController isLunch;
   StreamController startTime;
   StreamController endTime;
 
-  String dayWeek,isL;
-  TimeOfDay sTime,eTime;
+  String dayWeek, isL;
+  TimeOfDay sTime, eTime;
 
   List<DropdownMenuItem> dropDays = List<DropdownMenuItem>();
   List<DropdownMenuItem> dropTime = List<DropdownMenuItem>();
   //List<DropdownMenuItem> dropDrinks = List<DropdownMenuItem>();
 
-  List<String> days=['Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato','Domenica'];
-  List<String> time=['Pranzo','Cena'];
+  List<String> days = ['Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato', 'Domenica'];
+  List<String> time = ['Pranzo', 'Cena'];
 
-  String  timeToString(TimeOfDay value){
-    return ((value.hour<10)?'0'+value.hour.toString():value.hour.toString())+':'+((value.minute<10)?'0'+value.minute.toString():value.minute.toString());
+  String timeToString(TimeOfDay value) {
+    return ((value.hour < 10) ? '0' + value.hour.toString() : value.hour.toString()) + ':' + ((value.minute < 10) ? '0' + value.minute.toString() : value.minute.toString());
   }
 
-  bool isAfter(TimeOfDay start,TimeOfDay end){
-    if(start.hour<end.hour) return true;
-    if(start.hour==end.hour && start.minute<end.minute) return true;
+  bool isAfter(TimeOfDay start, TimeOfDay end) {
+    if (start.hour < end.hour) return true;
+    if (start.hour == end.hour && start.minute < end.minute) return true;
     return false;
   }
 
   @override
   void initState() {
     super.initState();
-    day=new StreamController<String>.broadcast();
-    isLunch=new StreamController<String>.broadcast();
-    startTime=new StreamController<String>.broadcast();
-    endTime=new StreamController<String>.broadcast();
-    for(int i=0;i<days.length;i++){
+    day = new StreamController<String>.broadcast();
+    isLunch = new StreamController<String>.broadcast();
+    startTime = new StreamController<String>.broadcast();
+    endTime = new StreamController<String>.broadcast();
+    for (int i = 0; i < days.length; i++) {
       dropDays.add(DropdownMenuItem(
         child: Text(days[i]),
         value: days[i],
       ));
     }
-    for(int i=0;i<time.length;i++){
+    for (int i = 0; i < time.length; i++) {
       dropTime.add(DropdownMenuItem(
         child: Text(time[i]),
         value: time[i],
       ));
     }
-    dayWeek=days.elementAt(0);
-    isL=time.elementAt(0);
+    dayWeek = days.elementAt(0);
+    isL = time.elementAt(0);
     //final bloc=TurnBloc.of();
     //bloc.setTurnStream();
   }
 
   @override
-  void dispose(){
+  void dispose() {
     super.dispose();
     day.close();
     isLunch.close();
@@ -91,107 +89,102 @@ class _TurnWorkTabDriverState extends State<EditRestTurns>{
         title: Text('Modifica Orari'),
       ),
       body: Container(
-      child:Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          StreamBuilder<String>(
-            stream: day.stream,
-            builder: (ctx, sp1) {
-              return Padding(
-                    child:DropdownButton(
-                      //key: _dropKey,
-                      value: (!sp1.hasData)
-                          ? days.elementAt(0)
-                          : sp1.data,
-                      onChanged: (value) {
-                        print(value);
-                        dayWeek = value;
-                        day.add(value);
-                      },
-                      items: dropDays,
-                    ),
-                padding: EdgeInsets.only(bottom: SPACE * 2),
-              );
-            },
-          ),
-          StreamBuilder<String>(
-            stream: isLunch.stream,
-            builder: (ctx, sp1) {
-              return Padding(
-                child:DropdownButton(
-                  //key: _dropKey,
-                  value: (!sp1.hasData)
-                      ? time.elementAt(0)
-                      : sp1.data,
-                  onChanged: (value) {
-                    print(value);
-                    isL = value;
-                    isLunch.add(value);
-                  },
-                  items: dropTime,
-                ),
-                padding: EdgeInsets.only(bottom: SPACE * 2),
-              );
-            },
-          ),
-          StreamBuilder<String>(
-            stream: startTime.stream,
-            builder: (ctx, sp1) {
-              return Padding(
-                child:FlatButton(
-                  child: Text(sp1.hasData?sp1.data:'Inserisci Ora Inizio'),
-                  onPressed: (){
-                    showTimePicker(context: context,initialTime: TimeOfDay.now()).then((value){
-                      if(value!=null) {
-                        sTime = value;
-                        startTime.add(timeToString(value));
-                      }
-                    });
-                  },
-                ),
-                padding: EdgeInsets.only(bottom: SPACE * 2),
-              );
-            },
-          ),
-          StreamBuilder<String>(
-            stream: endTime.stream,
-            builder: (ctx, sp1) {
-              return Padding(
-                child:FlatButton(
-                  child: Text(sp1.hasData?sp1.data:'Inserisci Ora Fine'),
-                  onPressed: (){
-                    showTimePicker(context: context,initialTime: TimeOfDay.now()).then((value){
-                      if(value!=null) {
-                        eTime = value;
-                        endTime.add(timeToString(value));
-                      }
-                    });
-                  },
-                ),
-                padding: EdgeInsets.only(bottom: SPACE * 2),
-              );
-            },
-          ),
-          RaisedButton(
-            child: Text('Modifica Orari'),
-            onPressed: ()async{
-              //(await FirebaseAuth.instance.currentUser()).metadata.lastSignInTimestamp;
-              if(eTime!=null && sTime!=null && dayWeek!=null && isL!=null){
-                if(isAfter(sTime, eTime)){
-                  Database().updateTime(dayWeek,isL,timeToString(sTime),timeToString(eTime),(await UserBloc.of().outUser.first).model.restaurantId).then((value){
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            StreamBuilder<String>(
+              stream: day.stream,
+              builder: (ctx, sp1) {
+                return Padding(
+                  child: DropdownButton(
+                    //key: _dropKey,
+                    value: (!sp1.hasData) ? days.elementAt(0) : sp1.data,
+                    onChanged: (value) {
+                      print(value);
+                      dayWeek = value;
+                      day.add(value);
+                    },
+                    items: dropDays,
+                  ),
+                  padding: EdgeInsets.only(bottom: SPACE * 2),
+                );
+              },
+            ),
+            StreamBuilder<String>(
+              stream: isLunch.stream,
+              builder: (ctx, sp1) {
+                return Padding(
+                  child: DropdownButton(
+                    //key: _dropKey,
+                    value: (!sp1.hasData) ? time.elementAt(0) : sp1.data,
+                    onChanged: (value) {
+                      print(value);
+                      isL = value;
+                      isLunch.add(value);
+                    },
+                    items: dropTime,
+                  ),
+                  padding: EdgeInsets.only(bottom: SPACE * 2),
+                );
+              },
+            ),
+            StreamBuilder<String>(
+              stream: startTime.stream,
+              builder: (ctx, sp1) {
+                return Padding(
+                  child: FlatButton(
+                    child: Text(sp1.hasData ? sp1.data : 'Inserisci Ora Inizio'),
+                    onPressed: () {
+                      showTimePicker(context: context, initialTime: TimeOfDay.now()).then((value) {
+                        if (value != null) {
+                          sTime = value;
+                          startTime.add(timeToString(value));
+                        }
+                      });
+                    },
+                  ),
+                  padding: EdgeInsets.only(bottom: SPACE * 2),
+                );
+              },
+            ),
+            StreamBuilder<String>(
+              stream: endTime.stream,
+              builder: (ctx, sp1) {
+                return Padding(
+                  child: FlatButton(
+                    child: Text(sp1.hasData ? sp1.data : 'Inserisci Ora Fine'),
+                    onPressed: () {
+                      showTimePicker(context: context, initialTime: TimeOfDay.now()).then((value) {
+                        if (value != null) {
+                          eTime = value;
+                          endTime.add(timeToString(value));
+                        }
+                      });
+                    },
+                  ),
+                  padding: EdgeInsets.only(bottom: SPACE * 2),
+                );
+              },
+            ),
+            RaisedButton(
+              child: Text('Modifica Orari'),
+              onPressed: () async {
+                //(await FirebaseAuth.instance.currentUser()).metadata.lastSignInTimestamp;
+                if (eTime != null && sTime != null && dayWeek != null && isL != null) {
+                  if (isAfter(sTime, eTime)) {
+                    /*Database().updateTime(dayWeek,isL,timeToString(sTime),timeToString(eTime),(await UserBloc.of().outUser.first).model.restaurantId).then((value){
                     Toast.show('Orario Modificato!', context);
-                  });
-                }
-              }
-              else if(eTime==null && sTime==null && dayWeek!=null && isL!=null){
-                Database().cancelTime(dayWeek,isL,(await UserBloc.of().outUser.first).model.restaurantId).then((value){
+                  });*/
+                  }
+                } else if (eTime == null && sTime == null && dayWeek != null && isL != null) {
+                  /*Database().cancelTime(dayWeek,isL,(await UserBloc.of().outUser.first).model.restaurantId).then((value){
                   Toast.show('Orario cancellato!', context);
-                });
-              }
-            },
-          )
-        ],
-      ),
+                });*/
+                }
+              },
+            )
+          ],
+        ),
         width: MediaQuery.of(context).size.width,
       ),
     );

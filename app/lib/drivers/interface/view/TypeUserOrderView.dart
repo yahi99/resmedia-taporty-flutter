@@ -14,32 +14,25 @@ import 'package:resmedia_taporty_flutter/common/model/OrderModel.dart';
 import 'package:toast/toast.dart';
 
 class TypeOrderView extends StatefulWidget implements WidgetRoute {
-static const String ROUTE = "TypeOrderView";
+  static const String ROUTE = "TypeOrderView";
 
-String get route => ROUTE;
+  String get route => ROUTE;
 
-final UserOrderModel model;
+  final UserOrderModel model;
 
-const TypeOrderView({
-  Key key,
-  this.model,
-}) : super(key: key);
+  const TypeOrderView({
+    Key key,
+    this.model,
+  }) : super(key: key);
 
-@override
-_LoginScreenState createState() => _LoginScreenState();
+  @override
+  _LoginScreenState createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<TypeOrderView> {
+  List<String> points = ['1', '2', '3', '4', '5'];
 
-  List<String> points = [
-    '1',
-    '2',
-    '3',
-    '4',
-    '5'
-  ];
-
-  String pointF,pointR;
+  String pointF, pointR;
 
   StreamController pointStreamF;
   StreamController pointStreamR;
@@ -50,18 +43,18 @@ class _LoginScreenState extends State<TypeOrderView> {
   List<DropdownMenuItem> dropPoint = List<DropdownMenuItem>();
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
-    pointStreamF=new StreamController<String>.broadcast();
-    pointStreamR=new StreamController<String>.broadcast();
-    for(int i=0;i<points.length;i++){
+    pointStreamF = new StreamController<String>.broadcast();
+    pointStreamR = new StreamController<String>.broadcast();
+    for (int i = 0; i < points.length; i++) {
       dropPoint.add(DropdownMenuItem(
         child: Text(points[i]),
         value: points[i],
       ));
     }
-    pointF=points[points.length-1];
-    pointR=points[points.length-1];
+    pointF = points[points.length - 1];
+    pointR = points[points.length - 1];
   }
 
   @override
@@ -71,11 +64,14 @@ class _LoginScreenState extends State<TypeOrderView> {
     pointStreamR.close();
   }
 
-  String toDate(String date){
-    final DateTime dateTime=DateTime.parse(date);
-    return(dateTime.day.toString()+'/'+dateTime.month.toString()+'/'+dateTime.year.toString());
+  String toDate(String date) {
+    final DateTime dateTime = DateTime.parse(date);
+    return (dateTime.day.toString() +
+        '/' +
+        dateTime.month.toString() +
+        '/' +
+        dateTime.year.toString());
   }
-
 
   void _addReview(BuildContext context) {
     showDialog(
@@ -85,26 +81,24 @@ class _LoginScreenState extends State<TypeOrderView> {
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(20))),
             content: Container(
-              child:
-              ListView(
+              child: ListView(
                 physics: AlwaysScrollableScrollPhysics(),
                 shrinkWrap: true,
                 children: <Widget>[
                   Row(
                     children: <Widget>[
                       Padding(
-                  child:Text('Ristorante'),
-              padding: EdgeInsets.only(bottom: SPACE * 2,right: SPACE*2),
+                        child: Text('Ristorante'),
+                        padding: EdgeInsets.only(
+                            bottom: SPACE * 2, right: SPACE * 2),
                       ),
                       StreamBuilder(
                         stream: pointStreamR.stream,
-                        builder: (ctx,snap){
+                        builder: (ctx, snap) {
                           return Padding(
-                            child:DropdownButton(
+                            child: DropdownButton(
                               //key: _dropKey,
-                              value: (!snap.hasData)
-                                  ? pointR
-                                  : snap.data,
+                              value: (!snap.hasData) ? pointR : snap.data,
                               onChanged: (value) {
                                 print(value);
                                 pointR = value;
@@ -122,8 +116,8 @@ class _LoginScreenState extends State<TypeOrderView> {
                     child: TextFormField(
                       key: _restKey,
                       textInputAction: TextInputAction.done,
-                      validator: (value){
-                        if(value.length==0){
+                      validator: (value) {
+                        if (value.length == 0) {
                           return 'Inserisci valutazione';
                         }
                         return null;
@@ -141,18 +135,17 @@ class _LoginScreenState extends State<TypeOrderView> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Padding(
-                        child:Text('Fattorino'),
-                        padding: EdgeInsets.only(bottom: SPACE * 2,right: SPACE*2),
+                        child: Text('Fattorino'),
+                        padding: EdgeInsets.only(
+                            bottom: SPACE * 2, right: SPACE * 2),
                       ),
                       StreamBuilder(
                         stream: pointStreamF.stream,
-                        builder: (ctx,snap){
+                        builder: (ctx, snap) {
                           return Padding(
-                            child:DropdownButton(
+                            child: DropdownButton(
                               //key: _dropKey,
-                              value: (!snap.hasData)
-                                  ? pointF
-                                  : snap.data,
+                              value: (!snap.hasData) ? pointF : snap.data,
                               onChanged: (value) {
                                 print(value);
                                 pointF = value;
@@ -170,8 +163,8 @@ class _LoginScreenState extends State<TypeOrderView> {
                     child: TextFormField(
                       key: _driverKey,
                       textInputAction: TextInputAction.done,
-                      validator: (value){
-                        if(value.length==0){
+                      validator: (value) {
+                        if (value.length == 0) {
                           return 'Inserisci valutazione';
                         }
                         return null;
@@ -187,12 +180,26 @@ class _LoginScreenState extends State<TypeOrderView> {
                   ),
                   RaisedButton(
                     child: Text('Invia la recensione'),
-                    onPressed: ()async{
-                      final user=(await UserBloc.of().outUser.first);
-                      if(_driverKey.currentState.validate() && _restKey.currentState.validate()){
-                        Database().pushReviewRest(widget.model.restaurantId, int.parse(pointR), _restKey.currentState.value,widget.model.id,user.model.id,user.model.nominative);
-                        Database().pushReviewDriver(widget.model.driver, int.parse(pointF), _driverKey.currentState.value,user.model.id,widget.model.id,user.model.nominative);
-                        Database().setReviewed(user.model.id, widget.model.id);
+                    onPressed: () async {
+                      final user = (await UserBloc.of().outUser.first);
+                      if (_driverKey.currentState.validate() &&
+                          _restKey.currentState.validate()) {
+                        Database().pushRestaurantReview(
+                            widget.model.restaurantId,
+                            int.parse(pointR),
+                            _restKey.currentState.value,
+                            widget.model.id,
+                            user.model.id,
+                            user.model.nominative);
+                        Database().pushDriverReview(
+                            widget.model.driver,
+                            int.parse(pointF),
+                            _driverKey.currentState.value,
+                            user.model.id,
+                            widget.model.id,
+                            user.model.nominative);
+                        Database()
+                            .setOrderToReviewed(user.model.id, widget.model.id);
                         EasyRouter.pop(context);
                       }
                     },
@@ -203,8 +210,7 @@ class _LoginScreenState extends State<TypeOrderView> {
               width: 200,
             ),
           );
-        }
-    );
+        });
   }
 
   @override
@@ -213,12 +219,16 @@ class _LoginScreenState extends State<TypeOrderView> {
     final cart = Cart(products: widget.model.products);
     return StreamBuilder<UserOrderModel>(
       stream: Database().getUserOrder(widget.model.uid, widget.model.id),
-      builder: (ctx,order){
-        if(!order.hasData) return Center(child: CircularProgressIndicator(),);
-        final model=order.data;
-        final temp=model.endTime.split(':');
-        final day=DateTime.parse(model.day);
-        final time=DateTime(day.year,day.month,day.day,int.parse(temp.elementAt(0)),int.parse(temp.elementAt(1)));
+      builder: (ctx, order) {
+        if (!order.hasData)
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        final model = order.data;
+        final temp = model.endTime.split(':');
+        final day = DateTime.parse(model.day);
+        final time = DateTime(day.year, day.month, day.day,
+            int.parse(temp.elementAt(0)), int.parse(temp.elementAt(1)));
         return Slidable(
           actionPane: SlidableDrawerActionPane(),
           actionExtentRatio: 0.25,
@@ -226,98 +236,120 @@ class _LoginScreenState extends State<TypeOrderView> {
             IconSlideAction(
               icon: Icons.close,
               color: theme.accentColor,
-              onTap: () async{
+              onTap: () async {
                 //TODO:DELETE ORDER
-                if(translateOrderCategory(order.data.state)!='Ordine Cancellato') 
-                Database().deleteOrder(order.data,(await UserBloc.of().outUser.first).model.id).then((value){
-                  Toast.show('Ordine cancellato!', context);
-                });
+                if (translateOrderCategory(order.data.state) !=
+                    'Ordine Cancellato')
+                  Database()
+                      .deleteOrder(order.data,
+                          (await UserBloc.of().outUser.first).model.id)
+                      .then((value) {
+                    Toast.show('Ordine cancellato!', context);
+                  });
                 else {
                   Toast.show('Ordine già cancellato!', context);
                 }
               },
             )
           ],
-            child:InkWell(
-          child:Stack(
-            alignment: Alignment.center,
-            children: <Widget>[
-              Center(
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    minWidth: 186,
-                    minHeight: 48,
-                  ),
-                  child: Container(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        ListView(
-                          physics: NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          children:<Widget> [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Text('Prezzo totale: ',
-                                    style: theme.textTheme.subtitle),
-                                Text(cart
-                                    .getTotalPrice(
-                                    cart.products,
-                                    cart.products.first.userId,
-                                    cart.products.first.restaurantId)
-                                    .toString() +
-                                    ' euro'),
-                              ],
-                            ),
-                            (model.timeLeft!=null && translateOrderCategory(model.state)!='Consegnato')?Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Text('Tempo stimato(minuti): ', style: theme.textTheme.subtitle),
-                                Text(model.timeLeft.toString()),
+          child: InkWell(
+            child: Stack(
+              alignment: Alignment.center,
+              children: <Widget>[
+                Center(
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      minWidth: 186,
+                      minHeight: 48,
+                    ),
+                    child: Container(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          ListView(
+                            physics: NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            children: <Widget>[
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Text('Prezzo totale: ',
+                                      style: theme.textTheme.subtitle),
+                                  Text(cart
+                                          .getTotalPrice(
+                                              cart.products,
+                                              cart.products.first.userId,
+                                              cart.products.first.restaurantId)
+                                          .toString() +
+                                      ' euro'),
                                 ],
-                            ):Container(),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                /*Text('Data Ordine: ',
+                              ),
+                              (model.timeLeft != null &&
+                                      translateOrderCategory(model.state) !=
+                                          'Consegnato')
+                                  ? Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Text('Tempo stimato(minuti): ',
+                                            style: theme.textTheme.subtitle),
+                                        Text(model.timeLeft.toString()),
+                                      ],
+                                    )
+                                  : Container(),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  /*Text('Data Ordine: ',
                                   style: theme.textTheme.subtitle),
                               Text(widget.model.timeR),*/
-                                Text('Data ed ora consegna: ',style: theme.textTheme.subtitle),
-                                Text(toDate(model.day)+' alle ore '+model.endTime),
-                                Text('Stato Ordine: ',
-                                    style: theme.textTheme.subtitle),
-                                Text(translateOrderCategory(model.state)),
-                              ],
-                            ),
-                          ],
-                        ),
-                        (translateOrderCategory(model.state)=='Consegnato' &&  model.isReviewed==null)?RaisedButton(
-                          child: Text('Lascia una Recensione'),
-                          onPressed: (){
-                            _addReview(context);
-                          },
-                        ):Container(),
-                      ],
+                                  Text('Data ed ora consegna: ',
+                                      style: theme.textTheme.subtitle),
+                                  Text(toDate(model.day) +
+                                      ' alle ore ' +
+                                      model.endTime),
+                                  Text('Stato Ordine: ',
+                                      style: theme.textTheme.subtitle),
+                                  Text(translateOrderCategory(model.state)),
+                                ],
+                              ),
+                            ],
+                          ),
+                          (translateOrderCategory(model.state) ==
+                                      'Consegnato' &&
+                                  model.isReviewed == null)
+                              ? RaisedButton(
+                                  child: Text('Lascia una Recensione'),
+                                  onPressed: () {
+                                    _addReview(context);
+                                  },
+                                )
+                              : Container(),
+                        ],
+                      ),
+                      padding: EdgeInsets.all(4.0),
+                      decoration: BoxDecoration(
+                          border: Border.all(
+                        color: (time.difference(DateTime.now()).inMinutes > 0 &&
+                                time.difference(DateTime.now()).inMinutes <= 45)
+                            ? Colors.red
+                            : Colors.black,
+                      )),
                     ),
-                    padding: EdgeInsets.all(4.0),
-                    decoration: BoxDecoration(
-                        border: Border.all(
-                          color: (time.difference(DateTime.now()).inMinutes>0 && time.difference(DateTime.now()).inMinutes <=45)
-                              ? Colors.red
-                              : Colors.black,
-                        )),
                   ),
                 ),
-              ),
-            ],
-          ),
-          onTap: (){
-            EasyRouter.push(context, DetailedOrderUser(model: model,));
-          },
+              ],
             ),
+            onTap: () {
+              EasyRouter.push(
+                  context,
+                  DetailedOrderUser(
+                    model: model,
+                  ));
+            },
+          ),
         );
-        },
+      },
     );
   }
 }

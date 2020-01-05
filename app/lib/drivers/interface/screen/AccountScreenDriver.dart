@@ -60,9 +60,12 @@ class AccountScreenDriver extends StatelessWidget implements WidgetRoute {
                     ),
                   ),
                   StreamBuilder<UserModel>(
-                    stream: Database().getUserImg(snap.data.model.id),
-                    builder: (ctx,img){
-                      if(!img.hasData) return Center(child: CircularProgressIndicator(),);
+                    stream: Database().getUserModelById(snap.data.model.id),
+                    builder: (ctx, img) {
+                      if (!img.hasData)
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
                       return Padding(
                         padding: EdgeInsets.only(top: 25.0),
                         child: Container(
@@ -73,30 +76,32 @@ class AccountScreenDriver extends StatelessWidget implements WidgetRoute {
                             height: double.infinity,
                             child: (img.data.img != null)
                                 ? CircleAvatar(
-                                backgroundImage: CachedNetworkImageProvider(
-                                    img.data.img))
+                                    backgroundImage: CachedNetworkImageProvider(
+                                        img.data.img))
                                 : CircleAvatar(
-                              backgroundColor: Colors.black,
-                            ),
+                                    backgroundColor: Colors.black,
+                                  ),
                           ),
                         ),
                       );
                     },
                   ),
                   Padding(
-                    padding: EdgeInsets.only(top:25.0,left:140.0),
+                    padding: EdgeInsets.only(top: 25.0, left: 140.0),
                     child: IconButton(
                       iconSize: 50.0,
-                      icon: Icon(Icons.camera_alt,color: Colors.white,),
+                      icon: Icon(
+                        Icons.camera_alt,
+                        color: Colors.white,
+                      ),
                       onPressed: () async {
                         ImagePicker.pickImage(source: ImageSource.camera)
                             .then((file) {
                           if (file != null) {
                             uploadFile(file.path).then((path) async {
                               Database()
-                                  .updateAccountImg(
-                                  path,
-                                  snap.data.model.id,snap.data.model.img)
+                                  .updateUserImage(path, snap.data.model.id,
+                                      snap.data.model.img)
                                   .then((value) {
                                 Toast.show('Cambiato!', context, duration: 3);
                               });
@@ -123,16 +128,19 @@ class AccountScreenDriver extends StatelessWidget implements WidgetRoute {
                 padding: EdgeInsets.only(top: 8.0),
               ),
               Text(snap.data.model.nominative),
-              (snap.data.model.lat!=null && snap.data.model.lng!=null)?StreamBuilder<List<Address>>(
-                stream: Geocoder.local
-                    .findAddressesFromCoordinates(
-                    Coordinates(snap.data.model.lat, snap.data.model.lng))
-                    .asStream(),
-                builder: (ctx, loc) {
-                  if (loc.hasData) return Text(loc.data.first.addressLine);
-                  return Container();
-                },
-              ):Container(),
+              (snap.data.model.lat != null && snap.data.model.lng != null)
+                  ? StreamBuilder<List<Address>>(
+                      stream: Geocoder.local
+                          .findAddressesFromCoordinates(Coordinates(
+                              snap.data.model.lat, snap.data.model.lng))
+                          .asStream(),
+                      builder: (ctx, loc) {
+                        if (loc.hasData)
+                          return Text(loc.data.first.addressLine);
+                        return Container();
+                      },
+                    )
+                  : Container(),
               const Divider(
                 color: Colors.grey,
               ),
@@ -142,10 +150,12 @@ class AccountScreenDriver extends StatelessWidget implements WidgetRoute {
                     color: Colors.grey,
                   ),
                   children: <Widget>[
-                    (snap.data.model.nominative!=null)?Text(
-                      snap.data.model.nominative,
-                      style: theme.textTheme.subhead,
-                    ):Container(),
+                    (snap.data.model.nominative != null)
+                        ? Text(
+                            snap.data.model.nominative,
+                            style: theme.textTheme.subhead,
+                          )
+                        : Container(),
                     Text(
                       snap.data.model.email,
                       style: theme.textTheme.subhead,
@@ -155,7 +165,7 @@ class AccountScreenDriver extends StatelessWidget implements WidgetRoute {
                         Icon(Icons.settings),
                         FlatButton(
                             child:
-                            Text('Log Out', style: theme.textTheme.subhead),
+                                Text('Log Out', style: theme.textTheme.subhead),
                             onPressed: () {
                               UserBloc.of().logout();
                               LoginHelper().signOut();

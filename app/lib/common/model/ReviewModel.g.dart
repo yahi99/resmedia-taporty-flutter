@@ -8,12 +8,13 @@ part of 'ReviewModel.dart';
 
 ReviewModel _$ReviewModelFromJson(Map json) {
   return ReviewModel(
-      path: json['path'] as String,
-      nominative: json['nominative'] as String,
-      strPoints: json['strPoints'] as String,
-      userId: json['userId'] as String,
-      oid: json['oid'] as String,
-      points: (json['points'] as num)?.toDouble());
+    path: json['path'] as String,
+    nominative: json['nominative'] as String,
+    strPoints: json['strPoints'] as String,
+    userId: json['userId'] as String,
+    oid: json['oid'] as String,
+    points: (json['points'] as num)?.toDouble(),
+  );
 }
 
 Map<String, dynamic> _$ReviewModelToJson(ReviewModel instance) {

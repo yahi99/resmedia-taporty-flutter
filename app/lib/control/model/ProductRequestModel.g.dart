@@ -8,14 +8,15 @@ part of 'ProductRequestModel.dart';
 
 ProductRequestModel _$ProductRequestModelFromJson(Map json) {
   return ProductRequestModel(
-      path: json['path'] as String,
-      cat: json['cat'] as String,
-      category: json['category'] as String,
-      img: json['img'] as String,
-      price: json['price'] as String,
-      title: json['title'] as String,
-      quantity: json['quantity'] as String,
-      restaurantId: json['restaurantId'] as String);
+    path: json['path'] as String,
+    cat: json['cat'] as String,
+    category: json['category'] as String,
+    img: json['img'] as String,
+    price: json['price'] as String,
+    title: json['title'] as String,
+    quantity: json['quantity'] as String,
+    restaurantId: json['restaurantId'] as String,
+  );
 }
 
 Map<String, dynamic> _$ProductRequestModelToJson(ProductRequestModel instance) {

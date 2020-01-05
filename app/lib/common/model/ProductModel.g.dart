@@ -8,13 +8,14 @@ part of 'ProductModel.dart';
 
 FoodModel _$FoodModelFromJson(Map json) {
   return FoodModel(
-      path: json['path'] as String,
-      img: json['img'] as String,
-      isDisabled: json['isDisabled'] as bool,
-      price: json['price'] as String,
-      category: _$enumDecodeNullable(_$FoodCategoryEnumMap, json['category']),
-      restaurantId: json['restaurantId'] as String,
-      number: json['number'] as String);
+    path: json['path'] as String,
+    img: json['img'] as String,
+    isDisabled: json['isDisabled'] as bool,
+    price: json['price'] as String,
+    category: _$enumDecodeNullable(_$FoodCategoryEnumMap, json['category']),
+    restaurantId: json['restaurantId'] as String,
+    number: json['number'] as String,
+  );
 }
 
 Map<String, dynamic> _$FoodModelToJson(FoodModel instance) {
@@ -36,27 +37,39 @@ Map<String, dynamic> _$FoodModelToJson(FoodModel instance) {
   return val;
 }
 
-T _$enumDecode<T>(Map<T, dynamic> enumValues, dynamic source) {
+T _$enumDecode<T>(
+  Map<T, dynamic> enumValues,
+  dynamic source, {
+  T unknownValue,
+}) {
   if (source == null) {
     throw ArgumentError('A value must be provided. Supported values: '
         '${enumValues.values.join(', ')}');
   }
-  return enumValues.entries
-      .singleWhere((e) => e.value == source,
-          orElse: () => throw ArgumentError(
-              '`$source` is not one of the supported values: '
-              '${enumValues.values.join(', ')}'))
-      .key;
+
+  final value = enumValues.entries
+      .singleWhere((e) => e.value == source, orElse: () => null)
+      ?.key;
+
+  if (value == null && unknownValue == null) {
+    throw ArgumentError('`$source` is not one of the supported values: '
+        '${enumValues.values.join(', ')}');
+  }
+  return value ?? unknownValue;
 }
 
-T _$enumDecodeNullable<T>(Map<T, dynamic> enumValues, dynamic source) {
+T _$enumDecodeNullable<T>(
+  Map<T, dynamic> enumValues,
+  dynamic source, {
+  T unknownValue,
+}) {
   if (source == null) {
     return null;
   }
-  return _$enumDecode<T>(enumValues, source);
+  return _$enumDecode<T>(enumValues, source, unknownValue: unknownValue);
 }
 
-const _$FoodCategoryEnumMap = <FoodCategory, dynamic>{
+const _$FoodCategoryEnumMap = {
   FoodCategory.APPETIZER: 'APPETIZER',
   FoodCategory.FIRST_COURSES: 'FIRST_COURSES',
   FoodCategory.MAIN_COURSES: 'MAIN_COURSES',
@@ -67,18 +80,19 @@ const _$FoodCategoryEnumMap = <FoodCategory, dynamic>{
   FoodCategory.DRINK: 'DRINK',
   FoodCategory.WINE: 'WINE',
   FoodCategory.ALCOHOLIC: 'ALCOHOLIC',
-  FoodCategory.COFFEE: 'COFFEE'
+  FoodCategory.COFFEE: 'COFFEE',
 };
 
 DrinkModel _$DrinkModelFromJson(Map json) {
   return DrinkModel(
-      path: json['path'] as String,
-      category: _$enumDecodeNullable(_$DrinkCategoryEnumMap, json['category']),
-      isDisabled: json['isDisabled'] as bool,
-      img: json['img'] as String,
-      price: json['price'] as String,
-      restaurantId: json['restaurantId'] as String,
-      number: json['number'] as String);
+    path: json['path'] as String,
+    category: _$enumDecodeNullable(_$DrinkCategoryEnumMap, json['category']),
+    isDisabled: json['isDisabled'] as bool,
+    img: json['img'] as String,
+    price: json['price'] as String,
+    restaurantId: json['restaurantId'] as String,
+    number: json['number'] as String,
+  );
 }
 
 Map<String, dynamic> _$DrinkModelToJson(DrinkModel instance) {
@@ -100,9 +114,9 @@ Map<String, dynamic> _$DrinkModelToJson(DrinkModel instance) {
   return val;
 }
 
-const _$DrinkCategoryEnumMap = <DrinkCategory, dynamic>{
+const _$DrinkCategoryEnumMap = {
   DrinkCategory.DRINK: 'DRINK',
   DrinkCategory.WINE: 'WINE',
   DrinkCategory.ALCOHOLIC: 'ALCOHOLIC',
-  DrinkCategory.COFFEE: 'COFFEE'
+  DrinkCategory.COFFEE: 'COFFEE',
 };

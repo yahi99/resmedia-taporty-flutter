@@ -97,19 +97,21 @@ class _TurnWorkTabDriverState extends State<EditRestScreen> {
                   ),
                   padding: EdgeInsets.all(8.0),
                 ),
-                width: MediaQuery.of(context).size.width *2/3,
+                width: MediaQuery.of(context).size.width * 2 / 3,
               ),
               Expanded(
                 child: RaisedButton(
                   child: Text('Cambia'),
                   onPressed: () async {
                     if (_kmKey.currentState.validate()) {
-                      Database().updateKm(
-                          double.parse(_kmKey.currentState.value),
-                          (await UserBloc.of().outUser.first)
-                              .model
-                              .restaurantId).then((value){
-                                Toast.show('Cambiato!', context,duration: 3);
+                      Database()
+                          .updateKm(
+                              double.parse(_kmKey.currentState.value),
+                              (await UserBloc.of().outUser.first)
+                                  .model
+                                  .restaurantId)
+                          .then((value) {
+                        Toast.show('Cambiato!', context, duration: 3);
                       });
                     }
                   },
@@ -139,7 +141,7 @@ class _TurnWorkTabDriverState extends State<EditRestScreen> {
                   ),
                   padding: EdgeInsets.all(8.0),
                 ),
-                width: MediaQuery.of(context).size.width *2/3,
+                width: MediaQuery.of(context).size.width * 2 / 3,
               ),
               Expanded(
                   child: RaisedButton(
@@ -147,10 +149,14 @@ class _TurnWorkTabDriverState extends State<EditRestScreen> {
                 onPressed: () async {
                   //print(double.tryParse('2.6').toString());
                   if (_delKey.currentState.validate()) {
-                    Database().updateDeliveryFee(
-                        double.tryParse(_delKey.currentState.value),
-                        (await UserBloc.of().outUser.first).model.restaurantId).then((value){
-                      Toast.show('Cambiato!', context,duration: 3);
+                    Database()
+                        .updateDeliveryFee(
+                            double.tryParse(_delKey.currentState.value),
+                            (await UserBloc.of().outUser.first)
+                                .model
+                                .restaurantId)
+                        .then((value) {
+                      Toast.show('Cambiato!', context, duration: 3);
                     });
                   }
                 },
@@ -178,19 +184,21 @@ class _TurnWorkTabDriverState extends State<EditRestScreen> {
                   ),
                   padding: EdgeInsets.all(8.0),
                 ),
-                width: MediaQuery.of(context).size.width *2/3,
+                width: MediaQuery.of(context).size.width * 2 / 3,
               ),
               Expanded(
                 child: RaisedButton(
                   child: Text('Cambia'),
                   onPressed: () async {
                     if (_descrKey.currentState.validate()) {
-                      Database().updateDescription(
-                          _descrKey.currentState.value,
-                          (await UserBloc.of().outUser.first)
-                              .model
-                              .restaurantId).then((value){
-                        Toast.show('Cambiato!', context,duration: 3);
+                      Database()
+                          .updateDescription(
+                              _descrKey.currentState.value,
+                              (await UserBloc.of().outUser.first)
+                                  .model
+                                  .restaurantId)
+                          .then((value) {
+                        Toast.show('Cambiato!', context, duration: 3);
                       });
                     }
                   },
@@ -207,8 +215,8 @@ class _TurnWorkTabDriverState extends State<EditRestScreen> {
                     return InkWell(
                       child: Container(
                         padding: EdgeInsets.all(SPACE),
-                        child:Image.file(File(path)),
-                        width: MediaQuery.of(context).size.width*2/3,
+                        child: Image.file(File(path)),
+                        width: MediaQuery.of(context).size.width * 2 / 3,
                       ),
                       onTap: () {
                         ImagePicker.pickImage(source: ImageSource.gallery)
@@ -255,7 +263,7 @@ class _TurnWorkTabDriverState extends State<EditRestScreen> {
                         });
                       },
                     ),
-                    width: MediaQuery.of(context).size.width *2/3,
+                    width: MediaQuery.of(context).size.width * 2 / 3,
                   );
                 },
               ),
@@ -270,12 +278,14 @@ class _TurnWorkTabDriverState extends State<EditRestScreen> {
                             duration: 3);
                       } else {
                         uploadFile(path).then((path) async {
-                          Database().updateImg(
-                              path,
-                              (await UserBloc.of().outUser.first)
-                                  .model
-                                  .restaurantId).then((value){
-                            Toast.show('Cambiato!', context,duration: 3);
+                          Database()
+                              .updateRestaurantImage(
+                                  path,
+                                  (await UserBloc.of().outUser.first)
+                                      .model
+                                      .restaurantId)
+                              .then((value) {
+                            Toast.show('Cambiato!', context, duration: 3);
                           });
                         });
                       }

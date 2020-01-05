@@ -8,9 +8,10 @@ part of 'ShiftModel.dart';
 
 ShiftModel _$ShiftModelFromJson(Map json) {
   return ShiftModel(
-      path: json['path'] as String,
-      users: (json['users'] as List)?.map((e) => e as String)?.toList(),
-      startTime: json['startTime'] as String);
+    path: json['path'] as String,
+    users: (json['users'] as List)?.map((e) => e as String)?.toList(),
+    startTime: json['startTime'] as String,
+  );
 }
 
 Map<String, dynamic> _$ShiftModelToJson(ShiftModel instance) {

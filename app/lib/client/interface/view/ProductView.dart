@@ -16,13 +16,7 @@ class ProductView extends StatelessWidget {
   final String category;
   //final StreamController<String> imgStream=new StreamController.broadcast();
 
-  ProductView(
-      {Key key,
-      @required this.model,
-      @required this.category,
-      @required this.cartController,
-      @required this.update})
-      : super(key: key);
+  ProductView({Key key, @required this.model, @required this.category, @required this.cartController, @required this.update}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -55,15 +49,10 @@ class ProductView extends StatelessWidget {
                       aspectRatio: 1,
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(16.0),
-                        child: (model.img.startsWith('assets'))
-                            ? Image.asset(
-                                model.img,
-                                fit: BoxFit.fitHeight,
-                              )
-                            : Image.network(
-                                model.img,
-                                fit: BoxFit.fitHeight,
-                              ),
+                        child: Image.network(
+                          model.img,
+                          fit: BoxFit.fitHeight,
+                        ),
                       ),
                     ),
                   ),
@@ -75,9 +64,7 @@ class ProductView extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Flexible(
-                        child: Container(
-                            child: Text(model.id),
-                            width: MediaQuery.of(context).size.width * 2 / 5),
+                        child: Container(child: Text(model.id), width: MediaQuery.of(context).size.width * 2 / 5),
                       ),
                       Text('€ ${model.price}'),
                     ],
@@ -104,13 +91,7 @@ class CartStepperButton extends StatelessWidget {
   final String update;
   final String category;
 
-  const CartStepperButton(
-      {Key key,
-      @required this.cartController,
-      @required this.model,
-      @required this.update,
-      @required this.category})
-      : super(key: key);
+  const CartStepperButton({Key key, @required this.cartController, @required this.model, @required this.update, @required this.category}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -128,37 +109,27 @@ class CartStepperButton extends StatelessWidget {
                 child: CircularProgressIndicator(),
               );
             print(snap.data.uid);
-            final product =
-                cart.getProduct(model.id, model.restaurantId, snap.data.uid);
+            final product = cart.getProduct(model.id, model.restaurantId, snap.data.uid);
             if (product != null && product.delete) {
               print(product.id + '  ' + product.delete.toString() + '  menu');
-              cartController.inRemove(
-                  model.id, model.restaurantId, snap.data.uid);
+              cartController.inRemove(model.id, model.restaurantId, snap.data.uid);
             }
             return StepperButton(
               direction: Axis.vertical,
-              child: Text(
-                  '${cart.getProduct(model.id, model.restaurantId, snap.data.uid)?.countProducts ?? 0}'),
+              child: Text('${cart.getProduct(model.id, model.restaurantId, snap.data.uid)?.countProducts ?? 0}'),
               onDecrease: () {
                 Vibration.vibrate(duration: 65);
-                cartController.inDecrease(
-                    model.id, model.restaurantId, snap.data.uid);
+                cartController.inDecrease(model.id, model.restaurantId, snap.data.uid);
               },
               onIncrement: () {
                 print(model.number);
-                final prod = cart.getProduct(
-                    model.id, model.restaurantId, snap.data.uid);
+                final prod = cart.getProduct(model.id, model.restaurantId, snap.data.uid);
                 final count = (prod != null) ? prod.countProducts : 0;
                 if (model.number != null && int.parse(model.number) <= count)
                   Toast.show('Limite massimo prodotti', context, duration: 3);
                 else {
                   Vibration.vibrate(duration: 65);
-                  cartController.inIncrement(
-                      model.id,
-                      model.restaurantId,
-                      snap.data.uid,
-                      double.parse(model.price.replaceAll(',', '.')),
-                      category);
+                  cartController.inIncrement(model.id, model.restaurantId, snap.data.uid, double.parse(model.price.replaceAll(',', '.')), category);
                 }
               },
             );

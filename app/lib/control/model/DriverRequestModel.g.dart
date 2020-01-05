@@ -8,15 +8,16 @@ part of 'DriverRequestModel.dart';
 
 DriverRequestModel _$DriverRequestModelFromJson(Map json) {
   return DriverRequestModel(
-      path: json['path'] as String,
-      lat: (json['lat'] as num)?.toDouble(),
-      address: json['address'] as String,
-      codiceFiscale: json['codiceFiscale'] as String,
-      mezzo: json['mezzo'] as String,
-      experience: json['experience'] as String,
-      km: (json['km'] as num)?.toDouble(),
-      nominative: json['nominative'] as String,
-      lng: (json['lng'] as num)?.toDouble());
+    path: json['path'] as String,
+    lat: (json['lat'] as num)?.toDouble(),
+    address: json['address'] as String,
+    codiceFiscale: json['codiceFiscale'] as String,
+    mezzo: json['mezzo'] as String,
+    experience: json['experience'] as String,
+    km: (json['km'] as num)?.toDouble(),
+    nominative: json['nominative'] as String,
+    lng: (json['lng'] as num)?.toDouble(),
+  );
 }
 
 Map<String, dynamic> _$DriverRequestModelToJson(DriverRequestModel instance) {

@@ -8,26 +8,27 @@ part of 'OrderModel.dart';
 
 RestaurantOrderModel _$RestaurantOrderModelFromJson(Map json) {
   return RestaurantOrderModel(
-      path: json['path'] as String,
-      timeLeft: json['timeLeft'] as int,
-      restaurantId: json['restaurantId'] as String,
-      isPaid: json['isPaid'] as bool,
-      isReviewed: json['isReviewed'] as bool,
-      phone: json['phone'] as String,
-      day: json['day'] as String,
-      fingerprint: json['fingerprint'] as String,
-      addressR: json['addressR'] as String,
-      endTime: json['endTime'] as String,
-      products: (json['products'] as List)
-          ?.map((e) => e == null ? null : ProductCart.fromJson(e as Map))
-          ?.toList(),
-      driver: json['driver'] as String,
-      uid: json['uid'] as String,
-      timeR: json['timeR'] as String,
-      timeS: json['timeS'] as String,
-      state: _$enumDecodeNullable(_$StateCategoryEnumMap, json['state']),
-      startTime: json['startTime'] as String,
-      nominative: json['nominative'] as String);
+    path: json['path'] as String,
+    timeLeft: json['timeLeft'] as int,
+    restaurantId: json['restaurantId'] as String,
+    isPaid: json['isPaid'] as bool,
+    isReviewed: json['isReviewed'] as bool,
+    phone: json['phone'] as String,
+    day: json['day'] as String,
+    fingerprint: json['fingerprint'] as String,
+    addressR: json['addressR'] as String,
+    endTime: json['endTime'] as String,
+    products: (json['products'] as List)
+        ?.map((e) => e == null ? null : ProductCart.fromJson(e as Map))
+        ?.toList(),
+    driver: json['driver'] as String,
+    uid: json['uid'] as String,
+    timeR: json['timeR'] as String,
+    timeS: json['timeS'] as String,
+    state: _$enumDecodeNullable(_$StateCategoryEnumMap, json['state']),
+    startTime: json['startTime'] as String,
+    nominative: json['nominative'] as String,
+  );
 }
 
 Map<String, dynamic> _$RestaurantOrderModelToJson(
@@ -62,52 +63,65 @@ Map<String, dynamic> _$RestaurantOrderModelToJson(
   return val;
 }
 
-T _$enumDecode<T>(Map<T, dynamic> enumValues, dynamic source) {
+T _$enumDecode<T>(
+  Map<T, dynamic> enumValues,
+  dynamic source, {
+  T unknownValue,
+}) {
   if (source == null) {
     throw ArgumentError('A value must be provided. Supported values: '
         '${enumValues.values.join(', ')}');
   }
-  return enumValues.entries
-      .singleWhere((e) => e.value == source,
-          orElse: () => throw ArgumentError(
-              '`$source` is not one of the supported values: '
-              '${enumValues.values.join(', ')}'))
-      .key;
+
+  final value = enumValues.entries
+      .singleWhere((e) => e.value == source, orElse: () => null)
+      ?.key;
+
+  if (value == null && unknownValue == null) {
+    throw ArgumentError('`$source` is not one of the supported values: '
+        '${enumValues.values.join(', ')}');
+  }
+  return value ?? unknownValue;
 }
 
-T _$enumDecodeNullable<T>(Map<T, dynamic> enumValues, dynamic source) {
+T _$enumDecodeNullable<T>(
+  Map<T, dynamic> enumValues,
+  dynamic source, {
+  T unknownValue,
+}) {
   if (source == null) {
     return null;
   }
-  return _$enumDecode<T>(enumValues, source);
+  return _$enumDecode<T>(enumValues, source, unknownValue: unknownValue);
 }
 
-const _$StateCategoryEnumMap = <StateCategory, dynamic>{
+const _$StateCategoryEnumMap = {
   StateCategory.PENDING: 'PENDING',
   StateCategory.ACCEPTED: 'ACCEPTED',
   StateCategory.DELIVERED: 'DELIVERED',
   StateCategory.DENIED: 'DENIED',
   StateCategory.PICKED_UP: 'PICKED_UP',
-  StateCategory.CANCELLED: 'CANCELLED'
+  StateCategory.CANCELLED: 'CANCELLED',
 };
 
 UserOrderModel _$UserOrderModelFromJson(Map json) {
   return UserOrderModel(
-      path: json['path'] as String,
-      restaurantId: json['restaurantId'] as String,
-      driver: json['driver'] as String,
-      timeLeft: json['timeLeft'] as int,
-      isReviewed: json['isReviewed'] as bool,
-      uid: json['uid'] as String,
-      phone: json['phone'] as String,
-      day: json['day'] as String,
-      endTime: json['endTime'] as String,
-      products: (json['products'] as List)
-          ?.map((e) => e == null ? null : ProductCart.fromJson(e as Map))
-          ?.toList(),
-      timeR: json['timeR'] as String,
-      timeS: json['timeS'] as String,
-      state: _$enumDecodeNullable(_$StateCategoryEnumMap, json['state']));
+    path: json['path'] as String,
+    restaurantId: json['restaurantId'] as String,
+    driver: json['driver'] as String,
+    timeLeft: json['timeLeft'] as int,
+    isReviewed: json['isReviewed'] as bool,
+    uid: json['uid'] as String,
+    phone: json['phone'] as String,
+    day: json['day'] as String,
+    endTime: json['endTime'] as String,
+    products: (json['products'] as List)
+        ?.map((e) => e == null ? null : ProductCart.fromJson(e as Map))
+        ?.toList(),
+    timeR: json['timeR'] as String,
+    timeS: json['timeS'] as String,
+    state: _$enumDecodeNullable(_$StateCategoryEnumMap, json['state']),
+  );
 }
 
 Map<String, dynamic> _$UserOrderModelToJson(UserOrderModel instance) {

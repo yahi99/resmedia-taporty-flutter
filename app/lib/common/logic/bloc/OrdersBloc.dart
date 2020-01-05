@@ -44,11 +44,11 @@ class OrdersBloc implements Bloc {
         return categorized(
             StateCategory.values, models, (model) => model.state);
       });
-  Stream<Map<StateCategory, List<RestaurantOrderModel>>> get outCategorizedOrdersCtrl =>
-      outOrdersCtrl.map((models) {
-        return categorized(
-            StateCategory.values, models, (model) => model.state);
-      });
+  Stream<Map<StateCategory, List<RestaurantOrderModel>>>
+      get outCategorizedOrdersCtrl => outOrdersCtrl.map((models) {
+            return categorized(
+                StateCategory.values, models, (model) => model.state);
+          });
 
   void see() {}
 
@@ -63,19 +63,13 @@ class OrdersBloc implements Bloc {
     _userControl.listen(print);
   }
 
-  void setCtrlStream(){
-    _restaurantsControlMod=PublishController.catchStream(source: _db.getControlOrders());
+  void setCtrlStream() {
+    _restaurantsControlMod =
+        PublishController.catchStream(source: _db.getControlOrders());
     _restaurantsControlMod.listen(print);
   }
 
   void setRestaurantStream(String restId) async {
-    /*final user = UserBloc.of();
-    final restUser = await user.outFirebaseUser.first;
-    final restId = await _db.getRestaurantId(restUser.uid);
-
-     */
-    //final str=await _db.getRestaurantOrders(restUser.uid, restId).first;
-    //
     _restaurantsControl =
         PublishController.catchStream(source: _db.getRestaurantOrders(restId));
     _restaurantsControl.listen(print);

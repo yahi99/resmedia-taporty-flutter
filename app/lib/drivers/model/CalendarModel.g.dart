@@ -8,14 +8,15 @@ part of 'CalendarModel.dart';
 
 CalendarModel _$CalendarModelFromJson(Map json) {
   return CalendarModel(
-      path: json['path'] as String,
-      number: json['number'] as int,
-      isEmpty: json['isEmpty'] as bool,
-      startTime: json['startTime'] as String,
-      day: json['day'] as String,
-      endTime: json['endTime'] as String,
-      free: (json['free'] as List)?.map((e) => e as String)?.toList(),
-      occupied: (json['occupied'] as List)?.map((e) => e as String)?.toList());
+    path: json['path'] as String,
+    number: json['number'] as int,
+    isEmpty: json['isEmpty'] as bool,
+    startTime: json['startTime'] as String,
+    day: json['day'] as String,
+    endTime: json['endTime'] as String,
+    free: (json['free'] as List)?.map((e) => e as String)?.toList(),
+    occupied: (json['occupied'] as List)?.map((e) => e as String)?.toList(),
+  );
 }
 
 Map<String, dynamic> _$CalendarModelToJson(CalendarModel instance) {

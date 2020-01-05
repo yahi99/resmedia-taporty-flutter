@@ -14,7 +14,7 @@ description: Mobile app for Taporty
 version: 1.0.3+4
 
 environment:
-  sdk: ">=2.2.0 <3.0.0"
+  sdk: ">=2.2.2 <3.0.0"
 
 dependencies:
   flutter:

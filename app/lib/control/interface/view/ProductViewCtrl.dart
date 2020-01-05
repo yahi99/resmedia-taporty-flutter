@@ -38,8 +38,7 @@ class ProductViewCtrl extends StatelessWidget {
       builder: (_context) {
         final theme = Theme.of(context);
         return AlertDialog(
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(20))),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
           content: Wrap(
             alignment: WrapAlignment.center,
             runSpacing: SPACE * 2,
@@ -66,14 +65,7 @@ class ProductViewCtrl extends StatelessWidget {
                       ),
                       RaisedButton(
                         onPressed: () {
-                          Database()
-                              .deleteProduct(
-                                  model.id,
-                                  model.restaurantId,
-                                  model.path.contains('foods')
-                                      ? 'foods'
-                                      : 'drinks')
-                              .then((value) {
+                          Database().deleteProduct(model.id, model.restaurantId, model.path.contains('foods') ? 'foods' : 'drinks').then((value) {
                             Toast.show('Prodotto cancellato', context);
                             EasyRouter.pop(context);
                           });
@@ -127,15 +119,10 @@ class ProductViewCtrl extends StatelessWidget {
                         aspectRatio: 1,
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(16.0),
-                          child: (model.img.startsWith('assets'))
-                              ? Image.asset(
-                                  model.img,
-                                  fit: BoxFit.fitHeight,
-                                )
-                              : Image.network(
-                                  model.img,
-                                  fit: BoxFit.fitHeight,
-                                ),
+                          child: Image.network(
+                            model.img,
+                            fit: BoxFit.fitHeight,
+                          ),
                         ),
                       ),
                     ),
@@ -147,9 +134,7 @@ class ProductViewCtrl extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Flexible(
-                          child: Container(
-                              child: Text(model.id),
-                              width: MediaQuery.of(context).size.width * 2 / 5),
+                          child: Container(child: Text(model.id), width: MediaQuery.of(context).size.width * 2 / 5),
                         ),
                         Text('€ ${model.price}'),
                       ],

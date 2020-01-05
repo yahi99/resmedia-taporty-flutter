@@ -98,8 +98,8 @@ class _ConfirmState extends State<ConfirmPage>
         state.phone == null ||
         state.date == null ||
         state.time == null ||
-        state.fingerprint==null ||
-        state.uid==null) return false;
+        state.fingerprint == null ||
+        state.uid == null) return false;
     return true;
   }
 
@@ -118,8 +118,8 @@ class _ConfirmState extends State<ConfirmPage>
           appBar: AppBar(
             leading: IconButton(
               icon: Icon(Icons.arrow_back),
-              onPressed: (){
-                widget.controller.animateTo(widget.controller.index-1);
+              onPressed: () {
+                widget.controller.animateTo(widget.controller.index - 1);
               },
             ),
           ),
@@ -160,21 +160,22 @@ class _ConfirmState extends State<ConfirmPage>
                 onPressed: () {
                   if (valid(context)) {
                     final state = MyInheritedWidget.of(context);
-                    cartBloc.isAvailable(state.date, state.time,widget.model.id).then((user) {
-                      if (user != null) {
+                    cartBloc
+                        .isAvailable(state.date, state.time, widget.model.id)
+                        .then((driver) {
+                      if (driver != null) {
                         cartBloc
                             .signer(
-                          widget.model.id,
-                          user,
-                          widget.position,
-                          state.phone,
-                          widget.description.addressLine,
-                          state.time,
-                          state.endTime,
-                          state.fingerprint,
-                          state.date,
-                          state.name
-                        )
+                                widget.model.id,
+                                driver,
+                                widget.position,
+                                state.phone,
+                                widget.description.addressLine,
+                                state.time,
+                                state.endTime,
+                                state.fingerprint,
+                                state.date,
+                                state.name)
                             .then((isDone) {
                           RestaurantScreen.isOrdered = false;
                           Future.delayed(
@@ -202,6 +203,5 @@ class _ConfirmState extends State<ConfirmPage>
   }
 
   @override
-  
   bool get wantKeepAlive => true;
 }

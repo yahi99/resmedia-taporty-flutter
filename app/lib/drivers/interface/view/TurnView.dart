@@ -23,14 +23,28 @@ class TurnView extends StatelessWidget {
         IconSlideAction(
           icon: Icons.close,
           color: theme.accentColor,
-          onTap: () async{
+          onTap: () async {
             //TODO:DELETE TURN
-            final temp=model.endTime.split(':');
-            final date=DateTime.parse(model.day);
-            double difference=DateTime(date.year,date.month,date.day,int.parse(temp.elementAt(0)),int.parse(temp.elementAt(1))).difference(DateTime.now()).inSeconds/60/60;
+            final temp = model.endTime.split(':');
+            final date = DateTime.parse(model.day);
+            double difference = DateTime(
+                        date.year,
+                        date.month,
+                        date.day,
+                        int.parse(temp.elementAt(0)),
+                        int.parse(temp.elementAt(1)))
+                    .difference(DateTime.now())
+                    .inSeconds /
+                60 /
+                60;
             print(difference);
-            if(difference>0 && difference <48.0) Toast.show('Non puoi modificare turni nelle prossime 48 ore!', context, duration: 5);
-            if(difference >48) Database().removeShiftDriver(model.startTime, model.day, (await UserBloc.of().outUser.first).model.id);
+            if (difference > 0 && difference < 48.0)
+              Toast.show(
+                  'Non puoi modificare turni nelle prossime 48 ore!', context,
+                  duration: 5);
+            if (difference > 48)
+              Database().removeShiftDriver(model.startTime, model.day,
+                  (await UserBloc.of().outUser.first).model.id);
           },
         )
       ],
@@ -47,6 +61,7 @@ class TurnView extends StatelessWidget {
     );
   }
 }
+
 class TurnViewRest extends StatelessWidget {
   final TurnModel model;
 
@@ -62,13 +77,26 @@ class TurnViewRest extends StatelessWidget {
         IconSlideAction(
           icon: Icons.close,
           color: theme.accentColor,
-          onTap: () async{
-            //TODO:DELETE TURN
-            final temp=model.endTime.split(':');
-            final date=DateTime.parse(model.day);
-            double difference=DateTime(date.year,date.month,date.day,int.parse(temp.elementAt(0)),int.parse(temp.elementAt(1))).difference(DateTime.now()).inSeconds/60/60;
-            if(difference >48) Database().removeShiftRest(model.startTime, model.day, (await UserBloc.of().outUser.first).model.restaurantId);
-            if(difference>0 && difference <48.0) Toast.show('Non puoi modificare turni nelle prossime 48 ore!', context, duration: 5);
+          onTap: () async {
+            final temp = model.endTime.split(':');
+            final date = DateTime.parse(model.day);
+            double difference = DateTime(
+                        date.year,
+                        date.month,
+                        date.day,
+                        int.parse(temp.elementAt(0)),
+                        int.parse(temp.elementAt(1)))
+                    .difference(DateTime.now())
+                    .inSeconds /
+                60 /
+                60;
+            if (difference > 48)
+              Database().removeShiftRest(model.startTime, model.day,
+                  (await UserBloc.of().outUser.first).model.restaurantId);
+            if (difference > 0 && difference < 48.0)
+              Toast.show(
+                  'Non puoi modificare turni nelle prossime 48 ore!', context,
+                  duration: 5);
           },
         )
       ],

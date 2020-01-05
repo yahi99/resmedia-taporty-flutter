@@ -8,24 +8,23 @@ part of 'RestaurantModel.dart';
 
 RestaurantModel _$RestaurantModelFromJson(Map json) {
   return RestaurantModel(
-      path: json['path'] as String,
-      isDisabled: json['isDisabled'] as bool,
-      lunch: (json['lunch'] as Map)?.map(
-        (k, e) => MapEntry(k as String, e as String),
-      ),
-      dinner: (json['dinner'] as Map)?.map(
-        (k, e) => MapEntry(k as String, e as String),
-      ),
-      deliveryFee: (json['deliveryFee'] as num)?.toDouble(),
-      averageReviews: (json['averageReviews'] as num)?.toDouble(),
-      numberOfReviews: json['numberOfReviews'] as int,
-      title: json['title'] as String,
-      description: json['description'] as String,
-      type: json['type'] as String,
-      img: json['img'] as String,
-      lng: (json['lng'] as num)?.toDouble(),
-      lat: (json['lat'] as num)?.toDouble(),
-      km: (json['km'] as num)?.toDouble());
+    path: json['path'] as String,
+    name: json['name'] as String,
+    description: json['description'] as String,
+    coordinates: geopointFromJson(json['coordinates'] as Map<String, dynamic>),
+    deliveryRadius: (json['deliveryRadius'] as num)?.toDouble(),
+    holidays: (json['holidays'] as List)
+        ?.map((e) => e == null ? null : HolidayModel.fromJson(e as Map))
+        ?.toList(),
+    weekdayTimetable: (json['weekdayTimetable'] as Map)?.map(
+      (k, e) => MapEntry(int.parse(k as String),
+          e == null ? null : TimetableModel.fromJson(e as Map)),
+    ),
+    averageReviews: (json['averageReviews'] as num)?.toDouble(),
+    numberOfReviews: json['numberOfReviews'] as int,
+    isDisabled: json['isDisabled'] as bool,
+    imageUrl: json['imageUrl'] as String,
+  );
 }
 
 Map<String, dynamic> _$RestaurantModelToJson(RestaurantModel instance) {
@@ -38,18 +37,16 @@ Map<String, dynamic> _$RestaurantModelToJson(RestaurantModel instance) {
   }
 
   writeNotNull('path', instance.path);
-  val['title'] = instance.title;
+  val['name'] = instance.name;
   val['description'] = instance.description;
-  val['img'] = instance.img;
-  val['type'] = instance.type;
-  val['lat'] = instance.lat;
-  val['lng'] = instance.lng;
-  val['km'] = instance.km;
-  val['deliveryFee'] = instance.deliveryFee;
-  val['lunch'] = instance.lunch;
-  val['dinner'] = instance.dinner;
-  val['isDisabled'] = instance.isDisabled;
+  val['imageUrl'] = instance.imageUrl;
+  val['coordinates'] = geopointToJson(instance.coordinates);
+  val['deliveryRadius'] = instance.deliveryRadius;
+  val['holidays'] = instance.holidays?.map((e) => e?.toJson())?.toList();
+  val['weekdayTimetable'] = instance.weekdayTimetable
+      ?.map((k, e) => MapEntry(k.toString(), e?.toJson()));
   val['numberOfReviews'] = instance.numberOfReviews;
   val['averageReviews'] = instance.averageReviews;
+  val['isDisabled'] = instance.isDisabled;
   return val;
 }

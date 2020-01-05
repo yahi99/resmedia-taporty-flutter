@@ -79,8 +79,10 @@ class _TurnWorkTabDriverState extends State<ManageRestPage> {
           Row(
             children: <Widget>[
               Container(
-                child: Text(
-                    'Disabilitato: ' + ((widget.rest.isDisabled==null || !widget.rest.isDisabled) ? 'No' : 'Si')),
+                child: Text('Disabilitato: ' +
+                    ((widget.rest.isDisabled == null || !widget.rest.isDisabled)
+                        ? 'No'
+                        : 'Si')),
                 width: MediaQuery.of(context).size.width * 2 / 3,
                 padding: EdgeInsets.all(8.0),
               ),
@@ -297,7 +299,7 @@ class _TurnWorkTabDriverState extends State<ManageRestPage> {
                       } else {
                         uploadFile(path).then((path) async {
                           Database()
-                              .updateImg(
+                              .updateRestaurantImage(
                                   path,
                                   (await UserBloc.of().outUser.first)
                                       .model

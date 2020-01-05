@@ -10,8 +10,7 @@ class InfoRestaurantPage extends StatelessWidget {
   final RestaurantModel model;
   final String address;
 
-  InfoRestaurantPage({Key key, @required this.model, @required this.address})
-      : super(key: key);
+  InfoRestaurantPage({Key key, @required this.model, @required this.address}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -23,19 +22,13 @@ class InfoRestaurantPage extends StatelessWidget {
             children: <Widget>[
               AspectRatio(
                 aspectRatio: 1.5,
-                child: (model.img.startsWith('assets'))
-                    ? Image.asset(
-                        model.img,
-                        fit: BoxFit.fitHeight,
-                      )
-                    : Image.network(
-                        model.img,
-                        fit: BoxFit.fitHeight,
-                      ),
+                child: Image.network(
+                  model.imageUrl,
+                  fit: BoxFit.fitHeight,
+                ),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(
-                    vertical: SPACE, horizontal: SPACE * 2),
+                padding: const EdgeInsets.symmetric(vertical: SPACE, horizontal: SPACE * 2),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
@@ -60,14 +53,7 @@ class InfoRestaurantPage extends StatelessWidget {
                     SizedBox(height: 16),
                     InkWell(
                       child: Row(
-                        children: <Widget>[
-                          Icon(Icons.star),
-                          Icon(Icons.star),
-                          model.averageReviews != null
-                              ? Text(' ' + model.averageReviews.toString())
-                              : Container(),
-                          Text(' Buono')
-                        ],
+                        children: <Widget>[Icon(Icons.star), Icon(Icons.star), model.averageReviews != null ? Text(' ' + model.averageReviews.toString()) : Container(), Text(' Buono')],
                       ),
                       onTap: () {
                         EasyRouter.push(
@@ -78,17 +64,16 @@ class InfoRestaurantPage extends StatelessWidget {
                       },
                     ),
                     SizedBox(height: 16),
+                    /*
                     model.deliveryFee != null
                         ? Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              'Costo consegna:\n' +
-                                  model.deliveryFee.toString() +
-                                  '\n',
+                              'Costo consegna:\n' + model.deliveryFee.toString() + '\n',
                               style: theme.textTheme.overline,
                             ),
                           )
-                        : Container(),
+                        : Container(),*/
                   ],
                 ),
               ),

@@ -8,23 +8,23 @@ part of 'OrderModel.dart';
 
 DriverOrderModel _$DriverOrderModelFromJson(Map json) {
   return DriverOrderModel(
-      path: json['path'] as String,
-      phone: json['phone'] as String,
-      day: json['day'] as String,
-      startTime: json['startTime'] as String,
-      endTime: json['endTime'] as String,
-      titleR: json['titleR'] as String,
-      titleS: json['titleS'] as String,
-      addressS: json['addressS'] as String,
-      addressR: json['addressR'] as String,
-      timeS: json['timeS'] as String,
-      timeR: json['timeR'] as String,
-      latR: (json['latR'] as num)?.toDouble(),
-      lngR: (json['lngR'] as num)?.toDouble(),
-      state: _$enumDecodeNullable(_$StateCategoryEnumMap, json['state']),
-      uid: json['uid'] as String,
-      restId: json['restId'] as String)
-    ..nominative = json['nominative'] as String;
+    path: json['path'] as String,
+    phone: json['phone'] as String,
+    day: json['day'] as String,
+    startTime: json['startTime'] as String,
+    endTime: json['endTime'] as String,
+    titleR: json['titleR'] as String,
+    titleS: json['titleS'] as String,
+    addressS: json['addressS'] as String,
+    addressR: json['addressR'] as String,
+    timeS: json['timeS'] as String,
+    timeR: json['timeR'] as String,
+    latR: (json['latR'] as num)?.toDouble(),
+    lngR: (json['lngR'] as num)?.toDouble(),
+    state: _$enumDecodeNullable(_$StateCategoryEnumMap, json['state']),
+    uid: json['uid'] as String,
+    restId: json['restId'] as String,
+  )..nominative = json['nominative'] as String;
 }
 
 Map<String, dynamic> _$DriverOrderModelToJson(DriverOrderModel instance) {
@@ -56,31 +56,43 @@ Map<String, dynamic> _$DriverOrderModelToJson(DriverOrderModel instance) {
   return val;
 }
 
-T _$enumDecode<T>(Map<T, dynamic> enumValues, dynamic source) {
+T _$enumDecode<T>(
+  Map<T, dynamic> enumValues,
+  dynamic source, {
+  T unknownValue,
+}) {
   if (source == null) {
     throw ArgumentError('A value must be provided. Supported values: '
         '${enumValues.values.join(', ')}');
   }
-  return enumValues.entries
-      .singleWhere((e) => e.value == source,
-          orElse: () => throw ArgumentError(
-              '`$source` is not one of the supported values: '
-              '${enumValues.values.join(', ')}'))
-      .key;
+
+  final value = enumValues.entries
+      .singleWhere((e) => e.value == source, orElse: () => null)
+      ?.key;
+
+  if (value == null && unknownValue == null) {
+    throw ArgumentError('`$source` is not one of the supported values: '
+        '${enumValues.values.join(', ')}');
+  }
+  return value ?? unknownValue;
 }
 
-T _$enumDecodeNullable<T>(Map<T, dynamic> enumValues, dynamic source) {
+T _$enumDecodeNullable<T>(
+  Map<T, dynamic> enumValues,
+  dynamic source, {
+  T unknownValue,
+}) {
   if (source == null) {
     return null;
   }
-  return _$enumDecode<T>(enumValues, source);
+  return _$enumDecode<T>(enumValues, source, unknownValue: unknownValue);
 }
 
-const _$StateCategoryEnumMap = <StateCategory, dynamic>{
+const _$StateCategoryEnumMap = {
   StateCategory.PENDING: 'PENDING',
   StateCategory.ACCEPTED: 'ACCEPTED',
   StateCategory.DELIVERED: 'DELIVERED',
   StateCategory.DENIED: 'DENIED',
   StateCategory.PICKED_UP: 'PICKED_UP',
-  StateCategory.CANCELLED: 'CANCELLED'
+  StateCategory.CANCELLED: 'CANCELLED',
 };

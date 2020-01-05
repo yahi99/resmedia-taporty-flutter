@@ -11,9 +11,9 @@ import 'package:resmedia_taporty_flutter/drivers/logic/bloc/TurnBloc.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/OrdersBloc.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
 import 'package:resmedia_taporty_flutter/common/model/OrderModel.dart';
-import 'package:resmedia_taporty_flutter/restaurant/page/IncomeScreen.dart';
-import 'package:resmedia_taporty_flutter/restaurant/page/MenuPage.dart';
-import 'package:resmedia_taporty_flutter/restaurant/page/OrdersPage.dart';
+import 'package:resmedia_taporty_flutter/restaurant/interface/page/IncomeScreen.dart';
+import 'package:resmedia_taporty_flutter/restaurant/interface/page/MenuPage.dart';
+import 'package:resmedia_taporty_flutter/restaurant/interface/page/OrdersPage.dart';
 import 'package:resmedia_taporty_flutter/restaurant/interface/screen/EditRestScreen.dart';
 import 'package:resmedia_taporty_flutter/restaurant/interface/screen/TurnsScreen.dart';
 
@@ -28,7 +28,10 @@ class HomeScreen extends StatefulWidget implements WidgetRoute {
   @override
   String get route => ROUTE;
 
-  HomeScreen({@required this.restBloc, @required this.restId,@required this.remember});
+  HomeScreen(
+      {@required this.restBloc,
+      @required this.restId,
+      @required this.remember});
 
   @override
   _HomeScreenRestaurantState createState() => _HomeScreenRestaurantState();
@@ -39,7 +42,7 @@ class _HomeScreenRestaurantState extends State<HomeScreen> {
 
   BuildContext dialog;
 
-  var orderBloc;
+  OrdersBloc orderBloc;
 
   FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
@@ -92,7 +95,7 @@ class _HomeScreenRestaurantState extends State<HomeScreen> {
   @override
   void dispose() {
     print(widget.remember);
-    if(!widget.remember){
+    if (!widget.remember) {
       UserBloc.of().logout();
       LoginHelper().signOut();
     }
@@ -148,8 +151,7 @@ class _HomeScreenRestaurantState extends State<HomeScreen> {
               FlatButton(
                 child: Text('Listino'),
                 onPressed: () {
-                  EasyRouter.push(
-                      context, MenuPage(restBloc: widget.restBloc));
+                  EasyRouter.push(context, MenuPage(restBloc: widget.restBloc));
                 },
               ),
               FlatButton(

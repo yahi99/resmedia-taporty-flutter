@@ -22,15 +22,7 @@ class TimetableScreen extends StatefulWidget implements WidgetRoute {
 }
 
 class _HomeScreenRestaurantState extends State<TimetableScreen> {
-  List<String> days = [
-    'Lunedì',
-    'Martedì',
-    'Mercoledì',
-    'Giovedì',
-    'Venerdì',
-    'Sabato',
-    'Domenica'
-  ];
+  List<String> days = ['Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato', 'Domenica'];
 
   @override
   void dispose() {
@@ -65,60 +57,7 @@ class _HomeScreenRestaurantState extends State<TimetableScreen> {
             return Center(
               child: CircularProgressIndicator(),
             );
-          final lunch = snap.data.lunch;
-          final dinner = snap.data.dinner;
-          String times = '';
-          //lunch.values.element at doesn't work need to do a remove and get the element
-          for (int i = 0; i < days.length; i++) {
-            if (lunch == null && dinner != null) {
-              if (dinner.containsKey(days.elementAt(i))) {
-                times = times +
-                    days.elementAt(i) +
-                    ': ' +
-                    dinner.remove(days.elementAt(i)) +
-                    '\n';
-              } else
-                times = times + days.elementAt(i) + ': Chiuso\n';
-            } else if (lunch != null && dinner == null) {
-              if (lunch.containsKey(days.elementAt(i))) {
-                times = times +
-                    days.elementAt(i) +
-                    ': ' +
-                    lunch.remove(days.elementAt(i)) +
-                    '\n';
-              } else
-                times = times + days.elementAt(i) + ': Chiuso\n';
-            } else if (lunch == null && dinner == null)
-              times = times + days.elementAt(i) + ': Chiuso\n';
-            else if (lunch.containsKey(days.elementAt(i)) &&
-                dinner.containsKey(days.elementAt(i))) {
-              times = times +
-                  days.elementAt(i) +
-                  ': ' +
-                  lunch.remove(days.elementAt(i)) +
-                  ',' +
-                  dinner.remove(days.elementAt(i)) +
-                  '\n';
-            } else if (!lunch.containsKey(days.elementAt(i)) &&
-                dinner.containsKey(days.elementAt(i))) {
-              times = times +
-                  days.elementAt(i) +
-                  ': ' +
-                  dinner.remove(days.elementAt(i)) +
-                  '\n';
-            } else if (lunch.containsKey(days.elementAt(i)) &&
-                !dinner.containsKey(days.elementAt(i))) {
-              times = times +
-                  days.elementAt(i) +
-                  ': ' +
-                  lunch.remove(days.elementAt(i)) +
-                  '\n';
-            } else if (!lunch.containsKey(days.elementAt(i)) &&
-                !dinner.containsKey(days.elementAt(i))) {
-              times = times + days.elementAt(i) + ': Chiuso\n';
-            }
-          }
-          return Padding(child: Text(times), padding: EdgeInsets.all(8.0));
+          return Padding(child: Text(snap.data.getTimetableString()), padding: EdgeInsets.all(8.0));
         },
       ),
     );

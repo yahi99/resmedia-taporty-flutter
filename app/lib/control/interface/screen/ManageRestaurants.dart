@@ -31,8 +31,7 @@ class _LoginScreenState extends State<ManageRestaurants> {
       builder: (_context) {
         final theme = Theme.of(context);
         return AlertDialog(
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(20))),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
           content: Wrap(
             alignment: WrapAlignment.center,
             runSpacing: SPACE * 2,
@@ -60,9 +59,7 @@ class _LoginScreenState extends State<ManageRestaurants> {
                       RaisedButton(
                         onPressed: () {
                           EasyRouter.pop(context);
-                          CloudFunctions.instance.getHttpsCallable(functionName: 'deleteRestaurant').call({
-                            'restaurantId':restId
-                          }).then((isDone){
+                          CloudFunctions.instance.getHttpsCallable(functionName: 'deleteRestaurant').call({'restaurantId': restId}).then((isDone) {
                             Toast.show('Ristorante cancellato!', context);
                           });
                           //Database().deleteRestaurant(restId);
@@ -120,8 +117,7 @@ class _LoginScreenState extends State<ManageRestaurants> {
                         padding: EdgeInsets.all(8.0),
                       ),
                       onTap: () {
-                        final restBloc =
-                            RestaurantBloc.init(idRestaurant: rest.id);
+                        final restBloc = RestaurantBloc.init(idRestaurant: rest.id);
                         EasyRouter.push(
                             context,
                             ManageSpecificRestaurant(
@@ -162,20 +158,14 @@ class RestaurantView extends StatelessWidget {
       child: Stack(
         alignment: Alignment.bottomCenter,
         children: <Widget>[
-          (model.img.startsWith('assets'))
-              ? Image.asset(
-                  model.img,
-                  fit: BoxFit.fitHeight,
-                )
-              : Image.network(
-                  model.img,
-                  fit: BoxFit.fitHeight,
-                ),
+          Image.network(
+            model.imageUrl,
+            fit: BoxFit.fitHeight,
+          ),
           Container(
             color: Colors.black,
             child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+              padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
               child: DefaultTextStyle(
                 style: TextStyle(color: Colors.white),
                 child: Row(

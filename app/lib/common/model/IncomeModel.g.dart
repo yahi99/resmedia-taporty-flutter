@@ -8,10 +8,11 @@ part of 'IncomeModel.dart';
 
 IncomeModel _$IncomeModelFromJson(Map json) {
   return IncomeModel(
-      day: json['day'] as String,
-      dailyTotal: (json['dailyTotal'] as num)?.toDouble(),
-      totalTransactions: json['totalTransactions'] as int,
-      path: json['path'] as String);
+    day: json['day'] as String,
+    dailyTotal: (json['dailyTotal'] as num)?.toDouble(),
+    totalTransactions: json['totalTransactions'] as int,
+    path: json['path'] as String,
+  );
 }
 
 Map<String, dynamic> _$IncomeModelToJson(IncomeModel instance) {

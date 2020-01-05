@@ -31,12 +31,7 @@ class RestaurantListScreen extends StatefulWidget implements WidgetRoute {
   final Position position;
   final bool isAnonymous;
 
-  RestaurantListScreen(
-      {Key key,
-      @required this.user,
-      @required this.position,
-      @required this.isAnonymous})
-      : super(key: key);
+  RestaurantListScreen({Key key, @required this.user, @required this.position, @required this.isAnonymous}) : super(key: key);
 
   @override
   _RestaurantListScreenState createState() => _RestaurantListScreenState();
@@ -54,8 +49,7 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
   final UserBloc userBloc = UserBloc.of();
   final RestaurantsBloc _restaurantsBloc = RestaurantsBloc.instance();
 
-  void showNotification(
-      BuildContext context, Map<String, dynamic> message) async {
+  void showNotification(BuildContext context, Map<String, dynamic> message) async {
     print('Build dialog');
     showDialog(
       context: context,
@@ -92,10 +86,8 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
   }
 
   void iOSPermission() {
-    _firebaseMessaging.requestNotificationPermissions(
-        IosNotificationSettings(sound: true, badge: true, alert: true));
-    _firebaseMessaging.onIosSettingsRegistered
-        .listen((IosNotificationSettings settings) {
+    _firebaseMessaging.requestNotificationPermissions(IosNotificationSettings(sound: true, badge: true, alert: true));
+    _firebaseMessaging.onIosSettingsRegistered.listen((IosNotificationSettings settings) {
       print("Settings registered: $settings");
     });
   }
@@ -143,8 +135,7 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
       ),
       body: CacheStreamBuilder<List<RestaurantModel>>(
           stream: _restaurantsBloc.outRestaurants,
-          builder: (context,
-              AsyncSnapshot<List<RestaurantModel>> restaurantListSnapshot) {
+          builder: (context, AsyncSnapshot<List<RestaurantModel>> restaurantListSnapshot) {
             return StreamBuilder<User>(
               stream: UserBloc.of().outUser,
               builder: (context, userSnapshot) {
@@ -158,19 +149,14 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
                     return StreamBuilder(
                       stream: Database().getUser(userSnapshot.data.userFb),
                       builder: (context, userModelSnapshot) {
-                        if (restaurantListSnapshot.hasData &&
-                            userSnapshot.hasData &&
-                            userModelSnapshot.hasData) {
-                          if (userModelSnapshot.data.type != 'user' &&
-                              userModelSnapshot.data.type != null) {
+                        if (restaurantListSnapshot.hasData && userSnapshot.hasData && userModelSnapshot.hasData) {
+                          if (userModelSnapshot.data.type != 'user' && userModelSnapshot.data.type != null) {
                             return RaisedButton(
-                              child: Text(
-                                  'Sei stato disabilitato clicca per fare logout'),
+                              child: Text('Sei stato disabilitato clicca per fare logout'),
                               onPressed: () {
                                 UserBloc.of().logout();
                                 LoginHelper().signOut();
-                                EasyRouter.pushAndRemoveAll(
-                                    context, LoginScreen());
+                                EasyRouter.pushAndRemoveAll(context, LoginScreen());
                               },
                             );
                           }
@@ -178,9 +164,7 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
                           return SingleChildScrollView(
                             child: Padding(
                               padding: const EdgeInsets.all(16.0),
-                              child: _buildRestaurantListView(
-                                  restaurantListSnapshot.data,
-                                  searchBarSnapshot),
+                              child: _buildRestaurantListView(restaurantListSnapshot.data, searchBarSnapshot),
                             ),
                           );
                         }
@@ -204,17 +188,11 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
       itemCount: restaurantList.length,
       itemBuilder: (context, int index) {
         //final distance=Distance();
-        if (searchBarSnapshot.hasData &&
-            !restaurantList[index]
-                .id
-                .toLowerCase()
-                .contains(searchBarSnapshot.data.toLowerCase()))
-          return Container();
+        if (searchBarSnapshot.hasData && !restaurantList[index].id.toLowerCase().contains(searchBarSnapshot.data.toLowerCase())) return Container();
         var stream;
         if (restaurantList[index].getPos() != null && widget.position != null) {
           final LatLng start = restaurantList[index].getPos();
-          final LatLng end =
-              LatLng(widget.position.latitude, widget.position.longitude);
+          final LatLng end = LatLng(widget.position.latitude, widget.position.longitude);
           stream = userBloc.getDistance(start, end).asStream();
           // TODO: Rimuovere l'else che permette un comportamento scorretto.
         } else
@@ -225,8 +203,7 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
               if (!snap.hasData) return Container();
               // TODO: Ripristinare a tempo debito.
               // if(snap.data/1000<restaurantList[index].km) {
-              if (restaurantList[index].isDisabled != null &&
-                  restaurantList[index].isDisabled) return Container();
+              if (restaurantList[index].isDisabled != null && restaurantList[index].isDisabled) return Container();
               return Padding(
                 padding: const EdgeInsets.symmetric(vertical: 4.0),
                 child: InkWell(
@@ -234,10 +211,7 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
                     EasyRouter.push(
                       context,
                       RestaurantScreen(
-                        address: (await Geocoder.local
-                                .findAddressesFromCoordinates(new Coordinates(
-                                    restaurantList[index].lat,
-                                    restaurantList[index].lng)))
+                        address: (await Geocoder.local.findAddressesFromCoordinates(new Coordinates(restaurantList[index].coordinates.latitude, restaurantList[index].coordinates.longitude)))
                             .first
                             .addressLine,
                         position: widget.position,
@@ -277,55 +251,21 @@ class RestaurantView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //print(model.id);
-    //if (!model.img.startsWith('assets')) downloadFile(model.img);
-    String times;
-    String day = toDay(DateTime.now().weekday);
-    print(model.lunch.toString() + '\n' + model.dinner.toString());
-    print(day);
-    if (model.lunch == null && model.dinner == null)
-      times = 'Chiuso';
-    else if (model.lunch == null && model.dinner != null) {
-      if (model.dinner.containsKey(day)) {
-        times = model.dinner.remove(day);
-      } else
-        times = 'Chiuso';
-    } else if (model.lunch != null && model.dinner == null) {
-      if (model.lunch.containsKey(day)) {
-        times = model.lunch.remove(day);
-      } else
-        times = 'Chiuso';
-    } else if (model.lunch != null && model.dinner != null) {
-      if (model.lunch.containsKey(day) && model.dinner.containsKey(day)) {
-        times = model.lunch.remove(day) + '\n' + model.dinner.remove(day);
-      } else if (model.lunch.containsKey(day) &&
-          !model.dinner.containsKey(day)) {
-        times = model.lunch.remove(day);
-      } else if (!model.lunch.containsKey(day) &&
-          model.dinner.containsKey(day)) {
-        times = model.dinner.remove(day);
-      } else
-        times = 'Chiuso';
-    }
+    String times = model.getTimetableString();
+
     return ClipRRect(
       borderRadius: BorderRadius.circular(8.0),
       child: Stack(
         alignment: Alignment.bottomCenter,
         children: <Widget>[
-          (model.img.startsWith('assets'))
-              ? Image.asset(
-                  model.img,
-                  fit: BoxFit.fitHeight,
-                )
-              : Image.network(
-                  model.img,
-                  fit: BoxFit.fitHeight,
-                ),
+          Image.network(
+            model.imageUrl,
+            fit: BoxFit.fitHeight,
+          ),
           Container(
             color: Colors.black,
             child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+              padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
               child: DefaultTextStyle(
                 style: TextStyle(color: Colors.white),
                 child: Row(
@@ -333,7 +273,7 @@ class RestaurantView extends StatelessWidget {
                   children: <Widget>[
                     DefaultTextStyle(
                       style: TextStyle(fontSize: 20),
-                      child: Text("${model.id}"),
+                      child: Text("${model.name}"),
                     ),
                     Row(
                       mainAxisSize: MainAxisSize.min,

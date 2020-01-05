@@ -58,236 +58,258 @@ class AccountScreenDriver extends StatelessWidget implements WidgetRoute {
       body: StreamBuilder<User>(
         stream: user.outUser,
         builder: (ctx, snap) {
-    if(!snap.hasData) return Center(child: CircularProgressIndicator(),);
-    return StreamBuilder(
-    stream: Database().getUser(snap.data.userFb),
-    builder: (ctx, model) {
-      if (snap.hasData && model.hasData) {
-        if (model.data.type != 'user' && model.data.type != null) {
-          return RaisedButton(
-            child: Text('Sei stato disabilitato clicca per fare logout'),
-            onPressed: () {
-              UserBloc.of().logout();
-              LoginHelper().signOut();
-              EasyRouter.pushAndRemoveAll(
-                  context, LoginScreen());
-              //UserBloc.close();
-            },
-          );
-        }
-        print(snap.data.model.isDriver);
-        //var temp = snap.data.model.nominative.split(' ');
-        return Column(
-          children: <Widget>[
-            Stack(
-              alignment: Alignment.topCenter,
-              children: <Widget>[
-                AspectRatio(
-                  aspectRatio: 3,
-                  child: Image.asset(
-                    "assets/img/home/etnici.png",
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                StreamBuilder<UserModel>(
-                  stream: Database().getUserImg(snap.data.model.id),
-                  builder: (ctx, img) {
-                    if (!img.hasData)
-                      return Center(child: CircularProgressIndicator(),);
-                    return Padding(
-                      padding: EdgeInsets.only(top: 25.0),
-                      child: Container(
-                        width: 190.0,
-                        height: 190.0,
-                        child: Container(
-                          width: double.infinity,
-                          height: double.infinity,
-                          child: (img.data.img != null)
-                              ? CircleAvatar(
-                              backgroundImage: CachedNetworkImageProvider(
-                                  img.data.img))
-                              : CircleAvatar(
-                            backgroundColor: Colors.black,
+          if (!snap.hasData)
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          return StreamBuilder(
+              stream: Database().getUser(snap.data.userFb),
+              builder: (ctx, model) {
+                if (snap.hasData && model.hasData) {
+                  if (model.data.type != 'user' && model.data.type != null) {
+                    return RaisedButton(
+                      child:
+                          Text('Sei stato disabilitato clicca per fare logout'),
+                      onPressed: () {
+                        UserBloc.of().logout();
+                        LoginHelper().signOut();
+                        EasyRouter.pushAndRemoveAll(context, LoginScreen());
+                        //UserBloc.close();
+                      },
+                    );
+                  }
+                  print(snap.data.model.isDriver);
+                  //var temp = snap.data.model.nominative.split(' ');
+                  return Column(
+                    children: <Widget>[
+                      Stack(
+                        alignment: Alignment.topCenter,
+                        children: <Widget>[
+                          AspectRatio(
+                            aspectRatio: 3,
+                            child: Image.asset(
+                              "assets/img/home/etnici.png",
+                              fit: BoxFit.cover,
+                            ),
                           ),
+                          StreamBuilder<UserModel>(
+                            stream:
+                                Database().getUserModelById(snap.data.model.id),
+                            builder: (ctx, img) {
+                              if (!img.hasData)
+                                return Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              return Padding(
+                                padding: EdgeInsets.only(top: 25.0),
+                                child: Container(
+                                  width: 190.0,
+                                  height: 190.0,
+                                  child: Container(
+                                    width: double.infinity,
+                                    height: double.infinity,
+                                    child: (img.data.img != null)
+                                        ? CircleAvatar(
+                                            backgroundImage:
+                                                CachedNetworkImageProvider(
+                                                    img.data.img))
+                                        : CircleAvatar(
+                                            backgroundColor: Colors.black,
+                                          ),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(top: 25.0, left: 140.0),
+                            child: IconButton(
+                              iconSize: 50.0,
+                              icon: Icon(
+                                Icons.camera_alt,
+                                color: Colors.white,
+                              ),
+                              onPressed: () async {
+                                ImagePicker.pickImage(
+                                        source: ImageSource.camera)
+                                    .then((file) {
+                                  if (file != null) {
+                                    uploadFile(file.path).then((path) async {
+                                      Database()
+                                          .updateUserImage(
+                                              path,
+                                              snap.data.model.id,
+                                              snap.data.model.img)
+                                          .then((value) {
+                                        Toast.show('Cambiato!', context,
+                                            duration: 3);
+                                      });
+                                    });
+                                  } else {
+                                    Toast.show(
+                                        'Devi scegliere un\'immagine!', context,
+                                        duration: 3);
+                                  }
+                                }).catchError((error) {
+                                  if (error is PlatformException) {
+                                    if (error.code == 'photo_access_denied')
+                                      Toast.show(
+                                          'Devi garantire accesso alle immagini!',
+                                          context,
+                                          duration: 3);
+                                  }
+                                });
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(top: 8.0),
+                      ),
+                      snap.data.model.nominative != null
+                          ? Text(snap.data.model.nominative)
+                          : Container(),
+                      (snap.data.model.lat != null &&
+                              snap.data.model.lng != null)
+                          ? StreamBuilder<List<Address>>(
+                              stream: Geocoder.local
+                                  .findAddressesFromCoordinates(Coordinates(
+                                      snap.data.model.lat, snap.data.model.lng))
+                                  .asStream(),
+                              builder: (ctx, loc) {
+                                if (loc.hasData)
+                                  return Text(loc.data.first.addressLine);
+                                return Container();
+                              },
+                            )
+                          : Container(),
+                      const Divider(
+                        color: Colors.grey,
+                      ),
+                      Expanded(
+                        child: ListViewSeparated(
+                          separator: const Divider(
+                            color: Colors.grey,
+                          ),
+                          children: <Widget>[
+                            (snap.data.model.email != null)
+                                ? Text(
+                                    snap.data.model.email,
+                                    style: theme.textTheme.subhead,
+                                  )
+                                : Container(),
+                            Row(
+                              children: <Widget>[
+                                Icon(Icons.directions_car),
+                                FlatButton(
+                                  child: Text('Diventa un Fattorino',
+                                      style: theme.textTheme.subhead),
+                                  onPressed: () => {
+                                    EasyRouter.push(
+                                        context, BecomeDriverScreen())
+                                  },
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: <Widget>[
+                                Icon(Icons.directions_car),
+                                FlatButton(
+                                  child: Text('Diventa un ristoratore',
+                                      style: theme.textTheme.subhead),
+                                  onPressed: () => {
+                                    EasyRouter.push(
+                                        context, BecomeRestaurantScreen())
+                                  },
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: <Widget>[
+                                Icon(Icons.shopping_cart),
+                                FlatButton(
+                                  child: Text('Lista ordini',
+                                      style: theme.textTheme.subhead),
+                                  onPressed: () async {
+                                    await OrdersBloc.of().setUserStream();
+                                    EasyRouter.push(context, OrderListScreen());
+                                  },
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: <Widget>[
+                                Icon(Icons.insert_drive_file),
+                                FlatButton(
+                                  child: Text('Note legali',
+                                      style: theme.textTheme.subhead),
+                                  onPressed: () => {
+                                    EasyRouter.push(context, LegalNotesScreen())
+                                  },
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: <Widget>[
+                                Icon(Icons.lock_outline),
+                                FlatButton(
+                                  child: Text('Cambia password',
+                                      style: theme.textTheme.subhead),
+                                  onPressed: () => {
+                                    EasyRouter.push(
+                                        context, ChangePasswordScreen())
+                                  },
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: <Widget>[
+                                Icon(Icons.settings),
+                                FlatButton(
+                                  child: Text('Settings',
+                                      style: theme.textTheme.subhead),
+                                  onPressed: () => {
+                                    EasyRouter.push(context, SettingsScreen())
+                                  },
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: <Widget>[
+                                Icon(Icons.settings),
+                                FlatButton(
+                                    child: Text('Log Out',
+                                        style: theme.textTheme.subhead),
+                                    onPressed: () {
+                                      user.logout().then((onValue) {
+                                        LoginHelper().signOut();
+                                        EasyRouter.pushAndRemoveAll(
+                                            context, LoginScreen());
+                                        //UserBloc.close();
+                                      });
+                                    }),
+                              ],
+                            ),
+                          ].map((child) {
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: SPACE * 2),
+                              child: child,
+                            );
+                          }).toList(),
                         ),
                       ),
-                    );
-                  },
-                ),
-                Padding(
-                  padding: EdgeInsets.only(top: 25.0, left: 140.0),
-                  child: IconButton(
-                    iconSize: 50.0,
-                    icon: Icon(Icons.camera_alt, color: Colors.white,),
-                    onPressed: () async {
-                      ImagePicker.pickImage(source: ImageSource.camera)
-                          .then((file) {
-                        if (file != null) {
-                          uploadFile(file.path).then((path) async {
-                            Database()
-                                .updateAccountImg(
-                                path,
-                                snap.data.model.id, snap.data.model.img)
-                                .then((value) {
-                              Toast.show('Cambiato!', context, duration: 3);
-                            });
-                          });
-                        } else {
-                          Toast.show('Devi scegliere un\'immagine!', context,
-                              duration: 3);
-                        }
-                      }).catchError((error) {
-                        if (error is PlatformException) {
-                          if (error.code == 'photo_access_denied')
-                            Toast.show(
-                                'Devi garantire accesso alle immagini!',
-                                context,
-                                duration: 3);
-                        }
-                      });
-                    },
-                  ),
-                ),
-              ],
-            ),
-            Padding(
-              padding: EdgeInsets.only(top: 8.0),
-            ),
-            snap.data.model.nominative!=null?Text(snap.data.model.nominative):Container(),
-
-            (snap.data.model.lat != null && snap.data.model.lng != null)
-                ? StreamBuilder<List<Address>>(
-              stream: Geocoder.local
-                  .findAddressesFromCoordinates(
-                  Coordinates(snap.data.model.lat, snap.data.model.lng))
-                  .asStream(),
-              builder: (ctx, loc) {
-                if (loc.hasData) return Text(loc.data.first.addressLine);
-                return Container();
-              },
-            )
-                : Container(),
-            const Divider(
-              color: Colors.grey,
-            ),
-            Expanded(
-              child: ListViewSeparated(
-                separator: const Divider(
-                  color: Colors.grey,
-                ),
-                children: <Widget>[
-                  (snap.data.model.email != null) ? Text(
-                    snap.data.model.email,
-                    style: theme.textTheme.subhead,
-                  ) : Container(),
-                  Row(
-                    children: <Widget>[
-                      Icon(Icons.directions_car),
-                      FlatButton(
-                        child: Text('Diventa un Fattorino',
-                            style: theme.textTheme.subhead),
-                        onPressed: () =>
-                        {EasyRouter.push(context, BecomeDriverScreen())},
+                      const Divider(
+                        color: Colors.grey,
                       ),
                     ],
-                  ),
-                  Row(
-                    children: <Widget>[
-                      Icon(Icons.directions_car),
-                      FlatButton(
-                        child: Text('Diventa un ristoratore',
-                            style: theme.textTheme.subhead),
-                        onPressed: () =>
-                        {
-                          EasyRouter.push(context, BecomeRestaurantScreen())
-                        },
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: <Widget>[
-                      Icon(Icons.shopping_cart),
-                      FlatButton(
-                        child: Text('Lista ordini',
-                            style: theme.textTheme.subhead),
-                        onPressed: () async {
-                          await OrdersBloc.of().setUserStream();
-                          EasyRouter.push(context, OrderListScreen());
-                        },
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: <Widget>[
-                      Icon(Icons.insert_drive_file),
-                      FlatButton(
-                        child: Text('Note legali',
-                            style: theme.textTheme.subhead),
-                        onPressed: () =>
-                        {EasyRouter.push(context, LegalNotesScreen())},
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: <Widget>[
-                      Icon(Icons.lock_outline),
-                      FlatButton(
-                        child: Text('Cambia password',
-                            style: theme.textTheme.subhead),
-                        onPressed: () =>
-                        {
-                          EasyRouter.push(context, ChangePasswordScreen())
-                        },
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: <Widget>[
-                      Icon(Icons.settings),
-                      FlatButton(
-                        child:
-                        Text('Settings', style: theme.textTheme.subhead),
-                        onPressed: () =>
-                        {EasyRouter.push(context, SettingsScreen())},
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: <Widget>[
-                      Icon(Icons.settings),
-                      FlatButton(
-                          child:
-                          Text('Log Out', style: theme.textTheme.subhead),
-                          onPressed: () {
-                            user.logout().then((onValue) {
-                              LoginHelper().signOut();
-                              EasyRouter.pushAndRemoveAll(
-                                  context, LoginScreen());
-                              //UserBloc.close();
-                            });
-                          }),
-                    ],
-                  ),
-                ].map((child) {
-                  return Padding(
-                    padding:
-                    const EdgeInsets.symmetric(horizontal: SPACE * 2),
-                    child: child,
                   );
-                }).toList(),
-              ),
-            ),
-            const Divider(
-              color: Colors.grey,
-            ),
-          ],
-        );
-      }
-      return Center(
-        child: CircularProgressIndicator(),
-      );
-    }
-    );
+                }
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              });
         },
       ),
     );

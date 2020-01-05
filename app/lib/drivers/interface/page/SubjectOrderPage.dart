@@ -22,9 +22,7 @@ class SubjectOrderPageDriver extends StatefulWidget implements WidgetRoute {
   final bool isRest;
   final LatLng userPos;
 
-  SubjectOrderPageDriver(
-      {Key key, this.model, this.orderModel, this.isRest, this.userPos})
-      : super(key: key);
+  SubjectOrderPageDriver({Key key, this.model, this.orderModel, this.isRest, this.userPos}) : super(key: key);
 
   @override
   _SubjectOrderPageDriverState createState() => _SubjectOrderPageDriverState();
@@ -55,17 +53,14 @@ class _SubjectOrderPageDriverState extends State<SubjectOrderPageDriver> {
       context: context,
       builder: (_context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(20))),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
           content: Wrap(
             alignment: WrapAlignment.center,
             runSpacing: SPACE * 2,
             children: <Widget>[
               Column(
                 children: <Widget>[
-                  Text((state == 'PICKED_UP')
-                      ? 'Sei sicuro di avere ritirato il pacco?'
-                      : 'Sei sicuro di aver consegnato il pacco?'),
+                  Text((state == 'PICKED_UP') ? 'Sei sicuro di avere ritirato il pacco?' : 'Sei sicuro di aver consegnato il pacco?'),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
@@ -80,12 +75,7 @@ class _SubjectOrderPageDriverState extends State<SubjectOrderPageDriver> {
                         onPressed: () async {
                           EasyRouter.pop(context);
                           print(widget.orderModel);
-                          Database().updateState(
-                              state,
-                              widget.orderModel.uid,
-                              widget.orderModel.id,
-                              widget.orderModel.restId,
-                              (await UserBloc.of().outUser.first).model.id);
+                          Database().updateState(state, widget.orderModel.uid, widget.orderModel.id, widget.orderModel.restId, (await UserBloc.of().outUser.first).model.id);
                         },
                       ),
                     ],
@@ -207,22 +197,12 @@ class _SubjectOrderPageDriverState extends State<SubjectOrderPageDriver> {
                       color: cls.secondaryVariant,
                       onPressed: () async {
                         //TODO: qui và modificata la mappa mettendo il percorso
-                        final restModel =
-                            (await Database().getPos(widget.orderModel.restId));
-                        final restPos = LatLng(restModel.lat, restModel.lng);
-                        final driverPos = (await Geolocator()
-                            .getCurrentPosition(
-                                desiredAccuracy: LocationAccuracy.high));
-                        final driverLat =
-                            LatLng(driverPos.latitude, driverPos.longitude);
+                        final restModel = (await Database().getPos(widget.orderModel.restId));
+                        final restPos = LatLng(restModel.coordinates.latitude, restModel.coordinates.longitude);
+                        final driverPos = (await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.high));
+                        final driverLat = LatLng(driverPos.latitude, driverPos.longitude);
 
-                        routeBloc.getRouteTo(
-                            driverLat,
-                            widget.isRest
-                                ? restPos
-                                : LatLng(widget.orderModel.latR,
-                                    widget.orderModel.lngR),
-                            context);
+                        routeBloc.getRouteTo(driverLat, widget.isRest ? restPos : LatLng(widget.orderModel.latR, widget.orderModel.lngR), context);
                       },
                       child: Text(
                         "Start",
@@ -236,8 +216,7 @@ class _SubjectOrderPageDriverState extends State<SubjectOrderPageDriver> {
                   Expanded(
                     child: RaisedButton(
                       onPressed: () {
-                        _askPermission(
-                            context, widget.isRest ? 'PICKED_UP' : 'DELIVERED');
+                        _askPermission(context, widget.isRest ? 'PICKED_UP' : 'DELIVERED');
                       },
                       child: Text(
                         widget.isRest ? "Ritirato" : "Consegnato",

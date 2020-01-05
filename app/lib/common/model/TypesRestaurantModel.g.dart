@@ -8,7 +8,9 @@ part of 'TypesRestaurantModel.dart';
 
 TypesRestaurantModel _$TypesRestaurantModelFromJson(Map json) {
   return TypesRestaurantModel(
-      path: json['path'] as String, img: json['img'] as String);
+    path: json['path'] as String,
+    img: json['img'] as String,
+  );
 }
 
 Map<String, dynamic> _$TypesRestaurantModelToJson(

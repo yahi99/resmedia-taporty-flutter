@@ -42,8 +42,11 @@ class OrdersPageState extends State<OrdersPage> {
                 physics: NeverScrollableScrollPhysics(),
                 itemCount: widget.list.length,
                 itemBuilder: (context, index) {
-                  return TypeOrderView(
-                    model: widget.list[index],
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TypeOrderView(
+                      model: widget.list[index],
+                    ),
                   );
                 },
               ),

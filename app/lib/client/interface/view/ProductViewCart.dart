@@ -15,13 +15,7 @@ class ProductViewCart extends StatelessWidget {
   final bool update;
   final String category;
 
-  ProductViewCart(
-      {Key key,
-      @required this.cartController,
-      @required this.model,
-      @required this.update,
-      @required this.category})
-      : super(key: key);
+  ProductViewCart({Key key, @required this.cartController, @required this.model, @required this.update, @required this.category}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -38,19 +32,16 @@ class ProductViewCart extends StatelessWidget {
               return Center(
                 child: CircularProgressIndicator(),
               );
-            var temp = snapshot.data
-                .getProduct(model.id, model.restaurantId, snap.data.uid);
-            if (temp == null || temp.countProducts == 0)
-              return const SizedBox();
+            var temp = snapshot.data.getProduct(model.id, model.restaurantId, snap.data.uid);
+            if (temp == null || temp.countProducts == 0) return const SizedBox();
             final theme = Theme.of(context);
             /*if(update){
               cartController.inRemove(temp.id, temp.restaurantId, temp.userId);
             }*/
-            final product=cart.getProduct(model.id, model.restaurantId, snap.data.uid);
-            if (product!=null && product.delete) {
-              print(product.id+'  '+product.delete.toString()+'  cart');
-              cartController.inRemove(
-                  model.id, model.restaurantId, snap.data.uid);
+            final product = cart.getProduct(model.id, model.restaurantId, snap.data.uid);
+            if (product != null && product.delete) {
+              print(product.id + '  ' + product.delete.toString() + '  cart');
+              cartController.inRemove(model.id, model.restaurantId, snap.data.uid);
             }
             return Slidable(
               actionPane: SlidableDrawerActionPane(),
@@ -61,8 +52,7 @@ class ProductViewCart extends StatelessWidget {
                   icon: Icons.close,
                   onTap: () async {
                     final userId = (await UserBloc.of().outUser.first).model.id;
-                    cartController.inRemove(
-                        model.id, model.restaurantId, userId);
+                    cartController.inRemove(model.id, model.restaurantId, userId);
                   },
                 ),
               ],
@@ -81,10 +71,7 @@ class ProductViewCart extends StatelessWidget {
                               aspectRatio: 1,
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(16.0),
-                                child: (model.img.startsWith('assets'))?Image.asset(
-                                  model.img,
-                                  fit: BoxFit.fitHeight,
-                                ):Image.network(
+                                child: Image.network(
                                   model.img,
                                   fit: BoxFit.fitHeight,
                                 ),
@@ -98,32 +85,26 @@ class ProductViewCart extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
-                              Flexible(child:Container(child: Text(model.id),width: MediaQuery.of(context).size.width*2/5),),
+                              Flexible(
+                                child: Container(child: Text(model.id), width: MediaQuery.of(context).size.width * 2 / 5),
+                              ),
                               Text('€ ${model.price}'),
                             ],
                           ),
                         ],
                       ),
                       StepperButton(
-                        direction: Axis.vertical,
-                        child: Text(
-                            '${cart.getProduct(model.id, model.restaurantId, snap.data.uid)?.countProducts ?? 0}'),
-                        onDecrease: () => cartController.inDecrease(
-                            model.id, model.restaurantId, snap.data.uid),
-                        onIncrement: () {
-                          if(model.number!=null && int.parse(model.number)<=cart.getProduct(model.id, model.restaurantId, snap.data.uid)?.countProducts)
-                            Toast.show('Limite massimo prodotti',context,duration: 3);
-                          else {
-                            Vibration.vibrate(duration: 65);
-                            cartController.inIncrement(
-                                model.id,
-                                model.restaurantId,
-                                snap.data.uid,
-                                double.parse(model.price.replaceAll(',', '.')),
-                                category);
-                          }
-                        }
-                      ),
+                          direction: Axis.vertical,
+                          child: Text('${cart.getProduct(model.id, model.restaurantId, snap.data.uid)?.countProducts ?? 0}'),
+                          onDecrease: () => cartController.inDecrease(model.id, model.restaurantId, snap.data.uid),
+                          onIncrement: () {
+                            if (model.number != null && int.parse(model.number) <= cart.getProduct(model.id, model.restaurantId, snap.data.uid)?.countProducts)
+                              Toast.show('Limite massimo prodotti', context, duration: 3);
+                            else {
+                              Vibration.vibrate(duration: 65);
+                              cartController.inIncrement(model.id, model.restaurantId, snap.data.uid, double.parse(model.price.replaceAll(',', '.')), category);
+                            }
+                          }),
                     ],
                   ),
                 ),

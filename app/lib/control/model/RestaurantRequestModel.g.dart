@@ -8,16 +8,17 @@ part of 'RestaurantRequestModel.dart';
 
 RestaurantRequestModel _$RestaurantRequestModelFromJson(Map json) {
   return RestaurantRequestModel(
-      path: json['path'] as String,
-      lat: (json['lat'] as num)?.toDouble(),
-      address: json['address'] as String,
-      prodType: json['prodType'] as String,
-      img: json['img'] as String,
-      partitaIva: json['partitaIva'] as String,
-      tipoEsercizio: json['tipoEsercizio'] as String,
-      km: (json['km'] as num)?.toDouble(),
-      ragioneSociale: json['ragioneSociale'] as String,
-      lng: (json['lng'] as num)?.toDouble());
+    path: json['path'] as String,
+    lat: (json['lat'] as num)?.toDouble(),
+    address: json['address'] as String,
+    prodType: json['prodType'] as String,
+    img: json['img'] as String,
+    partitaIva: json['partitaIva'] as String,
+    tipoEsercizio: json['tipoEsercizio'] as String,
+    km: (json['km'] as num)?.toDouble(),
+    ragioneSociale: json['ragioneSociale'] as String,
+    lng: (json['lng'] as num)?.toDouble(),
+  );
 }
 
 Map<String, dynamic> _$RestaurantRequestModelToJson(

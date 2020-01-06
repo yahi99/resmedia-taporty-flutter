@@ -6,19 +6,20 @@ part of 'ProductModel.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-FoodModel _$FoodModelFromJson(Map json) {
-  return FoodModel(
+ProductModel _$ProductModelFromJson(Map json) {
+  return ProductModel(
     path: json['path'] as String,
-    img: json['img'] as String,
-    isDisabled: json['isDisabled'] as bool,
-    price: json['price'] as String,
-    category: _$enumDecodeNullable(_$FoodCategoryEnumMap, json['category']),
+    name: json['name'] as String,
+    price: (json['price'] as num)?.toDouble(),
+    maxQuantity: json['maxQuantity'] as int,
+    type: json['type'] as String,
+    category: categoryFromJson(json['category'] as String),
     restaurantId: json['restaurantId'] as String,
-    number: json['number'] as String,
+    imageUrl: json['imageUrl'] as String,
   );
 }
 
-Map<String, dynamic> _$FoodModelToJson(FoodModel instance) {
+Map<String, dynamic> _$ProductModelToJson(ProductModel instance) {
   final val = <String, dynamic>{};
 
   void writeNotNull(String key, dynamic value) {
@@ -28,95 +29,12 @@ Map<String, dynamic> _$FoodModelToJson(FoodModel instance) {
   }
 
   writeNotNull('path', instance.path);
+  writeNotNull('name', instance.name);
   writeNotNull('price', instance.price);
-  writeNotNull('img', instance.img);
-  writeNotNull('category', _$FoodCategoryEnumMap[instance.category]);
+  writeNotNull('imageUrl', instance.imageUrl);
+  writeNotNull('maxQuantity', instance.maxQuantity);
+  writeNotNull('type', instance.type);
+  writeNotNull('category', categoryToJson(instance.category));
   writeNotNull('restaurantId', instance.restaurantId);
-  writeNotNull('number', instance.number);
-  writeNotNull('isDisabled', instance.isDisabled);
   return val;
 }
-
-T _$enumDecode<T>(
-  Map<T, dynamic> enumValues,
-  dynamic source, {
-  T unknownValue,
-}) {
-  if (source == null) {
-    throw ArgumentError('A value must be provided. Supported values: '
-        '${enumValues.values.join(', ')}');
-  }
-
-  final value = enumValues.entries
-      .singleWhere((e) => e.value == source, orElse: () => null)
-      ?.key;
-
-  if (value == null && unknownValue == null) {
-    throw ArgumentError('`$source` is not one of the supported values: '
-        '${enumValues.values.join(', ')}');
-  }
-  return value ?? unknownValue;
-}
-
-T _$enumDecodeNullable<T>(
-  Map<T, dynamic> enumValues,
-  dynamic source, {
-  T unknownValue,
-}) {
-  if (source == null) {
-    return null;
-  }
-  return _$enumDecode<T>(enumValues, source, unknownValue: unknownValue);
-}
-
-const _$FoodCategoryEnumMap = {
-  FoodCategory.APPETIZER: 'APPETIZER',
-  FoodCategory.FIRST_COURSES: 'FIRST_COURSES',
-  FoodCategory.MAIN_COURSES: 'MAIN_COURSES',
-  FoodCategory.SEAFOOD_MENU: 'SEAFOOD_MENU',
-  FoodCategory.MEAT_MENU: 'MEAT_MENU',
-  FoodCategory.SIDE_DISH: 'SIDE_DISH',
-  FoodCategory.DESERT: 'DESERT',
-  FoodCategory.DRINK: 'DRINK',
-  FoodCategory.WINE: 'WINE',
-  FoodCategory.ALCOHOLIC: 'ALCOHOLIC',
-  FoodCategory.COFFEE: 'COFFEE',
-};
-
-DrinkModel _$DrinkModelFromJson(Map json) {
-  return DrinkModel(
-    path: json['path'] as String,
-    category: _$enumDecodeNullable(_$DrinkCategoryEnumMap, json['category']),
-    isDisabled: json['isDisabled'] as bool,
-    img: json['img'] as String,
-    price: json['price'] as String,
-    restaurantId: json['restaurantId'] as String,
-    number: json['number'] as String,
-  );
-}
-
-Map<String, dynamic> _$DrinkModelToJson(DrinkModel instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('path', instance.path);
-  writeNotNull('price', instance.price);
-  writeNotNull('category', _$DrinkCategoryEnumMap[instance.category]);
-  writeNotNull('img', instance.img);
-  writeNotNull('restaurantId', instance.restaurantId);
-  writeNotNull('number', instance.number);
-  writeNotNull('isDisabled', instance.isDisabled);
-  return val;
-}
-
-const _$DrinkCategoryEnumMap = {
-  DrinkCategory.DRINK: 'DRINK',
-  DrinkCategory.WINE: 'WINE',
-  DrinkCategory.ALCOHOLIC: 'ALCOHOLIC',
-  DrinkCategory.COFFEE: 'COFFEE',
-};

@@ -1,13 +1,9 @@
 library easy_blocs;
 
-
 export 'src/cart/Cart.dart';
-export 'src/cart/CartBloc.dart';
 export 'src/cart/CartController.dart';
 export 'src/cart/CartStorage.dart';
 export 'src/cart/CounterProductCart.dart';
-
-
 
 export 'src/checker/checkers/AddressChecker.dart';
 export 'src/checker/checkers/Checker.dart';
@@ -34,8 +30,6 @@ export 'src/checker/widget/PhoneNumberField.dart';
 export 'src/checker/widget/RememberMeField.dart';
 export 'src/checker/widget/StringField.dart';
 export 'src/checker/widget/SubmitButton.dart';
-
-
 
 export 'src/connector/PageConnector.dart';
 
@@ -67,4 +61,3 @@ export 'src/translator/Widgets.dart';
 
 export 'package:easy_blocs/src/rxdart_extension/Controller.dart';
 export 'src/json.dart';
-

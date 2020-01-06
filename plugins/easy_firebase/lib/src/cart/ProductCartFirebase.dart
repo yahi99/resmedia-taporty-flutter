@@ -11,42 +11,26 @@ class ProductCartFirebase extends PartialDocumentModel implements ProductCart {
   final String restaurantId;
   final String userId;
   final double price;
-  final String category;
+  final String type;
   final bool delete;
 
-  ProductCartFirebase({String id, this.countProducts,this.delete,this.restaurantId, this.userId,this.price,this.category}) : super(id);
+  ProductCartFirebase({String id, this.countProducts, this.delete, this.restaurantId, this.userId, this.price, this.type}) : super(id);
 
   ProductCart decrease() {
-    return copyWith(countProducts: countProducts-1);
+    return copyWith(countProducts: countProducts - 1);
   }
 
   ProductCart increment() {
-    return copyWith(countProducts: countProducts+1);
+    return copyWith(countProducts: countProducts + 1);
   }
 
-  ProductCartFirebase deleteItem(bool delete){
-    return ProductCartFirebase(
-        id: id,
-        restaurantId:restaurantId,
-        countProducts: countProducts,
-        userId: userId,
-        price: price,
-        category: category,
-        delete: delete
-    );
+  ProductCartFirebase deleteItem(bool delete) {
+    return ProductCartFirebase(id: id, restaurantId: restaurantId, countProducts: countProducts, userId: userId, price: price, type: type, delete: delete);
   }
 
   @override
   ProductCartFirebase copyWith({int countProducts}) {
-    return ProductCartFirebase(
-      id: id,
-      restaurantId:restaurantId,
-      countProducts: countProducts,
-      userId: userId,
-      price: price,
-      category: category,
-      delete: delete
-    );
+    return ProductCartFirebase(id: id, restaurantId: restaurantId, countProducts: countProducts, userId: userId, price: price, type: type, delete: delete);
   }
 
   String toString() => "ProductCartFirebase(id: $id, countProducts: $countProducts, restaurantId: $restaurantId, userId: $userId)";
@@ -54,5 +38,6 @@ class ProductCartFirebase extends PartialDocumentModel implements ProductCart {
   static ProductCartFirebase fromJson(Map json) {
     return _$ProductCartFirebaseFromJson(json);
   }
-    Map<String, dynamic> toJson() => _$ProductCartFirebaseToJson(this);
+
+  Map<String, dynamic> toJson() => _$ProductCartFirebaseToJson(this);
 }

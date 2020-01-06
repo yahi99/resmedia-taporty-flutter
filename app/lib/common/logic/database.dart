@@ -13,10 +13,6 @@ import 'package:geocoder/model.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server/gmail.dart';
-import 'package:resmedia_taporty_flutter/control/model/ControlUsersModel.dart';
-import 'package:resmedia_taporty_flutter/control/model/DriverRequestModel.dart';
-import 'package:resmedia_taporty_flutter/control/model/ProductRequestModel.dart';
-import 'package:resmedia_taporty_flutter/control/model/RestaurantRequestModel.dart';
 import 'package:resmedia_taporty_flutter/data/collections.dart' as collections;
 import 'package:resmedia_taporty_flutter/drivers/model/CalendarModel.dart';
 import 'package:resmedia_taporty_flutter/drivers/model/OrderModel.dart';
@@ -246,17 +242,6 @@ class Database extends FirebaseDatabase with MixinFirestoreStripeProvider, Resta
     return 'ok';
   }
 
-  Future<void> updateProductImage(String path, FoodModel model) async {
-    //TODO delete previous image
-    final previous = model.img;
-    await fs.collection('restaurants').document(model.restaurantId).collection(model.path.contains('foods') ? 'foods' : 'drinks').document(model.id).updateData({'img': path});
-    try {
-      _deleteFile(previous.split('/').last.split('?').first);
-    } catch (e) {
-      print(e.toString());
-    }
-  }
-
   Future<void> deleteProduct(String product, String restId, String type) async {
     //TODO delete image
     await fs.collection('restaurants').document(restId).collection(type).document(product).delete();
@@ -290,130 +275,12 @@ class Database extends FirebaseDatabase with MixinFirestoreStripeProvider, Resta
     }
   }
 
-  Future<void> archiveProduct(ProductRequestModel model) async {
-    await fs
-        .collection('archived_product_requests')
-        .document(model.id)
-        .setData({'img': model.img, 'category': model.category, 'price': model.price, 'quantity': model.quantity, 'restaurantId': model.restaurantId, 'cat': model.cat});
-    await fs.collection('product_requests').document(model.id).delete();
-  }
-
-  Future<void> deleteProductRequest(ProductRequestModel model) async {
-    await fs.collection('archived_product_requests').document(model.id).delete();
-  }
-
-  Future<void> deleteDriverRequest(DriverRequestModel model) async {
-    await fs.collection('archived_driver_requests').document(model.id).delete();
-  }
-
-  Future<void> deleteRestaurantRequest(RestaurantRequestModel model) async {
-    await fs.collection('archived_restaurant_requests').document(model.id).delete();
-  }
-
   void saveToken(String fcmToken, String uid) async {
     var tokens = fs.collection('users').document(uid).collection('tokens').document(fcmToken);
     await tokens.setData({
       'token': fcmToken,
       'createdAt': FieldValue.serverTimestamp(), // optional
       'platform': Platform.operatingSystem // optional
-    });
-  }
-
-  Future<void> addProduct(ProductRequestModel model) async {
-    await fs.collection(collections.RESTAURANTS).document(model.restaurantId).collection(model.cat).document(model.title).setData({
-      'img': model.img,
-      'category': model.category,
-      'price': model.price,
-      'number': model.quantity,
-      'restaurantId': model.restaurantId,
-      'isDisabled': false,
-    });
-    //await fs.collection('food_categories').document(model.category).setData({'translation':model.category});
-    await fs.collection('product_requests').document(model.id).delete();
-  }
-
-  //TODO
-  Future<void> addDriver(DriverRequestModel model) async {
-    await fs.collection(collections.USERS).document(model.id).updateData({
-      'km': model.km,
-      'lat': model.lat,
-      'lng': model.lng,
-      'type': 'driver',
-    });
-    //await fs.collection('users').document(model.id).updateData({'type':'driver'});
-    await fs.collection('driver_requests').document(model.id).delete();
-    final mail = UserModel.fromFirebase(await fs.collection('users').document(model.id).get()).email;
-    String user = 'taporty.app@gmail.com';
-    String password = 'pwtaporty';
-    final smtpServer = gmail(user, password);
-    final message = Message()
-      ..from = address.Address(user, 'Taporty Team')
-      ..recipients.add(mail)
-      ..subject = 'Richiesta fattorino accettata'
-      ..text = 'La tua richiesta di diventare un fattorino è stata accettata.\n Team Taporty';
-    try {
-      final sendReport = await send(message, smtpServer);
-      print('Message sent: ' + sendReport.toString());
-    } on MailerException catch (e) {
-      print(e.message);
-    }
-  }
-
-  Future<void> changeStatus(ProductModel model) async {
-    await fs
-        .collection('restaurants')
-        .document(model.restaurantId)
-        .collection(model.path.contains('foods') ? 'foods' : 'drinks')
-        .document(model.id)
-        .updateData({'isDisabled': model.isDisabled ? false : true});
-  }
-
-  Future<void> changeStatusRest(RestaurantModel model) async {
-    await fs.collection('restaurants').document(model.id).updateData({'isDisabled': ((model.isDisabled == null || !model.isDisabled) ? true : false)});
-  }
-
-  Future<void> updateTimeLeft(String uid, String oid, int timeLeft) async {
-    await fs.collection('users').document(uid).collection('user_orders').document(oid).updateData({'timeLeft': timeLeft});
-  }
-
-  Future<void> addRestaurant(RestaurantRequestModel model) async {
-    await fs.collection(collections.RESTAURANTS).document(model.ragioneSociale).setData({
-      'km': model.km,
-      'lat': model.lat,
-      'lng': model.lng,
-      'img': model.img,
-      'partitaIva': model.partitaIva,
-      'prodType': model.prodType,
-      'tipoEsercizio': model.tipoEsercizio,
-      'address': model.address,
-      'id': model.id,
-      'lunch': Map<String, String>(),
-      'dinner': Map<String, String>()
-    });
-    await fs.collection(collections.USERS).document(model.id).updateData({'restaurantId': model.ragioneSociale, 'type': 'restaurant'});
-    //await fs.collection('food_categories').document(model.category).setData({'translation':model.category});
-    await fs.collection('restaurant_requests').document(model.id).delete();
-    final mail = UserModel.fromFirebase(await fs.collection('users').document(model.id).get()).email;
-    String user = 'taporty.app@gmail.com';
-    String password = 'pwtaporty';
-    final smtpServer = gmail(user, password);
-    final message = Message()
-      ..from = address.Address(user, 'Taporty Team')
-      ..recipients.add(mail)
-      ..subject = 'Richiesta ristorante accettata'
-      ..text = 'La tua richiesta di diventare un ristoratore è stata accettata.\n Team Taporty';
-    try {
-      final sendReport = await send(message, smtpServer);
-      print('Message sent: ' + sendReport.toString());
-    } on MailerException catch (e) {
-      print(e.message);
-    }
-  }
-
-  Stream<List<UserModel>> getUsersModel() {
-    final data = fs.collection('users').where('type', isEqualTo: 'restaurants').snapshots();
-    return data.map((query) {
-      return query.documents.map((snap) => UserModel.fromFirebase(snap)).toList();
     });
   }
 
@@ -469,145 +336,6 @@ class Database extends FirebaseDatabase with MixinFirestoreStripeProvider, Resta
     temp.remove(driver);
     await fs.collection('days').document(day).collection('times').document(startTime).updateData({'free': temp});
     return true;
-  }
-
-  Future<bool> addShift(String startTime, String endTime, String day, String number, String restId) async {
-    final id = await fs.collection('days').document(day).collection('times').document(startTime).get();
-    final rest = await fs.collection('days').document(day).collection('times').document(startTime).collection('restaurant_turns').document(restId).get();
-    final days = await fs.collection('days').document(day).get();
-    //already tried to insert!!!
-    print(id.exists);
-    print(rest.exists);
-    final month = DateTime.tryParse(day).month.toString();
-    if (id.exists && rest.exists) return true;
-    if (!days.exists) await fs.collection('days').document(day).setData({});
-    //no data for this time and day
-    if (!id.exists) {
-      //await fs.collection('days').document(day).setData({});
-      await fs.collection('days').document(day).collection('times').document(startTime).setData({
-        'startTime': startTime,
-        'endTime': endTime,
-        'day': day,
-        'number': int.tryParse(number),
-        'isEmpty': true,
-        'free': [''],
-        'occupied': [''],
-      });
-      await fs
-          .collection('restaurants')
-          .document(restId)
-          .collection('turns')
-          .document(day + '§' + startTime)
-          .setData({'startTime': startTime, 'endTime': endTime, 'day': day, 'year': DateTime.tryParse(day).year, 'month': monthNameFromNumber(int.parse(month))});
-      //fails if somehow there is data on this time and date but no document for startTime
-      await fs.collection('days').document(day).collection('times').document(startTime).collection('restaurant_turns').document(restId).setData({
-        'startTime': startTime,
-        'endTime': endTime,
-        'day': day,
-        'number': int.tryParse(number),
-        'isEmpty': true,
-        'free': [''],
-        'occupied': [''],
-      });
-      return false;
-    }
-    //id present so we update the start time document and add the restaurant document, which fails in case that it is present
-    final model = CalendarModel.fromFirebase(id);
-    fs.collection('days').document(day).collection('times').document(startTime).updateData({
-      'startTime': startTime,
-      'endTime': endTime,
-      'day': day,
-      'number': model.number + int.tryParse(number),
-      'isEmpty': model.isEmpty,
-      'free': model.free,
-      'occupied': model.occupied,
-    });
-    await fs
-        .collection('restaurants')
-        .document(restId)
-        .collection('turns')
-        .document(day + '§' + startTime)
-        .setData({'startTime': startTime, 'endTime': endTime, 'day': day, 'month': monthNameFromNumber(int.parse(month))});
-    fs.collection('days').document(day).collection('times').document(startTime).collection('restaurant_turns').document(restId).setData({
-      'startTime': startTime,
-      'endTime': endTime,
-      'day': day,
-      'number': int.tryParse(number),
-      'isEmpty': true,
-      'free': [''],
-      'occupied': [''],
-    });
-    return false;
-  }
-
-  Future<void> deleteRestaurant(String restId) async {
-    //TODO we need to delete everything in the collections inside plus the images stored
-    await fs.collection('restaurants').document(restId).delete();
-  }
-
-  Future<void> upgradeToDriver({@required String uid, @required codiceFiscale, @required address, @required km, @required car, @required exp, @required Position pos, @required nominative}) async {
-    //await fs.collection(cl.USERS).document(uid).updateData({'isDriver':true});
-    await fs
-        .collection('driver_requests')
-        .document(uid)
-        .setData({'codiceFiscale': codiceFiscale, 'address': address, 'km': km, 'mezzo': car, 'experience': exp, 'lat': pos.latitude, 'lng': pos.longitude, 'nominative': nominative});
-  }
-
-  Future<void> archiveDriver(DriverRequestModel model) async {
-    //await fs.collection(cl.USERS).document(uid).updateData({'isDriver':true});
-    await fs.collection('archived_driver_requests').document(model.id).setData({
-      'codiceFiscale': model.codiceFiscale,
-      'address': model.address,
-      'km': model.km,
-      'mezzo': model.mezzo,
-      'experience': model.experience,
-      'lat': model.lat,
-      'lng': model.lng,
-      'nominative': model.nominative
-    });
-    await fs.collection('driver_requests').document(model.id).delete();
-  }
-
-  Future<void> upgradeToVendor(
-      {@required String uid,
-      @required String img,
-      @required Position pos,
-      @required double cop,
-      @required rid,
-      @required ragSociale,
-      @required partitaIva,
-      @required address,
-      @required eseType,
-      @required prodType}) async {
-    //await fs.collection(cl.USERS).document(uid).updateData({'restaurantId':rid});
-    await fs.collection('restaurant_requests').document(uid).setData(
-        {'img': img, 'lat': pos.latitude, 'lng': pos.longitude, 'km': cop, 'ragioneSociale': ragSociale, 'partitaIva': partitaIva, 'address': address, 'tipoEsercizio': eseType, 'prodType': prodType});
-  }
-
-  Future<void> archiveVendor(RestaurantRequestModel model) async {
-    //await fs.collection(cl.USERS).document(uid).updateData({'restaurantId':rid});
-    await fs.collection('archived_restaurant_requests').document(model.id).setData({
-      'img': model.img,
-      'lat': model.lat,
-      'lng': model.lng,
-      'km': model.km,
-      'ragioneSociale': model.ragioneSociale,
-      'partitaIva': model.partitaIva,
-      'address': model.address,
-      'tipoEsercizio': model.tipoEsercizio,
-      'prodType': model.prodType
-    });
-    await fs.collection('restaurant_requests').document(model.id).delete();
-  }
-
-  Future<void> editUser(String id, String type) async {
-    await fs.collection('users').document(id).updateData({'type': type});
-  }
-
-  Stream<FoodModel> getProduct(ProductModel model) {
-    return fs.collection('restaurants').document(model.restaurantId).collection(((model.path.contains('foods')) ? 'foods' : 'drinks')).document(model.id).snapshots().map((snap) {
-      return FoodModel.fromFirebase(snap);
-    });
   }
 
   Future<void> createOrder(
@@ -679,13 +407,6 @@ class Database extends FirebaseDatabase with MixinFirestoreStripeProvider, Resta
       ..['isPaid'] = false
       ..['isReviewed'] = false);
   }
-
-  /*Future<void> updateState({@required String uid, @required Cart model}) async {
-    final old=fs.collection(cl.RESTAURANTS).document(model.products.first.restaurantId).collection(cl.ORDERS).document('id').get();
-    await fs.collection(cl.RESTAURANTS).document(model.products.first.restaurantId).collection(cl.ORDERS).document('id').updateData(data).add(
-        model.toJson()..['restaurantId']=model.products.first.restaurantId..['time']=DateTime.now().toString()
-          ..['state']='In Accettazione');
-  }*/
 
   Stream<UserModel> getUser(FirebaseUser user) {
     return fs.collection(collections.USERS).document(user.uid).snapshots().map((snap) {
@@ -843,74 +564,28 @@ class Database extends FirebaseDatabase with MixinFirestoreStripeProvider, Resta
     });
   }
 
-  Stream<List<ProductRequestModel>> getRequests() {
-    final data = fs.collection('product_requests').snapshots();
-    return data.map((query) {
-      return query.documents.map((snap) => ProductRequestModel.fromFirebase(snap)).toList();
-    });
+  Future<void> upgradeToDriver({@required String uid, @required codiceFiscale, @required address, @required km, @required car, @required exp, @required Position pos, @required nominative}) async {
+    //await fs.collection(cl.USERS).document(uid).updateData({'isDriver':true});
+    await fs
+        .collection('driver_requests')
+        .document(uid)
+        .setData({'codiceFiscale': codiceFiscale, 'address': address, 'km': km, 'mezzo': car, 'experience': exp, 'lat': pos.latitude, 'lng': pos.longitude, 'nominative': nominative});
   }
 
-  Future<void> updateDescription(String description, String restId) async {
-    await fs.collection('restaurants').document(restId).updateData({'description': description});
-  }
-
-  Stream<List<ProductRequestModel>> getArchivedRequests() {
-    final data = fs.collection('archived_product_requests').snapshots();
-    return data.map((query) {
-      return query.documents.map((snap) => ProductRequestModel.fromFirebase(snap)).toList();
-    });
-  }
-
-  Stream<List<UserModel>> getUsersControl() {
-    final data = fs.collection('users').snapshots();
-    return data.map((query) {
-      return query.documents.map((snap) => UserModel.fromFirebase(snap)).toList();
-    });
-  }
-
-  Stream<List<UserModel>> getAdminsControl() {
-    final data = fs.collection('users').where('type', isEqualTo: 'control').snapshots();
-    return data.map((query) {
-      return query.documents.map((snap) => UserModel.fromFirebase(snap)).toList();
-    });
-  }
-
-  Stream<List<DriverRequestModel>> getDriverRequests() {
-    final data = fs.collection('driver_requests').snapshots();
-    return data.map((query) {
-      return query.documents.map((snap) => DriverRequestModel.fromFirebase(snap)).toList();
-    });
-  }
-
-  Stream<List<DriverRequestModel>> getArchivedDriverRequests() {
-    final data = fs.collection('archived_driver_requests').snapshots();
-    return data.map((query) {
-      return query.documents.map((snap) => DriverRequestModel.fromFirebase(snap)).toList();
-    });
-  }
-
-  Stream<List<RestaurantRequestModel>> getRestaurantRequests() {
-    final data = fs.collection('restaurant_requests').snapshots();
-    return data.map((query) {
-      return query.documents.map((snap) => RestaurantRequestModel.fromFirebase(snap)).toList();
-    });
-  }
-
-  Stream<List<RestaurantRequestModel>> getArchivedRestaurantRequests() {
-    final data = fs.collection('archived_restaurant_requests').snapshots();
-    return data.map((query) {
-      return query.documents.map((snap) => RestaurantRequestModel.fromFirebase(snap)).toList();
-    });
-  }
-
-  Future<String> getRestaurantFromUserId(String uid) async {
-    final res = await fs.collection(collections.USERS).document(uid).get();
-    final data = res.data;
-    return UserModel.fromJson(res.data).restaurantId;
-  }
-
-  Future<String> getUserNominativeFromId(String uid) async {
-    return UserModel.fromFirebase(await fs.collection(collections.USERS).document(uid).get()).nominative;
+  Future<void> upgradeToVendor(
+      {@required String uid,
+      @required String img,
+      @required Position pos,
+      @required double cop,
+      @required rid,
+      @required ragSociale,
+      @required partitaIva,
+      @required address,
+      @required eseType,
+      @required prodType}) async {
+    //await fs.collection(cl.USERS).document(uid).updateData({'restaurantId':rid});
+    await fs.collection('restaurant_requests').document(uid).setData(
+        {'img': img, 'lat': pos.latitude, 'lng': pos.longitude, 'km': cop, 'ragioneSociale': ragSociale, 'partitaIva': partitaIva, 'address': address, 'tipoEsercizio': eseType, 'prodType': prodType});
   }
 
   Future<RestaurantModel> getPos(String restId) async {
@@ -924,32 +599,10 @@ class Database extends FirebaseDatabase with MixinFirestoreStripeProvider, Resta
     await fs.collection('control_orders').document(oid).updateData({'state': state});
   }
 
-  Future<void> givePermission(String uid, String type) async {
-    await fs.collection(collections.USERS).document(uid).updateData({'type': (type == 'control') ? 'user' : 'control'});
-    if (type != 'control') {
-      final users = (await ControlUsersModel.fromFirebase(await fs.collection('control_users').document('users').get())).users;
-      users.add(uid);
-      await fs.collection('control_users').document('users').updateData({'users': users});
-    } else {
-      final users = (await ControlUsersModel.fromFirebase(await fs.collection('control_users').document('users').get())).users;
-      users.remove(uid);
-      await fs.collection('control_users').document('users').updateData({'users': users});
-    }
-  }
-
-  Future<CalendarModel> getUsers(String date, String time) async {
+  Future<CalendarModel> getDrivers(String date, String time) async {
     final res = await fs.collection(collections.DAYS).document(date).collection(collections.TIMES).document(time).get();
     //final data=res.data;
     return CalendarModel.fromJson(res.data);
-  }
-
-  Future<void> updateOrderDriver(RestaurantOrderModel model, String driver) async {
-    final orderDriver = await fs.collection('users').document(model.driver).collection('driver_orders').document(model.id).get();
-    await fs.collection('users').document(model.driver).collection('driver_orders').document(model.id).delete();
-    await fs.collection('users').document(driver).collection('driver_orders').document(model.id).setData(orderDriver.data);
-    await fs.collection('users').document(model.uid).collection('user_orders').document(model.id).updateData({'driver': driver});
-    await fs.collection('control_orders').document(model.id).updateData({'driver': driver});
-    await fs.collection('restaurants').document(model.restaurantId).collection('restaurant_orders').document(model.id).updateData({'driver': driver});
   }
 
   Future<void> occupyDriver(String date, String time, List<String> free, List<String> occupied, String restId, String did) async {

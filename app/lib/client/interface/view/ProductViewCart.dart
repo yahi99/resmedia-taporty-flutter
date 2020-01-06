@@ -12,10 +12,8 @@ import 'package:vibration/vibration.dart';
 class ProductViewCart extends StatelessWidget {
   final CartController cartController;
   final ProductModel model;
-  final bool update;
-  final String category;
 
-  ProductViewCart({Key key, @required this.cartController, @required this.model, @required this.update, @required this.category}) : super(key: key);
+  ProductViewCart({Key key, @required this.cartController, @required this.model}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -35,9 +33,6 @@ class ProductViewCart extends StatelessWidget {
             var temp = snapshot.data.getProduct(model.id, model.restaurantId, snap.data.uid);
             if (temp == null || temp.countProducts == 0) return const SizedBox();
             final theme = Theme.of(context);
-            /*if(update){
-              cartController.inRemove(temp.id, temp.restaurantId, temp.userId);
-            }*/
             final product = cart.getProduct(model.id, model.restaurantId, snap.data.uid);
             if (product != null && product.delete) {
               print(product.id + '  ' + product.delete.toString() + '  cart');
@@ -72,7 +67,7 @@ class ProductViewCart extends StatelessWidget {
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(16.0),
                                 child: Image.network(
-                                  model.img,
+                                  model.imageUrl,
                                   fit: BoxFit.fitHeight,
                                 ),
                               ),
@@ -86,9 +81,9 @@ class ProductViewCart extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
                               Flexible(
-                                child: Container(child: Text(model.id), width: MediaQuery.of(context).size.width * 2 / 5),
+                                child: Container(child: Text(model.name), width: MediaQuery.of(context).size.width * 2 / 5),
                               ),
-                              Text('€ ${model.price}'),
+                              Text('€ ${model.price.toStringAsFixed(2)}'),
                             ],
                           ),
                         ],
@@ -98,11 +93,11 @@ class ProductViewCart extends StatelessWidget {
                           child: Text('${cart.getProduct(model.id, model.restaurantId, snap.data.uid)?.countProducts ?? 0}'),
                           onDecrease: () => cartController.inDecrease(model.id, model.restaurantId, snap.data.uid),
                           onIncrement: () {
-                            if (model.number != null && int.parse(model.number) <= cart.getProduct(model.id, model.restaurantId, snap.data.uid)?.countProducts)
+                            if (model.maxQuantity != 0 && model.maxQuantity <= cart.getProduct(model.id, model.restaurantId, snap.data.uid)?.countProducts)
                               Toast.show('Limite massimo prodotti', context, duration: 3);
                             else {
                               Vibration.vibrate(duration: 65);
-                              cartController.inIncrement(model.id, model.restaurantId, snap.data.uid, double.parse(model.price.replaceAll(',', '.')), category);
+                              cartController.inIncrement(model.id, model.restaurantId, snap.data.uid, model.price, model.type);
                             }
                           }),
                     ],

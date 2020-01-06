@@ -4,6 +4,7 @@ import 'package:dash/dash.dart';
 import 'package:easy_blocs/easy_blocs.dart';
 import 'package:easy_firebase/easy_firebase.dart';
 import 'package:flutter/widgets.dart';
+import 'package:resmedia_taporty_flutter/common/resources/RestaurantProvider.dart';
 import 'package:resmedia_taporty_flutter/generated/provider.dart';
 import 'package:resmedia_taporty_flutter/common/logic/database.dart';
 import 'package:resmedia_taporty_flutter/common/model/ProductModel.dart';
@@ -13,14 +14,15 @@ import 'package:rxdart/rxdart.dart';
 
 class RestaurantBloc implements Bloc {
   final _db = Database();
+  final _restaurantProvider = RestaurantProvider();
 
   @protected
   dispose() {
     _restaurantController?.close();
+    _productsController?.close();
     _foodsController?.close();
     _drinksController?.close();
-    _foodsControllerCtrl?.close();
-    _drinksControllerCtrl?.close();
+    _restaurantReviewController.close();
   }
 
   BehaviorSubject<RestaurantModel> _restaurantController;
@@ -31,32 +33,28 @@ class RestaurantBloc implements Bloc {
 
   Stream<List<ReviewModel>> get outRestaurantReview => _restaurantReviewController.stream;
 
-  BehaviorSubject<List<FoodModel>> _foodsController;
+  BehaviorSubject<List<ProductModel>> _productsController;
 
-  Stream<List<FoodModel>> get outFoods => _foodsController;
+  Stream<List<ProductModel>> get outProducts => _productsController;
 
-  BehaviorSubject<List<FoodModel>> _foodsControllerCtrl;
-
-  Stream<List<FoodModel>> get outFoodsCtrl => _foodsControllerCtrl;
-
-  Stream<Map<FoodCategory, List<FoodModel>>> get outCategorizedFoods =>
-      outFoods.map((models) {
-        return categorized(
-            FoodCategory.values, models, (model) => model.category);
+  Stream<Map<ProductCategory, List<ProductModel>>> get outProductsByCategory => outProducts.map((models) {
+        return categorized(ProductCategory.values, models, (model) => model.category);
       });
 
-  BehaviorSubject<List<DrinkModel>> _drinksController;
+  BehaviorSubject<List<ProductModel>> _foodsController;
 
-  Stream<List<DrinkModel>> get outDrinks => _drinksController.stream;
+  Stream<List<ProductModel>> get outFoods => _foodsController;
 
-  BehaviorSubject<List<DrinkModel>> _drinksControllerCtrl;
+  Stream<Map<ProductCategory, List<ProductModel>>> get outFoodsByCategory => outFoods.map((models) {
+        return categorized(ProductCategory.values, models, (model) => model.category);
+      });
 
-  Stream<List<DrinkModel>> get outDrinksCtrl => _drinksControllerCtrl.stream;
+  BehaviorSubject<List<ProductModel>> _drinksController;
 
-  Stream<Map<DrinkCategory, List<DrinkModel>>> get outCategorizedDrinks =>
-      outDrinks.map((models) {
-        return categorized(
-            DrinkCategory.values, models, (model) => model.category);
+  Stream<List<ProductModel>> get outDrinks => _drinksController;
+
+  Stream<Map<ProductCategory, List<ProductModel>>> get outDrinksByCategory => outDrinks.map((models) {
+        return categorized(ProductCategory.values, models, (model) => model.category);
       });
 
   bool isInit = false;
@@ -65,20 +63,13 @@ class RestaurantBloc implements Bloc {
 
   factory RestaurantBloc.of() => $Provider.of<RestaurantBloc>();
 
-  factory RestaurantBloc.init({@required String idRestaurant}) {
+  factory RestaurantBloc.init({@required String restaurantId}) {
     final bc = RestaurantBloc.of();
-    bc._restaurantController = BehaviorController.catchStream(
-        source: bc._db.getRestaurant(idRestaurant));
-    bc._foodsController =
-        BehaviorController.catchStream(source: bc._db.getFoods(idRestaurant));
-    bc._drinksController =
-        BehaviorController.catchStream(source: bc._db.getDrinks(idRestaurant));
-    bc._foodsControllerCtrl =
-        BehaviorController.catchStream(source: bc._db.getFoodsCtrl(idRestaurant));
-    bc._drinksControllerCtrl =
-        BehaviorController.catchStream(source: bc._db.getDrinksCtrl(idRestaurant));
-    bc._restaurantReviewController=
-        BehaviorController.catchStream(source: bc._db.getReviews(idRestaurant));
+    bc._restaurantController = BehaviorController.catchStream(source: bc._restaurantProvider.getRestaurant(restaurantId));
+    bc._productsController = BehaviorController.catchStream(source: bc._restaurantProvider.getProducts(restaurantId));
+    bc._foodsController = BehaviorController.catchStream(source: bc._restaurantProvider.getFoods(restaurantId));
+    bc._drinksController = BehaviorController.catchStream(source: bc._restaurantProvider.getDrinks(restaurantId));
+    bc._restaurantReviewController = BehaviorController.catchStream(source: bc._db.getReviews(restaurantId));
     return bc;
   }
 

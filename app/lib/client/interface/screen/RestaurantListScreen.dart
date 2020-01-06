@@ -19,9 +19,10 @@ import 'package:resmedia_taporty_flutter/client/interface/widget/SearchBar.dart'
 import 'package:resmedia_taporty_flutter/common/logic/bloc/RestaurantsBloc.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
 import 'package:resmedia_taporty_flutter/common/logic/database.dart';
-import 'package:resmedia_taporty_flutter/mainRestaurant.dart';
 import 'package:resmedia_taporty_flutter/common/model/RestaurantModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/UserModel.dart';
+
+import '../../../main.dart';
 
 class RestaurantListScreen extends StatefulWidget implements WidgetRoute {
   static const ROUTE = 'RestaurantListScreen';

@@ -12,11 +12,8 @@ import 'package:vibration/vibration.dart';
 class ProductView extends StatelessWidget {
   final ProductModel model;
   final CartControllerRule cartController;
-  final String update;
-  final String category;
-  //final StreamController<String> imgStream=new StreamController.broadcast();
 
-  ProductView({Key key, @required this.model, @required this.category, @required this.cartController, @required this.update}) : super(key: key);
+  ProductView({Key key, @required this.model, @required this.cartController}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +47,7 @@ class ProductView extends StatelessWidget {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(16.0),
                         child: Image.network(
-                          model.img,
+                          model.imageUrl,
                           fit: BoxFit.fitHeight,
                         ),
                       ),
@@ -64,18 +61,16 @@ class ProductView extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Flexible(
-                        child: Container(child: Text(model.id), width: MediaQuery.of(context).size.width * 2 / 5),
+                        child: Container(child: Text(model.name), width: MediaQuery.of(context).size.width * 2 / 5),
                       ),
-                      Text('€ ${model.price}'),
+                      Text('€ ${model.price.toStringAsFixed(2)}'),
                     ],
                   ),
                 ],
               ),
               CartStepperButton(
-                update: update,
                 model: model,
                 cartController: cartController,
-                category: category,
               ),
             ],
           ),
@@ -88,10 +83,8 @@ class ProductView extends StatelessWidget {
 class CartStepperButton extends StatelessWidget {
   final CartController cartController;
   final ProductModel model;
-  final String update;
-  final String category;
 
-  const CartStepperButton({Key key, @required this.cartController, @required this.model, @required this.update, @required this.category}) : super(key: key);
+  const CartStepperButton({Key key, @required this.cartController, @required this.model}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -122,14 +115,13 @@ class CartStepperButton extends StatelessWidget {
                 cartController.inDecrease(model.id, model.restaurantId, snap.data.uid);
               },
               onIncrement: () {
-                print(model.number);
                 final prod = cart.getProduct(model.id, model.restaurantId, snap.data.uid);
                 final count = (prod != null) ? prod.countProducts : 0;
-                if (model.number != null && int.parse(model.number) <= count)
+                if (model.maxQuantity != 0 && model.maxQuantity <= count)
                   Toast.show('Limite massimo prodotti', context, duration: 3);
                 else {
                   Vibration.vibrate(duration: 65);
-                  cartController.inIncrement(model.id, model.restaurantId, snap.data.uid, double.parse(model.price.replaceAll(',', '.')), category);
+                  cartController.inIncrement(model.id, model.restaurantId, snap.data.uid, model.price, model.type);
                 }
               },
             );

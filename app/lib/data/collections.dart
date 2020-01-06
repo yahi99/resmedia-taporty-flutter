@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 const USERS = 'users';
 
 const RESTAURANTS = 'restaurants';
@@ -19,3 +21,9 @@ const ORDERS = 'orders';
 
 //TODO
 const RESTAURANT_TYPES = '/types/';
+
+const red = Color(0xFFd50000),
+    accent_red = Color(0xFFff5131), // B71C1C
+    blue = Color(0xFF1565c0),
+    accent_blue = Color(0xFF5e92f3); // 0F5DDB
+const STRIPE_PUBLIC_KEY = "pk_test_bI6Z2I2jFP7Tfjfm0AvIyWV500cS2fKdCO";

@@ -14,7 +14,7 @@ ProductCartFirebase _$ProductCartFirebaseFromJson(Map json) {
     restaurantId: json['restaurantId'] as String,
     userId: json['userId'] as String,
     price: (json['price'] as num)?.toDouble(),
-    category: json['category'] as String,
+    type: json['category'] as String,
   );
 }
 
@@ -32,7 +32,7 @@ Map<String, dynamic> _$ProductCartFirebaseToJson(ProductCartFirebase instance) {
   writeNotNull('restaurantId', instance.restaurantId);
   writeNotNull('userId', instance.userId);
   writeNotNull('price', instance.price);
-  writeNotNull('category', instance.category);
+  writeNotNull('category', instance.type);
   writeNotNull('delete', instance.delete);
   return val;
 }

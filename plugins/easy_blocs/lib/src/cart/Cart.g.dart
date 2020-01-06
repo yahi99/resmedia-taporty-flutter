@@ -8,9 +8,7 @@ part of 'Cart.dart';
 
 Cart _$CartFromJson(Map json) {
   return Cart(
-    products: (json['products'] as List)
-        ?.map((e) => e == null ? null : ProductCart.fromJson(e as Map))
-        ?.toList(),
+    products: (json['products'] as List)?.map((e) => e == null ? null : ProductCart.fromJson(e as Map))?.toList(),
   );
 }
 
@@ -20,7 +18,7 @@ Map<String, dynamic> _$CartToJson(Cart instance) => <String, dynamic>{
 
 ProductCart _$ProductCartFromJson(Map json) {
   return ProductCart(
-    category: json['category'] as String,
+    type: json['category'] as String,
     id: json['id'] as String,
     countProducts: json['countProducts'] as int,
     restaurantId: json['restaurantId'] as String,
@@ -30,13 +28,12 @@ ProductCart _$ProductCartFromJson(Map json) {
   );
 }
 
-Map<String, dynamic> _$ProductCartToJson(ProductCart instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$ProductCartToJson(ProductCart instance) => <String, dynamic>{
       'id': instance.id,
       'restaurantId': instance.restaurantId,
       'countProducts': instance.countProducts,
       'userId': instance.userId,
       'price': instance.price,
-      'category': instance.category,
+      'category': instance.type,
       'delete': instance.delete,
     };

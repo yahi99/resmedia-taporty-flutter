@@ -5,16 +5,13 @@ import 'package:easy_firebase/src/cart/CartFirebase.dart';
 import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 
-
 abstract class CartFsManager implements CartControllerRule {
-
   Future<bool> inIncrementFs(ProductCart model);
 
   Future<bool> inDecreaseFs(ProductCart model);
 
   Future<bool> inRemoveFs(ProductCart model);
 }
-
 
 class CartFsController with MixinCartControllerFs implements CartFsManager, CartController {
   CartFirestore get _cart => _cartController.value;
@@ -43,18 +40,18 @@ class CartFsController with MixinCartControllerFs implements CartFsManager, Cart
   Observable<Cart> get outCart => _cartController.stream;
 
   @override
-  Future<bool> inDecrease(String id,String restaurantId,String userId) async {
-    return _cart.decrease(id,restaurantId,userId);
+  Future<bool> inDecrease(String id, String restaurantId, String userId) async {
+    return _cart.decrease(id, restaurantId, userId);
   }
 
   @override
-  Future<bool> inIncrement(String id,String restaurantId,String userId,double price,String category) async {
-    return _cart.increment(id,restaurantId,userId,price,category);
+  Future<bool> inIncrement(String id, String restaurantId, String userId, double price, String type) async {
+    return _cart.increment(id, restaurantId, userId, price, type);
   }
 
   @override
-  Future<bool> inRemove(String id,String restaurantId,String userId) async {
-    return _cart.remove(id,restaurantId,userId);
+  Future<bool> inRemove(String id, String restaurantId, String userId) async {
+    return _cart.remove(id, restaurantId, userId);
   }
 
   @override
@@ -63,18 +60,17 @@ class CartFsController with MixinCartControllerFs implements CartFsManager, Cart
   }
 }
 
-
 /// Aggiunge delle ottimizzazioni per il CartController se è l'unico
 mixin MixinCartControllerFs implements CartFsManager {
   Future<bool> inIncrementFs(ProductCart model) {
-    return inIncrement(model.id,model.restaurantId,model.userId,model.price,model.category);
+    return inIncrement(model.id, model.restaurantId, model.userId, model.price, model.type);
   }
 
   Future<bool> inDecreaseFs(ProductCart model) {
-    return inDecrease(model.id,model.restaurantId,model.userId);
+    return inDecrease(model.id, model.restaurantId, model.userId);
   }
 
   Future<bool> inRemoveFs(ProductCart model) {
-    return inDecrease(model.id,model.restaurantId,model.userId);
+    return inDecrease(model.id, model.restaurantId, model.userId);
   }
 }

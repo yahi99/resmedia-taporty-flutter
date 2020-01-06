@@ -11,7 +11,7 @@ RestaurantModel _$RestaurantModelFromJson(Map json) {
     path: json['path'] as String,
     name: json['name'] as String,
     description: json['description'] as String,
-    coordinates: geopointFromJson(json['coordinates'] as Map<String, dynamic>),
+    coordinates: geopointFromJson(json['coordinates']),
     deliveryRadius: (json['deliveryRadius'] as num)?.toDouble(),
     holidays: (json['holidays'] as List)
         ?.map((e) => e == null ? null : HolidayModel.fromJson(e as Map))

@@ -13,16 +13,16 @@ class FoodPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final restaurantBloc = RestaurantBloc.init(idRestaurant: model.id);
-    return StreamBuilder<Map<FoodCategory, List<FoodModel>>>(
-      stream: restaurantBloc.outCategorizedFoods,
+    final restaurantBloc = RestaurantBloc.init(restaurantId: model.id);
+    return StreamBuilder<Map<ProductCategory, List<ProductModel>>>(
+      stream: restaurantBloc.outFoodsByCategory,
       builder: (context, snapshot) {
         if (!snapshot.hasData)
           return Center(
             child: CircularProgressIndicator(),
           );
 
-        return ProductsFoodBuilder(food: snapshot.data);
+        return ProductsBuilder(products: snapshot.data);
       },
     );
   }
@@ -35,75 +35,40 @@ class DrinkPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final restaurantBloc = RestaurantBloc.init(idRestaurant: model.id);
+    final restaurantBloc = RestaurantBloc.init(restaurantId: model.id);
 
-    return StreamBuilder<Map<DrinkCategory, List<DrinkModel>>>(
-      stream: restaurantBloc.outCategorizedDrinks,
+    return StreamBuilder<Map<ProductCategory, List<ProductModel>>>(
+      stream: restaurantBloc.outDrinksByCategory,
       builder: (context, snapshot) {
         if (!snapshot.hasData)
           return Center(
             child: CircularProgressIndicator(),
           );
-        return ProductsDrinkBuilder(
-          drinks: snapshot.data,
+        return ProductsBuilder(
+          products: snapshot.data,
         );
       },
     );
   }
 }
 
-class ProductsDrinkBuilder extends StatelessWidget {
-  final Map<DrinkCategory, List<DrinkModel>> drinks;
+class ProductsBuilder extends StatelessWidget {
+  final Map<ProductCategory, List<ProductModel>> products;
   final CartBloc cartBloc = CartBloc.of();
 
-  ProductsDrinkBuilder({Key key, @required this.drinks}) : super(key: key);
+  ProductsBuilder({Key key, @required this.products}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return (drinks.isNotEmpty)
+    return (products.isNotEmpty)
         ? GroupsVoid(
-            children: drinks.map<Widget, List<Widget>>((nameGroup, products) {
+            children: products.map<Widget, List<Widget>>((nameGroup, products) {
               return MapEntry(
-                Text(translateDrinkCategory(nameGroup)),
+                Text(translateProductCategory(nameGroup)),
                 products
                     .map((product) => ProductView(
-                          update: null,
                           model: product,
-                          cartController: cartBloc.drinksCartController,
-                          category: 'drinks',
-                        ))
-                    .toList(),
-              );
-            }),
-          )
-        : Padding(
-            child: Text(
-              'Non ci sono prodotti',
-              style: Theme.of(context).textTheme.subtitle,
-            ),
-            padding: EdgeInsets.all(16.0));
-  }
-}
-
-class ProductsFoodBuilder extends StatelessWidget {
-  final Map<FoodCategory, List<FoodModel>> food;
-  final CartBloc cartBloc = CartBloc.of();
-
-  ProductsFoodBuilder({Key key, @required this.food}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return (food.isNotEmpty)
-        ? GroupsVoid(
-            children: food.map<Widget, List<Widget>>((nameGroup, products) {
-              return MapEntry(
-                Text(translateFoodCategory(nameGroup)),
-                products
-                    .map((product) => ProductView(
-                          update: null,
-                          model: product,
-                          cartController: cartBloc.foodsCartController,
-                          category: 'foods',
+                          cartController: cartBloc.productsCartController,
                         ))
                     .toList(),
               );
@@ -138,8 +103,7 @@ class GroupsVoid extends StatelessWidget {
           header: Container(
             color: Colors.grey,
             child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
               child: DefaultTextStyle(
                 style: theme.textTheme.subtitle,
                 child: group,
@@ -151,8 +115,7 @@ class GroupsVoid extends StatelessWidget {
               (context, index) {
                 if (index == 0)
                   return Padding(
-                    padding: EdgeInsets.only(
-                        top: 42.0, bottom: 16.0, left: 16.0, right: 16.0),
+                    padding: EdgeInsets.only(top: 42.0, bottom: 16.0, left: 16.0, right: 16.0),
                     child: products[index],
                   );
                 return Padding(

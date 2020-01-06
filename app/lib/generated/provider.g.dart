@@ -59,36 +59,6 @@ class $Provider extends Provider {
           return BlocCache.getBlocInstance(
               "TimeBloc", () => TimeBloc.instance());
         }
-      case RequestsBloc:
-        {
-          return BlocCache.getBlocInstance(
-              "RequestsBloc", () => RequestsBloc.instance());
-        }
-      case DriverRequestsBloc:
-        {
-          return BlocCache.getBlocInstance(
-              "DriverRequestsBloc", () => DriverRequestsBloc.instance());
-        }
-      case RestaurantRequestsBloc:
-        {
-          return BlocCache.getBlocInstance("RestaurantRequestsBloc",
-              () => RestaurantRequestsBloc.instance());
-        }
-      case UsersBloc:
-        {
-          return BlocCache.getBlocInstance(
-              "UsersBloc", () => UsersBloc.instance());
-        }
-      case ControlBloc:
-        {
-          return BlocCache.getBlocInstance(
-              "ControlBloc", () => ControlBloc.instance());
-        }
-      case ProductBloc:
-        {
-          return BlocCache.getBlocInstance(
-              "ProductBloc", () => ProductBloc.instance());
-        }
     }
     return null;
   }
@@ -143,36 +113,6 @@ class $Provider extends Provider {
       case TimeBloc:
         {
           BlocCache.dispose("TimeBloc");
-          break;
-        }
-      case RequestsBloc:
-        {
-          BlocCache.dispose("RequestsBloc");
-          break;
-        }
-      case DriverRequestsBloc:
-        {
-          BlocCache.dispose("DriverRequestsBloc");
-          break;
-        }
-      case RestaurantRequestsBloc:
-        {
-          BlocCache.dispose("RestaurantRequestsBloc");
-          break;
-        }
-      case UsersBloc:
-        {
-          BlocCache.dispose("UsersBloc");
-          break;
-        }
-      case ControlBloc:
-        {
-          BlocCache.dispose("ControlBloc");
-          break;
-        }
-      case ProductBloc:
-        {
-          BlocCache.dispose("ProductBloc");
           break;
         }
     }

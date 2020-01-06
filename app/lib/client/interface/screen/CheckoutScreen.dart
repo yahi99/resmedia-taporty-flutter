@@ -13,10 +13,10 @@ import 'package:resmedia_taporty_flutter/client/interface/page/ShippingPage.dart
 import 'package:resmedia_taporty_flutter/common/logic/bloc/RestaurantBloc.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
 import 'package:resmedia_taporty_flutter/common/logic/database.dart';
-import 'package:resmedia_taporty_flutter/mainRestaurant.dart';
 import 'package:resmedia_taporty_flutter/common/model/RestaurantModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/UserModel.dart';
 
+import '../../../main.dart';
 import 'LoginScreen.dart';
 
 class CheckoutScreen extends StatefulWidget implements WidgetRoute {
@@ -28,13 +28,7 @@ class CheckoutScreen extends StatefulWidget implements WidgetRoute {
   final Position position;
   final Address description;
 
-  CheckoutScreen(
-      {Key key,
-      @required this.model,
-      @required this.user,
-      @required this.position,
-      @required this.description})
-      : super(key: key);
+  CheckoutScreen({Key key, @required this.model, @required this.user, @required this.position, @required this.description}) : super(key: key);
 
   @override
   _CheckoutScreenState createState() => _CheckoutScreenState();
@@ -44,8 +38,7 @@ class Continue {
   static bool isContinued;
 }
 
-class _CheckoutScreenState extends State<CheckoutScreen>
-    with TickerProviderStateMixin {
+class _CheckoutScreenState extends State<CheckoutScreen> with TickerProviderStateMixin {
   static TabController controller;
   int indexUser;
 
@@ -113,8 +106,7 @@ class _CheckoutScreenState extends State<CheckoutScreen>
             inputDecorationTheme: InputDecorationTheme(
               border: const OutlineInputBorder(
                 borderSide: const BorderSide(color: Colors.white, width: 4.0),
-                borderRadius:
-                    const BorderRadius.all(const Radius.circular(8.0)),
+                borderRadius: const BorderRadius.all(const Radius.circular(8.0)),
               ),
             ),
           ),
@@ -122,32 +114,32 @@ class _CheckoutScreenState extends State<CheckoutScreen>
             stream: UserBloc.of().outUser,
             builder: (ctx, user) {
               return StreamBuilder<RestaurantModel>(
-                stream: RestaurantBloc.init(idRestaurant: widget.model.id)
-                    .outRestaurant,
+                stream: RestaurantBloc.init(restaurantId: widget.model.id).outRestaurant,
                 builder: (ctx, rest) {
-                  if(!user.hasData) return Center(child: CircularProgressIndicator(),);
+                  if (!user.hasData)
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
                   return StreamBuilder(
                       stream: Database().getUser(user.data.userFb),
                       builder: (ctx, model) {
                         if (user.hasData && rest.hasData && model.hasData) {
-                          if (model.data.type != 'user' &&
-                              model.data.type != null) {
+                          if (model.data.type != 'user' && model.data.type != null) {
                             return RaisedButton(
-                              child: Text(
-                                  'Sei stato disabilitato clicca per fare logout'),
+                              child: Text('Sei stato disabilitato clicca per fare logout'),
                               onPressed: () {
                                 UserBloc.of().logout();
                                 LoginHelper().signOut();
-                                EasyRouter.pushAndRemoveAll(
-                                    context, LoginScreen());
+                                EasyRouter.pushAndRemoveAll(context, LoginScreen());
                               },
                             );
                             //EasyRouter.pushAndRemoveAll(context, LoginScreen());
                           }
-                          if (rest.data.isDisabled != null &&
-                              rest.data.isDisabled) {
-                            return Padding(child:Text(
-                                'Ristorante non abilitato scegline un\'altro'),padding: EdgeInsets.all(8.0),);
+                          if (rest.data.isDisabled != null && rest.data.isDisabled) {
+                            return Padding(
+                              child: Text('Ristorante non abilitato scegline un\'altro'),
+                              padding: EdgeInsets.all(8.0),
+                            );
                           }
                           return MyInheritedWidget(
                             child: TabBarView(
@@ -198,10 +190,7 @@ class MyInheritedWidget extends InheritedWidget {
         data = MyInheritedWidgetData(),
         super(key: key, child: child);
 
-  static MyInheritedWidgetData of(BuildContext context) =>
-      (context.inheritFromWidgetOfExactType(MyInheritedWidget)
-              as MyInheritedWidget)
-          .data;
+  static MyInheritedWidgetData of(BuildContext context) => (context.inheritFromWidgetOfExactType(MyInheritedWidget) as MyInheritedWidget).data;
 
   @override
   bool updateShouldNotify(InheritedWidget oldWidget) {
@@ -211,17 +200,7 @@ class MyInheritedWidget extends InheritedWidget {
 }
 
 class MyInheritedWidgetData {
-  String name,
-      cap,
-      email,
-      phone,
-      address,
-      date,
-      time,
-      endTime,
-      fingerprint,
-      customerId,
-      uid;
+  String name, cap, email, phone, address, date, time, endTime, fingerprint, customerId, uid;
   int count;
 
 //final StreamController _streamController =StreamController.broadcast();

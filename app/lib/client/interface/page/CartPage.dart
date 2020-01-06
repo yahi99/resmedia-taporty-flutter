@@ -18,8 +18,7 @@ class CartPage extends StatefulWidget {
   final RestaurantModel model;
   final TabController controller;
 
-  CartPage({Key key, @required this.model, @required this.controller})
-      : super(key: key);
+  CartPage({Key key, @required this.model, @required this.controller}) : super(key: key);
 
   @override
   _CartState createState() => _CartState();
@@ -42,7 +41,7 @@ class _CartState extends State<CartPage> with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     final tt = Theme.of(context);
-    final restaurantBloc = RestaurantBloc.init(idRestaurant: widget.model.id);
+    final restaurantBloc = RestaurantBloc.init(restaurantId: widget.model.id);
     final cartBloc = CartBloc.of();
     final user = UserBloc.of();
     List<ProductCart> cartCounter = List<ProductCart>();
@@ -50,81 +49,57 @@ class _CartState extends State<CartPage> with AutomaticKeepAliveClientMixin {
       stream: user.outFirebaseUser,
       builder: (context, uid) {
         return StreamBuilder<Cart>(
-          stream: cartBloc.drinksCartController.outCart,
-          builder: (context, sp1) {
-            return StreamBuilder<Cart>(
-              stream: cartBloc.foodsCartController.outCart,
-              builder: (context, sp2) {
-                if (!sp1.hasData || !sp2.hasData || !uid.hasData)
-                  return Center(
-                    child: CircularProgressIndicator(),
-                  );
-                return Scaffold(
-                    body: StreamBuilder<List<DrinkModel>>(
-                      stream: restaurantBloc.outDrinks,
-                      builder: (context, snapshot) {
-                        return StreamBuilder<List<FoodModel>>(
-                          stream: restaurantBloc.outFoods,
-                          builder: (context, snap) {
-                            if (!snapshot.hasData || !snap.hasData)
-                              return Center(
-                                child: CircularProgressIndicator(),
-                              );
-                            cartCounter.clear();
-                            for (int i = 0; i < snapshot.data.length; i++) {
-                              var temp = snapshot.data.elementAt(i);
-                              var find = sp1.data.getProduct(
-                                  temp.id, temp.restaurantId, uid.data.uid);
-                              if (find != null && find.countProducts > 0) {
-                                cartCounter.add(find);
-                              }
-                            }
-                            for (int i = 0; i < snap.data.length; i++) {
-                              var temp = snap.data.elementAt(i);
-                              var find = sp2.data.getProduct(
-                                  temp.id, temp.restaurantId, uid.data.uid);
-                              if (find != null && find.countProducts > 0) {
-                                cartCounter.add(find);
-                              }
-                            }
-                            final state = MyInheritedWidget.of(context);
-                            state.count = sp1.data.getTotalItems(cartCounter);
-                            return ProductsFoodDrinkBuilder(
-                              drinks: snapshot.data,
-                              foods: snap.data,
-                              id: widget.model.id,
-                            );
-                          },
+            stream: cartBloc.productsCartController.outCart,
+            builder: (context, cartSnapshot) {
+              if (!cartSnapshot.hasData || !uid.hasData)
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              return Scaffold(
+                  body: StreamBuilder<List<ProductModel>>(
+                    stream: restaurantBloc.outProducts,
+                    builder: (context, AsyncSnapshot<List<ProductModel>> productSnapshot) {
+                      if (!productSnapshot.hasData)
+                        return Center(
+                          child: CircularProgressIndicator(),
                         );
+                      cartCounter.clear();
+                      for (int i = 0; i < productSnapshot.data.length; i++) {
+                        var temp = productSnapshot.data.elementAt(i);
+                        var find = cartSnapshot.data.getProduct(temp.id, temp.restaurantId, uid.data.uid);
+                        if (find != null && find.countProducts > 0) {
+                          cartCounter.add(find);
+                        }
+                      }
+                      final state = MyInheritedWidget.of(context);
+                      state.count = cartSnapshot.data.getTotalItems(cartCounter);
+                      return ProductsFoodDrinkBuilder(
+                        products: productSnapshot.data,
+                        id: widget.model.id,
+                      );
+                    },
+                  ),
+                  bottomNavigationBar: BottomButtonBar(
+                    color: tt.primaryColor,
+                    child: FlatButton(
+                      child: Text(
+                        "Continua",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      color: tt.primaryColor,
+                      onPressed: () {
+                        final state = MyInheritedWidget.of(context);
+                        //print(Continue.isContinued);
+
+                        //TODO block if zero items in the cart maybe use a stream ans pass it toProductsFoodDrinkBuilder and stream the whole bar
+                        if (state.count > 0)
+                          widget.controller.animateTo(widget.controller.index + 1);
+                        else
+                          Toast.show('Non hai elementi nel carrello!', context, duration: 3);
                       },
                     ),
-                    bottomNavigationBar: BottomButtonBar(
-                      color: tt.primaryColor,
-                      child: FlatButton(
-                        child: Text(
-                          "Continua",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        color: tt.primaryColor,
-                        onPressed: () {
-                          final state = MyInheritedWidget.of(context);
-                          //print(Continue.isContinued);
-
-                          //TODO block if zero items in the cart maybe use a stream ans pass it toProductsFoodDrinkBuilder and stream the whole bar
-                          if (state.count > 0)
-                            widget.controller
-                                .animateTo(widget.controller.index + 1);
-                          else
-                            Toast.show(
-                                'Non hai elementi nel carrello!', context,
-                                duration: 3);
-                        },
-                      ),
-                    ));
-              },
-            );
-          },
-        );
+                  ));
+            });
       },
     );
   }
@@ -135,14 +110,11 @@ class _CartState extends State<CartPage> with AutomaticKeepAliveClientMixin {
 }
 
 class ProductsFoodDrinkBuilder extends StatelessWidget {
-  final List<FoodModel> foods;
-  final List<DrinkModel> drinks;
+  final List<ProductModel> products;
   final CartBloc cartBloc = CartBloc.of();
   final String id;
 
-  ProductsFoodDrinkBuilder(
-      {Key key, @required this.foods, @required this.drinks, @required this.id})
-      : super(key: key);
+  ProductsFoodDrinkBuilder({Key key, @required this.products, @required this.id}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -152,71 +124,47 @@ class ProductsFoodDrinkBuilder extends StatelessWidget {
     final update = RestaurantScreen.isOrdered;
     RestaurantScreen.isOrdered = false;
     return StreamBuilder<Cart>(
-        stream: cartBloc.foodsCartController.outCart,
-        builder: (_, snapshot) {
-          return StreamBuilder<Cart>(
-              stream: cartBloc.drinksCartController.outCart,
-              builder: (_, sp) {
-                return StreamBuilder<FirebaseUser>(
-                    stream: user.outFirebaseUser,
-                    builder: (context, snap) {
-                      if (snap.hasData && snapshot.hasData && sp.hasData) {
-                        list.clear();
-                        prod.clear();
-                        for (int i = 0; i < drinks.length; i++) {
-                          var temp = drinks.elementAt(i);
-                          var find = sp.data.getProduct(
-                              temp.id, temp.restaurantId, snap.data.uid);
-                          if (find != null && find.countProducts > 0) {
-                            prod.add(find);
-                            list.add(ProductViewCart(
-                              update: update,
-                              model: temp,
-                              cartController: cartBloc.drinksCartController,
-                              category: 'drinks',
-                            ));
-                          }
-                        }
-                        for (int i = 0; i < foods.length; i++) {
-                          var temp = foods.elementAt(i);
-                          var find = snapshot.data.getProduct(
-                              temp.id, temp.restaurantId, snap.data.uid);
-                          if (find != null && find.countProducts > 0) {
-                            prod.add(find);
-                            list.add(ProductViewCart(
-                              update: update,
-                              model: temp,
-                              cartController: cartBloc.foodsCartController,
-                              category: 'foods',
-                            ));
-                          }
-                        }
-                        Cart carrello = Cart(products: prod);
-                        list.add(
-                          Container(
-                            color: Colors.white10,
-                            child: Center(
-                              child: Text(
-                                'Prezzo totale: ' +
-                                    (carrello
-                                        .getTotalPrice(carrello.products,
-                                            snap.data.uid, id)
-                                        .toStringAsFixed(2)) +
-                                    "€",
-                              ),
-                            ),
-                          ),
-                        );
-                        return GroupsVoid(
-                          products: list,
-                        );
-                      } else
-                        return Center(
-                          child: CircularProgressIndicator(),
-                        );
-                    });
-              });
-        });
+      stream: cartBloc.productsCartController.outCart,
+      builder: (_, cartSnapshot) {
+        return StreamBuilder<FirebaseUser>(
+          stream: user.outFirebaseUser,
+          builder: (context, userSnapshot) {
+            if (userSnapshot.hasData && cartSnapshot.hasData) {
+              list.clear();
+              prod.clear();
+              for (int i = 0; i < products.length; i++) {
+                var temp = products.elementAt(i);
+                var find = cartSnapshot.data.getProduct(temp.id, temp.restaurantId, userSnapshot.data.uid);
+                if (find != null && find.countProducts > 0) {
+                  prod.add(find);
+                  list.add(ProductViewCart(
+                    model: temp,
+                    cartController: cartBloc.productsCartController,
+                  ));
+                }
+              }
+              Cart carrello = Cart(products: prod);
+              list.add(
+                Container(
+                  color: Colors.white10,
+                  child: Center(
+                    child: Text(
+                      'Prezzo totale: ' + (carrello.getTotalPrice(carrello.products, userSnapshot.data.uid, id).toStringAsFixed(2)) + "€",
+                    ),
+                  ),
+                ),
+              );
+              return GroupsVoid(
+                products: list,
+              );
+            } else
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+          },
+        );
+      },
+    );
   }
 }
 
@@ -237,13 +185,10 @@ class GroupsVoid extends StatelessWidget {
           header: Container(
             color: Colors.grey,
             child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
               child: DefaultTextStyle(
                 style: theme.textTheme.subtitle,
-                child: Text((products.length == 0)
-                    ? 'Non ci sono elementi nel Carrello'
-                    : 'Carrello'),
+                child: Text((products.length == 0) ? 'Non ci sono elementi nel Carrello' : 'Carrello'),
               ),
             ),
           ),

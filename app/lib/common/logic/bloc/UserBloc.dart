@@ -9,12 +9,13 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:meta/meta.dart';
 import 'package:resmedia_taporty_flutter/generated/provider.dart';
-import 'package:resmedia_taporty_flutter/mainRestaurant.dart';
 import 'package:resmedia_taporty_flutter/common/model/ReviewModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/UserModel.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'package:resmedia_taporty_flutter/common/logic/database.dart';
+
+import '../../../main.dart';
 
 class UserBloc with MixinFirebaseUserManager implements Bloc {
   final Database _db = Database();
@@ -27,8 +28,7 @@ class UserBloc with MixinFirebaseUserManager implements Bloc {
     _notificationController?.close();
   }
 
-  final FirebaseUserController _firebaseUserController =
-      FirebaseUserController();
+  final FirebaseUserController _firebaseUserController = FirebaseUserController();
 
   FirebaseUserManager get firebaseUserManager => _firebaseUserController;
 
@@ -46,16 +46,14 @@ class UserBloc with MixinFirebaseUserManager implements Bloc {
   NotificationModelFirebase _notification;
   PublishSubject<NotificationModelFirebase> _notificationController;
 
-  Stream<NotificationModelFirebase> get outNotification =>
-      _notificationController.stream;
+  Stream<NotificationModelFirebase> get outNotification => _notificationController.stream;
 
   void _notificationHandler(NotificationModelFirebase notification) {
     _notificationController.add(_notification = notification);
   }
 
   void setReview(String uid) {
-    _userReviewController =
-        BehaviorController.catchStream(source: _db.getDriverReviews(uid));
+    _userReviewController = BehaviorController.catchStream(source: _db.getDriverReviews(uid));
   }
 
   UserBloc.instance() {
@@ -69,20 +67,17 @@ class UserBloc with MixinFirebaseUserManager implements Bloc {
       firebaseUserSub?.cancel();
     });
 
-    firebaseUserSub =
-        _firebaseUserController.outFirebaseUser.listen((firebaseUser) async {
+    firebaseUserSub = _firebaseUserController.outFirebaseUser.listen((firebaseUser) async {
       userModelSub?.cancel();
       print(firebaseUser);
       if (firebaseUser == null) {
-        _firebaseUserController.registrationLevel
-            .complete(RegistrationLevel.LV1);
+        _firebaseUserController.registrationLevel.complete(RegistrationLevel.LV1);
         return;
       }
       userModelSub = _db.getUser(firebaseUser).listen((userModel) async {
         print(userModel);
         if (userModel == null) {
-          _firebaseUserController.registrationLevel
-              .complete(RegistrationLevel.LV2);
+          _firebaseUserController.registrationLevel.complete(RegistrationLevel.LV2);
           return;
         }
 
@@ -90,17 +85,14 @@ class UserBloc with MixinFirebaseUserManager implements Bloc {
           _fcmTokenSubscription?.cancel();
           _fcmTokenSubscription = await _db.autoRefreshFcmToken(
             userModel,
-            notificationFunctions:
-                FirebaseNotificationFunctions.all((model) async {
+            notificationFunctions: FirebaseNotificationFunctions.all((model) async {
               _notificationHandler(model);
             }),
           );
         }
 
         _userController.add(_user = User(firebaseUser, userModel));
-        if (!_firebaseUserController.registrationLevel.isCompleted)
-          _firebaseUserController.registrationLevel
-              .complete(RegistrationLevel.COMPLETE);
+        if (!_firebaseUserController.registrationLevel.isCompleted) _firebaseUserController.registrationLevel.complete(RegistrationLevel.COMPLETE);
       });
     });
     _userController.onCancel = () => userModelSub?.cancel();
@@ -128,54 +120,41 @@ class UserBloc with MixinFirebaseUserManager implements Bloc {
   void updateNotifyEmail(bool value) async {
     final user = UserBloc.of();
     final restUser = await user.outFirebaseUser.first;
-    CloudFunctions.instance
-        .getHttpsCallable(functionName: 'updateNotifyEmail')
-        .call({'uid': restUser.uid, 'notifyEmail': value});
+    CloudFunctions.instance.getHttpsCallable(functionName: 'updateNotifyEmail').call({'uid': restUser.uid, 'notifyEmail': value});
   }
 
   void updateOffersSms(bool value) async {
     final user = UserBloc.of();
     final restUser = await user.outFirebaseUser.first;
-    CloudFunctions.instance
-        .getHttpsCallable(functionName: 'updateOffersSms')
-        .call({'uid': restUser.uid, 'offersSms': value});
+    CloudFunctions.instance.getHttpsCallable(functionName: 'updateOffersSms').call({'uid': restUser.uid, 'offersSms': value});
   }
 
   void updateNotifySms(bool value) async {
     final user = UserBloc.of();
     final restUser = await user.outFirebaseUser.first;
-    CloudFunctions.instance
-        .getHttpsCallable(functionName: 'updateNotifySms')
-        .call({'uid': restUser.uid, 'notifySms': value});
+    CloudFunctions.instance.getHttpsCallable(functionName: 'updateNotifySms').call({'uid': restUser.uid, 'notifySms': value});
   }
 
   void updateNotifyApp(bool value) async {
     final user = UserBloc.of();
     final restUser = await user.outFirebaseUser.first;
-    CloudFunctions.instance
-        .getHttpsCallable(functionName: 'updateNotifyApp')
-        .call({'uid': restUser.uid, 'notifyApp': value});
+    CloudFunctions.instance.getHttpsCallable(functionName: 'updateNotifyApp').call({'uid': restUser.uid, 'notifyApp': value});
   }
 
   void updateOffersEmail(bool value) async {
     final user = UserBloc.of();
     final restUser = await user.outFirebaseUser.first;
-    CloudFunctions.instance
-        .getHttpsCallable(functionName: 'updateOffersEmail')
-        .call({'uid': restUser.uid, 'offersEmail': value});
+    CloudFunctions.instance.getHttpsCallable(functionName: 'updateOffersEmail').call({'uid': restUser.uid, 'offersEmail': value});
   }
 
   void updateOffersApp(bool value) async {
     final user = UserBloc.of();
     final restUser = await user.outFirebaseUser.first;
-    CloudFunctions.instance
-        .getHttpsCallable(functionName: 'updateOffersApp')
-        .call({'uid': restUser.uid, 'offersApp': value});
+    CloudFunctions.instance.getHttpsCallable(functionName: 'updateOffersApp').call({'uid': restUser.uid, 'offersApp': value});
   }
 
   Future<double> getDistance(LatLng start, LatLng end) async {
-    return (await Geolocator().distanceBetween(
-        start.latitude, start.longitude, end.latitude, end.longitude));
+    return (await Geolocator().distanceBetween(start.latitude, start.longitude, end.latitude, end.longitude));
   }
 
   Future<double> getMockDistance() async {

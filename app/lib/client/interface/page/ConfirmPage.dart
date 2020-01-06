@@ -35,8 +35,7 @@ class ConfirmPage extends StatefulWidget {
   _ConfirmState createState() => _ConfirmState();
 }
 
-class _ConfirmState extends State<ConfirmPage>
-    with AutomaticKeepAliveClientMixin {
+class _ConfirmState extends State<ConfirmPage> with AutomaticKeepAliveClientMixin {
   _showPaymentDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -93,13 +92,7 @@ class _ConfirmState extends State<ConfirmPage>
     print(state.time);
     print(state.fingerprint);
     print(state.uid);
-    if (state.name == null ||
-        state.email == null ||
-        state.phone == null ||
-        state.date == null ||
-        state.time == null ||
-        state.fingerprint == null ||
-        state.uid == null) return false;
+    if (state.name == null || state.email == null || state.phone == null || state.date == null || state.time == null || state.fingerprint == null || state.uid == null) return false;
     return true;
   }
 
@@ -107,7 +100,7 @@ class _ConfirmState extends State<ConfirmPage>
   Widget build(BuildContext context) {
     super.build(context);
     final tt = Theme.of(context);
-    final restaurantBloc = RestaurantBloc.init(idRestaurant: widget.model.id);
+    final restaurantBloc = RestaurantBloc.init(restaurantId: widget.model.id);
     final cartBloc = CartBloc.of();
     //cartBloc.setSigner(model.id);
     final user = UserBloc.of();
@@ -123,27 +116,20 @@ class _ConfirmState extends State<ConfirmPage>
               },
             ),
           ),
-          body: StreamBuilder<List<DrinkModel>>(
-            stream: restaurantBloc.outDrinks,
-            builder: (context, snapshot) {
-              return StreamBuilder<List<FoodModel>>(
-                stream: restaurantBloc.outFoods,
-                builder: (context, snap) {
-                  if (RestaurantScreen.isOrdered) {
-                    RestaurantScreen.isOrdered = false;
-                    Future.delayed(
-                        Duration.zero, () => _showPaymentDialog(context));
-                  }
-                  if (!snapshot.hasData || !snap.hasData)
-                    return Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  return ProductsFoodDrinkBuilder(
-                    drinks: snapshot.data,
-                    foods: snap.data,
-                    id: widget.model.id,
-                  );
-                },
+          body: StreamBuilder<List<ProductModel>>(
+            stream: restaurantBloc.outProducts,
+            builder: (context, AsyncSnapshot<List<ProductModel>> productListSnapshot) {
+              if (RestaurantScreen.isOrdered) {
+                RestaurantScreen.isOrdered = false;
+                Future.delayed(Duration.zero, () => _showPaymentDialog(context));
+              }
+              if (!productListSnapshot.hasData)
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              return ProductsFoodDrinkBuilder(
+                products: productListSnapshot.data,
+                id: widget.model.id,
               );
             },
           ),
@@ -160,34 +146,19 @@ class _ConfirmState extends State<ConfirmPage>
                 onPressed: () {
                   if (valid(context)) {
                     final state = MyInheritedWidget.of(context);
-                    cartBloc
-                        .isAvailable(state.date, state.time, widget.model.id)
-                        .then((driver) {
+                    cartBloc.isAvailable(state.date, state.time, widget.model.id).then((driver) {
                       if (driver != null) {
                         cartBloc
-                            .signer(
-                                widget.model.id,
-                                driver,
-                                widget.position,
-                                state.phone,
-                                widget.description.addressLine,
-                                state.time,
-                                state.endTime,
-                                state.fingerprint,
-                                state.date,
-                                state.name)
+                            .signer(widget.model.id, driver, widget.position, state.phone, widget.description.addressLine, state.time, state.endTime, state.fingerprint, state.date, state.name)
                             .then((isDone) {
                           RestaurantScreen.isOrdered = false;
-                          Future.delayed(
-                              Duration.zero, () => _showPaymentDialog(context));
+                          Future.delayed(Duration.zero, () => _showPaymentDialog(context));
                           print('ok');
                         }).catchError((error) {
                           print(error.toString() + "*");
                         });
                       } else {
-                        Toast.show(
-                            'Fattorino non più disponibile nell\'orario selezionato!\nCambia l\'orario e riprova.',
-                            context);
+                        Toast.show('Fattorino non più disponibile nell\'orario selezionato!\nCambia l\'orario e riprova.', context);
                       }
                     });
                   } else {

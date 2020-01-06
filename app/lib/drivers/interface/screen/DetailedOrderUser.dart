@@ -17,8 +17,7 @@ class DetailedOrderUser extends StatefulWidget implements WidgetRoute {
   }) : super(key: key);
 
   @override
-  _DetailOrderRestaurantPageState createState() =>
-      _DetailOrderRestaurantPageState();
+  _DetailOrderRestaurantPageState createState() => _DetailOrderRestaurantPageState();
 }
 
 class _DetailOrderRestaurantPageState extends State<DetailedOrderUser> {
@@ -72,13 +71,13 @@ class _DetailOrderRestaurantPageState extends State<DetailedOrderUser> {
                     ListView.separated(
                         shrinkWrap: true,
                         itemCount: cart.products.length,
-                        separatorBuilder: (ctx,index){
-                          return Divider(height: 4.0,);
+                        separatorBuilder: (ctx, index) {
+                          return Divider(
+                            height: 4.0,
+                          );
                         },
                         itemBuilder: (BuildContext ctx, int index) {
-                          return ProductView(model:cart.products.elementAt(index),number:cart.products
-                                  .elementAt(index)
-                                  .countProducts);
+                          return ProductView(model: cart.products.elementAt(index), number: cart.products.elementAt(index).countProducts);
                         }),
                   ],
                 ),
@@ -96,11 +95,7 @@ class ProductView extends StatelessWidget {
   final int number;
   //final StreamController<String> imgStream=new StreamController.broadcast();
 
-  ProductView(
-      {Key key,
-        @required this.model,@required this.number})
-      : super(key: key);
-
+  ProductView({Key key, @required this.model, @required this.number}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -120,19 +115,18 @@ class ProductView extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Text(
-                        '${model.id.substring(0, (15 < model.id.length) ? 15 : model.id.length)}'),
-                    Text('€ ${model.price}'),
+                    Text('${model.id.substring(0, (15 < model.id.length) ? 15 : model.id.length)}'),
+                    Text('€ ${model.price.toStringAsFixed(2)}'),
                   ],
                 ),
               ],
             ),
             Container(
-              child:TextFormField(
+              child: TextFormField(
                 enabled: false,
                 initialValue: number.toString(),
               ),
-              width: MediaQuery.of(context).size.width/5,
+              width: MediaQuery.of(context).size.width / 5,
             ),
           ],
         ),

@@ -2,9 +2,10 @@ import 'package:easy_route/easy_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/RestaurantBloc.dart';
-import 'package:resmedia_taporty_flutter/mainRestaurant.dart';
 import 'package:resmedia_taporty_flutter/common/model/RestaurantModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/ReviewModel.dart';
+
+import '../../../main.dart';
 
 class SeeReviewsScreen extends StatefulWidget implements WidgetRoute {
   static const String ROUTE = "SeeReviewsScreen";
@@ -42,12 +43,18 @@ class _CheckoutScreenState extends State<SeeReviewsScreen> {
         actions: <Widget>[],
       ),
       body: StreamBuilder<List<ReviewModel>>(
-        stream: RestaurantBloc.init(idRestaurant: widget.model.id)
-            .outRestaurantReview,
+        stream: RestaurantBloc.init(restaurantId: widget.model.id).outRestaurantReview,
         builder: (ctx, snap) {
-          if (!snap.hasData) return Center(child: CircularProgressIndicator(),);
-          if(snap.data.length==0) return Padding(
-              child: Text('Non ci sono recensioni per questo ristorante',style: Theme.of(context).textTheme.subtitle,),
+          if (!snap.hasData)
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          if (snap.data.length == 0)
+            return Padding(
+              child: Text(
+                'Non ci sono recensioni per questo ristorante',
+                style: Theme.of(context).textTheme.subtitle,
+              ),
               padding: EdgeInsets.all(8.0),
             );
           print(snap.data.length);

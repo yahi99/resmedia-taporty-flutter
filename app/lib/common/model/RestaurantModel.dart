@@ -10,8 +10,6 @@ import 'package:resmedia_taporty_flutter/common/model/TimetableModel.dart';
 
 part 'RestaurantModel.g.dart';
 
-const RULES = 'rules';
-
 @JsonSerializable(anyMap: true, explicitToJson: true)
 class RestaurantModel extends FirebaseModel {
   final String name;

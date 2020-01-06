@@ -5,8 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/view/TypeUserOrderView.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/OrdersBloc.dart';
-import 'package:resmedia_taporty_flutter/mainRestaurant.dart';
 import 'package:resmedia_taporty_flutter/common/model/OrderModel.dart';
+
+import '../../../main.dart';
 
 class OrderListScreen extends StatefulWidget implements WidgetRoute {
   static const ROUTE = "OrderListScreen";

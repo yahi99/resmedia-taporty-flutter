@@ -1,10 +1,5 @@
 library easy_blocs;
 
-export 'src/cart/Cart.dart';
-export 'src/cart/CartController.dart';
-export 'src/cart/CartStorage.dart';
-export 'src/cart/CounterProductCart.dart';
-
 export 'src/checker/checkers/AddressChecker.dart';
 export 'src/checker/checkers/Checker.dart';
 export 'src/checker/checkers/EmailChecker.dart';

@@ -5,7 +5,7 @@ import 'package:easy_widget/easy_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:resmedia_taporty_flutter/data/config.dart';
-import 'package:resmedia_taporty_flutter/drivers/interface/screen/LoginScreen.dart';
+import 'package:resmedia_taporty_flutter/client/interface/screen/LoginScreen.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
 import 'package:resmedia_taporty_flutter/common/logic/database.dart';
 import 'package:resmedia_taporty_flutter/common/model/UserModel.dart';
@@ -55,8 +55,7 @@ class SnackBarPage extends StatelessWidget {
                 if (snap.hasData && model.hasData) {
                   if (model.data.type != 'user' && model.data.type != null) {
                     return RaisedButton(
-                      child:
-                          Text('Sei stato disabilitato clicca per fare logout'),
+                      child: Text('Sei stato disabilitato clicca per fare logout'),
                       onPressed: () {
                         UserBloc.of().logout();
                         EasyRouter.pushAndRemoveAll(context, LoginScreen());
@@ -78,8 +77,7 @@ class SnackBarPage extends StatelessWidget {
                             ),
                           ),
                           StreamBuilder<UserModel>(
-                            stream:
-                                Database().getUserModelById(snap.data.model.id),
+                            stream: Database().getUserModelById(snap.data.model.id),
                             builder: (ctx, img) {
                               if (!img.hasData)
                                 return Center(
@@ -94,10 +92,7 @@ class SnackBarPage extends StatelessWidget {
                                     width: double.infinity,
                                     height: double.infinity,
                                     child: (img.data.img != null)
-                                        ? CircleAvatar(
-                                            backgroundImage:
-                                                CachedNetworkImageProvider(
-                                                    img.data.img))
+                                        ? CircleAvatar(backgroundImage: CachedNetworkImageProvider(img.data.img))
                                         : CircleAvatar(
                                             backgroundColor: Colors.black,
                                           ),
@@ -111,9 +106,7 @@ class SnackBarPage extends StatelessWidget {
                       Padding(
                         padding: EdgeInsets.only(top: 8.0),
                       ),
-                      (snap.data.model.nominative != null)
-                          ? Text(snap.data.model.nominative)
-                          : Container(),
+                      (snap.data.model.nominative != null) ? Text(snap.data.model.nominative) : Container(),
                       Text('Assisi'),
                       const Divider(
                         color: Colors.grey,
@@ -151,43 +144,28 @@ class SnackBarPage extends StatelessWidget {
                               RaisedButton(
                                 onPressed: () async {
                                   if (_formKey.currentState.validate()) {
-                                    snap.data.userFb
-                                        .updateEmail(_passKey.currentState.value
-                                            .toString())
-                                        .then((_) {
-                                      user.updateNominative(
-                                          _nameKey.currentState.value
-                                              .toString(),
-                                          _passKey.currentState.value
-                                              .toString());
-                                      Scaffold.of(context)
-                                          .showSnackBar(SnackBar(
+                                    snap.data.userFb.updateEmail(_passKey.currentState.value.toString()).then((_) {
+                                      user.updateNominative(_nameKey.currentState.value.toString(), _passKey.currentState.value.toString());
+                                      Scaffold.of(context).showSnackBar(SnackBar(
                                         content: Text('Cambiamenti eseguiti!'),
                                       ));
                                     }).catchError((error) {
                                       print(error);
                                       if (error is PlatformException) {
-                                        if (error.code ==
-                                            'ERROR_INVALID_EMAIL') {
-                                          Scaffold.of(context)
-                                              .showSnackBar(SnackBar(
+                                        if (error.code == 'ERROR_INVALID_EMAIL') {
+                                          Scaffold.of(context).showSnackBar(SnackBar(
                                             content: Text('E-mail non valida'),
                                           ));
                                         }
-                                        if (error.code ==
-                                            'ERROR_REQUIRES_RECENT_LOGIN') {
+                                        if (error.code == 'ERROR_REQUIRES_RECENT_LOGIN') {
                                           snap.data.userFb.reload();
-                                          Scaffold.of(context)
-                                              .showSnackBar(SnackBar(
-                                            content: Text(
-                                                'Rieffettua il login e riprova!'),
+                                          Scaffold.of(context).showSnackBar(SnackBar(
+                                            content: Text('Rieffettua il login e riprova!'),
                                           ));
                                         }
                                       } else
-                                        Scaffold.of(context)
-                                            .showSnackBar(SnackBar(
-                                          content: Text(
-                                              'Ci sono stati degli errori'),
+                                        Scaffold.of(context).showSnackBar(SnackBar(
+                                          content: Text('Ci sono stati degli errori'),
                                         ));
                                     });
                                   }
@@ -196,8 +174,7 @@ class SnackBarPage extends StatelessWidget {
                               ),
                             ].map((child) {
                               return Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: SPACE * 2),
+                                padding: const EdgeInsets.symmetric(horizontal: SPACE * 2),
                                 child: child,
                               );
                             }).toList(),

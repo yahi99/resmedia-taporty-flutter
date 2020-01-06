@@ -11,7 +11,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:meta/meta.dart';
 import 'package:resmedia_taporty_flutter/common/helper/LoginHelper.dart';
-import 'package:resmedia_taporty_flutter/drivers/interface/screen/AccountScreen.dart';
+import 'package:resmedia_taporty_flutter/client/interface/screen/AccountScreen.dart';
 import 'package:resmedia_taporty_flutter/client/interface/screen/GeolocalizationScreen.dart';
 import 'package:resmedia_taporty_flutter/client/interface/screen/LoginScreen.dart';
 import 'package:resmedia_taporty_flutter/client/interface/screen/RestaurantScreen.dart';
@@ -126,7 +126,7 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
           IconButton(
             icon: Icon(Icons.account_circle),
             onPressed: () {
-              EasyRouter.push(context, AccountScreenDriver());
+              EasyRouter.push(context, AccountScreen());
             },
           ),
         ],

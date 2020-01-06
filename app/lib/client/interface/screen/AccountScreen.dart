@@ -11,22 +11,22 @@ import 'package:geocoder/geocoder.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:resmedia_taporty_flutter/common/helper/LoginHelper.dart';
 import 'package:resmedia_taporty_flutter/data/config.dart';
-import 'package:resmedia_taporty_flutter/drivers/interface/screen/BecomeDriverScreen.dart';
-import 'package:resmedia_taporty_flutter/drivers/interface/screen/BecomeRestaurantScreen.dart';
-import 'package:resmedia_taporty_flutter/drivers/interface/screen/ChangePasswordScreeen.dart';
-import 'package:resmedia_taporty_flutter/drivers/interface/screen/EditScreen.dart';
-import 'package:resmedia_taporty_flutter/drivers/interface/screen/LegalNotesScreen.dart';
-import 'package:resmedia_taporty_flutter/drivers/interface/screen/OrderScreen.dart';
-import 'package:resmedia_taporty_flutter/drivers/interface/screen/SettingsScreen.dart';
-import 'package:resmedia_taporty_flutter/drivers/interface/screen/LoginScreen.dart';
+import 'package:resmedia_taporty_flutter/client/interface/screen/BecomeDriverScreen.dart';
+import 'package:resmedia_taporty_flutter/client/interface/screen/BecomeRestaurantScreen.dart';
+import 'package:resmedia_taporty_flutter/client/interface/screen/ChangePasswordScreeen.dart';
+import 'package:resmedia_taporty_flutter/client/interface/screen/EditScreen.dart';
+import 'package:resmedia_taporty_flutter/client/interface/screen/LegalNotesScreen.dart';
+import 'package:resmedia_taporty_flutter/client/interface/screen/OrderScreen.dart';
+import 'package:resmedia_taporty_flutter/client/interface/screen/SettingsScreen.dart';
+import 'package:resmedia_taporty_flutter/client/interface/screen/LoginScreen.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/OrdersBloc.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
 import 'package:resmedia_taporty_flutter/common/logic/database.dart';
 import 'package:resmedia_taporty_flutter/common/model/UserModel.dart';
 import 'package:toast/toast.dart';
 
-class AccountScreenDriver extends StatelessWidget implements WidgetRoute {
-  static const ROUTE = 'AccountScreenDriver';
+class AccountScreen extends StatelessWidget implements WidgetRoute {
+  static const ROUTE = 'AccountScreen';
 
   String get route => ROUTE;
 
@@ -68,8 +68,7 @@ class AccountScreenDriver extends StatelessWidget implements WidgetRoute {
                 if (snap.hasData && model.hasData) {
                   if (model.data.type != 'user' && model.data.type != null) {
                     return RaisedButton(
-                      child:
-                          Text('Sei stato disabilitato clicca per fare logout'),
+                      child: Text('Sei stato disabilitato clicca per fare logout'),
                       onPressed: () {
                         UserBloc.of().logout();
                         LoginHelper().signOut();
@@ -93,8 +92,7 @@ class AccountScreenDriver extends StatelessWidget implements WidgetRoute {
                             ),
                           ),
                           StreamBuilder<UserModel>(
-                            stream:
-                                Database().getUserModelById(snap.data.model.id),
+                            stream: Database().getUserModelById(snap.data.model.id),
                             builder: (ctx, img) {
                               if (!img.hasData)
                                 return Center(
@@ -109,10 +107,7 @@ class AccountScreenDriver extends StatelessWidget implements WidgetRoute {
                                     width: double.infinity,
                                     height: double.infinity,
                                     child: (img.data.img != null)
-                                        ? CircleAvatar(
-                                            backgroundImage:
-                                                CachedNetworkImageProvider(
-                                                    img.data.img))
+                                        ? CircleAvatar(backgroundImage: CachedNetworkImageProvider(img.data.img))
                                         : CircleAvatar(
                                             backgroundColor: Colors.black,
                                           ),
@@ -130,33 +125,19 @@ class AccountScreenDriver extends StatelessWidget implements WidgetRoute {
                                 color: Colors.white,
                               ),
                               onPressed: () async {
-                                ImagePicker.pickImage(
-                                        source: ImageSource.camera)
-                                    .then((file) {
+                                ImagePicker.pickImage(source: ImageSource.camera).then((file) {
                                   if (file != null) {
                                     uploadFile(file.path).then((path) async {
-                                      Database()
-                                          .updateUserImage(
-                                              path,
-                                              snap.data.model.id,
-                                              snap.data.model.img)
-                                          .then((value) {
-                                        Toast.show('Cambiato!', context,
-                                            duration: 3);
+                                      Database().updateUserImage(path, snap.data.model.id, snap.data.model.img).then((value) {
+                                        Toast.show('Cambiato!', context, duration: 3);
                                       });
                                     });
                                   } else {
-                                    Toast.show(
-                                        'Devi scegliere un\'immagine!', context,
-                                        duration: 3);
+                                    Toast.show('Devi scegliere un\'immagine!', context, duration: 3);
                                   }
                                 }).catchError((error) {
                                   if (error is PlatformException) {
-                                    if (error.code == 'photo_access_denied')
-                                      Toast.show(
-                                          'Devi garantire accesso alle immagini!',
-                                          context,
-                                          duration: 3);
+                                    if (error.code == 'photo_access_denied') Toast.show('Devi garantire accesso alle immagini!', context, duration: 3);
                                   }
                                 });
                               },
@@ -167,19 +148,12 @@ class AccountScreenDriver extends StatelessWidget implements WidgetRoute {
                       Padding(
                         padding: EdgeInsets.only(top: 8.0),
                       ),
-                      snap.data.model.nominative != null
-                          ? Text(snap.data.model.nominative)
-                          : Container(),
-                      (snap.data.model.lat != null &&
-                              snap.data.model.lng != null)
+                      snap.data.model.nominative != null ? Text(snap.data.model.nominative) : Container(),
+                      (snap.data.model.lat != null && snap.data.model.lng != null)
                           ? StreamBuilder<List<Address>>(
-                              stream: Geocoder.local
-                                  .findAddressesFromCoordinates(Coordinates(
-                                      snap.data.model.lat, snap.data.model.lng))
-                                  .asStream(),
+                              stream: Geocoder.local.findAddressesFromCoordinates(Coordinates(snap.data.model.lat, snap.data.model.lng)).asStream(),
                               builder: (ctx, loc) {
-                                if (loc.hasData)
-                                  return Text(loc.data.first.addressLine);
+                                if (loc.hasData) return Text(loc.data.first.addressLine);
                                 return Container();
                               },
                             )
@@ -203,12 +177,8 @@ class AccountScreenDriver extends StatelessWidget implements WidgetRoute {
                               children: <Widget>[
                                 Icon(Icons.directions_car),
                                 FlatButton(
-                                  child: Text('Diventa un Fattorino',
-                                      style: theme.textTheme.subhead),
-                                  onPressed: () => {
-                                    EasyRouter.push(
-                                        context, BecomeDriverScreen())
-                                  },
+                                  child: Text('Diventa un Fattorino', style: theme.textTheme.subhead),
+                                  onPressed: () => {EasyRouter.push(context, BecomeDriverScreen())},
                                 ),
                               ],
                             ),
@@ -216,12 +186,8 @@ class AccountScreenDriver extends StatelessWidget implements WidgetRoute {
                               children: <Widget>[
                                 Icon(Icons.directions_car),
                                 FlatButton(
-                                  child: Text('Diventa un ristoratore',
-                                      style: theme.textTheme.subhead),
-                                  onPressed: () => {
-                                    EasyRouter.push(
-                                        context, BecomeRestaurantScreen())
-                                  },
+                                  child: Text('Diventa un ristoratore', style: theme.textTheme.subhead),
+                                  onPressed: () => {EasyRouter.push(context, BecomeRestaurantScreen())},
                                 ),
                               ],
                             ),
@@ -229,11 +195,10 @@ class AccountScreenDriver extends StatelessWidget implements WidgetRoute {
                               children: <Widget>[
                                 Icon(Icons.shopping_cart),
                                 FlatButton(
-                                  child: Text('Lista ordini',
-                                      style: theme.textTheme.subhead),
+                                  child: Text('Lista ordini', style: theme.textTheme.subhead),
                                   onPressed: () async {
                                     await OrdersBloc.of().setUserStream();
-                                    EasyRouter.push(context, OrderListScreen());
+                                    EasyRouter.push(context, OrderScreen());
                                   },
                                 ),
                               ],
@@ -242,11 +207,8 @@ class AccountScreenDriver extends StatelessWidget implements WidgetRoute {
                               children: <Widget>[
                                 Icon(Icons.insert_drive_file),
                                 FlatButton(
-                                  child: Text('Note legali',
-                                      style: theme.textTheme.subhead),
-                                  onPressed: () => {
-                                    EasyRouter.push(context, LegalNotesScreen())
-                                  },
+                                  child: Text('Note legali', style: theme.textTheme.subhead),
+                                  onPressed: () => {EasyRouter.push(context, LegalNotesScreen())},
                                 ),
                               ],
                             ),
@@ -254,12 +216,8 @@ class AccountScreenDriver extends StatelessWidget implements WidgetRoute {
                               children: <Widget>[
                                 Icon(Icons.lock_outline),
                                 FlatButton(
-                                  child: Text('Cambia password',
-                                      style: theme.textTheme.subhead),
-                                  onPressed: () => {
-                                    EasyRouter.push(
-                                        context, ChangePasswordScreen())
-                                  },
+                                  child: Text('Cambia password', style: theme.textTheme.subhead),
+                                  onPressed: () => {EasyRouter.push(context, ChangePasswordScreen())},
                                 ),
                               ],
                             ),
@@ -267,11 +225,8 @@ class AccountScreenDriver extends StatelessWidget implements WidgetRoute {
                               children: <Widget>[
                                 Icon(Icons.settings),
                                 FlatButton(
-                                  child: Text('Settings',
-                                      style: theme.textTheme.subhead),
-                                  onPressed: () => {
-                                    EasyRouter.push(context, SettingsScreen())
-                                  },
+                                  child: Text('Settings', style: theme.textTheme.subhead),
+                                  onPressed: () => {EasyRouter.push(context, SettingsScreen())},
                                 ),
                               ],
                             ),
@@ -279,13 +234,11 @@ class AccountScreenDriver extends StatelessWidget implements WidgetRoute {
                               children: <Widget>[
                                 Icon(Icons.settings),
                                 FlatButton(
-                                    child: Text('Log Out',
-                                        style: theme.textTheme.subhead),
+                                    child: Text('Log Out', style: theme.textTheme.subhead),
                                     onPressed: () {
                                       user.logout().then((onValue) {
                                         LoginHelper().signOut();
-                                        EasyRouter.pushAndRemoveAll(
-                                            context, LoginScreen());
+                                        EasyRouter.pushAndRemoveAll(context, LoginScreen());
                                         //UserBloc.close();
                                       });
                                     }),
@@ -293,8 +246,7 @@ class AccountScreenDriver extends StatelessWidget implements WidgetRoute {
                             ),
                           ].map((child) {
                             return Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: SPACE * 2),
+                              padding: const EdgeInsets.symmetric(horizontal: SPACE * 2),
                               child: child,
                             );
                           }).toList(),

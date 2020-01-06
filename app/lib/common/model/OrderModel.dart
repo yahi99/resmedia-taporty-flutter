@@ -1,120 +1,155 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:easy_blocs/easy_blocs.dart';
 import 'package:easy_firebase/easy_firebase.dart';
 import 'package:flutter/widgets.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
+import 'package:resmedia_taporty_flutter/common/helper/DateTimeSerialization.dart';
+import 'package:resmedia_taporty_flutter/common/helper/GeopointSerialization.dart';
+import 'package:resmedia_taporty_flutter/common/model/ProductOrderModel.dart';
+import 'package:resmedia_taporty_flutter/drivers/model/SubjectModel.dart';
 
 part 'OrderModel.g.dart';
 
-abstract class OrderModel extends FirebaseModel {
-  final List<ProductCart> products;
+enum OrderState { NEW, ACCEPTED, MODIFIED, CANCELLED, READY, PICKED_UP, DELIVERED, ARCHIVED, REFUSED }
 
-  OrderModel({
-    String path,
-    @required this.products,
-  }) : super(path);
-}
-
-enum StateCategory { PENDING, ACCEPTED, DELIVERED, DENIED, PICKED_UP, CANCELLED }
-
-String translateOrderCategory(StateCategory category) {
-  switch (category) {
-    case StateCategory.PICKED_UP:
+String translateOrderState(OrderState state) {
+  switch (state) {
+    case OrderState.PICKED_UP:
       return "Ritirato dal fattorino";
-    case StateCategory.DENIED:
+    case OrderState.REFUSED:
       return "Ordine rifiutato";
-    case StateCategory.PENDING:
+    case OrderState.NEW:
       return "In Accettazione";
-    case StateCategory.ACCEPTED:
+    case OrderState.ACCEPTED:
       return "In Consegna";
-    case StateCategory.DELIVERED:
+    case OrderState.DELIVERED:
       return "Consegnato";
-    case StateCategory.CANCELLED:
+    case OrderState.CANCELLED:
       return "Ordine Cancellato";
+    case OrderState.MODIFIED:
+      return "Modifica in attesa";
+    case OrderState.READY:
+      return "Pronto";
+    case OrderState.ARCHIVED:
+      return "Archiviato";
     default:
       return "";
   }
 }
 
-@JsonSerializable(anyMap: true, explicitToJson: true, includeIfNull: false)
-class RestaurantOrderModel extends OrderModel {
-  final List<ProductCart> products;
-  final String timeR, timeS;
-  final StateCategory state;
-  final String startTime, endTime;
-  final String driver;
-  final String uid;
-  final String nominative;
-  final String addressR;
-  final String fingerprint;
-  final String day;
-  final String phone, restaurantId;
-  final bool isPaid, isReviewed;
-  final int timeLeft;
+@JsonSerializable(anyMap: true, explicitToJson: true, nullable: true, includeIfNull: false)
+class OrderModel extends FirebaseModel {
+  final List<ProductOrderModel> products;
+  final int productCount;
+  final double totalPrice;
+  final int newProductCount;
+  final double newTotalPrice;
 
-  RestaurantOrderModel({
-    String path,
-    this.timeLeft,
-    this.restaurantId,
-    this.isPaid,
-    this.isReviewed,
-    @required this.phone,
-    @required this.day,
-    @required this.fingerprint,
-    @required this.addressR,
-    @required this.endTime,
-    @required this.products,
-    @required this.driver,
-    @required this.uid,
-    @required this.timeR,
-    @required this.timeS,
-    @required this.state,
-    @required this.startTime,
-    @required this.nominative,
-  }) : super(path: path, products: products);
-
-  static RestaurantOrderModel fromJson(Map json) => _$RestaurantOrderModelFromJson(json);
-
-  static RestaurantOrderModel fromFirebase(DocumentSnapshot snap) => FirebaseModel.fromFirebase(fromJson, snap);
-
-  Map<String, dynamic> toJson() => _$RestaurantOrderModelToJson(this);
-
-  @required
-  String toString() => toJson().toString();
-}
-
-@JsonSerializable(anyMap: true, explicitToJson: true, includeIfNull: false)
-class UserOrderModel extends OrderModel {
-  final List<ProductCart> products;
-  final String timeR, timeS;
-  final StateCategory state;
-  final String endTime, day, phone;
+  final OrderState state;
   final bool isReviewed;
-  final String restaurantId, driver, uid;
-  final int timeLeft;
 
-  UserOrderModel({
+  // Timestamps
+  @JsonKey(toJson: datetimeToJson, fromJson: datetimeFromJson)
+  final DateTime creationTimestamp;
+  @JsonKey(toJson: datetimeToJson, fromJson: datetimeFromJson)
+  final DateTime acceptanceTimestamp;
+  @JsonKey(toJson: datetimeToJson, fromJson: datetimeFromJson)
+  final DateTime preferredDeliveryTimestamp;
+  @JsonKey(toJson: datetimeToJson, fromJson: datetimeFromJson)
+  final DateTime modificationTimestamp;
+  @JsonKey(toJson: datetimeToJson, fromJson: datetimeFromJson)
+  final DateTime cancellationTimestamp;
+  @JsonKey(toJson: datetimeToJson, fromJson: datetimeFromJson)
+  final DateTime readyTimestamp;
+  @JsonKey(toJson: datetimeToJson, fromJson: datetimeFromJson)
+  final DateTime pickupTimestamp;
+  @JsonKey(toJson: datetimeToJson, fromJson: datetimeFromJson)
+  final DateTime deliveryTimestamp;
+
+  // Customer info
+  final String customerId;
+  final String customerName;
+  @JsonKey(toJson: geopointToJson, fromJson: geopointFromJson)
+  final GeoPoint customerCoordinates;
+  final String customerAddress;
+  final String customerPhoneNumber;
+  final String customerImageUrl;
+
+  // Restaurant info
+  final String restaurantId;
+  final String restaurantName;
+  @JsonKey(toJson: geopointToJson, fromJson: geopointFromJson)
+  final GeoPoint restaurantCoordinates;
+  final String restaurantAddress;
+  final String restaurantPhoneNumber;
+  final String restaurantImageUrl;
+
+  // Driver info
+  final String driverId;
+  final String driverName;
+  final String driverPhoneNumber;
+  final String driverImageUrl;
+
+  OrderModel({
     String path,
-    @required this.restaurantId,
-    @required this.driver,
-    this.timeLeft,
+    this.productCount,
+    this.totalPrice,
+    this.newProductCount,
+    this.newTotalPrice,
+    this.preferredDeliveryTimestamp,
+    this.modificationTimestamp,
+    this.cancellationTimestamp,
+    this.readyTimestamp,
+    this.pickupTimestamp,
+    this.deliveryTimestamp,
+    this.customerName,
+    this.customerCoordinates,
+    this.customerAddress,
+    this.customerPhoneNumber,
+    this.customerImageUrl,
+    this.restaurantName,
+    this.restaurantCoordinates,
+    this.restaurantAddress,
+    this.restaurantPhoneNumber,
+    this.restaurantImageUrl,
+    this.driverName,
+    this.driverPhoneNumber,
+    this.driverImageUrl,
+    this.restaurantId,
+    this.driverId,
     this.isReviewed,
-    this.uid,
-    @required this.phone,
-    @required this.day,
-    @required this.endTime,
-    @required this.products,
-    @required this.timeR,
-    @required this.timeS,
-    @required this.state,
-  }) : super(path: path, products: products);
+    this.customerId,
+    this.products,
+    this.creationTimestamp,
+    this.acceptanceTimestamp,
+    this.state,
+  }) : super(path);
 
-  static UserOrderModel fromJson(Map json) => _$UserOrderModelFromJson(json);
+  List<LatLng> get positions => [LatLng(customerCoordinates.latitude, customerCoordinates.longitude)];
 
-  static UserOrderModel fromFirebase(DocumentSnapshot snap) => FirebaseModel.fromFirebase(fromJson, snap);
+  List<SubjectModel> get subjects => [
+        SubjectModel(
+          day: "day",
+          name: restaurantName,
+          address: restaurantAddress,
+          displayName: restaurantName,
+          time: (acceptanceTimestamp != null) ? acceptanceTimestamp : 'Ordine non accettato',
+        ),
+        SubjectModel(
+            day: "day",
+            name: customerName,
+            address: customerAddress,
+            time: "time/creationTimestamp",
+            displayName: customerName,
+            position: LatLng(customerCoordinates.latitude, customerCoordinates.longitude))
+      ];
 
-  Map<String, dynamic> toJson() => _$UserOrderModelToJson(this);
+  static OrderModel fromJson(Map json) => _$OrderModelFromJson(json);
+
+  static OrderModel fromFirebase(DocumentSnapshot snap) => FirebaseModel.fromFirebase(fromJson, snap);
+
+  Map<String, dynamic> toJson() => _$OrderModelToJson(this);
 
   @required
   String toString() => toJson().toString();

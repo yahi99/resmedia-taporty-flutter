@@ -5,6 +5,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
+import 'package:resmedia_taporty_flutter/client/logic/bloc/CartController.dart';
+import 'package:resmedia_taporty_flutter/client/model/CartModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/ProductModel.dart';
 import 'package:toast/toast.dart';
 import 'package:vibration/vibration.dart';
@@ -18,7 +20,7 @@ class ProductViewCart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final UserBloc user = UserBloc.of();
-    return StreamBuilder<Cart>(
+    return StreamBuilder<CartModel>(
       stream: cartController.outCart,
       builder: (_, snapshot) {
         if (!snapshot.hasData) return const SizedBox();
@@ -31,7 +33,7 @@ class ProductViewCart extends StatelessWidget {
                 child: CircularProgressIndicator(),
               );
             var temp = snapshot.data.getProduct(model.id, model.restaurantId, snap.data.uid);
-            if (temp == null || temp.countProducts == 0) return const SizedBox();
+            if (temp == null || temp.quantity == 0) return const SizedBox();
             final theme = Theme.of(context);
             final product = cart.getProduct(model.id, model.restaurantId, snap.data.uid);
             if (product != null && product.delete) {
@@ -90,10 +92,10 @@ class ProductViewCart extends StatelessWidget {
                       ),
                       StepperButton(
                           direction: Axis.vertical,
-                          child: Text('${cart.getProduct(model.id, model.restaurantId, snap.data.uid)?.countProducts ?? 0}'),
+                          child: Text('${cart.getProduct(model.id, model.restaurantId, snap.data.uid)?.quantity ?? 0}'),
                           onDecrease: () => cartController.inDecrease(model.id, model.restaurantId, snap.data.uid),
                           onIncrement: () {
-                            if (model.maxQuantity != 0 && model.maxQuantity <= cart.getProduct(model.id, model.restaurantId, snap.data.uid)?.countProducts)
+                            if (model.maxQuantity != 0 && model.maxQuantity <= cart.getProduct(model.id, model.restaurantId, snap.data.uid)?.quantity)
                               Toast.show('Limite massimo prodotti', context, duration: 3);
                             else {
                               Vibration.vibrate(duration: 65);

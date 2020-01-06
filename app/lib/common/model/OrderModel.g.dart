@@ -6,33 +6,47 @@ part of 'OrderModel.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-RestaurantOrderModel _$RestaurantOrderModelFromJson(Map json) {
-  return RestaurantOrderModel(
+OrderModel _$OrderModelFromJson(Map json) {
+  return OrderModel(
     path: json['path'] as String,
-    timeLeft: json['timeLeft'] as int,
+    productCount: json['productCount'] as int,
+    totalPrice: (json['totalPrice'] as num)?.toDouble(),
+    newProductCount: json['newProductCount'] as int,
+    newTotalPrice: (json['newTotalPrice'] as num)?.toDouble(),
+    preferredDeliveryTimestamp:
+        datetimeFromJson(json['preferredDeliveryTimestamp']),
+    modificationTimestamp: datetimeFromJson(json['modificationTimestamp']),
+    cancellationTimestamp: datetimeFromJson(json['cancellationTimestamp']),
+    readyTimestamp: datetimeFromJson(json['readyTimestamp']),
+    pickupTimestamp: datetimeFromJson(json['pickupTimestamp']),
+    deliveryTimestamp: datetimeFromJson(json['deliveryTimestamp']),
+    customerName: json['customerName'] as String,
+    customerCoordinates: geopointFromJson(json['customerCoordinates']),
+    customerAddress: json['customerAddress'] as String,
+    customerPhoneNumber: json['customerPhoneNumber'] as String,
+    customerImageUrl: json['customerImageUrl'] as String,
+    restaurantName: json['restaurantName'] as String,
+    restaurantCoordinates: geopointFromJson(json['restaurantCoordinates']),
+    restaurantAddress: json['restaurantAddress'] as String,
+    restaurantPhoneNumber: json['restaurantPhoneNumber'] as String,
+    restaurantImageUrl: json['restaurantImageUrl'] as String,
+    driverName: json['driverName'] as String,
+    driverPhoneNumber: json['driverPhoneNumber'] as String,
+    driverImageUrl: json['driverImageUrl'] as String,
     restaurantId: json['restaurantId'] as String,
-    isPaid: json['isPaid'] as bool,
+    driverId: json['driverId'] as String,
     isReviewed: json['isReviewed'] as bool,
-    phone: json['phone'] as String,
-    day: json['day'] as String,
-    fingerprint: json['fingerprint'] as String,
-    addressR: json['addressR'] as String,
-    endTime: json['endTime'] as String,
+    customerId: json['customerId'] as String,
     products: (json['products'] as List)
-        ?.map((e) => e == null ? null : ProductCart.fromJson(e as Map))
+        ?.map((e) => e == null ? null : ProductOrderModel.fromJson(e as Map))
         ?.toList(),
-    driver: json['driver'] as String,
-    uid: json['uid'] as String,
-    timeR: json['timeR'] as String,
-    timeS: json['timeS'] as String,
-    state: _$enumDecodeNullable(_$StateCategoryEnumMap, json['state']),
-    startTime: json['startTime'] as String,
-    nominative: json['nominative'] as String,
+    creationTimestamp: datetimeFromJson(json['creationTimestamp']),
+    acceptanceTimestamp: datetimeFromJson(json['acceptanceTimestamp']),
+    state: _$enumDecodeNullable(_$OrderStateEnumMap, json['state']),
   );
 }
 
-Map<String, dynamic> _$RestaurantOrderModelToJson(
-    RestaurantOrderModel instance) {
+Map<String, dynamic> _$OrderModelToJson(OrderModel instance) {
   final val = <String, dynamic>{};
 
   void writeNotNull(String key, dynamic value) {
@@ -44,22 +58,42 @@ Map<String, dynamic> _$RestaurantOrderModelToJson(
   writeNotNull('path', instance.path);
   writeNotNull(
       'products', instance.products?.map((e) => e?.toJson())?.toList());
-  writeNotNull('timeR', instance.timeR);
-  writeNotNull('timeS', instance.timeS);
-  writeNotNull('state', _$StateCategoryEnumMap[instance.state]);
-  writeNotNull('startTime', instance.startTime);
-  writeNotNull('endTime', instance.endTime);
-  writeNotNull('driver', instance.driver);
-  writeNotNull('uid', instance.uid);
-  writeNotNull('nominative', instance.nominative);
-  writeNotNull('addressR', instance.addressR);
-  writeNotNull('fingerprint', instance.fingerprint);
-  writeNotNull('day', instance.day);
-  writeNotNull('phone', instance.phone);
-  writeNotNull('restaurantId', instance.restaurantId);
-  writeNotNull('isPaid', instance.isPaid);
+  writeNotNull('productCount', instance.productCount);
+  writeNotNull('totalPrice', instance.totalPrice);
+  writeNotNull('newProductCount', instance.newProductCount);
+  writeNotNull('newTotalPrice', instance.newTotalPrice);
+  writeNotNull('state', _$OrderStateEnumMap[instance.state]);
   writeNotNull('isReviewed', instance.isReviewed);
-  writeNotNull('timeLeft', instance.timeLeft);
+  writeNotNull('creationTimestamp', datetimeToJson(instance.creationTimestamp));
+  writeNotNull(
+      'acceptanceTimestamp', datetimeToJson(instance.acceptanceTimestamp));
+  writeNotNull('preferredDeliveryTimestamp',
+      datetimeToJson(instance.preferredDeliveryTimestamp));
+  writeNotNull(
+      'modificationTimestamp', datetimeToJson(instance.modificationTimestamp));
+  writeNotNull(
+      'cancellationTimestamp', datetimeToJson(instance.cancellationTimestamp));
+  writeNotNull('readyTimestamp', datetimeToJson(instance.readyTimestamp));
+  writeNotNull('pickupTimestamp', datetimeToJson(instance.pickupTimestamp));
+  writeNotNull('deliveryTimestamp', datetimeToJson(instance.deliveryTimestamp));
+  writeNotNull('customerId', instance.customerId);
+  writeNotNull('customerName', instance.customerName);
+  writeNotNull(
+      'customerCoordinates', geopointToJson(instance.customerCoordinates));
+  writeNotNull('customerAddress', instance.customerAddress);
+  writeNotNull('customerPhoneNumber', instance.customerPhoneNumber);
+  writeNotNull('customerImageUrl', instance.customerImageUrl);
+  writeNotNull('restaurantId', instance.restaurantId);
+  writeNotNull('restaurantName', instance.restaurantName);
+  writeNotNull(
+      'restaurantCoordinates', geopointToJson(instance.restaurantCoordinates));
+  writeNotNull('restaurantAddress', instance.restaurantAddress);
+  writeNotNull('restaurantPhoneNumber', instance.restaurantPhoneNumber);
+  writeNotNull('restaurantImageUrl', instance.restaurantImageUrl);
+  writeNotNull('driverId', instance.driverId);
+  writeNotNull('driverName', instance.driverName);
+  writeNotNull('driverPhoneNumber', instance.driverPhoneNumber);
+  writeNotNull('driverImageUrl', instance.driverImageUrl);
   return val;
 }
 
@@ -95,57 +129,14 @@ T _$enumDecodeNullable<T>(
   return _$enumDecode<T>(enumValues, source, unknownValue: unknownValue);
 }
 
-const _$StateCategoryEnumMap = {
-  StateCategory.PENDING: 'PENDING',
-  StateCategory.ACCEPTED: 'ACCEPTED',
-  StateCategory.DELIVERED: 'DELIVERED',
-  StateCategory.DENIED: 'DENIED',
-  StateCategory.PICKED_UP: 'PICKED_UP',
-  StateCategory.CANCELLED: 'CANCELLED',
+const _$OrderStateEnumMap = {
+  OrderState.NEW: 'NEW',
+  OrderState.ACCEPTED: 'ACCEPTED',
+  OrderState.MODIFIED: 'MODIFIED',
+  OrderState.CANCELLED: 'CANCELLED',
+  OrderState.READY: 'READY',
+  OrderState.PICKED_UP: 'PICKED_UP',
+  OrderState.DELIVERED: 'DELIVERED',
+  OrderState.ARCHIVED: 'ARCHIVED',
+  OrderState.REFUSED: 'REFUSED',
 };
-
-UserOrderModel _$UserOrderModelFromJson(Map json) {
-  return UserOrderModel(
-    path: json['path'] as String,
-    restaurantId: json['restaurantId'] as String,
-    driver: json['driver'] as String,
-    timeLeft: json['timeLeft'] as int,
-    isReviewed: json['isReviewed'] as bool,
-    uid: json['uid'] as String,
-    phone: json['phone'] as String,
-    day: json['day'] as String,
-    endTime: json['endTime'] as String,
-    products: (json['products'] as List)
-        ?.map((e) => e == null ? null : ProductCart.fromJson(e as Map))
-        ?.toList(),
-    timeR: json['timeR'] as String,
-    timeS: json['timeS'] as String,
-    state: _$enumDecodeNullable(_$StateCategoryEnumMap, json['state']),
-  );
-}
-
-Map<String, dynamic> _$UserOrderModelToJson(UserOrderModel instance) {
-  final val = <String, dynamic>{};
-
-  void writeNotNull(String key, dynamic value) {
-    if (value != null) {
-      val[key] = value;
-    }
-  }
-
-  writeNotNull('path', instance.path);
-  writeNotNull(
-      'products', instance.products?.map((e) => e?.toJson())?.toList());
-  writeNotNull('timeR', instance.timeR);
-  writeNotNull('timeS', instance.timeS);
-  writeNotNull('state', _$StateCategoryEnumMap[instance.state]);
-  writeNotNull('endTime', instance.endTime);
-  writeNotNull('day', instance.day);
-  writeNotNull('phone', instance.phone);
-  writeNotNull('isReviewed', instance.isReviewed);
-  writeNotNull('restaurantId', instance.restaurantId);
-  writeNotNull('driver', instance.driver);
-  writeNotNull('uid', instance.uid);
-  writeNotNull('timeLeft', instance.timeLeft);
-  return val;
-}

@@ -6,6 +6,9 @@ import 'package:easy_blocs/easy_blocs.dart';
 import 'package:easy_firebase/easy_firebase.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:resmedia_taporty_flutter/client/logic/bloc/CartController.dart';
+import 'package:resmedia_taporty_flutter/client/model/CartModel.dart';
+import 'package:resmedia_taporty_flutter/client/model/ProductCartModel.dart';
 import 'package:resmedia_taporty_flutter/generated/provider.dart';
 import 'package:resmedia_taporty_flutter/client/interface/screen/RestaurantScreen.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
@@ -14,7 +17,7 @@ import 'package:resmedia_taporty_flutter/common/model/ProductModel.dart';
 import 'package:rxdart/rxdart.dart';
 
 class CartBloc extends Bloc {
-  List<FirebaseModel> _resolver(Cart cart) {
+  List<FirebaseModel> _resolver(CartModel cart) {
     return null;
 
     /// Risolve gli id dei prodotti
@@ -22,15 +25,12 @@ class CartBloc extends Bloc {
 
   final Database _db = Database();
 
-  final Hand _hand = Hand();
-  final FormHandler _formHandler = FormHandler();
-
   UserBloc user = UserBloc.of();
   CartController _productsCartController;
 
   CartControllerRule get productsCartController => _productsCartController;
 
-  Stream<Cart> get outProductsCart => _productsCartController.outCart;
+  Stream<CartModel> get outProductsCart => _productsCartController.outCart;
 
   final BehaviorSubject<List<ProductModel>> _productController = BehaviorSubject();
 
@@ -44,15 +44,13 @@ class CartBloc extends Bloc {
   void dispose() {
     _productsCartController.close();
     _productController.close();
-    _hand.dispose();
-    _formHandler.dispose();
   }
 
-  Future<Cart> inDeleteCart(String restaurantId) async {
+  Future<CartModel> inDeleteCart(String restaurantId) async {
     final cart = await outProductsCart.first;
     final firebaseUser = await user.outFirebaseUser.first;
     var temp = cart.products;
-    List<ProductCart> products = List<ProductCart>();
+    List<ProductCartModel> products = List<ProductCartModel>();
     for (int i = 0; i < temp.length; i++) {
       if (temp.elementAt(i).userId == firebaseUser.uid && temp.elementAt(i).restaurantId == restaurantId) {
         products.add(temp.elementAt(i));
@@ -62,7 +60,7 @@ class CartBloc extends Bloc {
     for (int i = 0; i < products.length; i++) {
       _productsCartController.inRemove(products.elementAt(i).id, restaurantId, firebaseUser.uid);
     }
-    return Cart(products: products);
+    return CartModel(products: products);
   }
 
   Future<String> isAvailable(String date, String time, String restId) async {

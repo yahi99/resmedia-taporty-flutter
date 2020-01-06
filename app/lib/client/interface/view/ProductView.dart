@@ -5,6 +5,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
+import 'package:resmedia_taporty_flutter/client/logic/bloc/CartController.dart';
+import 'package:resmedia_taporty_flutter/client/model/CartModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/ProductModel.dart';
 import 'package:toast/toast.dart';
 import 'package:vibration/vibration.dart';
@@ -89,7 +91,7 @@ class CartStepperButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final UserBloc user = UserBloc.of();
-    return StreamBuilder<Cart>(
+    return StreamBuilder<CartModel>(
       stream: cartController.outCart,
       builder: (_, snapshot) {
         if (!snapshot.hasData) return const SizedBox();
@@ -109,14 +111,14 @@ class CartStepperButton extends StatelessWidget {
             }
             return StepperButton(
               direction: Axis.vertical,
-              child: Text('${cart.getProduct(model.id, model.restaurantId, snap.data.uid)?.countProducts ?? 0}'),
+              child: Text('${cart.getProduct(model.id, model.restaurantId, snap.data.uid)?.quantity ?? 0}'),
               onDecrease: () {
                 Vibration.vibrate(duration: 65);
                 cartController.inDecrease(model.id, model.restaurantId, snap.data.uid);
               },
               onIncrement: () {
                 final prod = cart.getProduct(model.id, model.restaurantId, snap.data.uid);
-                final count = (prod != null) ? prod.countProducts : 0;
+                final count = (prod != null) ? prod.quantity : 0;
                 if (model.maxQuantity != 0 && model.maxQuantity <= count)
                   Toast.show('Limite massimo prodotti', context, duration: 3);
                 else {

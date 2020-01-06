@@ -3,23 +3,23 @@ import 'package:easy_route/easy_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:resmedia_taporty_flutter/drivers/interface/view/TypeUserOrderView.dart';
+import 'package:resmedia_taporty_flutter/client/interface/view/TypeUserOrderView.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/OrdersBloc.dart';
 import 'package:resmedia_taporty_flutter/common/model/OrderModel.dart';
 
 import '../../../main.dart';
 
-class OrderListScreen extends StatefulWidget implements WidgetRoute {
-  static const ROUTE = "OrderListScreen";
+class OrderScreen extends StatefulWidget implements WidgetRoute {
+  static const ROUTE = "OrderScreen";
 
   @override
-  String get route => OrderListScreen.ROUTE;
+  String get route => OrderScreen.ROUTE;
 
   @override
-  OrderListScreenState createState() => OrderListScreenState();
+  OrderScreenState createState() => OrderScreenState();
 }
 
-class OrderListScreenState extends State<OrderListScreen> {
+class OrderScreenState extends State<OrderScreen> {
   static const double SPACE_CELL = 8.0;
 
   @override
@@ -50,39 +50,28 @@ class OrderListScreenState extends State<OrderListScreen> {
 class TypesRestaurantView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    /*CacheStreamBuilder<List<RestaurantModel>>(
-    stream: _restaurantBloc.outRestaurants,
-    builder: (context, snap) {
-    if (!snap.hasData) return Center(child: CircularProgressIndicator(),);
-    return Row(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: snap.data.map<Widget>((_model) {
-    return Expanded(child: InkWell(
-    onTap: () => EasyRouter.push(context, RestaurantScreen(model: _model),),
-    child: RestaurantCellView(model: _model,)),);
-    }).toList()..insert(1, SizedBox(width: SPACE_CELL,),),
-    );*/
     final orderBloc = OrdersBloc.of();
-    // orderBloc.setRestaurantStream();
-    return CacheStreamBuilder<List<UserOrderModel>>(
+    return CacheStreamBuilder<List<OrderModel>>(
       stream: orderBloc.outUserOrders,
-      builder: (context, snap) {
-        if (!snap.hasData)
+      builder: (context, orderSnapshots) {
+        if (!orderSnapshots.hasData)
           return Center(
             child: CircularProgressIndicator(),
           );
-        print(snap.hasData);
-        return (snap.data.length > 0)
+        return (orderSnapshots.data.length > 0)
             ? SingleChildScrollView(
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: ListView.builder(
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
-                    itemCount: snap.data.length,
+                    itemCount: orderSnapshots.data.length,
                     itemBuilder: (context, index) {
-                      return TypeOrderView(
-                        model: snap.data[index],
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: TypeOrderView(
+                          order: orderSnapshots.data[index],
+                        ),
                       );
                     },
                   ),

@@ -14,7 +14,6 @@ import 'package:resmedia_taporty_flutter/drivers/logic/bloc/CalendarBloc.dart';
 import 'package:resmedia_taporty_flutter/drivers/logic/bloc/DriverBloc.dart';
 import 'package:resmedia_taporty_flutter/drivers/logic/bloc/TurnBloc.dart';
 import 'package:resmedia_taporty_flutter/drivers/model/CalendarModel.dart';
-import 'package:resmedia_taporty_flutter/drivers/model/OrderModel.dart';
 import 'package:resmedia_taporty_flutter/drivers/model/TurnModel.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/OrdersBloc.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
@@ -42,8 +41,7 @@ class _HomeScreenDriverState extends State<HomeScreenDriver> {
 
   FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
 
-  void showNotification(
-      BuildContext context, Map<String, dynamic> message) async {
+  void showNotification(BuildContext context, Map<String, dynamic> message) async {
     print('Build dialog');
     showDialog(
       context: context,
@@ -80,10 +78,8 @@ class _HomeScreenDriverState extends State<HomeScreenDriver> {
   }
 
   void iOSPermission() {
-    _firebaseMessaging.requestNotificationPermissions(
-        IosNotificationSettings(sound: true, badge: true, alert: true));
-    _firebaseMessaging.onIosSettingsRegistered
-        .listen((IosNotificationSettings settings) {
+    _firebaseMessaging.requestNotificationPermissions(IosNotificationSettings(sound: true, badge: true, alert: true));
+    _firebaseMessaging.onIosSettingsRegistered.listen((IosNotificationSettings settings) {
       print("Settings registered: $settings");
     });
   }
@@ -128,8 +124,7 @@ class _HomeScreenDriverState extends State<HomeScreenDriver> {
             title: Text("Home"),
             actions: <Widget>[
               IconButton(
-                onPressed: () =>
-                    EasyRouter.push(context, AccountScreenDriver()),
+                onPressed: () => EasyRouter.push(context, AccountScreenDriver()),
                 icon: Icon(Icons.account_circle),
               )
             ],
@@ -150,8 +145,8 @@ class _HomeScreenDriverState extends State<HomeScreenDriver> {
           body: StreamBuilder<List<TurnModel>>(
             stream: Database().getTurns(user),
             builder: (ctx, snap1) {
-              return StreamBuilder<List<DriverOrderModel>>(
-                stream: Database().getDriverOrders(user),
+              return StreamBuilder<List<OrderModel>>(
+                stream: orderBloc.outDriverOrders,
                 builder: (context, driverOrderListSnapshot) {
                   return StreamBuilder<DateTime>(
                     stream: dateStream.stream,
@@ -164,22 +159,15 @@ class _HomeScreenDriverState extends State<HomeScreenDriver> {
                         physics: const NeverScrollableScrollPhysics(),
                         children: <Widget>[
                           OrdersPageDriver(
-                            model: categorized(
-                                StateCategory.values,
-                                driverOrderListSnapshot.data,
-                                (model) => model.state),
+                            model: categorized(OrderState.values, driverOrderListSnapshot.data, (model) => model.state),
                           ),
                           TurnWorkTabDriver(
-                            model: categorized(MonthCategory.values, snap1.data,
-                                (model) => model.month),
+                            model: categorized(MonthCategory.values, snap1.data, (model) => model.month),
                           ),
                           CalendarTabDriver(
                             //model: (!snap4.hasData)?snap4.data:List<CalendarModel>(),
                             //callback: callback,
-                            date: (snap3.hasData)
-                                ? snap3.data
-                                : DateTime(DateTime.now().year,
-                                    DateTime.now().month, DateTime.now().day),
+                            date: (snap3.hasData) ? snap3.data : DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
                             user: user,
                             dateStream: dateStream,
                           ),
@@ -203,9 +191,7 @@ Map<C, List<M>> categorized<C, M>(
   C getterCategory(M model),
 ) {
   final categories = allCategories.where((category) {
-    return models
-        .map(getterCategory)
-        .any((modelCategory) => category == modelCategory);
+    return models.map(getterCategory).any((modelCategory) => category == modelCategory);
   });
   return Map.fromIterable(
     categories,
@@ -213,9 +199,7 @@ Map<C, List<M>> categorized<C, M>(
       return category;
     },
     value: (category) {
-      return models
-          .where((model) => getterCategory(model) == category)
-          .toList();
+      return models.where((model) => getterCategory(model) == category).toList();
     },
   );
 }

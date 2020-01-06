@@ -1,4 +1,3 @@
-import 'package:easy_blocs/easy_blocs.dart';
 import 'package:easy_route/easy_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -6,9 +5,11 @@ import 'package:geocoder/geocoder.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:resmedia_taporty_flutter/client/interface/screen/LoginScreen.dart';
 import 'package:resmedia_taporty_flutter/common/helper/LoginHelper.dart';
+import 'package:resmedia_taporty_flutter/client/model/CartModel.dart';
+import 'package:resmedia_taporty_flutter/client/model/ProductCartModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/ProductModel.dart';
 import 'package:resmedia_taporty_flutter/data/config.dart';
-import 'package:resmedia_taporty_flutter/drivers/interface/screen/AccountScreen.dart';
+import 'package:resmedia_taporty_flutter/client/interface/screen/AccountScreen.dart';
 import 'package:resmedia_taporty_flutter/client/interface/page/InfoRestaurantPage.dart';
 import 'package:resmedia_taporty_flutter/client/interface/page/MenuPages.dart';
 import 'package:resmedia_taporty_flutter/client/interface/screen/CheckoutScreen.dart';
@@ -55,7 +56,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    List<ProductCart> productCartList = List<ProductCart>();
+    List<ProductCartModel> productCartList = List<ProductCartModel>();
     final restaurantBloc = RestaurantBloc.init(restaurantId: widget.restaurantModel.id);
     return DefaultTabController(
         length: 3,
@@ -65,9 +66,9 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
             centerTitle: true,
             title: Text(widget.restaurantModel.id),
             actions: <Widget>[
-              StreamBuilder<Cart>(
+              StreamBuilder<CartModel>(
                 stream: CartBloc.of().outProductsCart,
-                builder: (context, AsyncSnapshot<Cart> cartSnapshot) {
+                builder: (context, AsyncSnapshot<CartModel> cartSnapshot) {
                   return StreamBuilder<User>(
                     stream: UserBloc.of().outUser,
                     builder: (context, userSnapshot) {
@@ -79,7 +80,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                               for (int i = 0; i < productListSnapshot.data.length; i++) {
                                 var temp = productListSnapshot.data.elementAt(i);
                                 var find = cartSnapshot.data.getProduct(temp.id, temp.restaurantId, userSnapshot.data.model.id);
-                                if (find != null && find.countProducts > 0) {
+                                if (find != null && find.quantity > 0) {
                                   productCartList.add(find);
                                 }
                               }
@@ -175,7 +176,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
               IconButton(
                 icon: Icon(Icons.account_circle),
                 onPressed: () {
-                  EasyRouter.push(context, AccountScreenDriver());
+                  EasyRouter.push(context, AccountScreen());
                 },
               )
             ],

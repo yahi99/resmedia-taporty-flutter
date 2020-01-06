@@ -5,7 +5,7 @@ import 'package:geocoder/model.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:resmedia_taporty_flutter/client/interface/screen/LoginScreen.dart';
 import 'package:resmedia_taporty_flutter/common/helper/LoginHelper.dart';
-import 'package:resmedia_taporty_flutter/drivers/interface/screen/AccountScreen.dart';
+import 'package:resmedia_taporty_flutter/client/interface/screen/AccountScreen.dart';
 import 'package:resmedia_taporty_flutter/client/interface/page/CartPage.dart';
 import 'package:resmedia_taporty_flutter/client/interface/page/ConfirmPage.dart';
 import 'package:resmedia_taporty_flutter/client/interface/page/PaymentPage.dart';
@@ -69,7 +69,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> with TickerProviderStat
             IconButton(
               icon: Icon(Icons.account_circle),
               onPressed: () {
-                EasyRouter.push(context, AccountScreenDriver());
+                EasyRouter.push(context, AccountScreen());
               },
             )
           ],

@@ -1,16 +1,13 @@
-
 import 'package:easy_route/easy_route.dart';
 import 'package:easy_widget/easy_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:resmedia_taporty_flutter/data/config.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/page/OrdersPage.dart';
-import 'package:resmedia_taporty_flutter/drivers/model/OrderModel.dart';
 import 'package:resmedia_taporty_flutter/drivers/model/SubjectModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/OrderModel.dart';
 import 'package:rubber/rubber.dart';
-
-final house = LatLngModel(lat: 45.386485, lng: 11.895141);
 
 /*List<DriverOrderModel> currentOrder = [
   DriverOrderModel(
@@ -91,7 +88,7 @@ Map<String, List<OrderModel>> orders = {
 };*/
 
 class OrdersTabDriver extends StatefulWidget {
-  final Map<StateCategory, List<DriverOrderModel>> model;
+  final Map<OrderState, List<OrderModel>> model;
 
   OrdersTabDriver({
     @required this.model,
@@ -101,8 +98,7 @@ class OrdersTabDriver extends StatefulWidget {
   _OrdersTabDriverState createState() => _OrdersTabDriverState();
 }
 
-class _OrdersTabDriverState extends State<OrdersTabDriver>
-    with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
+class _OrdersTabDriverState extends State<OrdersTabDriver> with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   ScrollController _scrollController;
   RubberAnimationController _rubberController;
 
@@ -139,8 +135,7 @@ class _OrdersTabDriverState extends State<OrdersTabDriver>
           Material(
             elevation: 4.0,
             child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: SPACE, vertical: 8.0),
+              padding: const EdgeInsets.symmetric(horizontal: SPACE, vertical: 8.0),
               child: Text(
                 "Ordine N ",
                 style: tt.subhead,
@@ -196,9 +191,7 @@ class _OrdersTabDriverState extends State<OrdersTabDriver>
         elevation: 16.0,
         child: Navigator(
           initialRoute: OrdersPageDriver.ROUTE,
-          onGenerateRoute: EasyRouter.onGenerateRouteBuilder(
-              (_) => OrdersPageDriver(model: widget.model),
-              OrdersPageDriver.ROUTE),
+          onGenerateRoute: EasyRouter.onGenerateRouteBuilder((_) => OrdersPageDriver(model: widget.model), OrdersPageDriver.ROUTE),
         ),
       ),
     );
@@ -219,7 +212,6 @@ class _OrdersTabDriverState extends State<OrdersTabDriver>
   }
 
   @override
-  
   bool get wantKeepAlive => true;
 }
 
@@ -235,9 +227,7 @@ class RubberScrollController extends InheritedWidget {
         super(key: key, child: child);
 
   static ScrollController of(BuildContext context) {
-    return (context.inheritFromWidgetOfExactType(RubberScrollController)
-            as RubberScrollController)
-        ?.controller;
+    return (context.inheritFromWidgetOfExactType(RubberScrollController) as RubberScrollController)?.controller;
   }
 
   @override

@@ -1,6 +1,8 @@
-import 'package:easy_blocs/easy_blocs.dart';
 import 'package:easy_route/easy_route.dart';
 import 'package:flutter/material.dart';
+import 'package:resmedia_taporty_flutter/client/model/CartModel.dart';
+import 'package:resmedia_taporty_flutter/client/model/ProductCartModel.dart';
+import 'package:resmedia_taporty_flutter/common/model/ProductOrderModel.dart';
 import 'package:resmedia_taporty_flutter/data/config.dart';
 import 'package:resmedia_taporty_flutter/common/model/OrderModel.dart';
 
@@ -9,11 +11,11 @@ class DetailedOrderUser extends StatefulWidget implements WidgetRoute {
 
   String get route => DetailedOrderUser.ROUTE;
 
-  final UserOrderModel model;
+  final OrderModel order;
 
   DetailedOrderUser({
     Key key,
-    @required this.model,
+    @required this.order,
   }) : super(key: key);
 
   @override
@@ -54,44 +56,48 @@ class _DetailOrderRestaurantPageState extends State<DetailedOrderUser> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final tt = theme.textTheme;
-    final cart = Cart(products: widget.model.products);
     return Scaffold(
       appBar: AppBar(),
-      body: ListView(
-        physics: NeverScrollableScrollPhysics(),
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(SPACE),
-            child: Column(
-              children: <Widget>[
-                Wrap(
-                  runSpacing: 16.0,
-                  children: <Widget>[
-                    Text('Prodotti: ', style: tt.subtitle),
-                    ListView.separated(
-                        shrinkWrap: true,
-                        itemCount: cart.products.length,
-                        separatorBuilder: (ctx, index) {
-                          return Divider(
-                            height: 4.0,
-                          );
-                        },
-                        itemBuilder: (BuildContext ctx, int index) {
-                          return ProductView(model: cart.products.elementAt(index), number: cart.products.elementAt(index).countProducts);
-                        }),
-                  ],
-                ),
-              ],
+      body: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(SPACE),
+              child: Column(
+                children: <Widget>[
+                  Wrap(
+                    runSpacing: 16.0,
+                    children: <Widget>[
+                      Text('Prodotti: ', style: tt.subtitle),
+                      if (widget.order.products != null)
+                        ListView.separated(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemCount: widget.order.products.length,
+                          separatorBuilder: (ctx, index) {
+                            return Divider(
+                              height: 4.0,
+                            );
+                          },
+                          itemBuilder: (BuildContext ctx, int index) {
+                            return ProductView(model: widget.order.products[index], number: widget.order.products[index].quantity);
+                          },
+                        ),
+                      if (widget.order.products == null || widget.order.products.length == 0) Text("Nessun prodotto nel carrello")
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 }
 
 class ProductView extends StatelessWidget {
-  final ProductCart model;
+  final ProductOrderModel model;
   final int number;
   //final StreamController<String> imgStream=new StreamController.broadcast();
 
@@ -115,7 +121,7 @@ class ProductView extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Text('${model.id.substring(0, (15 < model.id.length) ? 15 : model.id.length)}'),
+                    Text('${model.name}'),
                     Text('€ ${model.price.toStringAsFixed(2)}'),
                   ],
                 ),

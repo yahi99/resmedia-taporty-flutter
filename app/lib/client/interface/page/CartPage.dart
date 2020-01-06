@@ -1,4 +1,3 @@
-import 'package:easy_blocs/easy_blocs.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +9,8 @@ import 'package:resmedia_taporty_flutter/client/interface/view/ProductViewCart.d
 import 'package:resmedia_taporty_flutter/client/logic/bloc/CartBloc.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/RestaurantBloc.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
+import 'package:resmedia_taporty_flutter/client/model/CartModel.dart';
+import 'package:resmedia_taporty_flutter/client/model/ProductCartModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/ProductModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/RestaurantModel.dart';
 import 'package:toast/toast.dart';
@@ -44,11 +45,11 @@ class _CartState extends State<CartPage> with AutomaticKeepAliveClientMixin {
     final restaurantBloc = RestaurantBloc.init(restaurantId: widget.model.id);
     final cartBloc = CartBloc.of();
     final user = UserBloc.of();
-    List<ProductCart> cartCounter = List<ProductCart>();
+    List<ProductCartModel> cartCounter = List<ProductCartModel>();
     return StreamBuilder<FirebaseUser>(
       stream: user.outFirebaseUser,
       builder: (context, uid) {
-        return StreamBuilder<Cart>(
+        return StreamBuilder<CartModel>(
             stream: cartBloc.productsCartController.outCart,
             builder: (context, cartSnapshot) {
               if (!cartSnapshot.hasData || !uid.hasData)
@@ -67,7 +68,7 @@ class _CartState extends State<CartPage> with AutomaticKeepAliveClientMixin {
                       for (int i = 0; i < productSnapshot.data.length; i++) {
                         var temp = productSnapshot.data.elementAt(i);
                         var find = cartSnapshot.data.getProduct(temp.id, temp.restaurantId, uid.data.uid);
-                        if (find != null && find.countProducts > 0) {
+                        if (find != null && find.quantity > 0) {
                           cartCounter.add(find);
                         }
                       }
@@ -119,11 +120,11 @@ class ProductsFoodDrinkBuilder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<Widget> list = List<Widget>();
-    List<ProductCart> prod = List<ProductCart>();
+    List<ProductCartModel> prod = List<ProductCartModel>();
     final UserBloc user = UserBloc.of();
     final update = RestaurantScreen.isOrdered;
     RestaurantScreen.isOrdered = false;
-    return StreamBuilder<Cart>(
+    return StreamBuilder<CartModel>(
       stream: cartBloc.productsCartController.outCart,
       builder: (_, cartSnapshot) {
         return StreamBuilder<FirebaseUser>(
@@ -135,7 +136,7 @@ class ProductsFoodDrinkBuilder extends StatelessWidget {
               for (int i = 0; i < products.length; i++) {
                 var temp = products.elementAt(i);
                 var find = cartSnapshot.data.getProduct(temp.id, temp.restaurantId, userSnapshot.data.uid);
-                if (find != null && find.countProducts > 0) {
+                if (find != null && find.quantity > 0) {
                   prod.add(find);
                   list.add(ProductViewCart(
                     model: temp,
@@ -143,7 +144,7 @@ class ProductsFoodDrinkBuilder extends StatelessWidget {
                   ));
                 }
               }
-              Cart carrello = Cart(products: prod);
+              CartModel carrello = CartModel(products: prod);
               list.add(
                 Container(
                   color: Colors.white10,

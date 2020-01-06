@@ -4,7 +4,6 @@ import 'package:resmedia_taporty_flutter/data/config.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/page/DetailOrderPage.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/sliver/SliverOrderVoid.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/view/OrderView.dart';
-import 'package:resmedia_taporty_flutter/drivers/model/OrderModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/OrderModel.dart';
 
 /*class OrdersPageDriver extends StatefulWidget implements WidgetRoute {
@@ -81,7 +80,7 @@ class OrdersPageDriver extends StatefulWidget implements WidgetRoute {
 
   String get route => OrdersPageDriver.ROUTE;
 
-  final Map<StateCategory, List<DriverOrderModel>> model;
+  final Map<OrderState, List<OrderModel>> model;
 
   OrdersPageDriver({
     @required this.model,
@@ -152,10 +151,9 @@ class _OrdersPageDriverState extends State<OrdersPageDriver> {
               slivers: widget.model.keys.map<Widget>((nameGroup) {
                 final driverOrderModels = widget.model[nameGroup];
                 return SliverPadding(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 8.0, horizontal: SPACE),
+                  padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: SPACE),
                   sliver: SliverOrderVoid(
-                    title: Text(translateOrderCategory(nameGroup)),
+                    title: Text(translateOrderState(nameGroup)),
                     childCount: driverOrderModels.length,
                     builder: (_context, index) {
                       return InkWell(
@@ -165,7 +163,7 @@ class _OrdersPageDriverState extends State<OrdersPageDriver> {
                               model: driverOrderModels[index],
                             )),
                         child: OrderView(
-                          driverOrderModel: driverOrderModels[index],
+                          orderModel: driverOrderModels[index],
                         ),
                       );
                     },

@@ -13,7 +13,7 @@ ProductModel _$ProductModelFromJson(Map json) {
     price: (json['price'] as num)?.toDouble(),
     maxQuantity: json['maxQuantity'] as int,
     type: json['type'] as String,
-    category: categoryFromJson(json['category'] as String),
+    category: _$enumDecodeNullable(_$ProductCategoryEnumMap, json['category']),
     restaurantId: json['restaurantId'] as String,
     imageUrl: json['imageUrl'] as String,
   );
@@ -29,12 +29,58 @@ Map<String, dynamic> _$ProductModelToJson(ProductModel instance) {
   }
 
   writeNotNull('path', instance.path);
-  writeNotNull('name', instance.name);
-  writeNotNull('price', instance.price);
-  writeNotNull('imageUrl', instance.imageUrl);
-  writeNotNull('maxQuantity', instance.maxQuantity);
-  writeNotNull('type', instance.type);
-  writeNotNull('category', categoryToJson(instance.category));
-  writeNotNull('restaurantId', instance.restaurantId);
+  val['name'] = instance.name;
+  val['price'] = instance.price;
+  val['imageUrl'] = instance.imageUrl;
+  val['maxQuantity'] = instance.maxQuantity;
+  val['type'] = instance.type;
+  val['category'] = _$ProductCategoryEnumMap[instance.category];
+  val['restaurantId'] = instance.restaurantId;
   return val;
 }
+
+T _$enumDecode<T>(
+  Map<T, dynamic> enumValues,
+  dynamic source, {
+  T unknownValue,
+}) {
+  if (source == null) {
+    throw ArgumentError('A value must be provided. Supported values: '
+        '${enumValues.values.join(', ')}');
+  }
+
+  final value = enumValues.entries
+      .singleWhere((e) => e.value == source, orElse: () => null)
+      ?.key;
+
+  if (value == null && unknownValue == null) {
+    throw ArgumentError('`$source` is not one of the supported values: '
+        '${enumValues.values.join(', ')}');
+  }
+  return value ?? unknownValue;
+}
+
+T _$enumDecodeNullable<T>(
+  Map<T, dynamic> enumValues,
+  dynamic source, {
+  T unknownValue,
+}) {
+  if (source == null) {
+    return null;
+  }
+  return _$enumDecode<T>(enumValues, source, unknownValue: unknownValue);
+}
+
+const _$ProductCategoryEnumMap = {
+  ProductCategory.APPETIZER: 'APPETIZER',
+  ProductCategory.FIRST_COURSES: 'FIRST_COURSES',
+  ProductCategory.MAIN_COURSES: 'MAIN_COURSES',
+  ProductCategory.SEAFOOD_MENU: 'SEAFOOD_MENU',
+  ProductCategory.MEAT_MENU: 'MEAT_MENU',
+  ProductCategory.SIDE_DISH: 'SIDE_DISH',
+  ProductCategory.DESERT: 'DESERT',
+  ProductCategory.DRINK: 'DRINK',
+  ProductCategory.WINE: 'WINE',
+  ProductCategory.ALCOHOLIC: 'ALCOHOLIC',
+  ProductCategory.COFFEE: 'COFFEE',
+};

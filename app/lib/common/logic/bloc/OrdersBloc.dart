@@ -2,91 +2,49 @@ import 'package:dash/dash.dart';
 import 'package:easy_blocs/easy_blocs.dart';
 import 'package:easy_firebase/easy_firebase.dart';
 import 'package:meta/meta.dart';
-import 'package:resmedia_taporty_flutter/drivers/model/OrderModel.dart';
+import 'package:resmedia_taporty_flutter/common/resources/OrderProvider.dart';
 import 'package:resmedia_taporty_flutter/generated/provider.dart';
-import 'package:resmedia_taporty_flutter/common/logic/database.dart';
 import 'package:resmedia_taporty_flutter/common/model/OrderModel.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'UserBloc.dart';
 
 class OrdersBloc implements Bloc {
-  final _db = Database();
+  final _orderProvider = OrderProvider();
 
   @protected
   dispose() {
-    if (_restaurantsControl != null) _restaurantsControl.close();
-    if (_restaurantsControlMod != null) _restaurantsControlMod.close();
     if (_driverControl != null) _driverControl.close();
     if (_userControl != null) _userControl.close();
   }
 
-  PublishSubject<List<RestaurantOrderModel>> _restaurantsControl;
+  PublishSubject<List<OrderModel>> _userControl;
 
-  Stream<List<RestaurantOrderModel>> get outOrders =>
-      _restaurantsControl.stream;
+  Stream<List<OrderModel>> get outUserOrders => _userControl.stream;
 
-  PublishSubject<List<RestaurantOrderModel>> _restaurantsControlMod;
+  PublishSubject<List<OrderModel>> _driverControl;
 
-  Stream<List<RestaurantOrderModel>> get outOrdersCtrl =>
-      _restaurantsControlMod.stream;
+  Stream<List<OrderModel>> get outDriverOrders => _driverControl.stream;
 
-  PublishSubject<List<UserOrderModel>> _userControl;
-
-  Stream<List<UserOrderModel>> get outUserOrders => _userControl.stream;
-
-  PublishSubject<List<DriverOrderModel>> _driverControl;
-
-  Stream<List<DriverOrderModel>> get outDriverOrders => _driverControl.stream;
-
-  Stream<Map<StateCategory, List<DriverOrderModel>>> get outCategorizedOrders =>
-      outDriverOrders.map((models) {
-        return categorized(
-            StateCategory.values, models, (model) => model.state);
+  Stream<Map<OrderState, List<OrderModel>>> get outCategorizedOrders => outDriverOrders.map((models) {
+        return categorized(OrderState.values, models, (model) => model.state);
       });
-  Stream<Map<StateCategory, List<RestaurantOrderModel>>>
-      get outCategorizedOrdersCtrl => outOrdersCtrl.map((models) {
-            return categorized(
-                StateCategory.values, models, (model) => model.state);
-          });
-
-  void see() {}
 
   Future setUserStream() async {
     final user = UserBloc.of();
     final restUser = await user.outFirebaseUser.first;
-    //final restId= await _db.getRestaurantId(restUser.uid);
-    //final str=await _db.getUserOrders(restUser.uid).first;
-    //
-    _userControl =
-        PublishController.catchStream(source: _db.getUserOrders(restUser.uid));
+    _userControl = PublishController.catchStream(source: _orderProvider.getUserOrders(restUser.uid));
     _userControl.listen(print);
-  }
-
-  void setCtrlStream() {
-    _restaurantsControlMod =
-        PublishController.catchStream(source: _db.getControlOrders());
-    _restaurantsControlMod.listen(print);
-  }
-
-  void setRestaurantStream(String restId) async {
-    _restaurantsControl =
-        PublishController.catchStream(source: _db.getRestaurantOrders(restId));
-    _restaurantsControl.listen(print);
   }
 
   void setDriverStream() async {
     final user = UserBloc.of();
     final restUser = await user.outFirebaseUser.first;
-    //final str=await _db.getDriverOrders(restUser.uid).first;
-    _driverControl = PublishController.catchStream(
-        source: _db.getDriverOrders(restUser.uid));
+    _driverControl = PublishController.catchStream(source: _orderProvider.getDriverOrders(restUser.uid));
     _driverControl.listen(print);
   }
 
-  OrdersBloc.instance() {
-    //_restaurantsControl = PublishController.catchStream(source: _db.getRestaurantOrders(uid, restaurantId));
-  }
+  OrdersBloc.instance();
 
   factory OrdersBloc.of() => $Provider.of<OrdersBloc>();
 

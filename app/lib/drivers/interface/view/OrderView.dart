@@ -1,30 +1,23 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:resmedia_taporty_flutter/common/model/OrderModel.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/widget/Order.dart';
-import 'package:resmedia_taporty_flutter/drivers/model/OrderModel.dart';
 import 'package:resmedia_taporty_flutter/drivers/model/SubjectModel.dart';
 import 'package:resmedia_taporty_flutter/main.dart';
 
 class OrderView extends StatelessWidget {
-  final DriverOrderModel driverOrderModel;
+  final OrderModel orderModel;
 
-  OrderView({Key key, @required this.driverOrderModel}) : super(key: key);
+  OrderView({Key key, @required this.orderModel}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final sub = driverOrderModel.subjects;
-    final temp = driverOrderModel.endTime.split(':');
-    final day = DateTime.parse(driverOrderModel.day);
-    final time = DateTime(day.year, day.month, day.day,
-        int.parse(temp.elementAt(0)), int.parse(temp.elementAt(1)));
+    final sub = orderModel.subjects;
     return Order(
-      isNear: (time.difference(DateTime.now()).inMinutes > 0 &&
-              time.difference(DateTime.now()).inMinutes <= 45)
-          ? true
-          : false,
-      endTime: driverOrderModel.endTime,
-      date: driverOrderModel.day,
+      isNear: (orderModel.preferredDeliveryTimestamp.difference(DateTime.now()).inMinutes > 0 && orderModel.preferredDeliveryTimestamp.difference(DateTime.now()).inMinutes <= 45) ? true : false,
+      endTime: "driverOrderModel.endTime",
+      date: "driverOrderModel.day",
       children: <Widget>[
         Padding(
           child: Divider(
@@ -86,8 +79,7 @@ class SubjectVoid extends StatelessWidget {
             padding: const EdgeInsets.only(bottom: 4.0),
             child: Text(
               title,
-              style: textTheme.subhead
-                  .copyWith(fontWeight: FontWeight.bold, color: red),
+              style: textTheme.subhead.copyWith(fontWeight: FontWeight.bold, color: red),
             ),
           ),
           Text(

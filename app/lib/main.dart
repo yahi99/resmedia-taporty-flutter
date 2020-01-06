@@ -4,6 +4,8 @@ import 'package:easy_widget/easy_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:resmedia_taporty_flutter/app_localization.dart';
 import 'package:resmedia_taporty_flutter/client/interface/screen/LoginScreen.dart';
 
 /// flutter build --flavor development -t lib/main-dev.dart
@@ -18,6 +20,7 @@ const red = Color(0xFFd50000),
 const STRIPE_PUBLIC_KEY = "pk_test_bI6Z2I2jFP7Tfjfm0AvIyWV500cS2fKdCO";
 
 void main() {
+  initializeDateFormatting();
   runApp(RepositoryBuilder(
     backgroundTask: (context, sharedPreferences) async {
       await AssetHandler.init(context);
@@ -56,8 +59,7 @@ class _TaportyState extends State<Taporty> {
           buttonColor: cls.secondary,
           colorScheme: cls,
           textTheme: ButtonTextTheme.primary,
-          shape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(32.0)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(32.0)),
         ),
         inputDecorationTheme: InputDecorationTheme(
           border: const OutlineInputBorder(
@@ -114,9 +116,11 @@ class _TaportyState extends State<Taporty> {
           ),
         ),
       ),
+      localizationsDelegates: [
+        AppLocalizationsDelegate(),
+      ],
       initialRoute: LoginScreen.ROUTE,
-      onGenerateRoute: EasyRouter.onGenerateRouteBuilder(
-              (_) => LoginScreen(), LoginScreen.ROUTE),
+      onGenerateRoute: EasyRouter.onGenerateRouteBuilder((_) => LoginScreen(), LoginScreen.ROUTE),
       navigatorObservers: <NavigatorObserver>[
         SwipeBackObserver(),
       ],

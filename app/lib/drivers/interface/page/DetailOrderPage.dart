@@ -1,11 +1,11 @@
 import 'package:easy_route/easy_route.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:resmedia_taporty_flutter/common/model/OrderModel.dart';
 import 'package:resmedia_taporty_flutter/data/config.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/page/SubjectOrderPage.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/view/OrderView.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/widget/Order.dart';
-import 'package:resmedia_taporty_flutter/drivers/model/OrderModel.dart';
 
 import '../widget/GoogleMapsUI.dart';
 
@@ -14,7 +14,7 @@ class DetailOrderPageDriver extends StatefulWidget implements WidgetRoute {
 
   String get route => DetailOrderPageDriver.ROUTE;
 
-  final DriverOrderModel model;
+  final OrderModel model;
 
   DetailOrderPageDriver({
     Key key,
@@ -44,10 +44,10 @@ class _DetailOrderPageDriverState extends State<DetailOrderPageDriver> {
     await PrimaryGoogleMapsController.of(context).future
       ..setMarkers(widget.model.subjects.map((subject) {
         return Marker(
-          markerId: MarkerId(subject.title),
-          position: subject.toLatLng(),
+          markerId: MarkerId(subject.name),
+          position: subject.position,
           infoWindow: InfoWindow(
-            title: subject.title,
+            title: subject.name,
             onTap: () => EasyRouter.push(
                 context,
                 SubjectOrderPageDriver(

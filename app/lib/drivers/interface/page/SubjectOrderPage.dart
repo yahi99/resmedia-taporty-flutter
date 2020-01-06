@@ -4,9 +4,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:resmedia_taporty_flutter/common/model/OrderModel.dart';
 import 'package:resmedia_taporty_flutter/data/config.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/widget/GoogleMapsUI.dart';
-import 'package:resmedia_taporty_flutter/drivers/model/OrderModel.dart';
 import 'package:resmedia_taporty_flutter/drivers/model/SubjectModel.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
 import 'package:resmedia_taporty_flutter/common/logic/database.dart';
@@ -18,7 +18,7 @@ class SubjectOrderPageDriver extends StatefulWidget implements WidgetRoute {
   String get route => SubjectOrderPageDriver.ROUTE;
 
   final SubjectModel model;
-  final DriverOrderModel orderModel;
+  final OrderModel orderModel;
   final bool isRest;
   final LatLng userPos;
 
@@ -45,7 +45,7 @@ class _SubjectOrderPageDriverState extends State<SubjectOrderPageDriver> {
   initMap(BuildContext context) async {
     if (isDeactivate) return;
     await PrimaryGoogleMapsController.of(context).future
-      ..animateCamera(CameraUpdate.newLatLng(widget.model.toLatLng()));
+      ..animateCamera(CameraUpdate.newLatLng(widget.model.position));
   }
 
   void _askPermission(BuildContext context, String state) async {
@@ -75,7 +75,7 @@ class _SubjectOrderPageDriverState extends State<SubjectOrderPageDriver> {
                         onPressed: () async {
                           EasyRouter.pop(context);
                           print(widget.orderModel);
-                          Database().updateState(state, widget.orderModel.uid, widget.orderModel.id, widget.orderModel.restId, (await UserBloc.of().outUser.first).model.id);
+                          Database().updateState(state, widget.orderModel.customerId, widget.orderModel.id, widget.orderModel.restaurantId, (await UserBloc.of().outUser.first).model.id);
                         },
                       ),
                     ],
@@ -134,7 +134,7 @@ class _SubjectOrderPageDriverState extends State<SubjectOrderPageDriver> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Text(
-                              widget.model.title,
+                              widget.model.name,
                               style: tt.subtitle,
                             ),
                             Text(
@@ -197,12 +197,12 @@ class _SubjectOrderPageDriverState extends State<SubjectOrderPageDriver> {
                       color: cls.secondaryVariant,
                       onPressed: () async {
                         //TODO: qui và modificata la mappa mettendo il percorso
-                        final restModel = (await Database().getPos(widget.orderModel.restId));
+                        final restModel = (await Database().getPos(widget.orderModel.restaurantId));
                         final restPos = LatLng(restModel.coordinates.latitude, restModel.coordinates.longitude);
                         final driverPos = (await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.high));
                         final driverLat = LatLng(driverPos.latitude, driverPos.longitude);
 
-                        routeBloc.getRouteTo(driverLat, widget.isRest ? restPos : LatLng(widget.orderModel.latR, widget.orderModel.lngR), context);
+                        routeBloc.getRouteTo(driverLat, widget.isRest ? restPos : LatLng(widget.orderModel.customerCoordinates.latitude, widget.orderModel.customerCoordinates.longitude), context);
                       },
                       child: Text(
                         "Start",

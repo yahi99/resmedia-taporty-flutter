@@ -6,14 +6,15 @@ import 'package:meta/meta.dart';
 
 part 'ProductModel.g.dart';
 
-@JsonSerializable(anyMap: true, explicitToJson: true, includeIfNull: false)
+/// Represents a product that the restaurant sells
+
+@JsonSerializable(anyMap: true, explicitToJson: true)
 class ProductModel extends FirebaseModel {
   final String name;
   final double price;
   final String imageUrl;
   final int maxQuantity;
   final String type;
-  @JsonKey(fromJson: categoryFromJson, toJson: categoryToJson)
   final ProductCategory category;
   final String restaurantId;
 
@@ -39,64 +40,6 @@ class ProductModel extends FirebaseModel {
 }
 
 enum ProductCategory { APPETIZER, FIRST_COURSES, MAIN_COURSES, SEAFOOD_MENU, MEAT_MENU, SIDE_DISH, DESERT, DRINK, WINE, ALCOHOLIC, COFFEE }
-
-ProductCategory categoryFromJson(String input) {
-  switch (input) {
-    case 'appetizer':
-      return ProductCategory.APPETIZER;
-    case 'first_courses':
-      return ProductCategory.FIRST_COURSES;
-    case 'main_courses':
-      return ProductCategory.MAIN_COURSES;
-    case 'seafood_menu':
-      return ProductCategory.SEAFOOD_MENU;
-    case 'meat_menu':
-      return ProductCategory.MEAT_MENU;
-    case 'side_dish':
-      return ProductCategory.SIDE_DISH;
-    case 'desert':
-      return ProductCategory.DESERT;
-    case 'drink':
-      return ProductCategory.DRINK;
-    case 'wine':
-      return ProductCategory.WINE;
-    case 'alcoholic':
-      return ProductCategory.ALCOHOLIC;
-    case 'coffee':
-      return ProductCategory.COFFEE;
-    default:
-      return ProductCategory.MAIN_COURSES;
-  }
-}
-
-String categoryToJson(ProductCategory input) {
-  switch (input) {
-    case ProductCategory.APPETIZER:
-      return 'appetizer';
-    case ProductCategory.FIRST_COURSES:
-      return 'first_courses';
-    case ProductCategory.MAIN_COURSES:
-      return 'main_courses';
-    case ProductCategory.SEAFOOD_MENU:
-      return 'seafood_menu';
-    case ProductCategory.MEAT_MENU:
-      return 'meat_menu';
-    case ProductCategory.SIDE_DISH:
-      return 'side_dish';
-    case ProductCategory.DESERT:
-      return 'desert';
-    case ProductCategory.DRINK:
-      return 'drink';
-    case ProductCategory.WINE:
-      return 'wine';
-    case ProductCategory.ALCOHOLIC:
-      return 'alcoholic';
-    case ProductCategory.COFFEE:
-      return 'coffee';
-    default:
-      return 'appetizer';
-  }
-}
 
 String translateProductCategory(ProductCategory category) {
   switch (category) {

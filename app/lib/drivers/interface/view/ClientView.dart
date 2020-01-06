@@ -1,8 +1,8 @@
 import 'package:easy_route/easy_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:resmedia_taporty_flutter/common/model/OrderModel.dart';
 import 'package:resmedia_taporty_flutter/data/config.dart';
-import 'package:resmedia_taporty_flutter/drivers/model/OrderModel.dart';
 import 'package:resmedia_taporty_flutter/drivers/model/SubjectModel.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
 import 'package:resmedia_taporty_flutter/common/logic/database.dart';
@@ -10,11 +10,10 @@ import 'package:resmedia_taporty_flutter/common/logic/database.dart';
 //visualizzazione cliente
 // ignore: must_be_immutable
 class ClientView extends StatefulWidget {
-  final DriverOrderModel orderModel;
+  final OrderModel orderModel;
   final SubjectModel model;
 
-  ClientView({Key key, @required this.model, @required this.orderModel})
-      : super(key: key);
+  ClientView({Key key, @required this.model, @required this.orderModel}) : super(key: key);
 
   @override
   _StateClientView createState() => _StateClientView();
@@ -28,17 +27,14 @@ class _StateClientView extends State<ClientView> {
         final theme = Theme.of(context);
         final cls = theme.colorScheme;
         return AlertDialog(
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(20))),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
           content: Wrap(
             alignment: WrapAlignment.center,
             runSpacing: SPACE * 2,
             children: <Widget>[
               Column(
                 children: <Widget>[
-                  Text((state == 'PICKED_UP')
-                      ? 'Sei sicuro di avere ritirato il pacco?'
-                      : 'Sei sicuro di aver consegnato il pacco?'),
+                  Text((state == 'PICKED_UP') ? 'Sei sicuro di avere ritirato il pacco?' : 'Sei sicuro di aver consegnato il pacco?'),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
@@ -52,12 +48,7 @@ class _StateClientView extends State<ClientView> {
                         icon: Icon(Icons.check),
                         onPressed: () async {
                           EasyRouter.pop(context);
-                          Database().updateState(
-                              state,
-                              widget.orderModel.uid,
-                              widget.orderModel.id,
-                              widget.orderModel.restId,
-                              (await UserBloc.of().outUser.first).model.id);
+                          Database().updateState(state, widget.orderModel.customerId, widget.orderModel.id, widget.orderModel.restaurantId, (await UserBloc.of().outUser.first).model.id);
                         },
                       ),
                     ],
@@ -88,7 +79,7 @@ class _StateClientView extends State<ClientView> {
                 'Fornitore',
                 style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
               ),
-              Text(widget.model.title),
+              Text(widget.model.name),
               Text(widget.model.address)
             ],
           )
@@ -100,8 +91,7 @@ class _StateClientView extends State<ClientView> {
           RaisedButton(
             onPressed: () {},
             color: buttonColor,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30.0)),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
             child: Text(
               'Chiama',
               style: textButtonTheme,
@@ -115,8 +105,7 @@ class _StateClientView extends State<ClientView> {
           children: <Widget>[
             Expanded(
               child: RaisedButton(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(25.0)),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25.0)),
                 padding: const EdgeInsets.all(10.0),
                 onPressed: () {},
                 color: theme.primaryColor,
@@ -128,8 +117,7 @@ class _StateClientView extends State<ClientView> {
             ),
             Expanded(
               child: RaisedButton(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(25.0)),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25.0)),
                 padding: const EdgeInsets.all(10.0),
                 color: theme.secondaryHeaderColor,
                 onPressed: () {

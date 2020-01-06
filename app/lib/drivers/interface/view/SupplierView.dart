@@ -27,7 +27,7 @@ class SupplierView extends StatelessWidget {
                   'Fornitore',
                   style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
                 ),
-                Text(supplier.title),
+                Text(supplier.name),
                 Text(supplier.address)
               ],
             )
@@ -39,8 +39,7 @@ class SupplierView extends StatelessWidget {
             RaisedButton(
               onPressed: () {},
               color: buttonColor,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30.0)),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
               child: Text(
                 'Chiama',
                 style: textButtonTheme,
@@ -49,36 +48,32 @@ class SupplierView extends StatelessWidget {
           ],
         ),
         Expanded(
-          child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Expanded(
-                  child: RaisedButton(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(25.0)),
-                    padding: const EdgeInsets.all(10.0),
-                    onPressed: () {},
-                    color: theme.primaryColor,
-                    child: Text(
-                      'Start',
-                      style: theme.textTheme.button,
-                    ),
-                  ),
+          child: Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+            Expanded(
+              child: RaisedButton(
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25.0)),
+                padding: const EdgeInsets.all(10.0),
+                onPressed: () {},
+                color: theme.primaryColor,
+                child: Text(
+                  'Start',
+                  style: theme.textTheme.button,
                 ),
-                Expanded(
-                  child: RaisedButton(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(25.0)),
-                    padding: const EdgeInsets.all(10.0),
-                    color: theme.secondaryHeaderColor,
-                    onPressed: () {},
-                    child: Text(
-                      'Ritirata',
-                      style: theme.textTheme.button,
-                    ),
-                  ),
+              ),
+            ),
+            Expanded(
+              child: RaisedButton(
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25.0)),
+                padding: const EdgeInsets.all(10.0),
+                color: theme.secondaryHeaderColor,
+                onPressed: () {},
+                child: Text(
+                  'Ritirata',
+                  style: theme.textTheme.button,
                 ),
-              ]),
+              ),
+            ),
+          ]),
         ),
       ],
     );

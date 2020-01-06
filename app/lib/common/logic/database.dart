@@ -13,9 +13,9 @@ import 'package:geocoder/model.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server/gmail.dart';
+import 'package:resmedia_taporty_flutter/client/model/CartModel.dart';
 import 'package:resmedia_taporty_flutter/data/collections.dart' as collections;
 import 'package:resmedia_taporty_flutter/drivers/model/CalendarModel.dart';
-import 'package:resmedia_taporty_flutter/drivers/model/OrderModel.dart';
 import 'package:resmedia_taporty_flutter/drivers/model/ShiftModel.dart';
 import 'package:resmedia_taporty_flutter/drivers/model/TurnModel.dart';
 import 'package:resmedia_taporty_flutter/common/logic/Collections.dart';
@@ -63,22 +63,6 @@ class Database extends FirebaseDatabase with MixinFirestoreStripeProvider, Resta
 
   Future<void> createUserGoogle({@required String uid, @required String nominative, @required String email}) async {
     await fs.collection(collections.USERS).document(uid).setData({'nominative': nominative, users.fcmToken: await fbMs.getToken(), 'email': email});
-  }
-
-  Stream<List<UserOrderModel>> getUserOrders(String uid) {
-    final data = fs.collection(collections.USERS).document(uid).collection('user_orders').snapshots();
-
-    return data.map((query) {
-      return query.documents.map((snap) => UserOrderModel.fromFirebase(snap)).toList();
-    });
-  }
-
-  Stream<List<RestaurantOrderModel>> getControlOrders() {
-    final data = fs.collection('control_orders').snapshots();
-
-    return data.map((query) {
-      return query.documents.map((snap) => RestaurantOrderModel.fromFirebase(snap)).toList();
-    });
   }
 
   Stream<List<UserModel>> getDriverList() {
@@ -209,10 +193,10 @@ class Database extends FirebaseDatabase with MixinFirestoreStripeProvider, Resta
   }*/
 
   //if the order deletes and the user has already paid the control panel can reimburs the user
-  Future<void> deleteOrder(UserOrderModel order, String uid) async {
+  Future<void> deleteOrder(OrderModel order, String uid) async {
     await fs.collection('users').document(uid).collection('user_orders').document(order.id).updateData({'state': 'CANCELLED'});
     await fs.collection('restaurants').document(order.restaurantId).collection('restaurant_orders').document(order.id).updateData({'state': 'CANCELLED'});
-    await fs.collection('users').document(order.driver).collection('driver_orders').document(order.id).updateData({'state': 'CANCELLED'});
+    await fs.collection('users').document(order.driverId).collection('driver_orders').document(order.id).updateData({'state': 'CANCELLED'});
     await fs.collection('control_orders').document(order.id).updateData({'state': 'CANCELLED'});
   }
 
@@ -245,34 +229,6 @@ class Database extends FirebaseDatabase with MixinFirestoreStripeProvider, Resta
   Future<void> deleteProduct(String product, String restId, String type) async {
     //TODO delete image
     await fs.collection('restaurants').document(restId).collection(type).document(product).delete();
-  }
-
-  Future<void> deleteOrderFinal(RestaurantOrderModel model) async {
-    await fs.collection('users').document(model.uid).collection('user_orders').document(model.id).delete();
-    await fs.collection('users').document(model.driver).collection('driver_orders').document(model.id).delete();
-    await fs.collection('restaurants').document(model.restaurantId).collection('restaurant_orders').document(model.id).delete();
-    await fs.collection('control_orders').document(model.id).delete();
-  }
-
-  Future<void> updateBank(RestaurantOrderModel model, double total) async {
-    final restInc = IncomeModel.fromFirebase(await fs.collection('restaurants').document(model.restaurantId).collection('income').document(model.day).get());
-    final totalInc = IncomeModel.fromFirebase(await fs.collection('income').document(model.day).get());
-    if (restInc == null) {
-      await fs.collection('restaurants').document(model.restaurantId).collection('income').document(model.day).setData({'totalTransactions': 1, 'dailyTotal': total, 'day': model.day});
-      if (totalInc == null) {
-        await fs.collection('income').document(model.day).setData({'totalTransactions': 1, 'dailyTotal': total, 'day': model.day});
-      } else {
-        await fs.collection('income').document(model.day).updateData({'totalTransactions': totalInc.totalTransactions + 1, 'dailyTotal': totalInc.dailyTotal + total, 'day': model.day});
-      }
-    } else {
-      await fs
-          .collection('restaurants')
-          .document(model.restaurantId)
-          .collection('income')
-          .document(model.day)
-          .updateData({'totalTransactions': restInc.totalTransactions + 1, 'dailyTotal': restInc.dailyTotal + total, 'day': model.day});
-      await fs.collection('income').document(model.day).updateData({'totalTransactions': restInc.totalTransactions + 1, 'dailyTotal': restInc.dailyTotal + total, 'day': model.day});
-    }
   }
 
   void saveToken(String fcmToken, String uid) async {
@@ -341,7 +297,7 @@ class Database extends FirebaseDatabase with MixinFirestoreStripeProvider, Resta
   Future<void> createOrder(
       {@required String uid,
       @required String phone,
-      @required Cart model,
+      @required CartModel model,
       @required String driver,
       @required Position userPos,
       @required String addressR,
@@ -437,28 +393,9 @@ class Database extends FirebaseDatabase with MixinFirestoreStripeProvider, Resta
     return RestaurantModel.fromJson(res.data);
   }
 
-  Stream<List<RestaurantOrderModel>> getRestaurantOrders(String restaurantId) {
-    final data = fs.collection(collections.RESTAURANTS).document(restaurantId).collection('restaurant_orders').snapshots();
-    return data.map((query) {
-      return query.documents.map((snap) => RestaurantOrderModel.fromFirebase(snap)).toList();
-    });
-  }
-
-  Stream<RestaurantOrderModel> getRestaurantOrder(String restaurantId, String oid) {
-    return fs.collection(collections.RESTAURANTS).document(restaurantId).collection('restaurant_orders').document(oid).snapshots().map((snap) {
-      return RestaurantOrderModel.fromFirebase(snap);
-    });
-  }
-
-  Stream<RestaurantOrderModel> getCtrlOrder(String oid) {
-    return fs.collection('control_orders').document(oid).snapshots().map((snap) {
-      return RestaurantOrderModel.fromFirebase(snap);
-    });
-  }
-
-  Stream<UserOrderModel> getUserOrder(String uid, String oid) {
+  Stream<OrderModel> getUserOrder(String uid, String oid) {
     return fs.collection(collections.USERS).document(uid).collection('user_orders').document(oid).snapshots().map((snap) {
-      return UserOrderModel.fromFirebase(snap);
+      return OrderModel.fromFirebase(snap);
     });
   }
 
@@ -553,14 +490,6 @@ class Database extends FirebaseDatabase with MixinFirestoreStripeProvider, Resta
 
     return data.map((query) {
       return query.documents.map((snap) => CalendarModel.fromFirebase(snap)).toList();
-    });
-  }
-
-  Stream<List<DriverOrderModel>> getDriverOrders(String uid) {
-    final data = fs.collection(collections.USERS).document(uid).collection('driver_orders').snapshots();
-
-    return data.map((query) {
-      return query.documents.map((snap) => DriverOrderModel.fromFirebase(snap)).toList();
     });
   }
 

@@ -18,7 +18,7 @@ class TimeslotModel {
 
   static DateTime timeFromJson(String input) {
     if (input == null) return null;
-    return DateFormat("HH:mm").parse(input, true);
+    return DateFormat("HH:mm").parse(input);
   }
 
   static String timeToJson(DateTime input) {

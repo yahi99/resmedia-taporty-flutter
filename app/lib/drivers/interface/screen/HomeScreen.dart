@@ -15,7 +15,7 @@ import 'package:resmedia_taporty_flutter/drivers/logic/bloc/DriverBloc.dart';
 import 'package:resmedia_taporty_flutter/drivers/logic/bloc/TurnBloc.dart';
 import 'package:resmedia_taporty_flutter/drivers/model/CalendarModel.dart';
 import 'package:resmedia_taporty_flutter/drivers/model/TurnModel.dart';
-import 'package:resmedia_taporty_flutter/common/logic/bloc/OrdersBloc.dart';
+import 'package:resmedia_taporty_flutter/common/logic/bloc/OrderBloc.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
 import 'package:resmedia_taporty_flutter/common/resources/Database.dart';
 import 'package:resmedia_taporty_flutter/common/model/OrderModel.dart';
@@ -112,7 +112,7 @@ class _HomeScreenDriverState extends State<HomeScreenDriver> {
   Widget build(BuildContext context) {
     dialog = context;
     final turnBloc = TurnBloc.of();
-    final orderBloc = OrdersBloc.of();
+    final orderBloc = OrderBloc.of();
     //final timeBloc = TimeBloc.of();
     final calStream = StreamController<List<CalendarModel>>();
     return DefaultPapyrusController(

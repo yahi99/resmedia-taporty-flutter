@@ -39,10 +39,10 @@ class $Provider extends Provider {
           return BlocCache.getBlocInstance(
               "CartBloc", () => CartBloc.instance());
         }
-      case OrdersBloc:
+      case OrderBloc:
         {
           return BlocCache.getBlocInstance(
-              "OrdersBloc", () => OrdersBloc.instance());
+              "OrderBloc", () => OrderBloc.instance());
         }
       case TurnBloc:
         {
@@ -95,9 +95,9 @@ class $Provider extends Provider {
           BlocCache.dispose("CartBloc");
           break;
         }
-      case OrdersBloc:
+      case OrderBloc:
         {
-          BlocCache.dispose("OrdersBloc");
+          BlocCache.dispose("OrderBloc");
           break;
         }
       case TurnBloc:

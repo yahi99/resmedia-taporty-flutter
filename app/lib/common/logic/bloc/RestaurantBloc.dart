@@ -63,11 +63,11 @@ class RestaurantBloc implements Bloc {
 
   factory RestaurantBloc.init({@required String restaurantId}) {
     final bc = RestaurantBloc.of();
-    bc._restaurantController = BehaviorController.catchStream(source: bc._db.getRestaurant(restaurantId));
-    bc._productsController = BehaviorController.catchStream(source: bc._db.getProducts(restaurantId));
-    bc._foodsController = BehaviorController.catchStream(source: bc._db.getFoods(restaurantId));
-    bc._drinksController = BehaviorController.catchStream(source: bc._db.getDrinks(restaurantId));
-    bc._restaurantReviewController = BehaviorController.catchStream(source: bc._db.getReviews(restaurantId));
+    bc._restaurantController = BehaviorController.catchStream(source: bc._db.getRestaurantStream(restaurantId));
+    bc._productsController = BehaviorController.catchStream(source: bc._db.getProductListStream(restaurantId));
+    bc._foodsController = BehaviorController.catchStream(source: bc._db.getFoodListStream(restaurantId));
+    bc._drinksController = BehaviorController.catchStream(source: bc._db.getDrinkListStream(restaurantId));
+    bc._restaurantReviewController = BehaviorController.catchStream(source: bc._db.getReviewListStream(restaurantId));
     return bc;
   }
 

@@ -17,14 +17,14 @@ import 'package:resmedia_taporty_flutter/common/model/RestaurantModel.dart';
 import 'package:toast/toast.dart';
 
 class ConfirmPage extends StatefulWidget {
-  final RestaurantModel model;
+  final RestaurantModel restaurant;
   final Position position;
   final Address description;
   final TabController controller;
 
   ConfirmPage({
     Key key,
-    @required this.model,
+    @required this.restaurant,
     @required this.description,
     @required this.position,
     @required this.controller,
@@ -99,7 +99,7 @@ class _ConfirmState extends State<ConfirmPage> with AutomaticKeepAliveClientMixi
   Widget build(BuildContext context) {
     super.build(context);
     final tt = Theme.of(context);
-    final restaurantBloc = RestaurantBloc.init(restaurantId: widget.model.id);
+    final restaurantBloc = RestaurantBloc.init(restaurantId: widget.restaurant.id);
     final cartBloc = CartBloc.of();
     //cartBloc.setSigner(model.id);
     final user = UserBloc.of();
@@ -128,7 +128,7 @@ class _ConfirmState extends State<ConfirmPage> with AutomaticKeepAliveClientMixi
                 );
               return ProductsFoodDrinkBuilder(
                 products: productListSnapshot.data,
-                id: widget.model.id,
+                id: widget.restaurant.id,
               );
             },
           ),
@@ -145,10 +145,10 @@ class _ConfirmState extends State<ConfirmPage> with AutomaticKeepAliveClientMixi
                 onPressed: () {
                   if (valid(context)) {
                     final state = MyInheritedWidget.of(context);
-                    cartBloc.isAvailable(state.date, state.time, widget.model.id).then((driver) {
+                    cartBloc.isAvailable(state.date, state.time, widget.restaurant.id).then((driver) {
                       if (driver != null) {
                         cartBloc
-                            .signer(widget.model.id, driver, widget.position, state.phone, widget.description.addressLine, state.time, state.endTime, state.fingerprint, state.date, state.name)
+                            .signer(widget.restaurant.id, driver, widget.position, state.phone, widget.description.addressLine, state.time, state.endTime, state.fingerprint, state.date, state.name)
                             .then((isDone) {
                           RestaurantScreen.isOrdered = false;
                           Future.delayed(Duration.zero, () => _showPaymentDialog(context));

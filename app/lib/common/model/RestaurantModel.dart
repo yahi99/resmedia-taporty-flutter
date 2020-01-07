@@ -6,6 +6,7 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 import 'package:resmedia_taporty_flutter/common/helper/GeopointSerialization.dart';
 import 'package:resmedia_taporty_flutter/common/model/HolidayModel.dart';
+import 'package:resmedia_taporty_flutter/common/model/ShiftModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/TimetableModel.dart';
 
 part 'RestaurantModel.g.dart';
@@ -28,17 +29,23 @@ class RestaurantModel extends FirebaseModel {
 
   final bool isDisabled;
 
+  bool isHoliday({DateTime datetime}) {
+    if (datetime == null) datetime = DateTime.now();
+    for (HolidayModel h in holidays) {
+      if ((h.start.month < datetime.month || (h.start.month == datetime.month && h.start.day <= datetime.day)) &&
+          (h.end.month > datetime.month || (h.end.month == datetime.month && h.end.day >= datetime.day))) return true;
+
+      if ((h.start.month < datetime.month || (h.start.month == datetime.month && h.start.day <= datetime.day)) && h.start.isAfter(h.end)) return true;
+
+      if ((h.end.month > datetime.month || (h.end.month == datetime.month && h.end.day >= datetime.day)) && h.start.isAfter(h.end)) return true;
+    }
+    return false;
+  }
+
   bool isOpen({DateTime datetime}) {
     if (datetime == null) datetime = DateTime.now();
 
-    for (HolidayModel h in holidays) {
-      if ((h.start.month < datetime.month || (h.start.month == datetime.month && h.start.day <= datetime.day)) &&
-          (h.end.month > datetime.month || (h.end.month == datetime.month && h.end.day >= datetime.day))) return false;
-
-      if ((h.start.month < datetime.month || (h.start.month == datetime.month && h.start.day <= datetime.day)) && h.start.isAfter(h.end)) return false;
-
-      if ((h.end.month > datetime.month || (h.end.month == datetime.month && h.end.day >= datetime.day)) && h.start.isAfter(h.end)) return false;
-    }
+    if (isHoliday(datetime: datetime)) return false;
 
     var timetable = weekdayTimetable[datetime.weekday];
 
@@ -53,6 +60,21 @@ class RestaurantModel extends FirebaseModel {
     }
 
     return false;
+  }
+
+  List<ShiftModel> getShifts(DateTime day) {
+    List<ShiftModel> shifts = new List<ShiftModel>();
+    if (isOpen(datetime: day)) return shifts;
+
+    for (var timeslot in weekdayTimetable[day.weekday].timeslots) {
+      var currentShift = timeslot.start.add(Duration(milliseconds: day.millisecondsSinceEpoch));
+      var end = timeslot.end.add(Duration(milliseconds: day.millisecondsSinceEpoch));
+      while (currentShift != end) {
+        shifts.add(ShiftModel(startTime: DateTime.parse(currentShift.toIso8601String()), endTime: DateTime.parse((currentShift = currentShift.add(Duration(minutes: 15))).toIso8601String())));
+      }
+    }
+
+    return shifts;
   }
 
   String getTimetableString({DateTime datetime}) {

@@ -4,7 +4,7 @@ import 'package:resmedia_taporty_flutter/drivers/logic/bloc/CalendarBloc.dart';
 import 'package:resmedia_taporty_flutter/drivers/logic/bloc/TimeBloc.dart';
 import 'package:resmedia_taporty_flutter/drivers/logic/bloc/TurnBloc.dart';
 import 'package:resmedia_taporty_flutter/client/logic/bloc/CartBloc.dart';
-import 'package:resmedia_taporty_flutter/common/logic/bloc/OrdersBloc.dart';
+import 'package:resmedia_taporty_flutter/common/logic/bloc/OrderBloc.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/RestaurantBloc.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/RestaurantsBloc.dart';
 import 'package:resmedia_taporty_flutter/client/logic/bloc/SignUpMoreBloc.dart';
@@ -18,7 +18,7 @@ part 'provider.g.dart';
 @BlocProvider.register(RepositoryBloc)
 @BlocProvider.register(SignUpMoreBloc)
 @BlocProvider.register(CartBloc)
-@BlocProvider.register(OrdersBloc)
+@BlocProvider.register(OrderBloc)
 @BlocProvider.register(TurnBloc)
 @BlocProvider.register(CalendarBloc)
 @BlocProvider.register(TimeBloc)

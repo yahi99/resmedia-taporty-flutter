@@ -6,4 +6,6 @@ class Collections {
   static const DAYS = 'days';
   static const TIMES = 'times';
   static const ORDERS = 'orders';
+  static const SHIFTS = 'shifts';
+  static const DRIVER_RESERVATIONS = 'driver_reservations';
 }

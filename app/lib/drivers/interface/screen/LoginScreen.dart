@@ -9,7 +9,7 @@ import 'package:resmedia_taporty_flutter/drivers/interface/screen/HomeScreen.dar
 import 'package:resmedia_taporty_flutter/drivers/logic/bloc/CalendarBloc.dart';
 import 'package:resmedia_taporty_flutter/drivers/logic/bloc/TurnBloc.dart';
 import 'package:resmedia_taporty_flutter/common/interface/view/LogoView.dart';
-import 'package:resmedia_taporty_flutter/common/logic/bloc/OrdersBloc.dart';
+import 'package:resmedia_taporty_flutter/common/logic/bloc/OrderBloc.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
 import 'package:resmedia_taporty_flutter/common/resources/Database.dart';
 import 'package:resmedia_taporty_flutter/common/model/UserModel.dart';
@@ -66,7 +66,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }*/
 
   Future<void> setDriver(String uid) async {
-    final orderBloc = OrdersBloc.of();
+    final orderBloc = OrderBloc.of();
     await orderBloc.setDriverStream();
     final turnBloc = TurnBloc.of();
     await turnBloc.setTurnStream(uid);
@@ -87,7 +87,7 @@ class _LoginScreenState extends State<LoginScreen> {
       /*if (registrationLevel == RegistrationLevel.LV2)
         await EasyRouter.push(context, SignUpMoreScreen());*/
       if (type == 'driver') {
-        final orderBloc = OrdersBloc.of();
+        final orderBloc = OrderBloc.of();
         await orderBloc.setDriverStream();
         final turnBloc = TurnBloc.of();
         await turnBloc.setTurnStream();

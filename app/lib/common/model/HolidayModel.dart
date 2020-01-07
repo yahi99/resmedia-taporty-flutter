@@ -21,7 +21,7 @@ class HolidayModel {
 
   static DateTime dateFromJson(String input) {
     if (input == null) return null;
-    return DateFormat("dd-MM").parse(input, true);
+    return DateFormat("dd-MM").parse(input);
   }
 
   static String dateToJson(DateTime input) {

@@ -69,3 +69,5 @@ String translateProductCategory(ProductCategory category) {
       return "";
   }
 }
+
+enum ProductStates { PENDING, ACCEPTED, REFUSED }

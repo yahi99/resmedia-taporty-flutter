@@ -95,7 +95,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                                           EasyRouter.push(
                                               context,
                                               CheckoutScreen(
-                                                model: widget.restaurantModel,
+                                                restaurant: widget.restaurantModel,
                                                 user: user.model,
                                                 position: widget.position,
                                                 description: addresses.first,
@@ -126,7 +126,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                                         EasyRouter.push(
                                             context,
                                             CheckoutScreen(
-                                              model: widget.restaurantModel,
+                                              restaurant: widget.restaurantModel,
                                               user: user.model,
                                               position: widget.position,
                                               description: addresses.first,
@@ -259,7 +259,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
                             EasyRouter.push(
                                 context,
                                 CheckoutScreen(
-                                  model: widget.restaurantModel,
+                                  restaurant: widget.restaurantModel,
                                   user: user.model,
                                   position: widget.position,
                                   description: addresses.first,

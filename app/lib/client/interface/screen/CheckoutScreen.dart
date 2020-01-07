@@ -24,12 +24,12 @@ class CheckoutScreen extends StatefulWidget implements WidgetRoute {
   static const String ROUTE = "ProductsScreen";
 
   String get route => CheckoutScreen.ROUTE;
-  final RestaurantModel model;
+  final RestaurantModel restaurant;
   final UserModel user;
   final Position position;
   final Address description;
 
-  CheckoutScreen({Key key, @required this.model, @required this.user, @required this.position, @required this.description}) : super(key: key);
+  CheckoutScreen({Key key, @required this.restaurant, @required this.user, @required this.position, @required this.description}) : super(key: key);
 
   @override
   _CheckoutScreenState createState() => _CheckoutScreenState();
@@ -115,7 +115,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> with TickerProviderStat
             stream: UserBloc.of().outUser,
             builder: (ctx, user) {
               return StreamBuilder<RestaurantModel>(
-                stream: RestaurantBloc.init(restaurantId: widget.model.id).outRestaurant,
+                stream: RestaurantBloc.init(restaurantId: widget.restaurant.id).outRestaurant,
                 builder: (ctx, rest) {
                   if (!user.hasData)
                     return Center(
@@ -148,19 +148,20 @@ class _CheckoutScreenState extends State<CheckoutScreen> with TickerProviderStat
                               physics: NeverScrollableScrollPhysics(),
                               children: <Widget>[
                                 CartPage(
-                                  model: widget.model,
+                                  restaurant: widget.restaurant,
                                   controller: controller,
                                 ),
                                 ShippingPage(
                                   user: widget.user,
                                   address: widget.description,
+                                  restaurant: widget.restaurant,
                                   controller: controller,
                                 ),
                                 PaymentPage(
                                   controller,
                                 ),
                                 ConfirmPage(
-                                  model: widget.model,
+                                  restaurant: widget.restaurant,
                                   position: widget.position,
                                   description: widget.description,
                                   controller: controller,

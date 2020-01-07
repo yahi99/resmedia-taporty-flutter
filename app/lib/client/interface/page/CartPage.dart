@@ -16,10 +16,10 @@ import 'package:resmedia_taporty_flutter/common/model/RestaurantModel.dart';
 import 'package:toast/toast.dart';
 
 class CartPage extends StatefulWidget {
-  final RestaurantModel model;
+  final RestaurantModel restaurant;
   final TabController controller;
 
-  CartPage({Key key, @required this.model, @required this.controller}) : super(key: key);
+  CartPage({Key key, @required this.restaurant, @required this.controller}) : super(key: key);
 
   @override
   _CartState createState() => _CartState();
@@ -42,7 +42,7 @@ class _CartState extends State<CartPage> with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     final tt = Theme.of(context);
-    final restaurantBloc = RestaurantBloc.init(restaurantId: widget.model.id);
+    final restaurantBloc = RestaurantBloc.init(restaurantId: widget.restaurant.id);
     final cartBloc = CartBloc.of();
     final user = UserBloc.of();
     List<ProductCartModel> cartCounter = List<ProductCartModel>();
@@ -76,7 +76,7 @@ class _CartState extends State<CartPage> with AutomaticKeepAliveClientMixin {
                       state.count = cartSnapshot.data.getTotalItems(cartCounter);
                       return ProductsFoodDrinkBuilder(
                         products: productSnapshot.data,
-                        id: widget.model.id,
+                        id: widget.restaurant.id,
                       );
                     },
                   ),

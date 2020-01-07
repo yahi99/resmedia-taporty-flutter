@@ -19,7 +19,7 @@ class RestaurantsBloc implements Bloc {
   Stream<List<RestaurantModel>> get outRestaurants => _restaurantsControl.stream;
 
   RestaurantsBloc.instance() {
-    _restaurantsControl = PublishController.catchStream(source: _db.getRestaurants());
+    _restaurantsControl = PublishController.catchStream(source: _db.getRestaurantListStream());
   }
 
   factory RestaurantsBloc.of() => $Provider.of<RestaurantsBloc>();

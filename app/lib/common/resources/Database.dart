@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
@@ -14,18 +13,16 @@ import 'package:resmedia_taporty_flutter/client/model/CartModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/ReviewModel.dart';
 import 'package:resmedia_taporty_flutter/common/resources/MixinOrderProvider.dart';
 import 'package:resmedia_taporty_flutter/common/resources/MixinRestaurantProvider.dart';
+import 'package:resmedia_taporty_flutter/common/resources/MixinShiftProvider.dart';
 import 'package:resmedia_taporty_flutter/config/Collections.dart';
 import 'package:resmedia_taporty_flutter/drivers/model/CalendarModel.dart';
-import 'package:resmedia_taporty_flutter/drivers/model/ShiftModel.dart';
+import 'package:resmedia_taporty_flutter/common/model/ShiftModel.dart';
 import 'package:resmedia_taporty_flutter/drivers/model/TurnModel.dart';
-import 'package:resmedia_taporty_flutter/common/model/IncomeModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/OrderModel.dart';
-import 'package:resmedia_taporty_flutter/common/model/ProductModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/RestaurantModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/UserModel.dart';
-import 'package:mailer/src/entities/address.dart' as address;
 
-class Database extends FirebaseDatabase with MixinFirestoreStripeProvider, MixinRestaurantProvider, MixinOrderProvider, StripeProviderRule {
+class Database extends FirebaseDatabase with MixinFirestoreStripeProvider, MixinRestaurantProvider, MixinShiftProvider, MixinOrderProvider, StripeProviderRule {
   static Database _db;
 
   Database.internal({
@@ -279,7 +276,7 @@ class Database extends FirebaseDatabase with MixinFirestoreStripeProvider, Mixin
     });
   }
 
-  // TODO: Rivedere
+  /*// TODO: Rivedere
   Stream<List<CalendarModel>> getAvailableShifts(DateTime now) {
     //final temp=.replaceAll(' ', 'T');
     final datas = now.toIso8601String();
@@ -288,7 +285,7 @@ class Database extends FirebaseDatabase with MixinFirestoreStripeProvider, Mixin
     return data.map((query) {
       return query.documents.map((snap) => CalendarModel.fromFirebase(snap)).toList();
     });
-  }
+  }*/
 
   // TODO: Rivedere
   Future<void> upgradeToDriver({@required String uid, @required codiceFiscale, @required address, @required km, @required car, @required exp, @required Position pos, @required nominative}) async {

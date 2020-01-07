@@ -18,7 +18,7 @@ import 'package:resmedia_taporty_flutter/client/interface/screen/LegalNotesScree
 import 'package:resmedia_taporty_flutter/client/interface/screen/OrderScreen.dart';
 import 'package:resmedia_taporty_flutter/client/interface/screen/SettingsScreen.dart';
 import 'package:resmedia_taporty_flutter/client/interface/screen/LoginScreen.dart';
-import 'package:resmedia_taporty_flutter/common/logic/bloc/OrdersBloc.dart';
+import 'package:resmedia_taporty_flutter/common/logic/bloc/OrderBloc.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
 import 'package:resmedia_taporty_flutter/common/resources/Database.dart';
 import 'package:resmedia_taporty_flutter/common/model/UserModel.dart';
@@ -196,7 +196,7 @@ class AccountScreen extends StatelessWidget implements WidgetRoute {
                                 FlatButton(
                                   child: Text('Lista ordini', style: theme.textTheme.subhead),
                                   onPressed: () async {
-                                    await OrdersBloc.of().setUserStream();
+                                    await OrderBloc.of().setUserStream();
                                     EasyRouter.push(context, OrderScreen());
                                   },
                                 ),

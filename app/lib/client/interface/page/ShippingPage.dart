@@ -1,31 +1,35 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:geocoder/model.dart';
+import 'package:resmedia_taporty_flutter/common/helper/DateTimeHelper.dart';
+import 'package:resmedia_taporty_flutter/common/model/RestaurantModel.dart';
+import 'package:resmedia_taporty_flutter/common/model/ShiftModel.dart';
 import 'package:resmedia_taporty_flutter/drivers/model/CalendarModel.dart';
 import 'package:resmedia_taporty_flutter/client/interface/screen/CheckoutScreen.dart';
 import 'package:resmedia_taporty_flutter/client/interface/view/BottonButtonBar.dart';
 import 'package:resmedia_taporty_flutter/client/interface/view/InputField.dart';
 import 'package:resmedia_taporty_flutter/common/resources/Database.dart';
 import 'package:resmedia_taporty_flutter/common/model/UserModel.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:toast/toast.dart';
 
 class ShippingPage extends StatefulWidget {
   final UserModel user;
   final Address address;
   final TabController controller;
+  final RestaurantModel restaurant;
 
-  ShippingPage({@required this.user, @required this.address, @required this.controller});
+  ShippingPage({@required this.user, @required this.address, @required this.restaurant, @required this.controller});
 
   @override
   _ShippingState createState() => _ShippingState();
 }
 
 class _ShippingState extends State<ShippingPage> with AutomaticKeepAliveClientMixin {
-  StreamController dateStream, timeStream, dropStream;
-
   TextEditingController _nameController;
   TextEditingController _dateController;
   TextEditingController _emailController;
@@ -37,19 +41,11 @@ class _ShippingState extends State<ShippingPage> with AutomaticKeepAliveClientMi
     return (date.day.toString() + '/' + date.month.toString() + '/' + date.year.toString());
   }
 
-  String getEnd(List<CalendarModel> models, String value) {
-    for (int i = 0; i < models.length; i++) {
-      if (models.elementAt(i).id == value) return models.elementAt(i).endTime;
-    }
-    return null;
-  }
+  Future<List<ShiftModel>> _availableShiftsFuture;
 
   @override
   void initState() {
     super.initState();
-    dateStream = StreamController<DateTime>();
-    timeStream = StreamController<List<CalendarModel>>();
-    dropStream = StreamController<String>();
     _nameController = TextEditingController();
     _dateController = TextEditingController();
     _emailController = TextEditingController();
@@ -61,9 +57,6 @@ class _ShippingState extends State<ShippingPage> with AutomaticKeepAliveClientMi
   @override
   void dispose() {
     super.dispose();
-    dateStream.close();
-    timeStream.close();
-    dropStream.close();
     _addressController.dispose();
     _capController.dispose();
     _dateController.dispose();
@@ -72,29 +65,26 @@ class _ShippingState extends State<ShippingPage> with AutomaticKeepAliveClientMi
     _nameController.dispose();
   }
 
+  ShiftModel _selectedShift;
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
     final theme = Theme.of(context);
     final tt = theme.textTheme;
-    //final name = user.nominative.split(' ');
+
     if (widget.user.nominative != null) _nameController.value = TextEditingValue(text: widget.user.nominative);
-    //_lastNameController.value = TextEditingValue(text: name[1]);
     _emailController.value = TextEditingValue(text: widget.user.email);
     _addressController.value = TextEditingValue(text: '');
     if (widget.user.phoneNumber != null) _phoneController.value = TextEditingValue(text: widget.user.phoneNumber.toString());
     _capController.value = TextEditingValue(text: widget.address.postalCode);
-    DateTime date;
-    String time, endTime;
+
     final _formKey = GlobalKey<FormState>();
-    final _dropKey = GlobalKey();
     final _dateKey = GlobalKey();
     final _nameKey = GlobalKey<FormFieldState>();
-    //final _lastNameKey = GlobalKey<FormFieldState>();
     final _emailKey = GlobalKey<FormFieldState>();
-    //final _addressKey = GlobalKey<FormFieldState>();
     final _phoneKey = GlobalKey<FormFieldState>();
-    //MyInheritedWidget.of(context).sharedData;
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -158,95 +148,85 @@ class _ShippingState extends State<ShippingPage> with AutomaticKeepAliveClientMi
                         keyboardType: TextInputType.number,
                       ),
                       Text('Giorno di consegna:'),
-                      StreamBuilder<DateTime>(
-                          stream: dateStream.stream,
-                          builder: (ctx, sp) {
-                            //if(!sp.hasData) return Center(child: CircularProgressIndicator(),);
-                            return Column(
-                              children: <Widget>[
-                                TextField(
-                                  controller: _dateController,
-                                  key: _dateKey,
-                                  onTap: () {
-                                    showDatePicker(
-                                      context: context,
-                                      firstDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
-                                      initialDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
-                                      lastDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day).add(Duration(hours: 48)),
-                                    ).then((day) {
-                                      print(day);
-                                      if (day != null) {
-                                        date = day;
-                                        _dateController.value = TextEditingValue(text: toDate(date));
-                                        dateStream.add(day);
-                                      }
-                                    });
-                                  },
-                                ),
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    Padding(
-                                      padding: EdgeInsets.only(top: 12.0, bottom: 12.0),
-                                      child: Text('Ora di consegna:'),
-                                    ),
-                                  ],
-                                ),
-                                StreamBuilder<List<CalendarModel>>(
-                                  stream: (!sp.hasData) ? timeStream.stream : Database().getAvailableShifts(sp.data),
-                                  builder: (ctx, snap) {
-                                    debugPrint("Qui siamo nel builder.");
-                                    List<DropdownMenuItem> drop = List<DropdownMenuItem>();
-                                    List<String> values = List<String>();
-                                    if (snap.hasData) {
-                                      //time=snap.data.elementAt(0).startTime;
-                                      if (snap.data.isNotEmpty) {
-                                        dropStream.add(snap.data.elementAt(0).startTime);
-                                        time = snap.data.elementAt(0).startTime;
-                                        endTime = getEnd(snap.data, time);
-                                      }
-                                      for (int i = 0; i < snap.data.length; i++) {
-                                        values.add(snap.data.elementAt(i).startTime);
-                                        drop.add(DropdownMenuItem(
-                                          child: Text(snap.data.elementAt(i).startTime),
-                                          value: snap.data.elementAt(i).startTime,
-                                        ));
-                                      }
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          TextField(
+                            key: _dateKey,
+                            controller: _dateController,
+                            onTap: () {
+                              showDatePicker(
+                                context: context,
+                                firstDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
+                                initialDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
+                                lastDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day).add(Duration(hours: 48)),
+                              ).then((day) {
+                                if (day != null) {
+                                  this.setState(() {
+                                    _dateController.value = TextEditingValue(text: toDate(day));
+                                    _selectedShift = null;
+                                    _availableShiftsFuture =
+                                        Database().getAvailableShifts(day, widget.restaurant.id, GeoPoint(widget.address.coordinates.latitude, widget.address.coordinates.longitude));
+                                  });
+                                }
+                              });
+                            },
+                          ),
+                          if (_availableShiftsFuture != null)
+                            Padding(
+                              padding: EdgeInsets.only(top: 12.0, bottom: 12.0),
+                              child: Text('Ora di consegna:'),
+                            ),
+                          if (_availableShiftsFuture != null)
+                            FutureBuilder<List<ShiftModel>>(
+                              future: _availableShiftsFuture,
+                              builder: (ctx, AsyncSnapshot<List<ShiftModel>> shiftListSnapshot) {
+                                if (shiftListSnapshot.connectionState == ConnectionState.done) {
+                                  List<DropdownMenuItem<ShiftModel>> drop = List<DropdownMenuItem<ShiftModel>>();
+                                  List<ShiftModel> dropdownOptions = List<ShiftModel>();
+                                  if (shiftListSnapshot.hasData) {
+                                    for (int i = 0; i < shiftListSnapshot.data.length; i++) {
+                                      dropdownOptions.add(shiftListSnapshot.data.elementAt(i));
+                                      drop.add(DropdownMenuItem<ShiftModel>(
+                                        child: Text(DateTimeHelper.getShiftString(shiftListSnapshot.data.elementAt(i))),
+                                        value: shiftListSnapshot.data.elementAt(i),
+                                      ));
                                     }
-                                    return StreamBuilder<String>(
-                                      stream: dropStream.stream,
-                                      builder: (ctx, sp1) {
-                                        if (sp1.hasData) {
-                                          return Row(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: <Widget>[
-                                              DropdownButton(
-                                                key: _dropKey,
-                                                value: (time == null) ? values.elementAt(0) : sp1.data,
-                                                onChanged: (value) {
-                                                  print(value);
-                                                  time = value;
-                                                  endTime = getEnd(snap.data, value);
-                                                  dropStream.add(value);
-                                                },
-                                                items: drop,
-                                              ),
-                                            ],
-                                          );
-                                        } else {
-                                          return Column(
-                                            children: <Widget>[
-                                              Text('Non ci sono turni disponibili in questo giorno.'),
-                                            ],
-                                          );
-                                        }
-                                      },
+
+                                    if (_selectedShift == null) _selectedShift = dropdownOptions[0];
+                                    return Row(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        DropdownButton<ShiftModel>(
+                                          value: _selectedShift,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              _selectedShift = value;
+                                            });
+                                          },
+                                          items: drop,
+                                        ),
+                                      ],
                                     );
-                                  },
-                                ),
-                              ],
-                            );
-                          }),
+                                  } else {
+                                    return Column(
+                                      children: <Widget>[
+                                        Text('Non ci sono turni disponibili in questo giorno.'),
+                                      ],
+                                    );
+                                  }
+                                } else {
+                                  return Padding(
+                                    padding: const EdgeInsets.only(top: 8.0),
+                                    child: Center(
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                  );
+                                }
+                              },
+                            ),
+                        ],
+                      ),
                     ],
                   ),
                 ),
@@ -355,44 +335,32 @@ class _ShippingState extends State<ShippingPage> with AutomaticKeepAliveClientMi
         ),
       ),
       bottomNavigationBar: BottomButtonBar(
+        color: theme.primaryColor,
+        child: FlatButton(
           color: theme.primaryColor,
-          child: FlatButton(
-            color: theme.primaryColor,
-            child: Text(
-              "Continua",
-              style: TextStyle(color: Colors.white),
-            ),
-            onPressed: () {
-              if (_formKey.currentState.validate()) {
-                print(date);
-                print(time);
-                if (date != null && time != null) {
-                  final temp = time.split(':');
-                  double difference = DateTime(date.year, date.month, date.day, int.parse(temp.elementAt(0)), int.parse(temp.elementAt(1))).difference(DateTime.now()).inSeconds / 60 / 60;
-                  print(_phoneKey.currentState.value.toString());
-                  if (difference > 0 && difference < 48.0) {
-                    final state = MyInheritedWidget.of(context);
-                    state.date = date.toIso8601String();
-                    state.time = time;
-                    state.endTime = endTime;
-                    //state.address = _addressKey.currentState.value.toString();
-                    state.phone = _phoneKey.currentState.value.toString();
-                    state.email = _emailKey.currentState.value.toString();
-                    state.name = _nameKey.currentState.value.toString();
-                    //state.cap = _capKey.currentState.value.toString();
-                    widget.controller.animateTo(widget.controller.index + 1);
-                  } else if (difference > 48.0) {
-                    Toast.show('Non puoi scegliere ordini più in là di 48 ore', context);
-                  }
-                } else
-                  Toast.show('Dati Mancanti', context);
-              }
-            },
-          )),
+          child: Text(
+            "Continua",
+            style: TextStyle(color: Colors.white),
+          ),
+          onPressed: () {
+            if (_formKey.currentState.validate()) {
+              if (_selectedShift != null) {
+                // TODO: Rivedere
+                final state = MyInheritedWidget.of(context);
+                state.date = _selectedShift.startTime.toIso8601String();
+                state.phone = _phoneKey.currentState.value.toString();
+                state.email = _emailKey.currentState.value.toString();
+                state.name = _nameKey.currentState.value.toString();
+                widget.controller.animateTo(widget.controller.index + 1);
+              } else
+                Toast.show('Dati Mancanti', context);
+            }
+          },
+        ),
+      ),
     );
   }
 
   @override
   bool get wantKeepAlive => true;
 }
-//                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25.0)),

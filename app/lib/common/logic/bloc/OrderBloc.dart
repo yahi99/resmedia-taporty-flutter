@@ -9,7 +9,7 @@ import 'package:rxdart/rxdart.dart';
 
 import 'UserBloc.dart';
 
-class OrdersBloc implements Bloc {
+class OrderBloc implements Bloc {
   final _db = Database();
 
   @protected
@@ -44,9 +44,9 @@ class OrdersBloc implements Bloc {
     _driverControl.listen(print);
   }
 
-  OrdersBloc.instance();
+  OrderBloc.instance();
 
-  factory OrdersBloc.of() => $Provider.of<OrdersBloc>();
+  factory OrderBloc.of() => $Provider.of<OrderBloc>();
 
-  static void close() => $Provider.dispose<OrdersBloc>();
+  static void close() => $Provider.dispose<OrderBloc>();
 }

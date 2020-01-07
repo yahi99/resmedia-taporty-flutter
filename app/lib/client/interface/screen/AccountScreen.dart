@@ -10,7 +10,6 @@ import 'package:flutter/services.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:resmedia_taporty_flutter/common/helper/LoginHelper.dart';
-import 'package:resmedia_taporty_flutter/data/config.dart';
 import 'package:resmedia_taporty_flutter/client/interface/screen/BecomeDriverScreen.dart';
 import 'package:resmedia_taporty_flutter/client/interface/screen/BecomeRestaurantScreen.dart';
 import 'package:resmedia_taporty_flutter/client/interface/screen/ChangePasswordScreeen.dart';
@@ -21,7 +20,7 @@ import 'package:resmedia_taporty_flutter/client/interface/screen/SettingsScreen.
 import 'package:resmedia_taporty_flutter/client/interface/screen/LoginScreen.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/OrdersBloc.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
-import 'package:resmedia_taporty_flutter/common/logic/database.dart';
+import 'package:resmedia_taporty_flutter/common/resources/Database.dart';
 import 'package:resmedia_taporty_flutter/common/model/UserModel.dart';
 import 'package:toast/toast.dart';
 
@@ -246,7 +245,7 @@ class AccountScreen extends StatelessWidget implements WidgetRoute {
                             ),
                           ].map((child) {
                             return Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: SPACE * 2),
+                              padding: const EdgeInsets.symmetric(horizontal: 12.0 * 2),
                               child: child,
                             );
                           }).toList(),

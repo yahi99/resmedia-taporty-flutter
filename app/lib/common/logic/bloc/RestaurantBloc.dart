@@ -4,9 +4,8 @@ import 'package:dash/dash.dart';
 import 'package:easy_blocs/easy_blocs.dart';
 import 'package:easy_firebase/easy_firebase.dart';
 import 'package:flutter/widgets.dart';
-import 'package:resmedia_taporty_flutter/common/resources/RestaurantProvider.dart';
+import 'package:resmedia_taporty_flutter/common/resources/Database.dart';
 import 'package:resmedia_taporty_flutter/generated/provider.dart';
-import 'package:resmedia_taporty_flutter/common/logic/database.dart';
 import 'package:resmedia_taporty_flutter/common/model/ProductModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/RestaurantModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/ReviewModel.dart';
@@ -14,7 +13,6 @@ import 'package:rxdart/rxdart.dart';
 
 class RestaurantBloc implements Bloc {
   final _db = Database();
-  final _restaurantProvider = RestaurantProvider();
 
   @protected
   dispose() {
@@ -65,10 +63,10 @@ class RestaurantBloc implements Bloc {
 
   factory RestaurantBloc.init({@required String restaurantId}) {
     final bc = RestaurantBloc.of();
-    bc._restaurantController = BehaviorController.catchStream(source: bc._restaurantProvider.getRestaurant(restaurantId));
-    bc._productsController = BehaviorController.catchStream(source: bc._restaurantProvider.getProducts(restaurantId));
-    bc._foodsController = BehaviorController.catchStream(source: bc._restaurantProvider.getFoods(restaurantId));
-    bc._drinksController = BehaviorController.catchStream(source: bc._restaurantProvider.getDrinks(restaurantId));
+    bc._restaurantController = BehaviorController.catchStream(source: bc._db.getRestaurant(restaurantId));
+    bc._productsController = BehaviorController.catchStream(source: bc._db.getProducts(restaurantId));
+    bc._foodsController = BehaviorController.catchStream(source: bc._db.getFoods(restaurantId));
+    bc._drinksController = BehaviorController.catchStream(source: bc._db.getDrinks(restaurantId));
     bc._restaurantReviewController = BehaviorController.catchStream(source: bc._db.getReviews(restaurantId));
     return bc;
   }

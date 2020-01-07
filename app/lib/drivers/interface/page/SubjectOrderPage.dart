@@ -5,11 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:resmedia_taporty_flutter/common/model/OrderModel.dart';
-import 'package:resmedia_taporty_flutter/data/config.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/widget/GoogleMapsUI.dart';
 import 'package:resmedia_taporty_flutter/drivers/model/SubjectModel.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
-import 'package:resmedia_taporty_flutter/common/logic/database.dart';
+import 'package:resmedia_taporty_flutter/common/resources/Database.dart';
 import 'package:resmedia_taporty_flutter/utility/google_maps_widget.dart';
 
 class SubjectOrderPageDriver extends StatefulWidget implements WidgetRoute {
@@ -56,7 +55,7 @@ class _SubjectOrderPageDriverState extends State<SubjectOrderPageDriver> {
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
           content: Wrap(
             alignment: WrapAlignment.center,
-            runSpacing: SPACE * 2,
+            runSpacing: 12.0 * 2,
             children: <Widget>[
               Column(
                 children: <Widget>[
@@ -110,7 +109,7 @@ class _SubjectOrderPageDriverState extends State<SubjectOrderPageDriver> {
       body: ListViewSeparated(
         //controller: RubberScrollController.of(context),
         physics: NeverScrollableScrollPhysics(),
-        padding: const EdgeInsets.all(SPACE),
+        padding: const EdgeInsets.all(12.0),
         separator: const SizedBox(
           height: 8.0,
         ),
@@ -189,7 +188,7 @@ class _SubjectOrderPageDriverState extends State<SubjectOrderPageDriver> {
           Align(
             alignment: Alignment.bottomCenter,
             child: Padding(
-              padding: const EdgeInsets.all(SPACE),
+              padding: const EdgeInsets.all(12.0),
               child: Row(
                 children: <Widget>[
                   Expanded(

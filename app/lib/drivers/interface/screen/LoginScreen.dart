@@ -5,14 +5,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:resmedia_taporty_flutter/data/config.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/screen/HomeScreen.dart';
 import 'package:resmedia_taporty_flutter/drivers/logic/bloc/CalendarBloc.dart';
 import 'package:resmedia_taporty_flutter/drivers/logic/bloc/TurnBloc.dart';
 import 'package:resmedia_taporty_flutter/common/interface/view/LogoView.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/OrdersBloc.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
-import 'package:resmedia_taporty_flutter/common/logic/database.dart';
+import 'package:resmedia_taporty_flutter/common/resources/Database.dart';
 import 'package:resmedia_taporty_flutter/common/model/UserModel.dart';
 
 //import 'package:flutter_facebook_login/flutter_facebook_login.dart';
@@ -38,8 +37,7 @@ class _LoginScreenState extends State<LoginScreen> {
   //final FirebaseAuth _fAuth = FirebaseAuth.instance;
   //end my code
 
-  final FirebaseSignInBloc _submitBloc =
-      FirebaseSignInBloc.init(controller: UserBloc.of());
+  final FirebaseSignInBloc _submitBloc = FirebaseSignInBloc.init(controller: UserBloc.of());
   final _userBloc = UserBloc.of();
 
   //StreamSubscription registrationLevelSub;
@@ -147,7 +145,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       checker: _submitBloc.emailChecker,
                     ),
                     SizedBox(
-                      height: SPACE,
+                      height: 12.0,
                     ),
                     PasswordField(
                       checker: _submitBloc.passwordChecker,
@@ -200,7 +198,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         checker: _submitBloc.emailChecker,
                       ),
                       SizedBox(
-                        height: SPACE,
+                        height: 12.0,
                       ),
                       PasswordField(
                         checker: _submitBloc.passwordChecker,
@@ -249,7 +247,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   checker: _submitBloc.emailChecker,
                 ),
                 SizedBox(
-                  height: SPACE,
+                  height: 12.0,
                 ),
                 PasswordField(
                   checker: _submitBloc.passwordChecker,

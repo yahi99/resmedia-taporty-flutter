@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:resmedia_taporty_flutter/client/model/CartModel.dart';
 import 'package:resmedia_taporty_flutter/client/model/ProductCartModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/ProductOrderModel.dart';
-import 'package:resmedia_taporty_flutter/data/config.dart';
 import 'package:resmedia_taporty_flutter/common/model/OrderModel.dart';
 
 class DetailedOrderUser extends StatefulWidget implements WidgetRoute {
@@ -62,7 +61,7 @@ class _DetailOrderRestaurantPageState extends State<DetailedOrderUser> {
         child: Column(
           children: <Widget>[
             Padding(
-              padding: const EdgeInsets.all(SPACE),
+              padding: const EdgeInsets.all(12.0),
               child: Column(
                 children: <Widget>[
                   Wrap(

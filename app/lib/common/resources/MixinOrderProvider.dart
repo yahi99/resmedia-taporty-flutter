@@ -1,8 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:resmedia_taporty_flutter/common/model/OrderModel.dart';
+import 'package:resmedia_taporty_flutter/config/Collections.dart';
 
-class OrderProvider {
-  final orderCollection = Firestore.instance.collection("orders");
+mixin MixinOrderProvider {
+  final orderCollection = Firestore.instance.collection(Collections.ORDERS);
 
   Stream<List<OrderModel>> getUserOrders(String uid) {
     final data = orderCollection.where("customerId", isEqualTo: uid).snapshots();

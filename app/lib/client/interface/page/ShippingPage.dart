@@ -4,12 +4,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:geocoder/model.dart';
-import 'package:resmedia_taporty_flutter/data/config.dart';
 import 'package:resmedia_taporty_flutter/drivers/model/CalendarModel.dart';
 import 'package:resmedia_taporty_flutter/client/interface/screen/CheckoutScreen.dart';
 import 'package:resmedia_taporty_flutter/client/interface/view/BottonButtonBar.dart';
 import 'package:resmedia_taporty_flutter/client/interface/view/InputField.dart';
-import 'package:resmedia_taporty_flutter/common/logic/database.dart';
+import 'package:resmedia_taporty_flutter/common/resources/Database.dart';
 import 'package:resmedia_taporty_flutter/common/model/UserModel.dart';
 import 'package:toast/toast.dart';
 
@@ -18,17 +17,14 @@ class ShippingPage extends StatefulWidget {
   final Address address;
   final TabController controller;
 
-  ShippingPage(
-      {@required this.user, @required this.address, @required this.controller});
+  ShippingPage({@required this.user, @required this.address, @required this.controller});
 
   @override
   _ShippingState createState() => _ShippingState();
 }
 
-class _ShippingState extends State<ShippingPage>
-    with AutomaticKeepAliveClientMixin {
-
-  StreamController dateStream,timeStream,dropStream;
+class _ShippingState extends State<ShippingPage> with AutomaticKeepAliveClientMixin {
+  StreamController dateStream, timeStream, dropStream;
 
   TextEditingController _nameController;
   TextEditingController _dateController;
@@ -38,11 +34,7 @@ class _ShippingState extends State<ShippingPage>
   TextEditingController _capController;
 
   String toDate(DateTime date) {
-    return (date.day.toString() +
-        '/' +
-        date.month.toString() +
-        '/' +
-        date.year.toString());
+    return (date.day.toString() + '/' + date.month.toString() + '/' + date.year.toString());
   }
 
   String getEnd(List<CalendarModel> models, String value) {
@@ -53,7 +45,7 @@ class _ShippingState extends State<ShippingPage>
   }
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
     dateStream = StreamController<DateTime>();
     timeStream = StreamController<List<CalendarModel>>();
@@ -67,7 +59,7 @@ class _ShippingState extends State<ShippingPage>
   }
 
   @override
-  void dispose(){
+  void dispose() {
     super.dispose();
     dateStream.close();
     timeStream.close();
@@ -86,12 +78,11 @@ class _ShippingState extends State<ShippingPage>
     final theme = Theme.of(context);
     final tt = theme.textTheme;
     //final name = user.nominative.split(' ');
-    if(widget.user.nominative!=null) _nameController.value = TextEditingValue(text: widget.user.nominative);
+    if (widget.user.nominative != null) _nameController.value = TextEditingValue(text: widget.user.nominative);
     //_lastNameController.value = TextEditingValue(text: name[1]);
     _emailController.value = TextEditingValue(text: widget.user.email);
     _addressController.value = TextEditingValue(text: '');
-    if(widget.user.phoneNumber!=null) _phoneController.value =
-        TextEditingValue(text: widget.user.phoneNumber.toString());
+    if (widget.user.phoneNumber != null) _phoneController.value = TextEditingValue(text: widget.user.phoneNumber.toString());
     _capController.value = TextEditingValue(text: widget.address.postalCode);
     DateTime date;
     String time, endTime;
@@ -108,8 +99,8 @@ class _ShippingState extends State<ShippingPage>
       appBar: AppBar(
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
-          onPressed: (){
-            widget.controller.animateTo(widget.controller.index-1);
+          onPressed: () {
+            widget.controller.animateTo(widget.controller.index - 1);
           },
         ),
       ),
@@ -117,8 +108,7 @@ class _ShippingState extends State<ShippingPage>
         child: Form(
           key: _formKey,
           child: Padding(
-            padding: const EdgeInsets.symmetric(
-                horizontal: SPACE * 2, vertical: SPACE),
+            padding: const EdgeInsets.symmetric(horizontal: 12.0 * 2, vertical: 12.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
@@ -159,9 +149,9 @@ class _ShippingState extends State<ShippingPage>
                         ),
                         key: _phoneKey,
                         validator: (value) {
-                          int temp=int.tryParse(value);
-                          if(temp==null)return 'Campo non valido';
-                          if(value.length != 10) return 'Numero non valido';
+                          int temp = int.tryParse(value);
+                          if (temp == null) return 'Campo non valido';
+                          if (value.length != 10) return 'Numero non valido';
                           return null;
                         },
                         controller: _phoneController,
@@ -180,21 +170,14 @@ class _ShippingState extends State<ShippingPage>
                                   onTap: () {
                                     showDatePicker(
                                       context: context,
-                                      firstDate: DateTime(
-                                          DateTime.now().year,
-                                          DateTime.now().month,
-                                          DateTime.now().day),
-                                      initialDate: DateTime(DateTime.now().year, DateTime.now().month,
-                                          DateTime.now().day),
-                                      lastDate: DateTime(DateTime.now().year, DateTime.now().month,
-                                          DateTime.now().day).add(Duration(hours: 48)),
+                                      firstDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
+                                      initialDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
+                                      lastDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day).add(Duration(hours: 48)),
                                     ).then((day) {
                                       print(day);
                                       if (day != null) {
                                         date = day;
-                                        _dateController.value =
-                                            TextEditingValue(
-                                                text: toDate(date));
+                                        _dateController.value = TextEditingValue(text: toDate(date));
                                         dateStream.add(day);
                                       }
                                     });
@@ -204,39 +187,29 @@ class _ShippingState extends State<ShippingPage>
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
                                     Padding(
-                                      padding: EdgeInsets.only(
-                                          top: SPACE, bottom: SPACE),
+                                      padding: EdgeInsets.only(top: 12.0, bottom: 12.0),
                                       child: Text('Ora di consegna:'),
                                     ),
                                   ],
                                 ),
                                 StreamBuilder<List<CalendarModel>>(
-                                  stream: (!sp.hasData)
-                                      ? timeStream.stream
-                                      : Database().getAvailableShifts(sp.data),
+                                  stream: (!sp.hasData) ? timeStream.stream : Database().getAvailableShifts(sp.data),
                                   builder: (ctx, snap) {
                                     debugPrint("Qui siamo nel builder.");
-                                    List<DropdownMenuItem> drop =
-                                        List<DropdownMenuItem>();
+                                    List<DropdownMenuItem> drop = List<DropdownMenuItem>();
                                     List<String> values = List<String>();
                                     if (snap.hasData) {
                                       //time=snap.data.elementAt(0).startTime;
                                       if (snap.data.isNotEmpty) {
-                                        dropStream.add(
-                                            snap.data.elementAt(0).startTime);
+                                        dropStream.add(snap.data.elementAt(0).startTime);
                                         time = snap.data.elementAt(0).startTime;
-                                        endTime=getEnd(snap.data, time);
+                                        endTime = getEnd(snap.data, time);
                                       }
-                                      for (int i = 0;
-                                          i < snap.data.length;
-                                          i++) {
-                                        values.add(
-                                            snap.data.elementAt(i).startTime);
+                                      for (int i = 0; i < snap.data.length; i++) {
+                                        values.add(snap.data.elementAt(i).startTime);
                                         drop.add(DropdownMenuItem(
-                                          child: Text(
-                                              snap.data.elementAt(i).startTime),
-                                          value:
-                                              snap.data.elementAt(i).startTime,
+                                          child: Text(snap.data.elementAt(i).startTime),
+                                          value: snap.data.elementAt(i).startTime,
                                         ));
                                       }
                                     }
@@ -245,19 +218,15 @@ class _ShippingState extends State<ShippingPage>
                                       builder: (ctx, sp1) {
                                         if (sp1.hasData) {
                                           return Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
                                             children: <Widget>[
                                               DropdownButton(
                                                 key: _dropKey,
-                                                value: (time == null)
-                                                    ? values.elementAt(0)
-                                                    : sp1.data,
+                                                value: (time == null) ? values.elementAt(0) : sp1.data,
                                                 onChanged: (value) {
                                                   print(value);
                                                   time = value;
-                                                  endTime =
-                                                      getEnd(snap.data, value);
+                                                  endTime = getEnd(snap.data, value);
                                                   dropStream.add(value);
                                                 },
                                                 items: drop,
@@ -267,8 +236,7 @@ class _ShippingState extends State<ShippingPage>
                                         } else {
                                           return Column(
                                             children: <Widget>[
-                                              Text(
-                                                  'Non ci sono turni disponibili in questo giorno.'),
+                                              Text('Non ci sono turni disponibili in questo giorno.'),
                                             ],
                                           );
                                         }
@@ -399,10 +367,10 @@ class _ShippingState extends State<ShippingPage>
                 print(date);
                 print(time);
                 if (date != null && time != null) {
-                  final temp=time.split(':');
-                  double difference=DateTime(date.year,date.month,date.day,int.parse(temp.elementAt(0)),int.parse(temp.elementAt(1))).difference(DateTime.now()).inSeconds/60/60;
+                  final temp = time.split(':');
+                  double difference = DateTime(date.year, date.month, date.day, int.parse(temp.elementAt(0)), int.parse(temp.elementAt(1))).difference(DateTime.now()).inSeconds / 60 / 60;
                   print(_phoneKey.currentState.value.toString());
-                  if(difference >0 && difference<48.0){
+                  if (difference > 0 && difference < 48.0) {
                     final state = MyInheritedWidget.of(context);
                     state.date = date.toIso8601String();
                     state.time = time;
@@ -413,8 +381,7 @@ class _ShippingState extends State<ShippingPage>
                     state.name = _nameKey.currentState.value.toString();
                     //state.cap = _capKey.currentState.value.toString();
                     widget.controller.animateTo(widget.controller.index + 1);
-                  }
-                  else if(difference>48.0){
+                  } else if (difference > 48.0) {
                     Toast.show('Non puoi scegliere ordini più in là di 48 ore', context);
                   }
                 } else
@@ -426,7 +393,6 @@ class _ShippingState extends State<ShippingPage>
   }
 
   @override
-  
   bool get wantKeepAlive => true;
 }
 //                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25.0)),

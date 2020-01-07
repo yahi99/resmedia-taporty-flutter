@@ -1,6 +1,5 @@
 import 'package:easy_widget/easy_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:resmedia_taporty_flutter/data/config.dart';
 
 class AccountPageDriver extends StatelessWidget {
   @override
@@ -46,7 +45,7 @@ class AccountPageDriver extends StatelessWidget {
               )
             ].map((child) {
               return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: SPACE * 2),
+                padding: const EdgeInsets.symmetric(horizontal: 12.0 * 2),
                 child: child,
               );
             }).toList(),

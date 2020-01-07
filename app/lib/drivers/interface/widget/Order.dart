@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:resmedia_taporty_flutter/data/config.dart';
 
 class Order extends StatelessWidget {
   final List<Widget> children;
@@ -17,11 +16,7 @@ class Order extends StatelessWidget {
 
   String toDate(String date) {
     final DateTime dateTime = DateTime.parse(date);
-    return (dateTime.day.toString() +
-        '/' +
-        dateTime.month.toString() +
-        '/' +
-        dateTime.year.toString());
+    return (dateTime.day.toString() + '/' + dateTime.month.toString() + '/' + dateTime.year.toString());
   }
 
   @override
@@ -29,8 +24,7 @@ class Order extends StatelessWidget {
     final tt = Theme.of(context).textTheme;
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(
-            color: (isNear != null && isNear) ? Colors.red : Colors.grey[300]),
+        border: Border.all(color: (isNear != null && isNear) ? Colors.red : Colors.grey[300]),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
       child: Column(
@@ -57,7 +51,7 @@ class Order extends StatelessWidget {
                   ),
                 ],
               ),
-              padding: EdgeInsets.only(top: SPACE, bottom: SPACE),
+              padding: EdgeInsets.only(top: 12.0, bottom: 12.0),
             ),
         ],
       ),

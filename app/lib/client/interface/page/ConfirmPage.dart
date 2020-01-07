@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geocoder/model.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:resmedia_taporty_flutter/data/config.dart';
 import 'package:resmedia_taporty_flutter/client/interface/page/CartPage.dart';
 import 'package:resmedia_taporty_flutter/client/interface/screen/CheckoutScreen.dart';
 import 'package:resmedia_taporty_flutter/client/interface/screen/RestaurantScreen.dart';
@@ -45,7 +44,7 @@ class _ConfirmState extends State<ConfirmPage> with AutomaticKeepAliveClientMixi
         return AlertDialog(
           content: Wrap(
             alignment: WrapAlignment.center,
-            runSpacing: SPACE * 2,
+            runSpacing: 12.0 * 2,
             children: <Widget>[
               Container(
                 decoration: BoxDecoration(

@@ -10,9 +10,8 @@ import 'package:flutter/services.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:resmedia_taporty_flutter/common/helper/LoginHelper.dart';
-import 'package:resmedia_taporty_flutter/data/config.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
-import 'package:resmedia_taporty_flutter/common/logic/database.dart';
+import 'package:resmedia_taporty_flutter/common/resources/Database.dart';
 import 'package:resmedia_taporty_flutter/common/model/UserModel.dart';
 import 'package:toast/toast.dart';
 
@@ -75,9 +74,7 @@ class AccountScreenDriver extends StatelessWidget implements WidgetRoute {
                             width: double.infinity,
                             height: double.infinity,
                             child: (img.data.img != null)
-                                ? CircleAvatar(
-                                    backgroundImage: CachedNetworkImageProvider(
-                                        img.data.img))
+                                ? CircleAvatar(backgroundImage: CachedNetworkImageProvider(img.data.img))
                                 : CircleAvatar(
                                     backgroundColor: Colors.black,
                                   ),
@@ -95,28 +92,19 @@ class AccountScreenDriver extends StatelessWidget implements WidgetRoute {
                         color: Colors.white,
                       ),
                       onPressed: () async {
-                        ImagePicker.pickImage(source: ImageSource.camera)
-                            .then((file) {
+                        ImagePicker.pickImage(source: ImageSource.camera).then((file) {
                           if (file != null) {
                             uploadFile(file.path).then((path) async {
-                              Database()
-                                  .updateUserImage(path, snap.data.model.id,
-                                      snap.data.model.img)
-                                  .then((value) {
+                              Database().updateUserImage(path, snap.data.model.id, snap.data.model.img).then((value) {
                                 Toast.show('Cambiato!', context, duration: 3);
                               });
                             });
                           } else {
-                            Toast.show('Devi scegliere un\'immagine!', context,
-                                duration: 3);
+                            Toast.show('Devi scegliere un\'immagine!', context, duration: 3);
                           }
                         }).catchError((error) {
                           if (error is PlatformException) {
-                            if (error.code == 'photo_access_denied')
-                              Toast.show(
-                                  'Devi garantire accesso alle immagini!',
-                                  context,
-                                  duration: 3);
+                            if (error.code == 'photo_access_denied') Toast.show('Devi garantire accesso alle immagini!', context, duration: 3);
                           }
                         });
                       },
@@ -130,13 +118,9 @@ class AccountScreenDriver extends StatelessWidget implements WidgetRoute {
               Text(snap.data.model.nominative),
               (snap.data.model.lat != null && snap.data.model.lng != null)
                   ? StreamBuilder<List<Address>>(
-                      stream: Geocoder.local
-                          .findAddressesFromCoordinates(Coordinates(
-                              snap.data.model.lat, snap.data.model.lng))
-                          .asStream(),
+                      stream: Geocoder.local.findAddressesFromCoordinates(Coordinates(snap.data.model.lat, snap.data.model.lng)).asStream(),
                       builder: (ctx, loc) {
-                        if (loc.hasData)
-                          return Text(loc.data.first.addressLine);
+                        if (loc.hasData) return Text(loc.data.first.addressLine);
                         return Container();
                       },
                     )
@@ -164,8 +148,7 @@ class AccountScreenDriver extends StatelessWidget implements WidgetRoute {
                       children: <Widget>[
                         Icon(Icons.settings),
                         FlatButton(
-                            child:
-                                Text('Log Out', style: theme.textTheme.subhead),
+                            child: Text('Log Out', style: theme.textTheme.subhead),
                             onPressed: () {
                               UserBloc.of().logout();
                               LoginHelper().signOut();
@@ -175,8 +158,7 @@ class AccountScreenDriver extends StatelessWidget implements WidgetRoute {
                     ),
                   ].map((child) {
                     return Padding(
-                      padding:
-                          const EdgeInsets.symmetric(horizontal: SPACE * 2),
+                      padding: const EdgeInsets.symmetric(horizontal: 12.0 * 2),
                       child: child,
                     );
                   }).toList(),

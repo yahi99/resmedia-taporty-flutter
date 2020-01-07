@@ -3,7 +3,6 @@ import 'package:easy_route/easy_route.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:resmedia_taporty_flutter/data/config.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
 import 'package:resmedia_taporty_flutter/common/model/UserModel.dart';
 
@@ -37,8 +36,7 @@ class SnackBarPage extends StatelessWidget {
 
   Future<FirebaseUser> _handleSignIn(String email, value) async {
     final FirebaseAuth _fAuth = FirebaseAuth.instance;
-    return (await _fAuth.signInWithEmailAndPassword(
-        email: email, password: value)).user;
+    return (await _fAuth.signInWithEmailAndPassword(email: email, password: value)).user;
   }
 
   @override
@@ -58,7 +56,7 @@ class SnackBarPage extends StatelessWidget {
             child: ListView(
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(top: SPACE * 2),
+                  padding: const EdgeInsets.only(top: 12.0 * 2),
                   child: TextFormField(
                     decoration: InputDecoration(
                       hintText: 'Password',
@@ -85,13 +83,12 @@ class SnackBarPage extends StatelessWidget {
                   validator: (value) {
                     if (value.isEmpty) {
                       return 'Campo invalido';
-                    } else if (value.length < 4)
-                      return 'Deve contenere almeno 4 caratteri';
+                    } else if (value.length < 4) return 'Deve contenere almeno 4 caratteri';
                     return null;
                   },
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: SPACE),
+                  padding: const EdgeInsets.only(top: 12.0),
                   child: TextFormField(
                     decoration: InputDecoration(
                       hintText: 'Conferma nuova password',
@@ -110,17 +107,10 @@ class SnackBarPage extends StatelessWidget {
                 RaisedButton(
                   onPressed: () async {
                     if (_passKeyB.currentState.value.toString().isNotEmpty)
-                      await _handleSignIn(snap.data.model.email,
-                              _passKeyB.currentState.value.toString())
-                          .then((result) {
-                        if (result != null &&
-                            result.uid == snap.data.userFb.uid)
-                          isCorrect = true;
+                      await _handleSignIn(snap.data.model.email, _passKeyB.currentState.value.toString()).then((result) {
+                        if (result != null && result.uid == snap.data.userFb.uid) isCorrect = true;
                         if (_formKey.currentState.validate()) {
-                          snap.data.userFb
-                              .updatePassword(
-                                  _passKey.currentState.value.toString())
-                              .then((_) {
+                          snap.data.userFb.updatePassword(_passKey.currentState.value.toString()).then((_) {
                             Scaffold.of(context).showSnackBar(SnackBar(
                               content: Text('Password cambiata!'),
                             ));
@@ -128,21 +118,16 @@ class SnackBarPage extends StatelessWidget {
                             print(error);
                             if (error is PlatformException) {
                               if (error.code == 'ERROR_WEAK_PASSWORD')
-                                Scaffold.of(context).showSnackBar(SnackBar(
-                                    content: Text(
-                                        'La password deve contenere almeno 6 caratteri')));
+                                Scaffold.of(context).showSnackBar(SnackBar(content: Text('La password deve contenere almeno 6 caratteri')));
                               else
-                                Scaffold.of(context).showSnackBar(SnackBar(
-                                    content: Text(
-                                        'La password non è stata cambiata')));
+                                Scaffold.of(context).showSnackBar(SnackBar(content: Text('La password non è stata cambiata')));
                             }
                           });
                         }
                       }).catchError((error) {
                         print(error);
                         Scaffold.of(context).showSnackBar(SnackBar(
-                          content:
-                              Text('La password potrebbe essere sbagliata'),
+                          content: Text('La password potrebbe essere sbagliata'),
                         ));
                       });
                   },
@@ -150,7 +135,7 @@ class SnackBarPage extends StatelessWidget {
                 ),
               ].map((child) {
                 return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: SPACE * 2),
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0 * 2),
                   child: child,
                 );
               }).toList(),

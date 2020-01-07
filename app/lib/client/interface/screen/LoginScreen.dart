@@ -12,13 +12,12 @@ import 'package:flutter/widgets.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:resmedia_taporty_flutter/data/config.dart';
 import 'package:resmedia_taporty_flutter/client/interface/screen/GeolocalizationScreen.dart';
 import 'package:resmedia_taporty_flutter/client/interface/screen/RestaurantListScreen.dart';
 import 'package:resmedia_taporty_flutter/client/interface/screen/SignUpScreen.dart';
 import 'package:resmedia_taporty_flutter/common/interface/view/LogoView.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
-import 'package:resmedia_taporty_flutter/common/logic/database.dart';
+import 'package:resmedia_taporty_flutter/common/resources/Database.dart';
 import 'package:resmedia_taporty_flutter/common/model/UserModel.dart';
 
 //import 'package:flutter_facebook_login/flutter_facebook_login.dart';
@@ -42,8 +41,7 @@ class _LoginScreenState extends State<LoginScreen> {
   var permission;
   var pos;
 
-  final FirebaseSignInBloc _submitBloc =
-      FirebaseSignInBloc.init(controller: UserBloc.of());
+  final FirebaseSignInBloc _submitBloc = FirebaseSignInBloc.init(controller: UserBloc.of());
   final _userBloc = UserBloc.of();
 
   StreamSubscription registrationLevelSub;
@@ -54,11 +52,10 @@ class _LoginScreenState extends State<LoginScreen> {
       builder: (_context) {
         final theme = Theme.of(context);
         return AlertDialog(
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(20))),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
           content: Wrap(
             alignment: WrapAlignment.center,
-            runSpacing: SPACE * 2,
+            runSpacing: 12.0 * 2,
             children: <Widget>[
               Column(
                 children: <Widget>[
@@ -85,16 +82,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       RaisedButton(
                         onPressed: () {
-                          Geolocator()
-                              .getCurrentPosition()
-                              .then((position) async {
+                          Geolocator().getCurrentPosition().then((position) async {
                             print(position.toString());
                             await EasyRouter.pushAndRemoveAll(
                               context,
-                              RestaurantListScreen(
-                                  isAnonymous: isAnon,
-                                  position: position,
-                                  user: (await _userBloc.outUser.first).model),
+                              RestaurantListScreen(isAnonymous: isAnon, position: position, user: (await _userBloc.outUser.first).model),
                             );
                           }).catchError(
                             (error) {
@@ -127,11 +119,10 @@ class _LoginScreenState extends State<LoginScreen> {
       builder: (_context) {
         final theme = Theme.of(context);
         return AlertDialog(
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(20))),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
           content: Wrap(
             alignment: WrapAlignment.center,
-            runSpacing: SPACE * 2,
+            runSpacing: 12.0 * 2,
             children: <Widget>[
               Column(
                 children: <Widget>[
@@ -172,28 +163,23 @@ class _LoginScreenState extends State<LoginScreen> {
         context: context,
         builder: (_context) {
           return AlertDialog(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(20))),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
             content: Scaffold(
               body: ListView(
                 shrinkWrap: true,
                 children: <Widget>[
-                  AutoSizeText(
-                      'Per poter diventare un fattorino/ristoratore è necessario registrarsi.'),
-                  AutoSizeText(
-                      'Una volta registrato effettua il login e in alto alla pagina principale troverai un\'icona per entrare nelle impostazioni del tuo account'),
+                  AutoSizeText('Per poter diventare un fattorino/ristoratore è necessario registrarsi.'),
+                  AutoSizeText('Una volta registrato effettua il login e in alto alla pagina principale troverai un\'icona per entrare nelle impostazioni del tuo account'),
                   Padding(
                     child: Image.asset('assets/img/account.jpg'),
-                    padding: EdgeInsets.only(top: SPACE, bottom: SPACE),
+                    padding: EdgeInsets.only(top: 12.0, bottom: 12.0),
                   ),
-                  AutoSizeText(
-                      'Quando sei entrato nelle impostazioni c\'è una lista di possibili azioni, seleziona Diventa un fattorino/ristoratore'),
+                  AutoSizeText('Quando sei entrato nelle impostazioni c\'è una lista di possibili azioni, seleziona Diventa un fattorino/ristoratore'),
                   Padding(
                     child: Image.asset('assets/img/upgrade.jpg'),
-                    padding: EdgeInsets.only(top: SPACE, bottom: SPACE),
+                    padding: EdgeInsets.only(top: 12.0, bottom: 12.0),
                   ),
-                  AutoSizeText(
-                      'Compila i campi richiesti ed una volta inviata la richiesta verrà presa in visione nel minor tempo possibile e verrai notificato se la richiesta è andata a buon fine'),
+                  AutoSizeText('Compila i campi richiesti ed una volta inviata la richiesta verrà presa in visione nel minor tempo possibile e verrai notificato se la richiesta è andata a buon fine'),
                   RaisedButton(
                     child: Text('  Chiudi  '),
                     onPressed: () => EasyRouter.pop(context),
@@ -222,17 +208,14 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   getPos() async {
-    if (permission == PermissionStatus.granted)
-      pos = await Geolocator().getCurrentPosition();
+    if (permission == PermissionStatus.granted) pos = await Geolocator().getCurrentPosition();
     print(pos);
   }
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-        stream: PermissionHandler()
-            .checkPermissionStatus(PermissionGroup.location)
-            .asStream(),
+        stream: PermissionHandler().checkPermissionStatus(PermissionGroup.location).asStream(),
         builder: (ctx, perm) {
           return StreamBuilder<FirebaseUser>(
             stream: FirebaseAuth.instance.onAuthStateChanged,
@@ -257,7 +240,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               checker: _submitBloc.emailChecker,
                             ),
                             SizedBox(
-                              height: SPACE,
+                              height: 12.0,
                             ),
                             PasswordField(
                               checker: _submitBloc.passwordChecker,
@@ -273,7 +256,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ),
                                 ),
                                 SizedBox(
-                                  width: SPACE,
+                                  width: 12.0,
                                 ),
                                 Expanded(
                                   child: SubmitButton.raised(
@@ -284,7 +267,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               ],
                             ),
                             SizedBox(
-                              height: SPACE * 3,
+                              height: 12.0 * 3,
                             ),
                             RaisedButton.icon(
                               onPressed: () {
@@ -312,16 +295,13 @@ class _LoginScreenState extends State<LoginScreen> {
                           ],
                         ),
                       ),
-                      data: Theme.of(context)
-                          .copyWith(unselectedWidgetColor: Colors.white),
+                      data: Theme.of(context).copyWith(unselectedWidgetColor: Colors.white),
                     ),
                   );
                 return StreamBuilder<UserModel>(
                     stream: Database().getUser(userSnapshot.data),
                     builder: (ctx, userId) {
-                      if (userId.hasData &&
-                          (userId.data.type == null ||
-                              userId.data.type == 'user')) {
+                      if (userId.hasData && (userId.data.type == null || userId.data.type == 'user')) {
                         if (userSnapshot.data.isEmailVerified) {
                           if (pos != null)
                             return RestaurantListScreen(
@@ -348,50 +328,47 @@ class _LoginScreenState extends State<LoginScreen> {
                                     checker: _submitBloc.emailChecker,
                                   ),
                                   SizedBox(
-                                    height: SPACE,
+                                    height: 12.0,
                                   ),
                                   PasswordField(
                                     checker: _submitBloc.passwordChecker,
                                   ),
                                   SizedBox(
-                                    height: SPACE,
+                                    height: 12.0,
                                   ),
                                   RaisedButton.icon(
                                     onPressed: () {
-                                      _showMailDialog(
-                                          context, userSnapshot.data);
+                                      _showMailDialog(context, userSnapshot.data);
                                     },
                                     icon: Icon(Icons.mail),
                                     label: Text('Conferma e-mail'),
                                   ),
                                   SizedBox(
-                                    height: SPACE,
+                                    height: 12.0,
                                   ),
                                   Row(
                                     children: <Widget>[
                                       Expanded(
                                         child: RaisedButton(
                                           onPressed: () {
-                                            EasyRouter.push(
-                                                context, SignUpScreen());
+                                            EasyRouter.push(context, SignUpScreen());
                                           },
                                           child: FittedText('Sign up'),
                                         ),
                                       ),
                                       SizedBox(
-                                        width: SPACE,
+                                        width: 12.0,
                                       ),
                                       Expanded(
                                         child: SubmitButton.raised(
-                                          controller:
-                                              _submitBloc.submitController,
+                                          controller: _submitBloc.submitController,
                                           child: FittedText('Login'),
                                         ),
                                       ),
                                     ],
                                   ),
                                   SizedBox(
-                                    height: SPACE * 3,
+                                    height: 12.0 * 3,
                                   ),
                                   RaisedButton.icon(
                                     onPressed: () {
@@ -439,8 +416,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ],
                               ),
                             ),
-                            data: Theme.of(context)
-                                .copyWith(unselectedWidgetColor: Colors.white),
+                            data: Theme.of(context).copyWith(unselectedWidgetColor: Colors.white),
                           ),
                         );
                       }
@@ -461,7 +437,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   checker: _submitBloc.emailChecker,
                                 ),
                                 SizedBox(
-                                  height: SPACE,
+                                  height: 12.0,
                                 ),
                                 PasswordField(
                                   checker: _submitBloc.passwordChecker,
@@ -471,26 +447,24 @@ class _LoginScreenState extends State<LoginScreen> {
                                     Expanded(
                                       child: RaisedButton(
                                         onPressed: () {
-                                          EasyRouter.push(
-                                              context, SignUpScreen());
+                                          EasyRouter.push(context, SignUpScreen());
                                         },
                                         child: FittedText('Sign up'),
                                       ),
                                     ),
                                     SizedBox(
-                                      width: SPACE,
+                                      width: 12.0,
                                     ),
                                     Expanded(
                                       child: SubmitButton.raised(
-                                        controller:
-                                            _submitBloc.submitController,
+                                        controller: _submitBloc.submitController,
                                         child: FittedText('Login'),
                                       ),
                                     ),
                                   ],
                                 ),
                                 SizedBox(
-                                  height: SPACE * 3,
+                                  height: 12.0 * 3,
                                 ),
                                 RaisedButton.icon(
                                   onPressed: () {
@@ -518,8 +492,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               ],
                             ),
                           ),
-                          data: Theme.of(context)
-                              .copyWith(unselectedWidgetColor: Colors.white),
+                          data: Theme.of(context).copyWith(unselectedWidgetColor: Colors.white),
                         ),
                       );
                     });
@@ -541,7 +514,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           checker: _submitBloc.emailChecker,
                         ),
                         SizedBox(
-                          height: SPACE,
+                          height: 12.0,
                         ),
                         PasswordField(
                           checker: _submitBloc.passwordChecker,
@@ -557,7 +530,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                             ),
                             SizedBox(
-                              width: SPACE,
+                              width: 12.0,
                             ),
                             Expanded(
                               child: SubmitButton.raised(
@@ -568,7 +541,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ],
                         ),
                         SizedBox(
-                          height: SPACE * 3,
+                          height: 12.0 * 3,
                         ),
                         RaisedButton.icon(
                           onPressed: () {
@@ -616,8 +589,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ],
                     ),
                   ),
-                  data: Theme.of(context)
-                      .copyWith(unselectedWidgetColor: Colors.white),
+                  data: Theme.of(context).copyWith(unselectedWidgetColor: Colors.white),
                 ),
               );
             },

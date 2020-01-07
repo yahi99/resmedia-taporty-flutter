@@ -7,10 +7,9 @@ import 'package:easy_route/easy_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:resmedia_taporty_flutter/data/config.dart';
 import 'package:resmedia_taporty_flutter/common/interface/view/LogoView.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
-import 'package:resmedia_taporty_flutter/common/logic/database.dart';
+import 'package:resmedia_taporty_flutter/common/resources/Database.dart';
 
 class SignUpScreen extends StatefulWidget implements WidgetRoute {
   static const ROUTE = "SignUpScreen";
@@ -24,8 +23,7 @@ class SignUpScreen extends StatefulWidget implements WidgetRoute {
 
 class _SignUpScreenState extends State<SignUpScreen> {
   final _userBloc = UserBloc.of();
-  final FirebaseSignUpBloc _submitBloc =
-      FirebaseSignUpBloc.init(controller: UserBloc.of());
+  final FirebaseSignUpBloc _submitBloc = FirebaseSignUpBloc.init(controller: UserBloc.of());
 
   StreamSubscription registrationLevelSub;
   StreamController privacyStream;
@@ -36,10 +34,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
     super.didChangeDependencies();
     _submitBloc.submitController.solver = (res) async {
       if (!res) return;
-      final user=await _userBloc.outFirebaseUser.first;
-      if ( user!= null)
-        Database().createUserGoogle(uid: user.uid, nominative: user.displayName, email: user.email);
-        EasyRouter.pop(context);
+      final user = await _userBloc.outFirebaseUser.first;
+      if (user != null) Database().createUserGoogle(uid: user.uid, nominative: user.displayName, email: user.email);
+      EasyRouter.pop(context);
     };
   }
 
@@ -52,10 +49,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
-    privacy=false;
-    privacyStream= new StreamController<bool>.broadcast();
+    privacy = false;
+    privacyStream = new StreamController<bool>.broadcast();
   }
 
   void _showPolicyDialog(BuildContext context) {
@@ -63,14 +60,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
         context: context,
         builder: (_context) {
           return AlertDialog(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(20))),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
             content: Scaffold(
               body: ListView(
                 shrinkWrap: true,
                 children: <Widget>[
-                  AutoSizeText(
-                      'Privacy Policy'),
+                  AutoSizeText('Privacy Policy'),
                   RaisedButton(
                     child: Text('  Chiudi  '),
                     onPressed: () => EasyRouter.pop(context),
@@ -82,21 +77,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
         });
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Material(
-        child:Theme(
-      child: LogoView(
-        top: FittedBox(
-          fit: BoxFit.contain,
-          child: Icon(
-            Icons.lock_outline,
-            color: Colors.white,
+      child: Theme(
+        child: LogoView(
+          top: FittedBox(
+            fit: BoxFit.contain,
+            child: Icon(
+              Icons.lock_outline,
+              color: Colors.white,
+            ),
           ),
-        ),
-        children: [
-          /*TextField(
+          children: [
+            /*TextField(
             decoration: InputDecoration(
               labelText: 'E-mail',
             ),
@@ -152,74 +146,80 @@ class _SignUpScreenState extends State<SignUpScreen> {
               EasyRouter.push(context, GeoLocScreen());
             },
           )*/
-          Form(
-            key: _submitBloc.formKey,
-            child: Column(
-              children: <Widget>[
-                EmailField(
-                  checker: _submitBloc.emailChecker,
-                ),
-                SizedBox(
-                  height: SPACE,
-                ),
-                PasswordField(
-                  checker: _submitBloc.passwordChecker,
-                ),
-                SizedBox(
-                  height: SPACE,
-                ),
-                PasswordField(
-                  checker: _submitBloc.repeatPasswordChecker,
-                  decoration: PASSWORD_REPEAT_DECORATION,
-                  isLast: true,
-                ),
-                SizedBox(
-                  height: SPACE,
-                ),
-                Row(
-                  children: <Widget>[
-                    StreamBuilder(
-                      stream: privacyStream.stream,
-                      builder: (ctx,snap){
-                        return Checkbox(
-                          value: (snap.hasData)?snap.data:privacy,
-                          onChanged: (value){
-                            privacy=value;
-                            privacyStream.add(value);
-                          },
+            Form(
+              key: _submitBloc.formKey,
+              child: Column(
+                children: <Widget>[
+                  EmailField(
+                    checker: _submitBloc.emailChecker,
+                  ),
+                  SizedBox(
+                    height: 12.0,
+                  ),
+                  PasswordField(
+                    checker: _submitBloc.passwordChecker,
+                  ),
+                  SizedBox(
+                    height: 12.0,
+                  ),
+                  PasswordField(
+                    checker: _submitBloc.repeatPasswordChecker,
+                    decoration: PASSWORD_REPEAT_DECORATION,
+                    isLast: true,
+                  ),
+                  SizedBox(
+                    height: 12.0,
+                  ),
+                  Row(
+                    children: <Widget>[
+                      StreamBuilder(
+                        stream: privacyStream.stream,
+                        builder: (ctx, snap) {
+                          return Checkbox(
+                            value: (snap.hasData) ? snap.data : privacy,
+                            onChanged: (value) {
+                              privacy = value;
+                              privacyStream.add(value);
+                            },
+                          );
+                        },
+                      ),
+                      FlatButton(
+                        child: Text(
+                          'Privacy Policy',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        onPressed: () {
+                          _showPolicyDialog(context);
+                        },
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 12.0,
+                  ),
+                  StreamBuilder(
+                    stream: privacyStream.stream,
+                    builder: (ctx, snap) {
+                      if (snap.hasData) {
+                        return SubmitButton.raised(
+                          controller: _submitBloc.submitController,
+                          child: FittedText('Registrati'),
                         );
-                      },
-                    ),
-                    FlatButton(
-                      child: Text('Privacy Policy',style: TextStyle(color: Colors.white),),
-                      onPressed: (){
-                        _showPolicyDialog(context);
-                      },
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: SPACE,
-                ),
-                StreamBuilder(
-                  stream: privacyStream.stream,
-                  builder: (ctx,snap){
-                    if(snap.hasData){
-                      return SubmitButton.raised(
-                        controller: _submitBloc.submitController,
-                        child: FittedText('Registrati'),
-                      );
-                    }
-                    else return RaisedButton(child: Text('Registrati'),onPressed: null,);
-                  },
-                ),
-              ],
+                      } else
+                        return RaisedButton(
+                          child: Text('Registrati'),
+                          onPressed: null,
+                        );
+                    },
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
-      ),
-          data: Theme.of(context).copyWith(unselectedWidgetColor: Colors.white),
+          ],
         ),
+        data: Theme.of(context).copyWith(unselectedWidgetColor: Colors.white),
+      ),
     );
   }
 }

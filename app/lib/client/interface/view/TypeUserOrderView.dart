@@ -7,10 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:resmedia_taporty_flutter/common/helper/DateTimeHelper.dart';
-import 'package:resmedia_taporty_flutter/data/config.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/screen/DetailedOrderUser.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
-import 'package:resmedia_taporty_flutter/common/logic/database.dart';
+import 'package:resmedia_taporty_flutter/common/resources/Database.dart';
 import 'package:resmedia_taporty_flutter/common/model/OrderModel.dart';
 import 'package:toast/toast.dart';
 
@@ -85,7 +84,7 @@ class _LoginScreenState extends State<TypeOrderView> {
                     children: <Widget>[
                       Padding(
                         child: Text('Ristorante'),
-                        padding: EdgeInsets.only(bottom: SPACE * 2, right: SPACE * 2),
+                        padding: EdgeInsets.only(bottom: 12.0 * 2, right: 12.0 * 2),
                       ),
                       StreamBuilder(
                         stream: pointStreamR.stream,
@@ -101,7 +100,7 @@ class _LoginScreenState extends State<TypeOrderView> {
                               },
                               items: dropPoint,
                             ),
-                            padding: EdgeInsets.only(bottom: SPACE * 2),
+                            padding: EdgeInsets.only(bottom: 12.0 * 2),
                           );
                         },
                       ),
@@ -131,7 +130,7 @@ class _LoginScreenState extends State<TypeOrderView> {
                     children: <Widget>[
                       Padding(
                         child: Text('Fattorino'),
-                        padding: EdgeInsets.only(bottom: SPACE * 2, right: SPACE * 2),
+                        padding: EdgeInsets.only(bottom: 12.0 * 2, right: 12.0 * 2),
                       ),
                       StreamBuilder(
                         stream: pointStreamF.stream,
@@ -147,7 +146,7 @@ class _LoginScreenState extends State<TypeOrderView> {
                               },
                               items: dropPoint,
                             ),
-                            padding: EdgeInsets.only(bottom: SPACE * 2),
+                            padding: EdgeInsets.only(bottom: 12.0 * 2),
                           );
                         },
                       ),
@@ -204,7 +203,6 @@ class _LoginScreenState extends State<TypeOrderView> {
           icon: Icons.close,
           color: theme.accentColor,
           onTap: () async {
-            //TODO:DELETE ORDER
             if (widget.order.state != OrderState.CANCELLED)
               Database().deleteOrder(widget.order, (await UserBloc.of().outUser.first).model.id).then((value) {
                 Toast.show('Ordine cancellato!', context);

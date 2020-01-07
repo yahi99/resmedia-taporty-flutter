@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:resmedia_taporty_flutter/drivers/logic/bloc/CalendarBloc.dart';
 import 'package:resmedia_taporty_flutter/drivers/model/CalendarModel.dart';
-import 'package:resmedia_taporty_flutter/common/logic/database.dart';
+import 'package:resmedia_taporty_flutter/common/resources/Database.dart';
 
 class CalendarTabDriver extends StatefulWidget {
   final List<CalendarModel> model;
@@ -23,10 +23,9 @@ class CalendarTabDriver extends StatefulWidget {
   _CalendarState createState() => _CalendarState();
 }
 
-class _CalendarState extends State<CalendarTabDriver>
-    with AutomaticKeepAliveClientMixin {
+class _CalendarState extends State<CalendarTabDriver> with AutomaticKeepAliveClientMixin {
   final _calendarBloc = CalendarBloc.of();
-  int count=0;
+  int count = 0;
 
   @override
   void dispose() {
@@ -43,26 +42,25 @@ class _CalendarState extends State<CalendarTabDriver>
 
   void change(DateTime now) {
     print(now.toIso8601String());
-    count=0;
+    count = 0;
     widget.dateStream.add(now);
   }
 
   bool isPresent(CalendarModel day) {
     //final user=UserBloc.of();
     //final str=await user.outFirebaseUser.first;
-    if (day.free.contains(widget.user) || day.occupied.contains(widget.user))
-      return true;
+    if (day.free.contains(widget.user) || day.occupied.contains(widget.user)) return true;
     return false;
   }
 
-  int daysLeft(int weekDay){
-    if(weekDay==7) return 0;
-    if(weekDay==6) return 1;
-    if(weekDay==5) return 2;
-    if(weekDay==4) return 3;
-    if(weekDay==3) return 4;
-    if(weekDay==2) return 5;
-    if(weekDay==1) return 6;
+  int daysLeft(int weekDay) {
+    if (weekDay == 7) return 0;
+    if (weekDay == 6) return 1;
+    if (weekDay == 5) return 2;
+    if (weekDay == 4) return 3;
+    if (weekDay == 3) return 4;
+    if (weekDay == 2) return 5;
+    if (weekDay == 1) return 6;
   }
 
   @override
@@ -83,73 +81,63 @@ class _CalendarState extends State<CalendarTabDriver>
               children: <Widget>[
                 MonthPicker(
                   selectedDate: widget.date,
-                  firstDate: DateTime(DateTime.now().year, DateTime.now().month,
-                      DateTime.now().day),
-                  lastDate: DateTime(DateTime.now().year, DateTime.now().month,
-                      DateTime.now().day).add(Duration(days: daysLeft(DateTime.now().weekday)+28)),
+                  firstDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
+                  lastDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day).add(Duration(days: daysLeft(DateTime.now().weekday) + 28)),
                   //displayedMonth: DateTime.now(),
                   //currentDate: DateTime.now(),
                   onChanged: change,
                 ),
                 (snap4.data.isNotEmpty)
                     ? Container(
-                    child:ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: snap4.data.length,
-                        itemBuilder: (ctx, index) {
-                          if (!isPresent(snap4.data.elementAt(index))) {
-                            count++;
-                            var temp = snap4.data.elementAt(index).free;
-                            //temp.add(cb.user());
-                            return Padding(
-                                child:Row(
-                              //mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Column(
-                                  children: <Widget>[
-                                    Text(snap4.data.elementAt(index).startTime,
-                                        style: tt.body1),
-                                    Text(snap4.data.elementAt(index).endTime,
-                                        style: tt.body1),
-                                  ],
-                                ),
-                                VerticalDivider(
-                                  width: 2.0,
-                                  color: Colors.grey,
-                                ),
-                                FlatButton(
-                                    child: Text(
-                                      'Conferma',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        backgroundColor: Colors.grey,
-                                        color: Colors.black,
-                                        fontSize: 12,
-                                        fontFamily: 'Comfortaa',
+                        child: ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: snap4.data.length,
+                            itemBuilder: (ctx, index) {
+                              if (!isPresent(snap4.data.elementAt(index))) {
+                                count++;
+                                var temp = snap4.data.elementAt(index).free;
+                                //temp.add(cb.user());
+                                return Padding(
+                                  child: Row(
+                                    //mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      Column(
+                                        children: <Widget>[
+                                          Text(snap4.data.elementAt(index).startTime, style: tt.body1),
+                                          Text(snap4.data.elementAt(index).endTime, style: tt.body1),
+                                        ],
                                       ),
-                                    ),
-                                    onPressed: () => {
-                                          _calendarBloc.setShift(
-                                              snap4.data
-                                                  .elementAt(index)
-                                                  .startTime,
-                                              snap4.data
-                                                  .elementAt(index)
-                                                  .endTime,
-                                              widget.date.toIso8601String(),
-                                              temp)
-                                        }),
-                              ],
-                            ),padding: EdgeInsets.only(top: 16.0),);
-                          }
-                          print(snap4.data.length);
-                          print(index);
-                          if(snap4.data.length-1==index && count==0) return Text('Non ci sono turni disponibili per questo giorno.');
-                          return Container();
-
-                        }),height: 200.0,padding: EdgeInsets.all(16.0),)
+                                      VerticalDivider(
+                                        width: 2.0,
+                                        color: Colors.grey,
+                                      ),
+                                      FlatButton(
+                                          child: Text(
+                                            'Conferma',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              backgroundColor: Colors.grey,
+                                              color: Colors.black,
+                                              fontSize: 12,
+                                              fontFamily: 'Comfortaa',
+                                            ),
+                                          ),
+                                          onPressed: () => {_calendarBloc.setShift(snap4.data.elementAt(index).startTime, snap4.data.elementAt(index).endTime, widget.date.toIso8601String(), temp)}),
+                                    ],
+                                  ),
+                                  padding: EdgeInsets.only(top: 16.0),
+                                );
+                              }
+                              print(snap4.data.length);
+                              print(index);
+                              if (snap4.data.length - 1 == index && count == 0) return Text('Non ci sono turni disponibili per questo giorno.');
+                              return Container();
+                            }),
+                        height: 200.0,
+                        padding: EdgeInsets.all(16.0),
+                      )
                     : Text('Non ci sono turni disponibili per questo giorno.'),
               ],
             ),

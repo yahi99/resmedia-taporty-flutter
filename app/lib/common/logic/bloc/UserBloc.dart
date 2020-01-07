@@ -8,12 +8,13 @@ import 'package:easy_stripe/easy_stripe.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:meta/meta.dart';
+import 'package:resmedia_taporty_flutter/config/StripeConfig.dart';
 import 'package:resmedia_taporty_flutter/generated/provider.dart';
 import 'package:resmedia_taporty_flutter/common/model/ReviewModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/UserModel.dart';
 import 'package:rxdart/rxdart.dart';
 
-import 'package:resmedia_taporty_flutter/common/logic/database.dart';
+import 'package:resmedia_taporty_flutter/common/resources/Database.dart';
 
 import '../../../main.dart';
 
@@ -97,7 +98,7 @@ class UserBloc with MixinFirebaseUserManager implements Bloc {
     });
     _userController.onCancel = () => userModelSub?.cancel();
     _stripeController = DefaultStripeController(
-      publishableKey: STRIPE_PUBLIC_KEY,
+      publishableKey: StripeConfig.STRIPE_PUBLIC_KEY,
       outUserId: outFirebaseUser.map((firebaseUser) => firebaseUser.uid),
       provider: _db,
     );

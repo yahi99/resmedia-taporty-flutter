@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/RestaurantBloc.dart';
 import 'package:resmedia_taporty_flutter/common/model/RestaurantModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/ReviewModel.dart';
+import 'package:resmedia_taporty_flutter/config/ColorTheme.dart';
 
 import '../../../main.dart';
 
@@ -38,7 +39,7 @@ class _CheckoutScreenState extends State<SeeReviewsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Recensioni ' + widget.model.id),
-        backgroundColor: red,
+        backgroundColor: ColorTheme.RED,
         centerTitle: true,
         actions: <Widget>[],
       ),
@@ -84,7 +85,6 @@ class Review extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     final tt = Theme.of(context).textTheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

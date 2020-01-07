@@ -14,10 +14,7 @@ class GoogleMapsBuilder extends StatelessWidget {
   final EdgeInsets padding;
   final ValueChangedWidgetBuilder<MapCreatedCallback> builder;
 
-  GoogleMapsBuilder(
-      {Key key,
-      @required this.builder,
-      this.padding: const EdgeInsets.all(16.0)})
+  GoogleMapsBuilder({Key key, @required this.builder, this.padding: const EdgeInsets.all(16.0)})
       : assert(builder != null),
         super(key: key); // 17
 
@@ -145,36 +142,28 @@ class GoogleMapExtController implements GoogleMapController {
   // ignore: invalid_use_of_visible_for_testing_member
   MethodChannel get channel => basicController.channel;
 
-  Future<void> animateCamera(CameraUpdate cameraUpdate) async =>
-      await basicController.animateCamera(cameraUpdate);
+  Future<void> animateCamera(CameraUpdate cameraUpdate) async => await basicController.animateCamera(cameraUpdate);
 
-  Future<void> moveCamera(CameraUpdate cameraUpdate) async =>
-      await basicController.moveCamera(cameraUpdate);
+  Future<void> moveCamera(CameraUpdate cameraUpdate) async => await basicController.moveCamera(cameraUpdate);
 
-  Future<LatLngBounds> getVisibleRegion() async =>
-      await basicController.getVisibleRegion();
+  Future<LatLngBounds> getVisibleRegion() async => await basicController.getVisibleRegion();
 
-  Future<void> animateToCenter(Iterable<LatLng> positions,
-      {padding: 48.0}) async {
-    await animateCamera(CameraUpdate.newLatLngBounds(
-        squarePos(markers.map((m) => m.position)), padding));
+  Future<void> animateToCenter(Iterable<LatLng> positions, {padding: 48.0}) async {
+    await animateCamera(CameraUpdate.newLatLngBounds(squarePos(markers.map((m) => m.position)), padding));
   }
 
   @override
   Future<void> setMapStyle(String mapStyle) {
-    // TODO: implement setMapStyle
     return null;
   }
 
   @override
   Future<LatLng> getLatLng(ScreenCoordinate screenCoordinate) {
-    // TODO: implement getLatLng
     return null;
   }
 
   @override
   Future<ScreenCoordinate> getScreenCoordinate(LatLng latLng) {
-    // TODO: implement getScreenCoordinate
     return null;
   }
 }
@@ -183,8 +172,7 @@ LatLng centerPos(Iterable<LatLng> positions) {
   final sum = positions.fold<LatLng>(LatLng(0.0, 0.0), (prev, val) {
     return LatLng(prev.latitude + val.latitude, prev.longitude + val.longitude);
   });
-  return LatLng(
-      sum.latitude / positions.length, sum.longitude / positions.length);
+  return LatLng(sum.latitude / positions.length, sum.longitude / positions.length);
 }
 
 LatLngBounds squarePos(Iterable<LatLng> positions) {
@@ -198,11 +186,9 @@ LatLngBounds squarePos(Iterable<LatLng> positions) {
   );
 }
 
-LatLng comparatorPos(
-    Iterable<LatLng> positions, double comparator(double val1, double val2)) {
+LatLng comparatorPos(Iterable<LatLng> positions, double comparator(double val1, double val2)) {
   return positions.fold(positions.elementAt(0), (prev, val) {
-    return LatLng(comparator(prev.latitude, val.latitude),
-        comparator(prev.longitude, val.longitude));
+    return LatLng(comparator(prev.latitude, val.latitude), comparator(prev.longitude, val.longitude));
   });
 }
 
@@ -217,9 +203,7 @@ class PrimaryGoogleMapsController extends InheritedWidget {
         super(key: key, child: child);
 
   static Completer<GoogleMapExtController> of(BuildContext context) {
-    return (context.inheritFromWidgetOfExactType(PrimaryGoogleMapsController)
-            as PrimaryGoogleMapsController)
-        ?.controller;
+    return (context.inheritFromWidgetOfExactType(PrimaryGoogleMapsController) as PrimaryGoogleMapsController)?.controller;
   }
 
   @override

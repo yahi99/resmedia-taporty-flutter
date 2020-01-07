@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:resmedia_taporty_flutter/common/model/OrderModel.dart';
+import 'package:resmedia_taporty_flutter/config/ColorTheme.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/widget/Order.dart';
 import 'package:resmedia_taporty_flutter/drivers/model/SubjectModel.dart';
 import 'package:resmedia_taporty_flutter/main.dart';
@@ -79,7 +80,7 @@ class SubjectVoid extends StatelessWidget {
             padding: const EdgeInsets.only(bottom: 4.0),
             child: Text(
               title,
-              style: textTheme.subhead.copyWith(fontWeight: FontWeight.bold, color: red),
+              style: textTheme.subhead.copyWith(fontWeight: FontWeight.bold, color: ColorTheme.RED),
             ),
           ),
           Text(

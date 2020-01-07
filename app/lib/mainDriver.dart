@@ -6,18 +6,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:resmedia_taporty_flutter/app_localization.dart';
+import 'package:resmedia_taporty_flutter/config/ColorTheme.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/screen/LoginScreen.dart';
 
 /// flutter build --flavor development -t lib/main-dev.dart
 
 //const red = Color(0xFFd50000), s_red = Color(0xFF9b0000), // B71C1C
 //blue = Color(0xFF1565c0), blue_s = Color(0xFF003c8f); // 0F5DDB
-
-const red = Color(0xFFd50000),
-    accent_red = Color(0xFFff5131), // B71C1C
-    blue = Color(0xFF1565c0),
-    accent_blue = Color(0xFF5e92f3); // 0F5DDB
-const STRIPE_PUBLIC_KEY = "pk_test_bI6Z2I2jFP7Tfjfm0AvIyWV500cS2fKdCO";
 
 void main() async {
   initializeDateFormatting();
@@ -38,10 +33,10 @@ class _TaportyState extends State<Taporty> {
   @override
   Widget build(BuildContext context) {
     final cls = ColorScheme.light(
-      primary: red,
-      primaryVariant: accent_red,
-      secondary: blue,
-      secondaryVariant: accent_blue,
+      primary: ColorTheme.RED,
+      primaryVariant: ColorTheme.ACCENT_RED,
+      secondary: ColorTheme.BLUE,
+      secondaryVariant: ColorTheme.ACCENT_BLUE,
     );
 
     return MaterialApp(

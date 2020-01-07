@@ -5,9 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_webservice/places.dart';
-import 'package:resmedia_taporty_flutter/data/config.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
-import 'package:resmedia_taporty_flutter/common/logic/database.dart';
+import 'package:resmedia_taporty_flutter/common/resources/Database.dart';
 import 'package:resmedia_taporty_flutter/common/model/UserModel.dart';
 import 'package:toast/toast.dart';
 
@@ -21,7 +20,6 @@ class BecomeDriverScreen extends StatefulWidget implements WidgetRoute {
 }
 
 class NewDriverState extends State<BecomeDriverScreen> {
-
   static final String _key = 'AIzaSyAmJyflDR6W10z738vMkLz9Oham51HR790';
 
   GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: _key);
@@ -30,7 +28,7 @@ class NewDriverState extends State<BecomeDriverScreen> {
 
   Position pos;
   String address;
-  bool isValid=false;
+  bool isValid = false;
 
   StreamController geo;
 
@@ -72,15 +70,13 @@ class NewDriverState extends State<BecomeDriverScreen> {
   void _focusNodePlaces() async {
     // show input autocomplete with selected mode
     // then get the Prediction selected
-    Prediction p =
-    await PlacesAutocomplete.show(context: context, apiKey: _key);
+    Prediction p = await PlacesAutocomplete.show(context: context, apiKey: _key);
     displayPrediction(p);
   }
 
   Future<Null> displayPrediction(Prediction p) async {
     if (p != null) {
-      PlacesDetailsResponse detail =
-      await _places.getDetailsByPlaceId(p.placeId);
+      PlacesDetailsResponse detail = await _places.getDetailsByPlaceId(p.placeId);
 
       //var placeId = p.placeId;
       double lat = detail.result.geometry.location.lat;
@@ -96,21 +92,27 @@ class NewDriverState extends State<BecomeDriverScreen> {
     }
   }
 
-  Future _upgrade(String uid,BuildContext context,String nominative){
-    if(_formKey.currentState.validate()) {
+  Future _upgrade(String uid, BuildContext context, String nominative) {
+    if (_formKey.currentState.validate()) {
       //Can add all the data that is required in the future
-      return Database().upgradeToDriver(uid: uid,car: _carKey.currentState.value,
-          codiceFiscale: _fiscKey.currentState.value,address: _resKey.currentState.value,
-          km: double.tryParse(_copKey.currentState.value),exp:_expKey.currentState.value,
-          pos: pos,nominative: nominative).then((value){
-        Toast.show('Richiesta andata a buon fine!', context,duration: 3);
+      return Database()
+          .upgradeToDriver(
+              uid: uid,
+              car: _carKey.currentState.value,
+              codiceFiscale: _fiscKey.currentState.value,
+              address: _resKey.currentState.value,
+              km: double.tryParse(_copKey.currentState.value),
+              exp: _expKey.currentState.value,
+              pos: pos,
+              nominative: nominative)
+          .then((value) {
+        Toast.show('Richiesta andata a buon fine!', context, duration: 3);
       });
     }
     return null;
   }
 
-  void _changeFocus(
-      BuildContext context, FocusNode currentNode, FocusNode nextNode) {
+  void _changeFocus(BuildContext context, FocusNode currentNode, FocusNode nextNode) {
     currentNode.unfocus();
     FocusScope.of(context).requestFocus(nextNode);
   }
@@ -144,10 +146,9 @@ class NewDriverState extends State<BecomeDriverScreen> {
                               key: _fiscKey,
                               focusNode: _fiscNode,
                               textInputAction: TextInputAction.next,
-                              onFieldSubmitted: (value) =>
-                                  _changeFocus(context, _fiscNode, _resNode),
-                              validator: (value){
-                                if(value.length!=16){
+                              onFieldSubmitted: (value) => _changeFocus(context, _fiscNode, _resNode),
+                              validator: (value) {
+                                if (value.length != 16) {
                                   return 'Inserisci codice fiscale';
                                 }
                                 return null;
@@ -162,9 +163,7 @@ class NewDriverState extends State<BecomeDriverScreen> {
                           StreamBuilder<String>(
                             stream: geo.stream,
                             builder: (ctx, snap) {
-                              if (snap.hasData)
-                                _controller.value =
-                                    TextEditingValue(text: snap.data);
+                              if (snap.hasData) _controller.value = TextEditingValue(text: snap.data);
                               return Padding(
                                 child: TextFormField(
                                   controller: _controller,
@@ -172,8 +171,7 @@ class NewDriverState extends State<BecomeDriverScreen> {
                                   key: _resKey,
                                   focusNode: _resNode,
                                   textInputAction: TextInputAction.next,
-                                  onFieldSubmitted: (value) =>
-                                      _changeFocus(context, _resNode, _copNode),
+                                  onFieldSubmitted: (value) => _changeFocus(context, _resNode, _copNode),
                                   decoration: InputDecoration(
                                     hintText: "Indirizzo",
                                   ),
@@ -214,13 +212,12 @@ class NewDriverState extends State<BecomeDriverScreen> {
                               key: _copKey,
                               focusNode: _copNode,
                               textInputAction: TextInputAction.next,
-                              onFieldSubmitted: (value) =>
-                                  _changeFocus(context, _copNode, _carNode),
+                              onFieldSubmitted: (value) => _changeFocus(context, _copNode, _carNode),
                               decoration: InputDecoration(
                                 hintText: "Copertura in Km",
                               ),
-                              validator: (value){
-                                if(value.length==0){
+                              validator: (value) {
+                                if (value.length == 0) {
                                   return 'Inserisci copertura';
                                 }
                                 return null;
@@ -234,13 +231,12 @@ class NewDriverState extends State<BecomeDriverScreen> {
                               key: _carKey,
                               focusNode: _carNode,
                               textInputAction: TextInputAction.next,
-                              onFieldSubmitted: (value) =>
-                                  _changeFocus(context, _carNode, _expNode),
+                              onFieldSubmitted: (value) => _changeFocus(context, _carNode, _expNode),
                               decoration: InputDecoration(
                                 hintText: "Mezzo utilizzato",
                               ),
-                              validator: (value){
-                                if(value.length==0){
+                              validator: (value) {
+                                if (value.length == 0) {
                                   return 'Inserisci mezzo';
                                 }
                                 return null;
@@ -256,11 +252,11 @@ class NewDriverState extends State<BecomeDriverScreen> {
                               textInputAction: TextInputAction.done,
                               onFieldSubmitted: (value) {
                                 _expNode.unfocus();
-                                _upgrade(snap.data.model.id,context,snap.data.model.nominative);
+                                _upgrade(snap.data.model.id, context, snap.data.model.nominative);
                                 // update DB
                               },
-                              validator: (value){
-                                if(value.length==0){
+                              validator: (value) {
+                                if (value.length == 0) {
                                   return 'Inserisci descrizione';
                                 }
                                 return null;
@@ -278,10 +274,13 @@ class NewDriverState extends State<BecomeDriverScreen> {
                       ),
                     ),
                     FlatButton(
-                      child: Padding(child:Text('Invia Richiesta'),padding: EdgeInsets.all(SPACE),),
-                      onPressed: (){
+                      child: Padding(
+                        child: Text('Invia Richiesta'),
+                        padding: EdgeInsets.all(12.0),
+                      ),
+                      onPressed: () {
                         //update DB
-                        _upgrade(snap.data.model.id,context,snap.data.model.nominative);
+                        _upgrade(snap.data.model.id, context, snap.data.model.nominative);
                       },
                     )
                   ],

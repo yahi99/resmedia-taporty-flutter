@@ -1,6 +1,5 @@
 import 'package:easy_route/easy_route.dart';
 import 'package:flutter/material.dart';
-import 'package:resmedia_taporty_flutter/data/config.dart';
 
 class LegalNotesScreen extends StatefulWidget implements WidgetRoute {
   static const ROUTE = 'LegalNotesScreen';
@@ -24,7 +23,7 @@ class _LegalNotesState extends State<LegalNotesScreen> {
         title: Text("Account"),
       ),
       body: Padding(
-        padding: const EdgeInsets.only(top: SPACE * 2),
+        padding: const EdgeInsets.only(top: 12.0 * 2),
         child: ListView(
           shrinkWrap: true,
           children: <Widget>[
@@ -37,9 +36,7 @@ class _LegalNotesState extends State<LegalNotesScreen> {
                       child: Text('Termini e condizioni'),
                     ),
                     IconButton(
-                        icon: Icon((!conditions)
-                            ? Icons.keyboard_arrow_down
-                            : Icons.keyboard_arrow_up),
+                        icon: Icon((!conditions) ? Icons.keyboard_arrow_down : Icons.keyboard_arrow_up),
                         onPressed: () {
                           setState(() {
                             //_bodyHeight = 100.0;
@@ -66,9 +63,7 @@ class _LegalNotesState extends State<LegalNotesScreen> {
                       child: Text('Privacy Policy'),
                     ),
                     IconButton(
-                        icon: Icon((!privacy)
-                            ? Icons.keyboard_arrow_down
-                            : Icons.keyboard_arrow_up),
+                        icon: Icon((!privacy) ? Icons.keyboard_arrow_down : Icons.keyboard_arrow_up),
                         onPressed: () {
                           setState(() {
                             //_bodyHeight = 100.0;
@@ -95,9 +90,7 @@ class _LegalNotesState extends State<LegalNotesScreen> {
                       child: Text('Cookies Policy'),
                     ),
                     IconButton(
-                        icon: Icon((!cookie)
-                            ? Icons.keyboard_arrow_down
-                            : Icons.keyboard_arrow_up),
+                        icon: Icon((!cookie) ? Icons.keyboard_arrow_down : Icons.keyboard_arrow_up),
                         onPressed: () {
                           setState(() {
                             //_bodyHeight = 100.0;
@@ -117,7 +110,7 @@ class _LegalNotesState extends State<LegalNotesScreen> {
             ),
           ].map((child) {
             return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: SPACE * 2),
+              padding: const EdgeInsets.symmetric(horizontal: 12.0 * 2),
               child: child,
             );
           }).toList(),

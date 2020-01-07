@@ -2,7 +2,6 @@ import 'package:easy_route/easy_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:resmedia_taporty_flutter/data/config.dart';
 import 'package:resmedia_taporty_flutter/client/interface/screen/SeeReviewsScreen.dart';
 import 'package:resmedia_taporty_flutter/common/model/RestaurantModel.dart';
 
@@ -28,7 +27,7 @@ class InfoRestaurantPage extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: SPACE, horizontal: SPACE * 2),
+                padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 12.0 * 2),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
@@ -83,7 +82,7 @@ class InfoRestaurantPage extends StatelessWidget {
         Align(
           alignment: Alignment.bottomRight,
           child: Padding(
-            padding: const EdgeInsets.all(SPACE),
+            padding: const EdgeInsets.all(12.0),
             child: Image.asset(
               'assets/img/logotest.png',
               width: 96,

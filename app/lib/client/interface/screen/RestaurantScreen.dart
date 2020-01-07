@@ -8,7 +8,6 @@ import 'package:resmedia_taporty_flutter/common/helper/LoginHelper.dart';
 import 'package:resmedia_taporty_flutter/client/model/CartModel.dart';
 import 'package:resmedia_taporty_flutter/client/model/ProductCartModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/ProductModel.dart';
-import 'package:resmedia_taporty_flutter/data/config.dart';
 import 'package:resmedia_taporty_flutter/client/interface/screen/AccountScreen.dart';
 import 'package:resmedia_taporty_flutter/client/interface/page/InfoRestaurantPage.dart';
 import 'package:resmedia_taporty_flutter/client/interface/page/MenuPages.dart';
@@ -16,7 +15,7 @@ import 'package:resmedia_taporty_flutter/client/interface/screen/CheckoutScreen.
 import 'package:resmedia_taporty_flutter/client/logic/bloc/CartBloc.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/RestaurantBloc.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
-import 'package:resmedia_taporty_flutter/common/logic/database.dart';
+import 'package:resmedia_taporty_flutter/common/resources/Database.dart';
 import 'package:resmedia_taporty_flutter/common/model/RestaurantModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/UserModel.dart';
 
@@ -241,7 +240,7 @@ class _RestaurantScreenState extends State<RestaurantScreen> {
           ),
           bottomNavigationBar: BottomAppBar(
             child: Container(
-              padding: const EdgeInsets.symmetric(vertical: SPACE / 2, horizontal: SPACE * 2),
+              padding: const EdgeInsets.symmetric(vertical: 12.0 / 2, horizontal: 12.0 * 2),
               color: colorScheme.primary,
               child: SafeArea(
                 top: false,

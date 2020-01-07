@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:resmedia_taporty_flutter/data/config.dart';
 import 'package:resmedia_taporty_flutter/client/interface/screen/CheckoutScreen.dart';
 import 'package:resmedia_taporty_flutter/client/interface/view/BottonButtonBar.dart';
 import 'package:resmedia_taporty_flutter/client/interface/view/InputField.dart';
@@ -18,9 +17,7 @@ class PaymentPage extends StatefulWidget {
   _PaymentState createState() => _PaymentState();
 }
 
-class _PaymentState extends State<PaymentPage>
-    with AutomaticKeepAliveClientMixin {
-
+class _PaymentState extends State<PaymentPage> with AutomaticKeepAliveClientMixin {
   TextEditingController _last4;
   TextEditingController _month;
   TextEditingController _year;
@@ -28,7 +25,7 @@ class _PaymentState extends State<PaymentPage>
   TextEditingController _lastName;
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
     _last4 = TextEditingController();
     _month = TextEditingController();
@@ -38,7 +35,7 @@ class _PaymentState extends State<PaymentPage>
   }
 
   @override
-  void dispose(){
+  void dispose() {
     super.dispose();
     _last4.dispose();
     _month.dispose();
@@ -65,12 +62,10 @@ class _PaymentState extends State<PaymentPage>
         builder: (ctx, snap) {
           if (snap.hasData) {
             isValid = true;
-            cardId=snap.data.token;
+            cardId = snap.data.token;
             _last4.value = TextEditingValue(text: snap.data.card.last4);
-            _month.value =
-                TextEditingValue(text: snap.data.card.expMonth.toString());
-            _year.value =
-                TextEditingValue(text: snap.data.card.expYear.toString());
+            _month.value = TextEditingValue(text: snap.data.card.expMonth.toString());
+            _year.value = TextEditingValue(text: snap.data.card.expYear.toString());
             if (snap.data.card.name != null) {
               var temp = snap.data.card.name.split(' ');
               if (temp.length == 2) {
@@ -83,14 +78,14 @@ class _PaymentState extends State<PaymentPage>
               appBar: AppBar(
                 leading: IconButton(
                   icon: Icon(Icons.arrow_back),
-                  onPressed: (){
-                    widget.controller.animateTo(widget.controller.index-1);
+                  onPressed: () {
+                    widget.controller.animateTo(widget.controller.index - 1);
                   },
                 ),
               ),
               body: SingleChildScrollView(
                 child: Padding(
-                  padding: const EdgeInsets.all(SPACE * 2),
+                  padding: const EdgeInsets.all(12.0 * 2),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
@@ -270,11 +265,11 @@ class _PaymentState extends State<PaymentPage>
                     "Continua",
                     style: TextStyle(color: Colors.white),
                   ),
-                  onPressed: () async{
-                    if (isValid && cardId!=null) {
+                  onPressed: () async {
+                    if (isValid && cardId != null) {
                       final state = MyInheritedWidget.of(context);
                       state.fingerprint = cardId;
-                      state.uid=(await UserBloc.of().outFirebaseUser.first).uid;
+                      state.uid = (await UserBloc.of().outFirebaseUser.first).uid;
                       widget.controller.animateTo(widget.controller.index + 1);
                     }
                   },
@@ -284,6 +279,5 @@ class _PaymentState extends State<PaymentPage>
   }
 
   @override
-  
   bool get wantKeepAlive => true;
 }

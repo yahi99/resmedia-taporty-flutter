@@ -18,9 +18,10 @@ import 'package:resmedia_taporty_flutter/client/interface/screen/RestaurantScree
 import 'package:resmedia_taporty_flutter/client/interface/widget/SearchBar.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/RestaurantsBloc.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
-import 'package:resmedia_taporty_flutter/common/logic/database.dart';
+import 'package:resmedia_taporty_flutter/common/resources/Database.dart';
 import 'package:resmedia_taporty_flutter/common/model/RestaurantModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/UserModel.dart';
+import 'package:resmedia_taporty_flutter/config/ColorTheme.dart';
 
 import '../../../main.dart';
 
@@ -120,7 +121,7 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
           },
         ),
         title: Text('Ristoranti nella tua zona'),
-        backgroundColor: red,
+        backgroundColor: ColorTheme.RED,
         centerTitle: true,
         actions: <Widget>[
           IconButton(

@@ -2,7 +2,6 @@ import 'package:easy_route/easy_route.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:resmedia_taporty_flutter/common/model/OrderModel.dart';
-import 'package:resmedia_taporty_flutter/data/config.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/page/SubjectOrderPage.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/view/OrderView.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/widget/Order.dart';
@@ -80,7 +79,7 @@ class _DetailOrderPageDriverState extends State<DetailOrderPageDriver> {
         physics: NeverScrollableScrollPhysics(),
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.all(SPACE),
+            padding: const EdgeInsets.all(12.0),
             child: Wrap(
               runSpacing: 16.0,
               children: <Widget>[

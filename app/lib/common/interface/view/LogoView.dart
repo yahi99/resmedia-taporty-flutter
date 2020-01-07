@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:resmedia_taporty_flutter/data/config.dart';
-import 'package:resmedia_taporty_flutter/data/img.dart';
+import 'package:resmedia_taporty_flutter/config/Assets.dart';
 
 class LogoView extends StatelessWidget {
   final Widget top;
@@ -16,7 +15,7 @@ class LogoView extends StatelessWidget {
       decoration: BoxDecoration(
         image: DecorationImage(
           fit: BoxFit.fill,
-          image: AssetImage(Img.back_log),
+          image: AssetImage(Assets.loginBackground),
         ),
       ),
       child: ListView(
@@ -35,8 +34,8 @@ class LogoView extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: Cfg.LOGO_SPACE),
-            child: Image.asset(Img.logotest),
+            padding: const EdgeInsets.symmetric(horizontal: 40.0),
+            child: Image.asset(Assets.logo),
           ),
           SizedBox(
             height: 32,

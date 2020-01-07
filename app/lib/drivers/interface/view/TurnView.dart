@@ -5,7 +5,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/widget/Order.dart';
 import 'package:resmedia_taporty_flutter/drivers/model/TurnModel.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
-import 'package:resmedia_taporty_flutter/common/logic/database.dart';
+import 'package:resmedia_taporty_flutter/common/resources/Database.dart';
 import 'package:toast/toast.dart';
 
 class TurnView extends StatelessWidget {
@@ -27,24 +27,10 @@ class TurnView extends StatelessWidget {
             //TODO:DELETE TURN
             final temp = model.endTime.split(':');
             final date = DateTime.parse(model.day);
-            double difference = DateTime(
-                        date.year,
-                        date.month,
-                        date.day,
-                        int.parse(temp.elementAt(0)),
-                        int.parse(temp.elementAt(1)))
-                    .difference(DateTime.now())
-                    .inSeconds /
-                60 /
-                60;
+            double difference = DateTime(date.year, date.month, date.day, int.parse(temp.elementAt(0)), int.parse(temp.elementAt(1))).difference(DateTime.now()).inSeconds / 60 / 60;
             print(difference);
-            if (difference > 0 && difference < 48.0)
-              Toast.show(
-                  'Non puoi modificare turni nelle prossime 48 ore!', context,
-                  duration: 5);
-            if (difference > 48)
-              Database().removeShiftDriver(model.startTime, model.day,
-                  (await UserBloc.of().outUser.first).model.id);
+            if (difference > 0 && difference < 48.0) Toast.show('Non puoi modificare turni nelle prossime 48 ore!', context, duration: 5);
+            if (difference > 48) Database().removeShiftDriver(model.startTime, model.day, (await UserBloc.of().outUser.first).model.id);
           },
         )
       ],
@@ -80,23 +66,9 @@ class TurnViewRest extends StatelessWidget {
           onTap: () async {
             final temp = model.endTime.split(':');
             final date = DateTime.parse(model.day);
-            double difference = DateTime(
-                        date.year,
-                        date.month,
-                        date.day,
-                        int.parse(temp.elementAt(0)),
-                        int.parse(temp.elementAt(1)))
-                    .difference(DateTime.now())
-                    .inSeconds /
-                60 /
-                60;
-            if (difference > 48)
-              Database().removeShiftRest(model.startTime, model.day,
-                  (await UserBloc.of().outUser.first).model.restaurantId);
-            if (difference > 0 && difference < 48.0)
-              Toast.show(
-                  'Non puoi modificare turni nelle prossime 48 ore!', context,
-                  duration: 5);
+            double difference = DateTime(date.year, date.month, date.day, int.parse(temp.elementAt(0)), int.parse(temp.elementAt(1))).difference(DateTime.now()).inSeconds / 60 / 60;
+            if (difference > 48) Database().removeShiftRest(model.startTime, model.day, (await UserBloc.of().outUser.first).model.restaurantId);
+            if (difference > 0 && difference < 48.0) Toast.show('Non puoi modificare turni nelle prossime 48 ore!', context, duration: 5);
           },
         )
       ],

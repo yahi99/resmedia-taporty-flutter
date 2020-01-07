@@ -10,9 +10,8 @@ import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:resmedia_taporty_flutter/data/config.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
-import 'package:resmedia_taporty_flutter/common/logic/database.dart';
+import 'package:resmedia_taporty_flutter/common/resources/Database.dart';
 import 'package:resmedia_taporty_flutter/common/model/UserModel.dart';
 import 'package:toast/toast.dart';
 
@@ -79,15 +78,13 @@ class NewDriverState extends State<BecomeRestaurantScreen> {
   void _focusNodePlaces() async {
     // show input autocomplete with selected mode
     // then get the Prediction selected
-    Prediction p =
-        await PlacesAutocomplete.show(context: context, apiKey: _key);
+    Prediction p = await PlacesAutocomplete.show(context: context, apiKey: _key);
     displayPrediction(p);
   }
 
   Future<Null> displayPrediction(Prediction p) async {
     if (p != null) {
-      PlacesDetailsResponse detail =
-          await _places.getDetailsByPlaceId(p.placeId);
+      PlacesDetailsResponse detail = await _places.getDetailsByPlaceId(p.placeId);
 
       //var placeId = p.placeId;
       double lat = detail.result.geometry.location.lat;
@@ -131,27 +128,34 @@ class NewDriverState extends State<BecomeRestaurantScreen> {
 
   void _upgrade(String uid, BuildContext context) {
     if (_formKey.currentState.validate()) {
-      if(pos!=null && address!=null) {
+      if (pos != null && address != null) {
         if (_tempPath != null) {
-          if(_tempPath.split('.').last!='jpg'){
-            Toast.show('Il formato dell\'immagine deve essere .jpg', context,duration: 3);
-          }
-          else uploadFile(_tempPath).then((path) async {
-            Database().upgradeToVendor(uid: uid,pos: pos,
-                img: path,cop: double.parse(_copKey.currentState.value),rid: _ragKey.currentState.value,
-                ragSociale: _ragKey.currentState.value,partitaIva: _ivaKey.currentState.value,
-                address: _indKey.currentState.value,eseType: _eseKey.currentState.value,
-                prodType: _prodKey.currentState.value).then((value){
-              Toast.show('Richiesta andata a buon fine!', context,duration: 3);
+          if (_tempPath.split('.').last != 'jpg') {
+            Toast.show('Il formato dell\'immagine deve essere .jpg', context, duration: 3);
+          } else
+            uploadFile(_tempPath).then((path) async {
+              Database()
+                  .upgradeToVendor(
+                      uid: uid,
+                      pos: pos,
+                      img: path,
+                      cop: double.parse(_copKey.currentState.value),
+                      rid: _ragKey.currentState.value,
+                      ragSociale: _ragKey.currentState.value,
+                      partitaIva: _ivaKey.currentState.value,
+                      address: _indKey.currentState.value,
+                      eseType: _eseKey.currentState.value,
+                      prodType: _prodKey.currentState.value)
+                  .then((value) {
+                Toast.show('Richiesta andata a buon fine!', context, duration: 3);
+              });
             });
-          });
         }
       }
     }
   }
 
-  void _changeFocus(
-      BuildContext context, FocusNode currentNode, FocusNode nextNode) {
+  void _changeFocus(BuildContext context, FocusNode currentNode, FocusNode nextNode) {
     currentNode.unfocus();
     FocusScope.of(context).requestFocus(nextNode);
   }
@@ -185,10 +189,9 @@ class NewDriverState extends State<BecomeRestaurantScreen> {
                               key: _ragKey,
                               focusNode: _ragNode,
                               textInputAction: TextInputAction.next,
-                              onFieldSubmitted: (value) =>
-                                  _changeFocus(context, _ragNode, _ivaNode),
+                              onFieldSubmitted: (value) => _changeFocus(context, _ragNode, _ivaNode),
                               validator: (value) {
-                                if (value.length ==0) {
+                                if (value.length == 0) {
                                   return 'Inserisci ragione sociale';
                                 }
                                 return null;
@@ -226,9 +229,7 @@ class NewDriverState extends State<BecomeRestaurantScreen> {
                           StreamBuilder<String>(
                             stream: geo.stream,
                             builder: (ctx, snap) {
-                              if (snap.hasData)
-                                _controller.value =
-                                    TextEditingValue(text: snap.data);
+                              if (snap.hasData) _controller.value = TextEditingValue(text: snap.data);
                               return Padding(
                                 child: TextFormField(
                                   controller: _controller,
@@ -236,8 +237,7 @@ class NewDriverState extends State<BecomeRestaurantScreen> {
                                   key: _indKey,
                                   focusNode: _indNode,
                                   textInputAction: TextInputAction.next,
-                                  onFieldSubmitted: (value) =>
-                                      _changeFocus(context, _indNode, _copNode),
+                                  onFieldSubmitted: (value) => _changeFocus(context, _indNode, _copNode),
                                   decoration: InputDecoration(
                                     hintText: "Indirizzo",
                                   ),
@@ -260,25 +260,17 @@ class NewDriverState extends State<BecomeRestaurantScreen> {
                               textInputAction: TextInputAction.next,
                               onFieldSubmitted: (value) async {
                                 _copNode.unfocus();
-                                ImagePicker.pickImage(
-                                        source: ImageSource.gallery)
-                                    .then((img) {
+                                ImagePicker.pickImage(source: ImageSource.gallery).then((img) {
                                   if (img != null) {
                                     _tempPath = img.path;
                                     _imgCtrl.add(_tempPath.split('/').last);
                                     FocusScope.of(context).requestFocus(_eseNode);
                                   } else {
-                                    Toast.show(
-                                        'Devi scegliere un\'immagine!', context,
-                                        duration: 3);
+                                    Toast.show('Devi scegliere un\'immagine!', context, duration: 3);
                                   }
                                 }).catchError((error) {
                                   if (error is PlatformException) {
-                                    if (error.code == 'photo_access_denied')
-                                      Toast.show(
-                                          'Devi garantire accesso alle immagini!',
-                                          context,
-                                          duration: 3);
+                                    if (error.code == 'photo_access_denied') Toast.show('Devi garantire accesso alle immagini!', context, duration: 3);
                                   }
                                 });
                               },
@@ -299,47 +291,34 @@ class NewDriverState extends State<BecomeRestaurantScreen> {
                             stream: _imgCtrl.stream,
                             builder: (ctx, img) {
                               if (img.hasData)
-                                _imgTextController.value =
-                                    TextEditingValue(text: img.data);
+                                _imgTextController.value = TextEditingValue(text: img.data);
                               else
-                                _imgTextController.value =
-                                    TextEditingValue(text: '');
+                                _imgTextController.value = TextEditingValue(text: '');
                               return Padding(
                                 child: Column(
                                   children: <Widget>[
                                     TextFormField(
                                       focusNode: _imgNode,
                                       textInputAction: TextInputAction.next,
-                                      onFieldSubmitted: (value) =>
-                                          _changeFocus(context, _imgNode, _eseNode),
+                                      onFieldSubmitted: (value) => _changeFocus(context, _imgNode, _eseNode),
                                       controller: _imgTextController,
-                                      decoration:
-                                      InputDecoration(hintText: 'Immagine'),
+                                      decoration: InputDecoration(hintText: 'Immagine'),
                                       onTap: () async {
-                                        ImagePicker.pickImage(
-                                            source: ImageSource.gallery)
-                                            .then((img) {
+                                        ImagePicker.pickImage(source: ImageSource.gallery).then((img) {
                                           if (img != null) {
                                             _tempPath = img.path;
                                             _imgCtrl.add(_tempPath.split('/').last);
                                           } else {
-                                            Toast.show(
-                                                'Devi scegliere un\'immagine!',
-                                                context,
-                                                duration: 3);
+                                            Toast.show('Devi scegliere un\'immagine!', context, duration: 3);
                                           }
                                         }).catchError((error) {
                                           if (error is PlatformException) {
-                                            if (error.code == 'photo_access_denied')
-                                              Toast.show(
-                                                  'Devi garantire accesso alle immagini!',
-                                                  context,
-                                                  duration: 3);
+                                            if (error.code == 'photo_access_denied') Toast.show('Devi garantire accesso alle immagini!', context, duration: 3);
                                           }
                                         });
                                       },
                                     ),
-                                    (img.hasData)?Padding(child:Image.file(File(_tempPath)),padding:EdgeInsets.all(SPACE)):Container(),
+                                    (img.hasData) ? Padding(child: Image.file(File(_tempPath)), padding: EdgeInsets.all(12.0)) : Container(),
                                   ],
                                 ),
                                 padding: EdgeInsets.all(8.0),
@@ -351,8 +330,7 @@ class NewDriverState extends State<BecomeRestaurantScreen> {
                               key: _eseKey,
                               focusNode: _eseNode,
                               textInputAction: TextInputAction.next,
-                              onFieldSubmitted: (value) =>
-                                  _changeFocus(context, _eseNode, _prodNode),
+                              onFieldSubmitted: (value) => _changeFocus(context, _eseNode, _prodNode),
                               decoration: InputDecoration(
                                 hintText: "Tipologia esercizio",
                               ),
@@ -373,7 +351,7 @@ class NewDriverState extends State<BecomeRestaurantScreen> {
                               textInputAction: TextInputAction.done,
                               onFieldSubmitted: (value) {
                                 _prodNode.unfocus();
-                                _upgrade(snap.data.model.id,context);
+                                _upgrade(snap.data.model.id, context);
                               },
                               validator: (value) {
                                 if (value.length == 0) {
@@ -396,7 +374,7 @@ class NewDriverState extends State<BecomeRestaurantScreen> {
                     FlatButton(
                       child: Text('  Invia Richiesta  '),
                       onPressed: () {
-                        _upgrade(snap.data.model.id,context);
+                        _upgrade(snap.data.model.id, context);
                       },
                     )
                   ],

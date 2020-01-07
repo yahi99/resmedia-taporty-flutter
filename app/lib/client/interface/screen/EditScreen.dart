@@ -4,10 +4,9 @@ import 'package:easy_route/easy_route.dart';
 import 'package:easy_widget/easy_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:resmedia_taporty_flutter/data/config.dart';
 import 'package:resmedia_taporty_flutter/client/interface/screen/LoginScreen.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
-import 'package:resmedia_taporty_flutter/common/logic/database.dart';
+import 'package:resmedia_taporty_flutter/common/resources/Database.dart';
 import 'package:resmedia_taporty_flutter/common/model/UserModel.dart';
 
 class EditScreen extends StatefulWidget implements WidgetRoute {
@@ -174,7 +173,7 @@ class SnackBarPage extends StatelessWidget {
                               ),
                             ].map((child) {
                               return Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: SPACE * 2),
+                                padding: const EdgeInsets.symmetric(horizontal: 12.0 * 2),
                                 child: child,
                               );
                             }).toList(),

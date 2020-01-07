@@ -3,7 +3,6 @@ import 'package:easy_widget/easy_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:resmedia_taporty_flutter/data/config.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/page/OrdersPage.dart';
 import 'package:resmedia_taporty_flutter/drivers/model/SubjectModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/OrderModel.dart';
@@ -135,7 +134,7 @@ class _OrdersTabDriverState extends State<OrdersTabDriver> with TickerProviderSt
           Material(
             elevation: 4.0,
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: SPACE, vertical: 8.0),
+              padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
               child: Text(
                 "Ordine N ",
                 style: tt.subhead,

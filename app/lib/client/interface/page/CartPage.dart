@@ -90,9 +90,6 @@ class _CartState extends State<CartPage> with AutomaticKeepAliveClientMixin {
                       color: tt.primaryColor,
                       onPressed: () {
                         final state = MyInheritedWidget.of(context);
-                        //print(Continue.isContinued);
-
-                        //TODO block if zero items in the cart maybe use a stream ans pass it toProductsFoodDrinkBuilder and stream the whole bar
                         if (state.count > 0)
                           widget.controller.animateTo(widget.controller.index + 1);
                         else
@@ -106,7 +103,6 @@ class _CartState extends State<CartPage> with AutomaticKeepAliveClientMixin {
   }
 
   @override
-  // TODO: implement wantKeepAlive
   bool get wantKeepAlive => true;
 }
 

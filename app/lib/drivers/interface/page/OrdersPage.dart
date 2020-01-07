@@ -1,6 +1,5 @@
 import 'package:easy_route/easy_route.dart';
 import 'package:flutter/material.dart';
-import 'package:resmedia_taporty_flutter/data/config.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/page/DetailOrderPage.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/sliver/SliverOrderVoid.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/view/OrderView.dart';
@@ -151,7 +150,7 @@ class _OrdersPageDriverState extends State<OrdersPageDriver> {
               slivers: widget.model.keys.map<Widget>((nameGroup) {
                 final driverOrderModels = widget.model[nameGroup];
                 return SliverPadding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: SPACE),
+                  padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
                   sliver: SliverOrderVoid(
                     title: Text(translateOrderState(nameGroup)),
                     childCount: driverOrderModels.length,

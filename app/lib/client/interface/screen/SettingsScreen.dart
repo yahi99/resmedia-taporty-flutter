@@ -1,6 +1,5 @@
 import 'package:easy_route/easy_route.dart';
 import 'package:flutter/material.dart';
-import 'package:resmedia_taporty_flutter/data/config.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
 import 'package:resmedia_taporty_flutter/common/model/UserModel.dart';
 
@@ -33,7 +32,7 @@ class _SettingsState extends State<SettingsScreen> {
             title: Text("Settings"),
           ),
           body: Padding(
-            padding: const EdgeInsets.only(top: SPACE * 2),
+            padding: const EdgeInsets.only(top: 12.0 * 2),
             child: ListView(
               children: <Widget>[
                 Row(
@@ -48,9 +47,7 @@ class _SettingsState extends State<SettingsScreen> {
                       onChanged: (value) {
                         user.updateNotifyEmail(value);
                       },
-                      value: (snap.data.model.notifyEmail == null)
-                          ? false
-                          : snap.data.model.notifyEmail,
+                      value: (snap.data.model.notifyEmail == null) ? false : snap.data.model.notifyEmail,
                     ),
                   ],
                 ),
@@ -64,9 +61,7 @@ class _SettingsState extends State<SettingsScreen> {
                       onChanged: (value) {
                         user.updateNotifySms(value);
                       },
-                      value: (snap.data.model.notifyEmail == null)
-                          ? false
-                          : snap.data.model.notifySms,
+                      value: (snap.data.model.notifyEmail == null) ? false : snap.data.model.notifySms,
                     ),
                   ],
                 ),
@@ -77,9 +72,7 @@ class _SettingsState extends State<SettingsScreen> {
                       onChanged: (value) {
                         user.updateNotifyApp(value);
                       },
-                      value: (snap.data.model.notifyApp == null)
-                          ? false
-                          : snap.data.model.notifyApp,
+                      value: (snap.data.model.notifyApp == null) ? false : snap.data.model.notifyApp,
                     ),
                   ],
                 ),
@@ -95,9 +88,7 @@ class _SettingsState extends State<SettingsScreen> {
                       onChanged: (value) {
                         user.updateOffersEmail(value);
                       },
-                      value: (snap.data.model.offersEmail == null)
-                          ? false
-                          : snap.data.model.offersEmail,
+                      value: (snap.data.model.offersEmail == null) ? false : snap.data.model.offersEmail,
                     ),
                   ],
                 ),
@@ -111,9 +102,7 @@ class _SettingsState extends State<SettingsScreen> {
                       onChanged: (value) {
                         user.updateOffersSms(value);
                       },
-                      value: (snap.data.model.offersSms == null)
-                          ? false
-                          : snap.data.model.offersSms,
+                      value: (snap.data.model.offersSms == null) ? false : snap.data.model.offersSms,
                     ),
                   ],
                 ),
@@ -124,15 +113,13 @@ class _SettingsState extends State<SettingsScreen> {
                       onChanged: (value) {
                         user.updateOffersApp(value);
                       },
-                      value: (snap.data.model.offersApp == null)
-                          ? false
-                          : snap.data.model.offersApp,
+                      value: (snap.data.model.offersApp == null) ? false : snap.data.model.offersApp,
                     ),
                   ],
                 ),
               ].map((child) {
                 return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: SPACE * 2),
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0 * 2),
                   child: child,
                 );
               }).toList(),

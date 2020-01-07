@@ -6,8 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:resmedia_taporty_flutter/client/interface/view/TypeUserOrderView.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/OrdersBloc.dart';
 import 'package:resmedia_taporty_flutter/common/model/OrderModel.dart';
-
-import '../../../main.dart';
+import 'package:resmedia_taporty_flutter/config/ColorTheme.dart';
 
 class OrderScreen extends StatefulWidget implements WidgetRoute {
   static const ROUTE = "OrderScreen";
@@ -38,7 +37,7 @@ class OrderScreenState extends State<OrderScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Lista Ordini'),
-        backgroundColor: red,
+        backgroundColor: ColorTheme.RED,
         centerTitle: true,
         actions: <Widget>[],
       ),

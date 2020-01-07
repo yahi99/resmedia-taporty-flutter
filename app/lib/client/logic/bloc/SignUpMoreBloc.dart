@@ -5,7 +5,7 @@ import 'package:easy_blocs/easy_blocs.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:resmedia_taporty_flutter/generated/provider.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
-import 'package:resmedia_taporty_flutter/common/logic/database.dart';
+import 'package:resmedia_taporty_flutter/common/resources/Database.dart';
 import 'package:resmedia_taporty_flutter/common/model/UserModel.dart';
 
 class SignUpMoreBloc implements Bloc {
@@ -61,8 +61,7 @@ class SignUpMoreBloc implements Bloc {
     _nominativeChecker = NominativeChecker(hand: _hand);
     _addressChecker = AddressChecker(hand: _hand);
     _phoneNumberChecker = PhoneNumberChecker(hand: _hand);
-    _submitController =
-        SubmitController(onSubmit: _signer, handler: _formHandler, hand: _hand);
+    _submitController = SubmitController(onSubmit: _signer, handler: _formHandler, hand: _hand);
   }
 
   factory SignUpMoreBloc.of() => $Provider.of<SignUpMoreBloc>();

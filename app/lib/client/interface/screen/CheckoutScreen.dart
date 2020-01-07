@@ -12,9 +12,10 @@ import 'package:resmedia_taporty_flutter/client/interface/page/PaymentPage.dart'
 import 'package:resmedia_taporty_flutter/client/interface/page/ShippingPage.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/RestaurantBloc.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
-import 'package:resmedia_taporty_flutter/common/logic/database.dart';
+import 'package:resmedia_taporty_flutter/common/resources/Database.dart';
 import 'package:resmedia_taporty_flutter/common/model/RestaurantModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/UserModel.dart';
+import 'package:resmedia_taporty_flutter/config/ColorTheme.dart';
 
 import '../../../main.dart';
 import 'LoginScreen.dart';
@@ -63,7 +64,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> with TickerProviderStat
       child: Scaffold(
         appBar: AppBar(
           title: Text('Paga'),
-          backgroundColor: red,
+          backgroundColor: ColorTheme.RED,
           centerTitle: true,
           actions: <Widget>[
             IconButton(
@@ -194,7 +195,6 @@ class MyInheritedWidget extends InheritedWidget {
 
   @override
   bool updateShouldNotify(InheritedWidget oldWidget) {
-    // TODO: implement updateShouldNotify
     return false;
   }
 }

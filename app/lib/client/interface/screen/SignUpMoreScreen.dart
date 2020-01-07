@@ -7,7 +7,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:resmedia_taporty_flutter/data/config.dart';
 import 'package:resmedia_taporty_flutter/client/interface/screen/RestaurantListScreen.dart';
 import 'package:resmedia_taporty_flutter/common/interface/view/LogoView.dart';
 import 'package:resmedia_taporty_flutter/client/logic/bloc/SignUpMoreBloc.dart';
@@ -67,11 +66,10 @@ class _SignUpMoreScreenState extends State<SignUpMoreScreen> {
       builder: (_context) {
         final theme = Theme.of(context);
         return AlertDialog(
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(20))),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
           content: Wrap(
             alignment: WrapAlignment.center,
-            runSpacing: SPACE * 2,
+            runSpacing: 12.0 * 2,
             children: <Widget>[
               Column(
                 children: <Widget>[
@@ -116,9 +114,9 @@ class _SignUpMoreScreenState extends State<SignUpMoreScreen> {
   }
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
-    isVerified=false;
+    isVerified = false;
   }
 
   @override
@@ -146,19 +144,19 @@ class _SignUpMoreScreenState extends State<SignUpMoreScreen> {
                           checker: _submitBloc.outNominative,
                         ),
                         SizedBox(
-                          height: SPACE,
+                          height: 12.0,
                         ),
                         AddressField(
                           checker: _submitBloc.outAddress,
                         ),
                         SizedBox(
-                          height: SPACE,
+                          height: 12.0,
                         ),
                         PhoneNumberField(
                           checker: _submitBloc.outPhoneNumber,
                         ),
                         SizedBox(
-                          height: SPACE,
+                          height: 12.0,
                         ),
                         SubmitButton.raised(
                           controller: _submitBloc.submitController,
@@ -171,7 +169,7 @@ class _SignUpMoreScreenState extends State<SignUpMoreScreen> {
               ),
             );
           if (!isVerified) {
-            isVerified=true;
+            isVerified = true;
             Geolocator().getCurrentPosition().then((position) async {
               final user = await _userBloc.outFirebaseUser.first;
               if (user.isEmailVerified)
@@ -186,7 +184,7 @@ class _SignUpMoreScreenState extends State<SignUpMoreScreen> {
               else
                 _showMailDialog(context);
             }).catchError(
-                  (error) {
+              (error) {
                 if (error is PlatformException) {
                   print(error.code);
                 }
@@ -212,19 +210,19 @@ class _SignUpMoreScreenState extends State<SignUpMoreScreen> {
                       checker: _submitBloc.outNominative,
                     ),
                     SizedBox(
-                      height: SPACE,
+                      height: 12.0,
                     ),
                     AddressField(
                       checker: _submitBloc.outAddress,
                     ),
                     SizedBox(
-                      height: SPACE,
+                      height: 12.0,
                     ),
                     PhoneNumberField(
                       checker: _submitBloc.outPhoneNumber,
                     ),
                     SizedBox(
-                      height: SPACE,
+                      height: 12.0,
                     ),
                     SubmitButton.raised(
                       controller: _submitBloc.submitController,

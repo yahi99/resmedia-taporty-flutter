@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:easy_widget/easy_widget.dart';
 import 'package:flutter/painting.dart';
 
-
 class TranslationDrawer extends StatelessWidget {
   final translationBloc = RepositoryBloc.of();
   final List<Locale> locales;
@@ -15,21 +14,26 @@ class TranslationDrawer extends StatelessWidget {
   final Color backgroundColor;
   final EdgeInsets padding, flagPadding;
 
-  TranslationDrawer({Key key, @required this.locales, this.assetFolder: FlagView.ASSET_FOLDER, this.size: 40,
+  TranslationDrawer({
+    Key key,
+    @required this.locales,
+    this.assetFolder: FlagView.ASSET_FOLDER,
+    this.size: 40,
     this.backgroundColor,
     this.padding: const EdgeInsets.symmetric(horizontal: 16.0),
     this.flagPadding: const EdgeInsets.all(8.0),
-  }) :
-        assert(locales != null), assert(assetFolder != null), super(key: key);
+  })  : assert(locales != null),
+        assert(assetFolder != null),
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
-
     return Container(
-      color: backgroundColor??Theme.of(context).canvasColor,
-      width: size+flagPadding.horizontal+padding.horizontal,
+      color: backgroundColor ?? Theme.of(context).canvasColor,
+      width: size + flagPadding.horizontal + padding.horizontal,
       child: SafeArea(
-        right: false, left: false,
+        right: false,
+        left: false,
         child: ListView(
           padding: padding,
           children: locales.map((lc) {
@@ -52,22 +56,21 @@ class TranslationDrawer extends StatelessWidget {
   }
 }
 
-
 class TranslationButton extends StatelessWidget {
   final translatorBloc = RepositoryBloc.of();
   final String assetFolder;
   final double size;
 
-  TranslationButton({Key key, this.assetFolder: FlagView.ASSET_FOLDER, this.size: 40}) :
-        assert(assetFolder != null), super(key: key);
+  TranslationButton({Key key, this.assetFolder: FlagView.ASSET_FOLDER, this.size: 40})
+      : assert(assetFolder != null),
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return CacheStreamBuilder<Locale>(
       stream: translatorBloc.outLocale,
       builder: (context, snapshot) {
-        if (!snapshot.hasData)
-          return Container();
+        if (!snapshot.hasData) return Container();
 
         return FlagView(
           locale: snapshot.data,
@@ -83,7 +86,6 @@ class TranslationButton extends StatelessWidget {
     );
   }
 }
-
 
 // TODO: COMPLETARE
 class TranslationsInputDecoration extends InputDecoration {
@@ -128,35 +130,35 @@ class TranslationsInputDecoration extends InputDecoration {
     String semanticCounterText,
     bool alignLabelWithHint,
   }) : super(
-    icon: icon,
-    labelStyle: labelStyle,
-    helperStyle: helperStyle,
-    hintStyle: hintStyle,
-    hintMaxLines: hintMaxLines,
-    errorStyle: errorStyle,
-    errorMaxLines: errorMaxLines,
-    hasFloatingPlaceholder: hasFloatingPlaceholder,
-    isDense: isDense,
-    contentPadding: contentPadding,
-    prefixIcon: prefixIcon,
-    prefix: prefix,
-    prefixStyle: prefixStyle,
-    suffixIcon: suffixIcon,
-    suffixStyle: suffixStyle,
-    counter: counter,
-    counterStyle: counterStyle,
-    filled: filled,
-    fillColor: fillColor,
-    errorBorder: errorBorder,
-    focusedBorder: focusedBorder,
-    focusedErrorBorder: focusedErrorBorder,
-    disabledBorder: disabledBorder,
-    enabledBorder: enabledBorder,
-    border: border,
-    enabled: enabled,
-    semanticCounterText: semanticCounterText,
-    alignLabelWithHint: alignLabelWithHint,
-  );
+          icon: icon,
+          labelStyle: labelStyle,
+          helperStyle: helperStyle,
+          hintStyle: hintStyle,
+          hintMaxLines: hintMaxLines,
+          errorStyle: errorStyle,
+          errorMaxLines: errorMaxLines,
+          hasFloatingPlaceholder: hasFloatingPlaceholder,
+          isDense: isDense,
+          contentPadding: contentPadding,
+          prefixIcon: prefixIcon,
+          prefix: prefix,
+          prefixStyle: prefixStyle,
+          suffixIcon: suffixIcon,
+          suffixStyle: suffixStyle,
+          counter: counter,
+          counterStyle: counterStyle,
+          filled: filled,
+          fillColor: fillColor,
+          errorBorder: errorBorder,
+          focusedBorder: focusedBorder,
+          focusedErrorBorder: focusedErrorBorder,
+          disabledBorder: disabledBorder,
+          enabledBorder: enabledBorder,
+          border: border,
+          enabled: enabled,
+          semanticCounterText: semanticCounterText,
+          alignLabelWithHint: alignLabelWithHint,
+        );
 
   @override
   String get hintText => translationsHintText?.text;

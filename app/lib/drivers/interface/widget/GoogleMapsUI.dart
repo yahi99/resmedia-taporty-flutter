@@ -203,7 +203,7 @@ class PrimaryGoogleMapsController extends InheritedWidget {
         super(key: key, child: child);
 
   static Completer<GoogleMapExtController> of(BuildContext context) {
-    return (context.inheritFromWidgetOfExactType(PrimaryGoogleMapsController) as PrimaryGoogleMapsController)?.controller;
+    return (context.dependOnInheritedWidgetOfExactType<PrimaryGoogleMapsController>())?.controller;
   }
 
   @override

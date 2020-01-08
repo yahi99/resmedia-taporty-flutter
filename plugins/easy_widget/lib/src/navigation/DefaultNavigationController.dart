@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-
 class _NavigationControllerScope extends InheritedWidget {
   const _NavigationControllerScope({
     Key key,
@@ -65,7 +64,7 @@ class DefaultNavigationController extends StatefulWidget {
     @required this.length,
     this.initialIndex = 0,
     @required this.child,
-  }) : assert(initialIndex != null),
+  })  : assert(initialIndex != null),
         super(key: key);
 
   /// The total number of tabs. Typically greater than one.
@@ -91,7 +90,7 @@ class DefaultNavigationController extends StatefulWidget {
   /// TabController controller = DefaultTabBarController.of(context);
   /// ```
   static TabController of(BuildContext context) {
-    final _NavigationControllerScope scope = context.inheritFromWidgetOfExactType(_NavigationControllerScope);
+    final _NavigationControllerScope scope = context.dependOnInheritedWidgetOfExactType<_NavigationControllerScope>();
     return scope?.controller;
   }
 

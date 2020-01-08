@@ -50,7 +50,7 @@ class SignUpMoreBloc implements Bloc {
       model: UserModel(
         nominative: _nominativeChecker.data.value,
         email: firebaseUser.email,
-        phoneNumber: _phoneNumberChecker.data.value,
+        phoneNumber: _phoneNumberChecker.data.value.toString(),
       ),
     ));
 

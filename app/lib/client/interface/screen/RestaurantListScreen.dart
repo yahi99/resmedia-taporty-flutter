@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_blocs/easy_blocs.dart';
 import 'package:easy_route/easy_route.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -30,10 +31,11 @@ class RestaurantListScreen extends StatefulWidget implements WidgetRoute {
 
   String get route => ROUTE;
   final UserModel user;
-  final Position position;
+  final GeoPoint customerCoordinates;
+  final String customerAddress;
   final bool isAnonymous;
 
-  RestaurantListScreen({Key key, @required this.user, @required this.position, @required this.isAnonymous}) : super(key: key);
+  RestaurantListScreen({Key key, @required this.user, @required this.customerCoordinates, @required this.customerAddress, @required this.isAnonymous}) : super(key: key);
 
   @override
   _RestaurantListScreenState createState() => _RestaurantListScreenState();
@@ -192,9 +194,9 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
         //final distance=Distance();
         if (searchBarSnapshot.hasData && !restaurantList[index].id.toLowerCase().contains(searchBarSnapshot.data.toLowerCase())) return Container();
         var stream;
-        if (restaurantList[index].getPos() != null && widget.position != null) {
+        if (restaurantList[index].getPos() != null && widget.customerCoordinates != null) {
           final LatLng start = restaurantList[index].getPos();
-          final LatLng end = LatLng(widget.position.latitude, widget.position.longitude);
+          final LatLng end = LatLng(widget.customerCoordinates.latitude, widget.customerCoordinates.longitude);
           stream = userBloc.getDistance(start, end).asStream();
           // TODO: Rimuovere l'else che permette un comportamento scorretto.
         } else
@@ -213,10 +215,11 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
                     EasyRouter.push(
                       context,
                       RestaurantScreen(
-                        address: (await Geocoder.local.findAddressesFromCoordinates(new Coordinates(restaurantList[index].coordinates.latitude, restaurantList[index].coordinates.longitude)))
+                        restaurantAddress: (await Geocoder.local.findAddressesFromCoordinates(new Coordinates(restaurantList[index].coordinates.latitude, restaurantList[index].coordinates.longitude)))
                             .first
                             .addressLine,
-                        position: widget.position,
+                        customerCoordinates: widget.customerCoordinates,
+                        customerAddress: widget.customerAddress,
                         restaurantModel: restaurantList[index],
                       ),
                     );

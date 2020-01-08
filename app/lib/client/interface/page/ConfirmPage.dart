@@ -1,10 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_route/easy_route.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:geocoder/model.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:resmedia_taporty_flutter/client/interface/page/CartPage.dart';
 import 'package:resmedia_taporty_flutter/client/interface/screen/CheckoutScreen.dart';
 import 'package:resmedia_taporty_flutter/client/interface/screen/RestaurantScreen.dart';
@@ -18,15 +17,15 @@ import 'package:toast/toast.dart';
 
 class ConfirmPage extends StatefulWidget {
   final RestaurantModel restaurant;
-  final Position position;
-  final Address description;
+  final GeoPoint customerCoordinates;
+  final String customerAddress;
   final TabController controller;
 
   ConfirmPage({
     Key key,
     @required this.restaurant,
-    @required this.description,
-    @required this.position,
+    @required this.customerAddress,
+    @required this.customerCoordinates,
     @required this.controller,
   }) : super(key: key);
 
@@ -81,17 +80,8 @@ class _ConfirmState extends State<ConfirmPage> with AutomaticKeepAliveClientMixi
   }
 
   bool valid(BuildContext context) {
-    final state = MyInheritedWidget.of(context);
-    print(state.name);
-    print(state.email);
-    print(state.address);
-    print(state.phone);
-    print(state.cap);
-    print(state.date);
-    print(state.time);
-    print(state.fingerprint);
-    print(state.uid);
-    if (state.name == null || state.email == null || state.phone == null || state.date == null || state.time == null || state.fingerprint == null || state.uid == null) return false;
+    final state = CheckoutScreenInheritedWidget.of(context);
+    if (state.name == null || state.email == null || state.phone == null || state.selectedShift == null || state.customerId == null || state.cardId == null) return false;
     return true;
   }
 
@@ -101,7 +91,6 @@ class _ConfirmState extends State<ConfirmPage> with AutomaticKeepAliveClientMixi
     final tt = Theme.of(context);
     final restaurantBloc = RestaurantBloc.init(restaurantId: widget.restaurant.id);
     final cartBloc = CartBloc.of();
-    //cartBloc.setSigner(model.id);
     final user = UserBloc.of();
     return StreamBuilder<FirebaseUser>(
       stream: user.outFirebaseUser,
@@ -118,10 +107,6 @@ class _ConfirmState extends State<ConfirmPage> with AutomaticKeepAliveClientMixi
           body: StreamBuilder<List<ProductModel>>(
             stream: restaurantBloc.outProducts,
             builder: (context, AsyncSnapshot<List<ProductModel>> productListSnapshot) {
-              if (RestaurantScreen.isOrdered) {
-                RestaurantScreen.isOrdered = false;
-                Future.delayed(Duration.zero, () => _showPaymentDialog(context));
-              }
               if (!productListSnapshot.hasData)
                 return Center(
                   child: CircularProgressIndicator(),
@@ -142,24 +127,16 @@ class _ConfirmState extends State<ConfirmPage> with AutomaticKeepAliveClientMixi
                   style: TextStyle(color: Colors.white),
                 ),
                 color: tt.primaryColor,
-                onPressed: () {
+                onPressed: () async {
                   if (valid(context)) {
-                    final state = MyInheritedWidget.of(context);
-                    cartBloc.isAvailable(state.date, state.time, widget.restaurant.id).then((driver) {
-                      if (driver != null) {
-                        cartBloc
-                            .signer(widget.restaurant.id, driver, widget.position, state.phone, widget.description.addressLine, state.time, state.endTime, state.fingerprint, state.date, state.name)
-                            .then((isDone) {
-                          RestaurantScreen.isOrdered = false;
-                          Future.delayed(Duration.zero, () => _showPaymentDialog(context));
-                          print('ok');
-                        }).catchError((error) {
-                          print(error.toString() + "*");
-                        });
-                      } else {
-                        Toast.show('Fattorino non più disponibile nell\'orario selezionato!\nCambia l\'orario e riprova.', context);
-                      }
-                    });
+                    final state = CheckoutScreenInheritedWidget.of(context);
+                    var driverId = await cartBloc.findDriver(state.selectedShift, widget.restaurant.id, widget.customerCoordinates);
+                    if (driverId != null) {
+                      await cartBloc.signer(widget.restaurant.id, driverId, widget.customerCoordinates, widget.customerAddress, state);
+                      _showPaymentDialog(context);
+                    } else {
+                      Toast.show('Fattorino non più disponibile nell\'orario selezionato!\nCambia l\'orario e riprova.', context);
+                    }
                   } else {
                     Toast.show('Mancano dei dati.', context);
                   }

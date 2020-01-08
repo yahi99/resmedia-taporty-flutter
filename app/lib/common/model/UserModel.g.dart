@@ -20,7 +20,7 @@ UserModel _$UserModelFromJson(Map json) {
     restaurantId: json['restaurantId'] as String,
     nominative: json['nominative'] as String,
     email: json['email'] as String,
-    phoneNumber: json['phoneNumber'] as int,
+    phoneNumber: json['phoneNumber'] as String,
     notifyApp: json['notifyApp'] as bool,
     notifyEmail: json['notifyEmail'] as bool,
     notifySms: json['notifySms'] as bool,

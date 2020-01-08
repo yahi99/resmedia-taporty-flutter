@@ -59,7 +59,7 @@ class AccountScreenDriver extends StatelessWidget implements WidgetRoute {
                     ),
                   ),
                   StreamBuilder<UserModel>(
-                    stream: Database().getUserModelById(snap.data.model.id),
+                    stream: Database().getUserByIdStream(snap.data.model.id),
                     builder: (ctx, img) {
                       if (!img.hasData)
                         return Center(

@@ -13,7 +13,7 @@ import 'package:vibration/vibration.dart';
 
 class ProductView extends StatelessWidget {
   final ProductModel model;
-  final CartControllerRule cartController;
+  final CartController cartController;
 
   ProductView({Key key, @required this.model, @required this.cartController}) : super(key: key);
 

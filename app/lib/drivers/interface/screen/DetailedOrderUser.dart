@@ -1,8 +1,8 @@
 import 'package:easy_route/easy_route.dart';
 import 'package:flutter/material.dart';
 import 'package:resmedia_taporty_flutter/client/model/CartModel.dart';
-import 'package:resmedia_taporty_flutter/client/model/ProductCartModel.dart';
-import 'package:resmedia_taporty_flutter/common/model/ProductOrderModel.dart';
+import 'package:resmedia_taporty_flutter/client/model/CartProductModel.dart';
+import 'package:resmedia_taporty_flutter/common/model/OrderProductModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/OrderModel.dart';
 
 class DetailedOrderUser extends StatefulWidget implements WidgetRoute {
@@ -96,7 +96,7 @@ class _DetailOrderRestaurantPageState extends State<DetailedOrderUser> {
 }
 
 class ProductView extends StatelessWidget {
-  final ProductOrderModel model;
+  final OrderProductModel model;
   final int number;
   //final StreamController<String> imgStream=new StreamController.broadcast();
 

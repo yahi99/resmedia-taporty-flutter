@@ -16,9 +16,11 @@ class RestaurantModel extends FirebaseModel {
   final String name;
   final String description;
   final String imageUrl;
+  final String phoneNumber;
 
   @JsonKey(fromJson: geopointFromJson, toJson: geopointToJson)
   final GeoPoint coordinates;
+  final String address;
   final double deliveryRadius;
 
   final List<HolidayModel> holidays;
@@ -104,6 +106,8 @@ class RestaurantModel extends FirebaseModel {
     @required this.deliveryRadius,
     @required this.holidays,
     @required this.weekdayTimetable,
+    this.address,
+    this.phoneNumber,
     this.averageReviews,
     this.numberOfReviews,
     this.isDisabled,

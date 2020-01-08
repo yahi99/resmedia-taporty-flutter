@@ -35,12 +35,13 @@ mixin MixinShiftProvider on MixinRestaurantProvider {
     return filteredShifts.where((shift) => shift.startTime.compareTo(DateTime.now()) > 0 && shift.startTime.difference(DateTime.now()).inMilliseconds < 48 * 60 * 60 * 1000).toList();
   }
 
-  Future<String> findDriver(DateTime datetime, String restaurantId, GeoPoint customerCoordinates) async {
+  Future<String> findDriver(ShiftModel shiftModel, String restaurantId, GeoPoint customerCoordinates) async {
     RestaurantModel restaurant = await getRestaurant(restaurantId);
-    if (!restaurant.isOpen(datetime: datetime)) return null;
+    if (!restaurant.isOpen(datetime: shiftModel.endTime)) return null;
 
     var reservationDocuments =
-        (await shiftCollection.document(datetime.toIso8601String()).collection(Collections.DRIVER_RESERVATIONS).orderBy("reservationTimestamp").getDocuments(source: Source.server)).documents;
+        (await shiftCollection.document(shiftModel.startTime.toIso8601String()).collection(Collections.DRIVER_RESERVATIONS).orderBy("reservationTimestamp").getDocuments(source: Source.server))
+            .documents;
 
     String driverId;
     bool found;

@@ -1,40 +1,33 @@
 import 'package:flutter/cupertino.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:path/path.dart';
-import 'package:resmedia_taporty_flutter/client/model/ProductCartModel.dart';
+import 'package:resmedia_taporty_flutter/client/model/CartProductModel.dart';
 
 part 'CartModel.g.dart';
 
-//TODO i prodotti non sono separati per ristorante quindi se tolgo o metto su uno dopo modifico tutti
-
+// TODO: Rimuovi l'utilizzo dei metodi getTotalItems e getTotalPrice in quanto non è detto che i prodotti salvati nello storage siano ancora presenti nel database
 @JsonSerializable(anyMap: true, explicitToJson: true)
 class CartModel {
-  final List<ProductCartModel> products;
+  final List<CartProductModel> products;
 
   const CartModel({this.products: const []}) : assert(products != null);
 
-  ProductCartModel getProduct(String id, String restaurantId, String userId) {
+  CartProductModel getProduct(String id, String restaurantId, String userId) {
     return products.firstWhere((item) => item.id == id && item.restaurantId == restaurantId && item.userId == userId, orElse: () => null);
   }
 
-  double multiply(double a, int b) {
-    if (b == 1) return a;
-    return a + multiply(a, b - 1);
-  }
-
-  int getTotalItems(List<ProductCartModel> products) {
+  int getTotalItems(List<CartProductModel> products) {
     return products.fold(0, (price, product) => price + product.quantity);
   }
 
-  double getPrice(String id, double price, String restaurantId, String userId) => (multiply(price, getProduct(id, restaurantId, userId).quantity));
+  double getPrice(String id, double price, String restaurantId, String userId) => (price * getProduct(id, restaurantId, userId).quantity.toDouble());
 
-  double getTotalPrice(List<ProductCartModel> products, String uid, String restaurantId) {
+  double getTotalPrice(List<CartProductModel> products, String uid, String restaurantId) {
     return products.fold(0, (price, product) => price + ((getProduct(product.id, restaurantId, uid) == product) ? getPrice(product.id, product.price, product.restaurantId, product.userId) : 0));
   }
 
   bool increment(String id, String restaurantId, String userId, double price, String type) {
     final product = getProduct(id, restaurantId, userId);
-    return product == null ? onInsert(ProductCartModel(id: id, quantity: 1, restaurantId: restaurantId, userId: userId, price: price, type: type)) : onIncrement(product.increment());
+    return product == null ? onInsert(CartProductModel(id: id, quantity: 1, restaurantId: restaurantId, userId: userId, price: price, type: type)) : onIncrement(product.increment());
   }
 
   bool delete(String id, String restId, String uid) {
@@ -43,19 +36,19 @@ class CartModel {
   }
 
   @protected
-  bool onInsert(ProductCartModel product) {
+  bool onInsert(CartProductModel product) {
     _update(product);
     return true;
   }
 
   @protected
-  bool onIncrement(ProductCartModel product) {
+  bool onIncrement(CartProductModel product) {
     _update(product);
     return true;
   }
 
   @protected
-  bool onDelete(ProductCartModel product) {
+  bool onDelete(CartProductModel product) {
     _update(product);
     return true;
   }
@@ -74,18 +67,18 @@ class CartModel {
   }
 
   @protected
-  bool onDecrease(ProductCartModel product) {
+  bool onDecrease(CartProductModel product) {
     _update(product);
     return true;
   }
 
   @protected
-  bool onRemove(ProductCartModel product) {
+  bool onRemove(CartProductModel product) {
     products.remove(product);
     return true;
   }
 
-  _update(ProductCartModel product) {
+  _update(CartProductModel product) {
     assert(product != null);
     products.remove(product);
     products.add(product);

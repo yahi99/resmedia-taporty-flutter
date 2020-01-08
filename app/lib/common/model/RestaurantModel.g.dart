@@ -20,6 +20,8 @@ RestaurantModel _$RestaurantModelFromJson(Map json) {
       (k, e) => MapEntry(int.parse(k as String),
           e == null ? null : TimetableModel.fromJson(e as Map)),
     ),
+    address: json['address'] as String,
+    phoneNumber: json['phoneNumber'] as String,
     averageReviews: (json['averageReviews'] as num)?.toDouble(),
     numberOfReviews: json['numberOfReviews'] as int,
     isDisabled: json['isDisabled'] as bool,
@@ -40,7 +42,9 @@ Map<String, dynamic> _$RestaurantModelToJson(RestaurantModel instance) {
   val['name'] = instance.name;
   val['description'] = instance.description;
   val['imageUrl'] = instance.imageUrl;
+  val['phoneNumber'] = instance.phoneNumber;
   val['coordinates'] = geopointToJson(instance.coordinates);
+  val['address'] = instance.address;
   val['deliveryRadius'] = instance.deliveryRadius;
   val['holidays'] = instance.holidays?.map((e) => e?.toJson())?.toList();
   val['weekdayTimetable'] = instance.weekdayTimetable

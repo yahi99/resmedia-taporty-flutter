@@ -3,13 +3,14 @@ import 'dart:async';
 import 'package:easy_blocs/easy_blocs.dart';
 import 'package:flutter/foundation.dart';
 import 'package:resmedia_taporty_flutter/client/model/CartModel.dart';
-import 'package:resmedia_taporty_flutter/client/model/ProductCartModel.dart';
+import 'package:resmedia_taporty_flutter/client/model/CartProductModel.dart';
 
+// TODO: In futuro rimuovi e sposta la logica nel CartBloc
 class CartStorage extends CartModel {
   final Storage _storage;
 
   CartStorage({
-    List<ProductCartModel> products: const [],
+    List<CartProductModel> products: const [],
     @required Storage storage,
   })  : assert(storage != null),
         this._storage = storage,

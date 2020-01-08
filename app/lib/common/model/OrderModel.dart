@@ -6,7 +6,7 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 import 'package:resmedia_taporty_flutter/common/helper/DateTimeSerialization.dart';
 import 'package:resmedia_taporty_flutter/common/helper/GeopointSerialization.dart';
-import 'package:resmedia_taporty_flutter/common/model/ProductOrderModel.dart';
+import 'package:resmedia_taporty_flutter/common/model/OrderProductModel.dart';
 import 'package:resmedia_taporty_flutter/drivers/model/SubjectModel.dart';
 
 part 'OrderModel.g.dart';
@@ -40,7 +40,7 @@ String translateOrderState(OrderState state) {
 
 @JsonSerializable(anyMap: true, explicitToJson: true, nullable: true, includeIfNull: false)
 class OrderModel extends FirebaseModel {
-  final List<ProductOrderModel> products;
+  final List<OrderProductModel> products;
   final int productCount;
   final double totalPrice;
   final int newProductCount;
@@ -75,6 +75,7 @@ class OrderModel extends FirebaseModel {
   final String customerAddress;
   final String customerPhoneNumber;
   final String customerImageUrl;
+  final String cardId;
 
   // Restaurant info
   final String restaurantId;
@@ -124,6 +125,7 @@ class OrderModel extends FirebaseModel {
     this.creationTimestamp,
     this.acceptanceTimestamp,
     this.state,
+    this.cardId,
   }) : super(path);
 
   List<LatLng> get positions => [LatLng(customerCoordinates.latitude, customerCoordinates.longitude)];

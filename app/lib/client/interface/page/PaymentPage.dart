@@ -267,9 +267,9 @@ class _PaymentState extends State<PaymentPage> with AutomaticKeepAliveClientMixi
                   ),
                   onPressed: () async {
                     if (isValid && cardId != null) {
-                      final state = MyInheritedWidget.of(context);
-                      state.fingerprint = cardId;
-                      state.uid = (await UserBloc.of().outFirebaseUser.first).uid;
+                      final state = CheckoutScreenInheritedWidget.of(context);
+                      state.cardId = cardId;
+                      state.customerId = (await UserBloc.of().outFirebaseUser.first).uid;
                       widget.controller.animateTo(widget.controller.index + 1);
                     }
                   },

@@ -22,6 +22,13 @@ mixin MixinRestaurantProvider {
     return RestaurantModel.fromFirebase(await restaurantCollection.document(restaurantId).get());
   }
 
+  Future<List<ProductModel>> getProductList(String restaurantId) async {
+    return (await restaurantCollection.document(restaurantId).collection(Collections.PRODUCTS).where('state', isEqualTo: "ACCEPTED").getDocuments())
+        .documents
+        .map((querySnap) => ProductModel.fromFirebase(querySnap))
+        .toList();
+  }
+
   Stream<List<ProductModel>> getProductListStream(String restaurantId) {
     return restaurantCollection
         .document(restaurantId)

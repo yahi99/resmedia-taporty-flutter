@@ -13,7 +13,7 @@ class UserModel extends UserFirebaseModel {
   @JsonKey(includeIfNull: false)
   final String email;
   @JsonKey(includeIfNull: false)
-  final int phoneNumber;
+  final String phoneNumber;
   @JsonKey(includeIfNull: false)
   final int numberOfReviews;
   final double averageReviews;
@@ -58,8 +58,7 @@ class UserModel extends UserFirebaseModel {
 
   static UserModel fromJson(Map json) => _$UserModelFromJson(json);
 
-  static UserModel fromFirebase(DocumentSnapshot snap) =>
-      FirebaseModel.fromFirebase(fromJson, snap);
+  static UserModel fromFirebase(DocumentSnapshot snap) => FirebaseModel.fromFirebase(fromJson, snap);
 
   Map<String, dynamic> toJson() => _$UserModelToJson(this);
 }

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_route/easy_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -33,8 +34,8 @@ class _GeoLocScreenState extends State<GeoLocScreen> {
   TextEditingController _controller = TextEditingController();
 
   var isValid = false;
-  Position pos;
-  String address;
+  GeoPoint customerCoordinates;
+  String customerAddress;
 
   // ignore: close_sinks
   final geo = StreamController<String>();
@@ -42,27 +43,25 @@ class _GeoLocScreenState extends State<GeoLocScreen> {
   void _focusNodePlaces() async {
     // show input autocomplete with selected mode
     // then get the Prediction selected
-    Prediction p =
-        await PlacesAutocomplete.show(context: context, apiKey: _key);
+    Prediction p = await PlacesAutocomplete.show(context: context, apiKey: _key);
     displayPrediction(p);
   }
 
   Future<Null> displayPrediction(Prediction p) async {
     if (p != null) {
-      PlacesDetailsResponse detail =
-          await _places.getDetailsByPlaceId(p.placeId);
+      PlacesDetailsResponse detail = await _places.getDetailsByPlaceId(p.placeId);
 
       //var placeId = p.placeId;
       double lat = detail.result.geometry.location.lat;
       double lng = detail.result.geometry.location.lng;
 
-      pos = Position(latitude: lat, longitude: lng);
+      customerCoordinates = GeoPoint(lat, lng);
 
-      address = p.description;
+      customerAddress = p.description;
 
       isValid = true;
 
-      geo.sink.add(address);
+      geo.sink.add(customerAddress);
     }
   }
 
@@ -72,10 +71,7 @@ class _GeoLocScreenState extends State<GeoLocScreen> {
       child: StreamBuilder<String>(
         stream: geo.stream,
         builder: (ctx, snap) {
-          print(snap.data);
-          print(snap.hasData);
-          if (snap.hasData)
-            _controller.value = TextEditingValue(text: snap.data);
+          if (snap.hasData) _controller.value = TextEditingValue(text: snap.data);
           return LogoView(
               top: FittedBox(
                 fit: BoxFit.contain,
@@ -93,8 +89,7 @@ class _GeoLocScreenState extends State<GeoLocScreen> {
                     fillColor: Colors.white70,
                     hintStyle: TextStyle(color: Colors.grey),
                     border: OutlineInputBorder(
-                      borderRadius:
-                          const BorderRadius.all(const Radius.circular(15.0)),
+                      borderRadius: const BorderRadius.all(const Radius.circular(15.0)),
                     ),
                     suffixIcon: Icon(
                       Icons.location_on,
@@ -107,13 +102,8 @@ class _GeoLocScreenState extends State<GeoLocScreen> {
                     color: Colors.blue,
                     onPressed: () async {
                       if (isValid) {
-                        EasyRouter.pushAndRemoveAll(
-                            context,
-                            RestaurantListScreen(
-                                position: pos,
-                                isAnonymous: false,
-                                user:
-                                    (await UserBloc.of().outUser.first).model));
+                        EasyRouter.pushAndRemoveAll(context,
+                            RestaurantListScreen(customerCoordinates: customerCoordinates, customerAddress: customerAddress, isAnonymous: false, user: (await UserBloc.of().outUser.first).model));
                       } else {
                         Toast.show('Inserire un indirizzo valido', context);
                       }

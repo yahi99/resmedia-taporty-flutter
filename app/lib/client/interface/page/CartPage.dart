@@ -10,7 +10,7 @@ import 'package:resmedia_taporty_flutter/client/logic/bloc/CartBloc.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/RestaurantBloc.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
 import 'package:resmedia_taporty_flutter/client/model/CartModel.dart';
-import 'package:resmedia_taporty_flutter/client/model/ProductCartModel.dart';
+import 'package:resmedia_taporty_flutter/client/model/CartProductModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/ProductModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/RestaurantModel.dart';
 import 'package:toast/toast.dart';
@@ -41,16 +41,17 @@ class _CartState extends State<CartPage> with AutomaticKeepAliveClientMixin {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     final tt = Theme.of(context);
     final restaurantBloc = RestaurantBloc.init(restaurantId: widget.restaurant.id);
     final cartBloc = CartBloc.of();
     final user = UserBloc.of();
-    List<ProductCartModel> cartCounter = List<ProductCartModel>();
+    List<CartProductModel> cartCounter = List<CartProductModel>();
     return StreamBuilder<FirebaseUser>(
       stream: user.outFirebaseUser,
       builder: (context, uid) {
         return StreamBuilder<CartModel>(
-            stream: cartBloc.productsCartController.outCart,
+            stream: cartBloc.cartController.outCart,
             builder: (context, cartSnapshot) {
               if (!cartSnapshot.hasData || !uid.hasData)
                 return Center(
@@ -72,8 +73,8 @@ class _CartState extends State<CartPage> with AutomaticKeepAliveClientMixin {
                           cartCounter.add(find);
                         }
                       }
-                      final state = MyInheritedWidget.of(context);
-                      state.count = cartSnapshot.data.getTotalItems(cartCounter);
+                      final state = CheckoutScreenInheritedWidget.of(context);
+                      state.productCount = cartSnapshot.data.getTotalItems(cartCounter);
                       return ProductsFoodDrinkBuilder(
                         products: productSnapshot.data,
                         id: widget.restaurant.id,
@@ -89,8 +90,8 @@ class _CartState extends State<CartPage> with AutomaticKeepAliveClientMixin {
                       ),
                       color: tt.primaryColor,
                       onPressed: () {
-                        final state = MyInheritedWidget.of(context);
-                        if (state.count > 0)
+                        final state = CheckoutScreenInheritedWidget.of(context);
+                        if (state.productCount > 0)
                           widget.controller.animateTo(widget.controller.index + 1);
                         else
                           Toast.show('Non hai elementi nel carrello!', context, duration: 3);
@@ -116,12 +117,10 @@ class ProductsFoodDrinkBuilder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<Widget> list = List<Widget>();
-    List<ProductCartModel> prod = List<ProductCartModel>();
+    List<CartProductModel> prod = List<CartProductModel>();
     final UserBloc user = UserBloc.of();
-    final update = RestaurantScreen.isOrdered;
-    RestaurantScreen.isOrdered = false;
     return StreamBuilder<CartModel>(
-      stream: cartBloc.productsCartController.outCart,
+      stream: cartBloc.cartController.outCart,
       builder: (_, cartSnapshot) {
         return StreamBuilder<FirebaseUser>(
           stream: user.outFirebaseUser,
@@ -136,17 +135,17 @@ class ProductsFoodDrinkBuilder extends StatelessWidget {
                   prod.add(find);
                   list.add(ProductViewCart(
                     model: temp,
-                    cartController: cartBloc.productsCartController,
+                    cartController: cartBloc.cartController,
                   ));
                 }
               }
-              CartModel carrello = CartModel(products: prod);
+              CartModel cart = CartModel(products: prod);
               list.add(
                 Container(
                   color: Colors.white10,
                   child: Center(
                     child: Text(
-                      'Prezzo totale: ' + (carrello.getTotalPrice(carrello.products, userSnapshot.data.uid, id).toStringAsFixed(2)) + "€",
+                      'Prezzo totale: ' + (cart.getTotalPrice(cart.products, userSnapshot.data.uid, id).toStringAsFixed(2)) + "€",
                     ),
                   ),
                 ),

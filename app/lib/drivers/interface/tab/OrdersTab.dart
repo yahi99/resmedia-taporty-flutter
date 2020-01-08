@@ -226,7 +226,7 @@ class RubberScrollController extends InheritedWidget {
         super(key: key, child: child);
 
   static ScrollController of(BuildContext context) {
-    return (context.inheritFromWidgetOfExactType(RubberScrollController) as RubberScrollController)?.controller;
+    return (context.dependOnInheritedWidgetOfExactType<RubberScrollController>())?.controller;
   }
 
   @override

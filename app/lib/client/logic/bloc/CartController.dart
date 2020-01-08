@@ -5,7 +5,8 @@ import 'package:resmedia_taporty_flutter/client/model/CartModel.dart';
 import 'package:resmedia_taporty_flutter/client/model/CartStorage.dart';
 import 'package:rxdart/rxdart.dart';
 
-class CartController implements CartControllerRule {
+// TODO: In futuro rimuovi e sposta la logica nel CartBloc
+class CartController {
   CartController({CartModel cart: const CartModel(), void onListen()}) {
     _cartController.onListen = () {
       _cartController.add(cart);
@@ -53,26 +54,4 @@ class CartController implements CartControllerRule {
     if (update) _cartController.add(_cart);
     return update;
   }
-}
-
-abstract class CartControllerRule {
-  Observable<CartModel> get outCart;
-
-  Future<void> inIncrement(String id, String restaurantId, String userId, double price, String category);
-
-  Future<void> inDecrease(String id, String restaurantId, String userId);
-
-  Future<void> inRemove(String id, String restaurantId, String userId);
-}
-
-mixin MixinCartController implements CartControllerRule {
-  CartControllerRule get cartController;
-
-  Observable<CartModel> get outCart => cartController.outCart;
-
-  Future<void> inIncrement(String id, String restaurantId, String userId, double price, String category) => cartController.inIncrement(id, restaurantId, userId, price, category);
-
-  Future<void> inDecrease(String id, String restaurantId, String userId) => cartController.inDecrease(id, restaurantId, userId);
-
-  Future<void> inRemove(String id, String restaurantId, String userId) => cartController.inRemove(id, restaurantId, userId);
 }

@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:rubber/rubber.dart';
 
-
 class RubberConcierge extends StatefulWidget {
   final RubberAnimationController controller;
   final Widget opener, closer;
 
-  const RubberConcierge({Key key,
+  const RubberConcierge({
+    Key key,
     this.controller,
     this.opener: const Icon(Icons.expand_less),
     this.closer: const Icon(Icons.expand_more),
-  }) : assert(opener != null), assert(closer != null), super(key: key);
+  })  : assert(opener != null),
+        assert(closer != null),
+        super(key: key);
 
   @override
   _RubberConciergeState createState() => _RubberConciergeState();
@@ -24,7 +26,7 @@ class _RubberConciergeState extends State<RubberConcierge> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     _controller?.removeListener(_listener);
-    _controller = widget.controller??PrimaryRubberController.of(context);
+    _controller = widget.controller ?? PrimaryRubberController.of(context);
     assert(_controller != null, "RubberAnimationController must not be null");
     _controller.addListener(_listener);
   }
@@ -36,7 +38,7 @@ class _RubberConciergeState extends State<RubberConcierge> {
 
   _listener() {
     setState(() {
-      isOpen = _controller.value >= _controller.upperBound-0.1;
+      isOpen = _controller.value >= _controller.upperBound - 0.1;
     });
   }
 
@@ -51,18 +53,18 @@ class _RubberConciergeState extends State<RubberConcierge> {
   }
 }
 
-
 class PrimaryRubberController extends InheritedWidget {
   final RubberAnimationController controller;
   PrimaryRubberController({
     Key key,
     @required Widget child,
     @required this.controller,
-  }) : assert(child != null), assert(controller != null),
+  })  : assert(child != null),
+        assert(controller != null),
         super(key: key, child: child);
 
   static RubberAnimationController of(BuildContext context) {
-    return (context.inheritFromWidgetOfExactType(PrimaryRubberController) as PrimaryRubberController).controller;
+    return (context.dependOnInheritedWidgetOfExactType<PrimaryRubberController>()).controller;
   }
 
   @override

@@ -68,7 +68,7 @@ class ProductsBuilder extends StatelessWidget {
                 products
                     .map((product) => ProductView(
                           model: product,
-                          cartController: cartBloc.productsCartController,
+                          cartController: cartBloc.cartController,
                         ))
                     .toList(),
               );

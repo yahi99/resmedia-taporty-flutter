@@ -1,13 +1,13 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'ProductOrderModel.dart';
+part of 'OrderProductModel.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-ProductOrderModel _$ProductOrderModelFromJson(Map json) {
-  return ProductOrderModel(
+OrderProductModel _$OrderProductModelFromJson(Map json) {
+  return OrderProductModel(
     name: json['name'] as String,
     price: (json['price'] as num)?.toDouble(),
     quantity: json['quantity'] as int,
@@ -15,7 +15,7 @@ ProductOrderModel _$ProductOrderModelFromJson(Map json) {
   );
 }
 
-Map<String, dynamic> _$ProductOrderModelToJson(ProductOrderModel instance) =>
+Map<String, dynamic> _$OrderProductModelToJson(OrderProductModel instance) =>
     <String, dynamic>{
       'name': instance.name,
       'price': instance.price,

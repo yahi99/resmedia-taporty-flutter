@@ -1,8 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_route/easy_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:geocoder/model.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:resmedia_taporty_flutter/client/interface/screen/LoginScreen.dart';
 import 'package:resmedia_taporty_flutter/common/helper/LoginHelper.dart';
 import 'package:resmedia_taporty_flutter/client/interface/screen/AccountScreen.dart';
@@ -12,13 +11,11 @@ import 'package:resmedia_taporty_flutter/client/interface/page/PaymentPage.dart'
 import 'package:resmedia_taporty_flutter/client/interface/page/ShippingPage.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/RestaurantBloc.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
+import 'package:resmedia_taporty_flutter/common/model/ShiftModel.dart';
 import 'package:resmedia_taporty_flutter/common/resources/Database.dart';
 import 'package:resmedia_taporty_flutter/common/model/RestaurantModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/UserModel.dart';
 import 'package:resmedia_taporty_flutter/config/ColorTheme.dart';
-
-import '../../../main.dart';
-import 'LoginScreen.dart';
 
 class CheckoutScreen extends StatefulWidget implements WidgetRoute {
   static const String ROUTE = "ProductsScreen";
@@ -26,10 +23,10 @@ class CheckoutScreen extends StatefulWidget implements WidgetRoute {
   String get route => CheckoutScreen.ROUTE;
   final RestaurantModel restaurant;
   final UserModel user;
-  final Position position;
-  final Address description;
+  final GeoPoint customerCoordinates;
+  final String customerAddress;
 
-  CheckoutScreen({Key key, @required this.restaurant, @required this.user, @required this.position, @required this.description}) : super(key: key);
+  CheckoutScreen({Key key, @required this.restaurant, @required this.user, @required this.customerCoordinates, @required this.customerAddress}) : super(key: key);
 
   @override
   _CheckoutScreenState createState() => _CheckoutScreenState();
@@ -122,58 +119,59 @@ class _CheckoutScreenState extends State<CheckoutScreen> with TickerProviderStat
                       child: CircularProgressIndicator(),
                     );
                   return StreamBuilder(
-                      stream: Database().getUser(user.data.userFb),
-                      builder: (ctx, model) {
-                        if (user.hasData && rest.hasData && model.hasData) {
-                          if (model.data.type != 'user' && model.data.type != null) {
-                            return RaisedButton(
-                              child: Text('Sei stato disabilitato clicca per fare logout'),
-                              onPressed: () {
-                                UserBloc.of().logout();
-                                LoginHelper().signOut();
-                                EasyRouter.pushAndRemoveAll(context, LoginScreen());
-                              },
-                            );
-                            //EasyRouter.pushAndRemoveAll(context, LoginScreen());
-                          }
-                          if (rest.data.isDisabled != null && rest.data.isDisabled) {
-                            return Padding(
-                              child: Text('Ristorante non abilitato scegline un\'altro'),
-                              padding: EdgeInsets.all(8.0),
-                            );
-                          }
-                          return MyInheritedWidget(
-                            child: TabBarView(
-                              controller: controller,
-                              physics: NeverScrollableScrollPhysics(),
-                              children: <Widget>[
-                                CartPage(
-                                  restaurant: widget.restaurant,
-                                  controller: controller,
-                                ),
-                                ShippingPage(
-                                  user: widget.user,
-                                  address: widget.description,
-                                  restaurant: widget.restaurant,
-                                  controller: controller,
-                                ),
-                                PaymentPage(
-                                  controller,
-                                ),
-                                ConfirmPage(
-                                  restaurant: widget.restaurant,
-                                  position: widget.position,
-                                  description: widget.description,
-                                  controller: controller,
-                                ),
-                              ],
-                            ),
+                    stream: Database().getUser(user.data.userFb),
+                    builder: (ctx, model) {
+                      if (user.hasData && rest.hasData && model.hasData) {
+                        if (model.data.type != 'user' && model.data.type != null) {
+                          return RaisedButton(
+                            child: Text('Sei stato disabilitato clicca per fare logout'),
+                            onPressed: () {
+                              UserBloc.of().logout();
+                              LoginHelper().signOut();
+                              EasyRouter.pushAndRemoveAll(context, LoginScreen());
+                            },
+                          );
+                          //EasyRouter.pushAndRemoveAll(context, LoginScreen());
+                        }
+                        if (rest.data.isDisabled != null && rest.data.isDisabled) {
+                          return Padding(
+                            child: Text('Ristorante non abilitato scegline un\'altro'),
+                            padding: EdgeInsets.all(8.0),
                           );
                         }
-                        return Center(
-                          child: CircularProgressIndicator(),
+                        return CheckoutScreenInheritedWidget(
+                          child: TabBarView(
+                            controller: controller,
+                            physics: NeverScrollableScrollPhysics(),
+                            children: <Widget>[
+                              CartPage(
+                                restaurant: widget.restaurant,
+                                controller: controller,
+                              ),
+                              ShippingPage(
+                                user: widget.user,
+                                customerCoordinates: widget.customerCoordinates,
+                                restaurant: widget.restaurant,
+                                controller: controller,
+                              ),
+                              PaymentPage(
+                                controller,
+                              ),
+                              ConfirmPage(
+                                restaurant: widget.restaurant,
+                                customerCoordinates: widget.customerCoordinates,
+                                customerAddress: widget.customerAddress,
+                                controller: controller,
+                              ),
+                            ],
+                          ),
                         );
-                      });
+                      }
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    },
+                  );
                 },
               );
             },
@@ -184,15 +182,15 @@ class _CheckoutScreenState extends State<CheckoutScreen> with TickerProviderStat
   }
 }
 
-class MyInheritedWidget extends InheritedWidget {
-  final MyInheritedWidgetData data;
+class CheckoutScreenInheritedWidget extends InheritedWidget {
+  final CheckoutScreenData data;
 
-  MyInheritedWidget({Key key, @required Widget child})
+  CheckoutScreenInheritedWidget({Key key, @required Widget child})
       : assert(child != null),
-        data = MyInheritedWidgetData(),
+        data = CheckoutScreenData(),
         super(key: key, child: child);
 
-  static MyInheritedWidgetData of(BuildContext context) => (context.inheritFromWidgetOfExactType(MyInheritedWidget) as MyInheritedWidget).data;
+  static CheckoutScreenData of(BuildContext context) => (context.dependOnInheritedWidgetOfExactType<CheckoutScreenInheritedWidget>()).data;
 
   @override
   bool updateShouldNotify(InheritedWidget oldWidget) {
@@ -200,15 +198,11 @@ class MyInheritedWidget extends InheritedWidget {
   }
 }
 
-class MyInheritedWidgetData {
-  String name, cap, email, phone, address, date, time, endTime, fingerprint, customerId, uid;
-  int count;
+class CheckoutScreenData {
+  String name, email, phone, cardId, customerId;
+  ShiftModel selectedShift;
 
-//final StreamController _streamController =StreamController.broadcast();
-
-//Stream get stream => _streamController.stream;
-
-//Sink get sink => _streamController.sink;
+  int productCount; // TODO: Rimuovere dopo il refactoring delle classi Cart
 }
 
 class MyTabBar extends StatelessWidget implements PreferredSizeWidget {

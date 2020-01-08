@@ -1,14 +1,17 @@
 import 'dart:async';
 import 'dart:core';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dash/dash.dart';
 import 'package:easy_blocs/easy_blocs.dart';
 import 'package:easy_firebase/easy_firebase.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:resmedia_taporty_flutter/client/interface/screen/CheckoutScreen.dart';
 import 'package:resmedia_taporty_flutter/client/logic/bloc/CartController.dart';
 import 'package:resmedia_taporty_flutter/client/model/CartModel.dart';
-import 'package:resmedia_taporty_flutter/client/model/ProductCartModel.dart';
+import 'package:resmedia_taporty_flutter/client/model/CartProductModel.dart';
+import 'package:resmedia_taporty_flutter/common/model/ShiftModel.dart';
 import 'package:resmedia_taporty_flutter/generated/provider.dart';
 import 'package:resmedia_taporty_flutter/client/interface/screen/RestaurantScreen.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
@@ -26,86 +29,59 @@ class CartBloc extends Bloc {
   final Database _db = Database();
 
   UserBloc user = UserBloc.of();
-  CartController _productsCartController;
+  CartController _cartController;
 
-  CartControllerRule get productsCartController => _productsCartController;
+  CartController get cartController => _cartController;
 
-  Stream<CartModel> get outProductsCart => _productsCartController.outCart;
+  Stream<CartModel> get outCart => _cartController.outCart;
 
   final BehaviorSubject<List<ProductModel>> _productController = BehaviorSubject();
 
   Observable<List<ProductModel>> get outProducts => _productController.stream;
 
-  SubmitController _submitController;
-
-  SubmitController get submitController => _submitController;
-
   @override
   void dispose() {
-    _productsCartController.close();
+    _cartController.close();
     _productController.close();
   }
 
-  Future<CartModel> inDeleteCart(String restaurantId) async {
-    final cart = await outProductsCart.first;
+  Future<List<CartProductModel>> inDeleteCart(String restaurantId) async {
+    final cart = await outCart.first;
     final firebaseUser = await user.outFirebaseUser.first;
-    var temp = cart.products;
-    List<ProductCartModel> products = List<ProductCartModel>();
-    for (int i = 0; i < temp.length; i++) {
-      if (temp.elementAt(i).userId == firebaseUser.uid && temp.elementAt(i).restaurantId == restaurantId) {
-        products.add(temp.elementAt(i));
+    var cartProducts = cart.products;
+    List<CartProductModel> products = List<CartProductModel>();
+    for (int i = 0; i < cartProducts.length; i++) {
+      if (cartProducts.elementAt(i).userId == firebaseUser.uid && cartProducts.elementAt(i).restaurantId == restaurantId) {
+        products.add(cartProducts.elementAt(i));
       }
     }
 
     for (int i = 0; i < products.length; i++) {
-      _productsCartController.inRemove(products.elementAt(i).id, restaurantId, firebaseUser.uid);
+      _cartController.inRemove(products.elementAt(i).id, restaurantId, firebaseUser.uid);
     }
-    return CartModel(products: products);
+    return products;
   }
 
-  Future<String> isAvailable(String date, String time, String restId) async {
-    final model = await _db.getDrivers(date, time);
-    if (model.free.length > 1) {
-      final temp = model.free;
-      final user = temp.removeAt(1);
-      final occ = model.occupied;
-      occ.add(user);
-      await _db.occupyDriver(date, time, temp, occ, restId, user);
-      return user;
-    }
-    return null;
+  Future<String> findDriver(ShiftModel selectedShift, String restaurantId, GeoPoint customerCoordinates) async {
+    return _db.findDriver(selectedShift, restaurantId, customerCoordinates);
   }
 
-  Future<bool> signer(
-      String restaurantId, String driver, Position userPos, String phone, String userAddress, String startTime, String endTime, String fingerprint, String day, String nominative) async {
+  Future<bool> signer(String restaurantId, String driverId, GeoPoint customerCoordinates, String customerAddress, CheckoutScreenData data) async {
     final userBloc = UserBloc.of();
     final firebaseUser = await userBloc.outUser.first;
-    inDeleteCart(restaurantId).then((cart) async {
-      _db.createOrder(
-          phone: phone,
-          day: day,
-          uid: firebaseUser.model.id,
-          model: cart,
-          driver: driver,
-          userPos: userPos,
-          addressR: userAddress,
-          startTime: startTime,
-          nominative: nominative,
-          endTime: endTime,
-          fingerprint: fingerprint,
-          restAdd: (await Geocoder.local.findAddressesFromCoordinates((await Database().getRestaurantPosition(restaurantId)))).first.addressLine);
-      RestaurantScreen.isOrdered = true;
-    });
+    var products = await inDeleteCart(restaurantId);
+
+    await _db.createOrder(products, firebaseUser.model.id, customerCoordinates, customerAddress, data.phone, restaurantId, driverId, data.selectedShift, data.cardId);
 
     return true;
   }
 
   CartBloc.instance() {
-    _productsCartController = CartController.storage(
+    _cartController = CartController.storage(
       storage: InternalStorage.manager(versionManager: VersionManager("Products")),
     );
     _productController.onListen = () {
-      _productsCartController.outCart.listen((cart) {
+      _cartController.outCart.listen((cart) {
         _productController.add(_resolver(cart));
       });
     };

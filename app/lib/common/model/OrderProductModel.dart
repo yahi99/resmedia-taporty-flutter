@@ -4,29 +4,29 @@ import 'package:flutter/widgets.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 
-part 'ProductOrderModel.g.dart';
+part 'OrderProductModel.g.dart';
 
 /// Represents a product in an order already done
 
 @JsonSerializable(anyMap: true, explicitToJson: true)
-class ProductOrderModel {
+class OrderProductModel {
   final String name;
   final double price;
   final String imageUrl;
   final int quantity;
 
-  ProductOrderModel({
+  OrderProductModel({
     @required this.name,
     @required this.price,
     @required this.quantity,
     @required this.imageUrl,
   });
 
-  static ProductOrderModel fromJson(Map json) => _$ProductOrderModelFromJson(json);
+  static OrderProductModel fromJson(Map json) => _$OrderProductModelFromJson(json);
 
-  static ProductOrderModel fromFirebase(DocumentSnapshot snap) => FirebaseModel.fromFirebase(fromJson, snap);
+  static OrderProductModel fromFirebase(DocumentSnapshot snap) => FirebaseModel.fromFirebase(fromJson, snap);
 
-  Map<String, dynamic> toJson() => _$ProductOrderModelToJson(this);
+  Map<String, dynamic> toJson() => _$OrderProductModelToJson(this);
 
   @required
   String toString() => toJson().toString();

@@ -19,11 +19,11 @@ import 'package:toast/toast.dart';
 
 class ShippingPage extends StatefulWidget {
   final UserModel user;
-  final Address address;
   final TabController controller;
+  final GeoPoint customerCoordinates;
   final RestaurantModel restaurant;
 
-  ShippingPage({@required this.user, @required this.address, @required this.restaurant, @required this.controller});
+  ShippingPage({@required this.user, @required this.customerCoordinates, @required this.restaurant, @required this.controller});
 
   @override
   _ShippingState createState() => _ShippingState();
@@ -33,9 +33,7 @@ class _ShippingState extends State<ShippingPage> with AutomaticKeepAliveClientMi
   TextEditingController _nameController;
   TextEditingController _dateController;
   TextEditingController _emailController;
-  TextEditingController _addressController;
   TextEditingController _phoneController;
-  TextEditingController _capController;
 
   String toDate(DateTime date) {
     return (date.day.toString() + '/' + date.month.toString() + '/' + date.year.toString());
@@ -49,16 +47,12 @@ class _ShippingState extends State<ShippingPage> with AutomaticKeepAliveClientMi
     _nameController = TextEditingController();
     _dateController = TextEditingController();
     _emailController = TextEditingController();
-    _addressController = TextEditingController();
     _phoneController = TextEditingController();
-    _capController = TextEditingController();
   }
 
   @override
   void dispose() {
     super.dispose();
-    _addressController.dispose();
-    _capController.dispose();
     _dateController.dispose();
     _emailController.dispose();
     _phoneController.dispose();
@@ -75,9 +69,7 @@ class _ShippingState extends State<ShippingPage> with AutomaticKeepAliveClientMi
 
     if (widget.user.nominative != null) _nameController.value = TextEditingValue(text: widget.user.nominative);
     _emailController.value = TextEditingValue(text: widget.user.email);
-    _addressController.value = TextEditingValue(text: '');
     if (widget.user.phoneNumber != null) _phoneController.value = TextEditingValue(text: widget.user.phoneNumber.toString());
-    _capController.value = TextEditingValue(text: widget.address.postalCode);
 
     final _formKey = GlobalKey<FormState>();
     final _dateKey = GlobalKey();
@@ -165,8 +157,7 @@ class _ShippingState extends State<ShippingPage> with AutomaticKeepAliveClientMi
                                   this.setState(() {
                                     _dateController.value = TextEditingValue(text: toDate(day));
                                     _selectedShift = null;
-                                    _availableShiftsFuture =
-                                        Database().getAvailableShifts(day, widget.restaurant.id, GeoPoint(widget.address.coordinates.latitude, widget.address.coordinates.longitude));
+                                    _availableShiftsFuture = Database().getAvailableShifts(day, widget.restaurant.id, widget.customerCoordinates);
                                   });
                                 }
                               });
@@ -182,9 +173,9 @@ class _ShippingState extends State<ShippingPage> with AutomaticKeepAliveClientMi
                               future: _availableShiftsFuture,
                               builder: (ctx, AsyncSnapshot<List<ShiftModel>> shiftListSnapshot) {
                                 if (shiftListSnapshot.connectionState == ConnectionState.done) {
-                                  List<DropdownMenuItem<ShiftModel>> drop = List<DropdownMenuItem<ShiftModel>>();
-                                  List<ShiftModel> dropdownOptions = List<ShiftModel>();
-                                  if (shiftListSnapshot.hasData) {
+                                  if (shiftListSnapshot.hasData && shiftListSnapshot.data.length > 0) {
+                                    List<DropdownMenuItem<ShiftModel>> drop = List<DropdownMenuItem<ShiftModel>>();
+                                    List<ShiftModel> dropdownOptions = List<ShiftModel>();
                                     for (int i = 0; i < shiftListSnapshot.data.length; i++) {
                                       dropdownOptions.add(shiftListSnapshot.data.elementAt(i));
                                       drop.add(DropdownMenuItem<ShiftModel>(
@@ -233,102 +224,6 @@ class _ShippingState extends State<ShippingPage> with AutomaticKeepAliveClientMi
                 SizedBox(
                   height: 16.0,
                 ),
-                /*
-                InputField(
-                  title: Text(
-                    'INDIRIZZO DI FATTURAZIONE',
-                    style: tt.subtitle,
-                  ),
-                  body: Wrap(
-                    runSpacing: 16.0,
-                    children: <Widget>[
-                      Container(
-                        padding: const EdgeInsets.all(8.0),
-                        decoration: BoxDecoration(
-                            border: Border.all(color: Colors.black38)),
-                        child: DropdownButton(
-                          isExpanded: true,
-                          isDense: true,
-                          value: 'Italia',
-                          items: [
-                            DropdownMenuItem(
-                              value: 'Italia',
-                              child: Text('Italia'),
-                            ),
-                            DropdownMenuItem(
-                              value: 'Francia',
-                              child: Text('Francia'),
-                            ),
-                          ],
-                          onChanged: (_) {},
-                          style: Theme.of(context).textTheme.subtitle,
-                        ),
-                      ),
-                      Container(
-                        padding: const EdgeInsets.all(8.0),
-                        decoration: BoxDecoration(
-                            border: Border.all(color: Colors.black38)),
-                        child: DropdownButton(
-                          isExpanded: true,
-                          isDense: true,
-                          value: 'Roma',
-                          items: [
-                            DropdownMenuItem(
-                              value: 'Roma',
-                              child: Text('Roma'),
-                            ),
-                            DropdownMenuItem(
-                              value: 'Padova',
-                              child: Text('Padova'),
-                            ),
-                          ],
-                          onChanged: (_) {},
-                          style: Theme.of(context).textTheme.subtitle,
-                        ),
-                      ),
-                      Text(widget.address.addressLine),
-                      Row(
-                        children: <Widget>[
-                          Expanded(
-                            flex: 5,
-                            child: TextFormField(
-                              decoration: InputDecoration(
-                                labelText: 'CAP',
-                              ),
-                              validator: (value) {
-                                if (value.length == 0)
-                                  return 'Campo non valido';
-                                return null;
-                              },
-                              key: _capKey,
-                              controller: _capController,
-                              keyboardType: TextInputType.number,
-                              maxLength: 5,
-                            ),
-                          ),
-                          SizedBox(
-                            width: 15,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Checkbox(
-                                value: true,
-                                onChanged: null,
-                              ),
-                              Text(
-                                'Invia allo\nstesso indirizzo',
-                                style: TextStyle(fontSize: 15),
-                                textAlign: TextAlign.left,
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                */
               ],
             ),
           ),
@@ -345,9 +240,8 @@ class _ShippingState extends State<ShippingPage> with AutomaticKeepAliveClientMi
           onPressed: () {
             if (_formKey.currentState.validate()) {
               if (_selectedShift != null) {
-                // TODO: Rivedere
-                final state = MyInheritedWidget.of(context);
-                state.date = _selectedShift.startTime.toIso8601String();
+                final state = CheckoutScreenInheritedWidget.of(context);
+                state.selectedShift = _selectedShift;
                 state.phone = _phoneKey.currentState.value.toString();
                 state.email = _emailKey.currentState.value.toString();
                 state.name = _nameKey.currentState.value.toString();

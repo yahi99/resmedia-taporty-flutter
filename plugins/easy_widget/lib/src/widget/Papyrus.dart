@@ -22,8 +22,7 @@ class PapyrusController {
   }
 
   void init(Widget child) {
-    if (_children.length == 0)
-      _children.add(child);
+    if (_children.length == 0) _children.add(child);
   }
 
   void push(Widget child) async {
@@ -51,14 +50,12 @@ class PapyrusNavigator extends InheritedWidget {
     Key key,
     @required Widget child,
     @required this.controller,
-  }) :
-        assert(controller != null),
+  })  : assert(controller != null),
         assert(child != null),
         super(key: key, child: child);
 
   static PapyrusController of(BuildContext context) {
-    return (context.inheritFromWidgetOfExactType(
-        PapyrusNavigator) as PapyrusNavigator).controller;
+    return (context.dependOnInheritedWidgetOfExactType<PapyrusNavigator>()).controller;
   }
 
   static void push(BuildContext context, Widget child) {
@@ -80,6 +77,7 @@ class DefaultPapyrusController extends StatefulWidget {
   @override
   _DefaultPapyrusControllerState createState() => _DefaultPapyrusControllerState();
 }
+
 @deprecated
 class _DefaultPapyrusControllerState extends State<DefaultPapyrusController> {
   PapyrusController _controller;
@@ -115,6 +113,7 @@ class PapyrusView extends StatefulWidget {
   @override
   _PapyrusViewState createState() => _PapyrusViewState();
 }
+
 @deprecated
 class _PapyrusViewState extends State<PapyrusView> with TickerProviderStateMixin {
   PapyrusController _controller;
@@ -123,7 +122,7 @@ class _PapyrusViewState extends State<PapyrusView> with TickerProviderStateMixin
   void didChangeDependencies() {
     super.didChangeDependencies();
     _controller?.removeListener(_listener);
-    _controller = widget.controller??PapyrusNavigator.of(context);
+    _controller = widget.controller ?? PapyrusNavigator.of(context);
     assert(_controller != null);
     _controller.init(widget.child);
     _controller.addListener(_listener);
@@ -134,7 +133,6 @@ class _PapyrusViewState extends State<PapyrusView> with TickerProviderStateMixin
     _controller.removeListener(_listener);
     super.dispose();
   }
-
 
   void _listener() {
     setState(() {});
@@ -151,11 +149,14 @@ class PapyrusBackIconButton extends StatefulWidget {
   final PapyrusController controller;
   final Widget icon;
 
-  const PapyrusBackIconButton({Key key, this.icon: const Icon(Icons.arrow_back), this.controller}) : assert(icon != null), super(key: key);
+  const PapyrusBackIconButton({Key key, this.icon: const Icon(Icons.arrow_back), this.controller})
+      : assert(icon != null),
+        super(key: key);
 
   @override
   _PapyrusBackIconButtonState createState() => _PapyrusBackIconButtonState();
 }
+
 @deprecated
 class _PapyrusBackIconButtonState extends State<PapyrusBackIconButton> {
   PapyrusController _controller;
@@ -165,7 +166,7 @@ class _PapyrusBackIconButtonState extends State<PapyrusBackIconButton> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     _controller?.removeListener(_listener);
-    _controller = widget.controller??PapyrusNavigator.of(context);
+    _controller = widget.controller ?? PapyrusNavigator.of(context);
     _controller.addListener(_listener);
     _check();
   }
@@ -206,9 +207,11 @@ class PapyrusBar extends StatelessWidget implements PreferredSizeWidget {
   final List<Widget> actions;
   final double titleSpacing;
 
-  const PapyrusBar({Key key,
+  const PapyrusBar({
+    Key key,
     this.leading: const PapyrusBackIconButton(),
-    this.title, this.titleSpacing: NavigationToolbar.kMiddleSpacing,
+    this.title,
+    this.titleSpacing: NavigationToolbar.kMiddleSpacing,
     this.actions,
   }) : super(key: key);
 
@@ -223,10 +226,12 @@ class PapyrusBar extends StatelessWidget implements PreferredSizeWidget {
         middleSpacing: titleSpacing,
         leading: leading,
         middle: title,
-        trailing: actions == null ? null : Row(
-          mainAxisSize: MainAxisSize.min,
-          children: actions,
-        ),
+        trailing: actions == null
+            ? null
+            : Row(
+                mainAxisSize: MainAxisSize.min,
+                children: actions,
+              ),
       ),
     );
   }

@@ -9,7 +9,7 @@ part of 'CartModel.dart';
 CartModel _$CartModelFromJson(Map json) {
   return CartModel(
     products: (json['products'] as List)
-        ?.map((e) => e == null ? null : ProductCartModel.fromJson(e as Map))
+        ?.map((e) => e == null ? null : CartProductModel.fromJson(e as Map))
         ?.toList(),
   );
 }

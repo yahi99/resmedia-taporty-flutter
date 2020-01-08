@@ -14,6 +14,7 @@ import 'package:resmedia_taporty_flutter/common/model/ReviewModel.dart';
 import 'package:resmedia_taporty_flutter/common/resources/MixinOrderProvider.dart';
 import 'package:resmedia_taporty_flutter/common/resources/MixinRestaurantProvider.dart';
 import 'package:resmedia_taporty_flutter/common/resources/MixinShiftProvider.dart';
+import 'package:resmedia_taporty_flutter/common/resources/MixinUserProvider.dart';
 import 'package:resmedia_taporty_flutter/config/Collections.dart';
 import 'package:resmedia_taporty_flutter/drivers/model/CalendarModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/ShiftModel.dart';
@@ -22,7 +23,7 @@ import 'package:resmedia_taporty_flutter/common/model/OrderModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/RestaurantModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/UserModel.dart';
 
-class Database extends FirebaseDatabase with MixinFirestoreStripeProvider, MixinRestaurantProvider, MixinShiftProvider, MixinOrderProvider, StripeProviderRule {
+class Database extends FirebaseDatabase with MixinFirestoreStripeProvider, MixinRestaurantProvider, MixinShiftProvider, MixinUserProvider, MixinOrderProvider, StripeProviderRule {
   static Database _db;
 
   Database.internal({
@@ -53,12 +54,6 @@ class Database extends FirebaseDatabase with MixinFirestoreStripeProvider, Mixin
 
   Future<void> createUserGoogle({@required String uid, @required String nominative, @required String email}) async {
     await fs.collection(Collections.USERS).document(uid).setData({'nominative': nominative, users.fcmToken: await fbMs.getToken(), 'email': email});
-  }
-
-  // TODO: Rivedere
-  Future<Coordinates> getRestaurantPosition(String restaurantId) async {
-    final model = RestaurantModel.fromFirebase(await fs.collection(Collections.RESTAURANTS).document(restaurantId).get());
-    return Coordinates(model.coordinates.latitude, model.coordinates.longitude);
   }
 
   // TODO: Rivedere
@@ -104,12 +99,6 @@ class Database extends FirebaseDatabase with MixinFirestoreStripeProvider, Mixin
     await fs.collection('restaurants').document(order.restaurantId).collection('restaurant_orders').document(order.id).updateData({'state': 'CANCELLED'});
     await fs.collection('users').document(order.driverId).collection('driver_orders').document(order.id).updateData({'state': 'CANCELLED'});
     await fs.collection('control_orders').document(order.id).updateData({'state': 'CANCELLED'});
-  }
-
-  Stream<UserModel> getUserModelById(String uid) {
-    return fs.collection('users').document(uid).snapshots().map((snap) {
-      return UserModel.fromFirebase(snap);
-    });
   }
 
   Future<void> updateUserImage(String path, String uid, String previous) async {
@@ -162,77 +151,6 @@ class Database extends FirebaseDatabase with MixinFirestoreStripeProvider, Mixin
     return true;
   }
 
-  // TODO: Rivedere
-  Future<void> createOrder(
-      {@required String uid,
-      @required String phone,
-      @required CartModel model,
-      @required String driver,
-      @required Position userPos,
-      @required String addressR,
-      @required String startTime,
-      @required String nominative,
-      @required String day,
-      @required String endTime,
-      @required String restAdd,
-      @required String fingerprint}) async {
-    final id = (await fs.collection(Collections.RESTAURANTS).document(model.products.first.restaurantId).collection('restaurant_orders').add(model.toJson()
-          ..['restaurantId'] = model.products.first.restaurantId
-          ..['timeR'] = DateTime.now().toString()
-          ..['state'] = 'PENDING'
-          ..['driver'] = driver
-          ..['startTime'] = startTime
-          ..['uid'] = uid
-          ..['nominative'] = nominative
-          ..['endTime'] = endTime
-          ..['addressR'] = addressR
-          ..['fingerprint'] = fingerprint
-          ..['day'] = day
-          ..['phone'] = phone
-          ..['isPaid'] = false
-          ..['isReviewed'] = false))
-        .documentID;
-    await fs.collection(Collections.USERS).document(uid).collection('user_orders').document(id).setData(model.toJson()
-      ..['restaurantId'] = model.products.first.restaurantId
-      ..['timeR'] = DateTime.now().toString()
-      ..['state'] = 'PENDING'
-      ..['driver'] = driver
-      ..['uid'] = uid
-      ..['endTime'] = endTime
-      ..['day'] = day
-      ..['phone'] = phone);
-    await fs.collection(Collections.USERS).document(driver).collection('driver_orders').document(id).setData(model.toJson()
-      ..['titleS'] = model.products.first.restaurantId
-      ..['timeR'] = DateTime.now().toString()
-      ..['nominative'] = nominative
-      ..['addressS'] = restAdd
-      ..['state'] = 'PENDING'
-      ..['titleS'] = uid
-      ..['addressR'] = addressR
-      ..['latR'] = userPos.latitude
-      ..['lngR'] = userPos.longitude
-      ..['phone'] = phone
-      ..['uid'] = uid
-      ..['restId'] = model.products.first.restaurantId
-      ..['day'] = day
-      ..['endTime'] = endTime);
-    await fs.collection('control_orders').document(id).setData(model.toJson()
-      ..['restaurantId'] = model.products.first.restaurantId
-      ..['timeR'] = DateTime.now().toString()
-      ..['state'] = 'PENDING'
-      ..['driver'] = driver
-      ..['startTime'] = startTime
-      ..['uid'] = uid
-      ..['nominative'] = nominative
-      ..['endTime'] = endTime
-      ..['addressR'] = addressR
-      ..['fingerprint'] = fingerprint
-      ..['day'] = day
-      ..['phone'] = phone
-      ..['isPaid'] = false
-      ..['isReviewed'] = false);
-  }
-
   Stream<UserModel> getUser(FirebaseUser user) {
     return fs.collection(Collections.USERS).document(user.uid).snapshots().map((snap) {
       return UserModel.fromFirebase(snap);
@@ -276,17 +194,6 @@ class Database extends FirebaseDatabase with MixinFirestoreStripeProvider, Mixin
     });
   }
 
-  /*// TODO: Rivedere
-  Stream<List<CalendarModel>> getAvailableShifts(DateTime now) {
-    //final temp=.replaceAll(' ', 'T');
-    final datas = now.toIso8601String();
-    final data = fs.collection(Collections.DAYS).document(now.toIso8601String()).collection(Collections.TIMES).where('isEmpty', isEqualTo: false).snapshots();
-
-    return data.map((query) {
-      return query.documents.map((snap) => CalendarModel.fromFirebase(snap)).toList();
-    });
-  }*/
-
   // TODO: Rivedere
   Future<void> upgradeToDriver({@required String uid, @required codiceFiscale, @required address, @required km, @required car, @required exp, @required Position pos, @required nominative}) async {
     //await fs.collection(cl.USERS).document(uid).updateData({'isDriver':true});
@@ -314,33 +221,11 @@ class Database extends FirebaseDatabase with MixinFirestoreStripeProvider, Mixin
   }
 
   // TODO: Rivedere
-  Future<RestaurantModel> getPos(String restId) async {
-    return RestaurantModel.fromFirebase(await fs.collection(Collections.RESTAURANTS).document(restId).get());
-  }
-
-  // TODO: Rivedere
   Future<void> updateState(String state, String uid, String oid, String restId, String driverId) async {
     await fs.collection(Collections.USERS).document(uid).collection('user_orders').document(oid).updateData({'state': state});
     await fs.collection(Collections.RESTAURANTS).document(restId).collection('restaurant_orders').document(oid).updateData({'state': state});
     await fs.collection(Collections.USERS).document(driverId).collection('driver_orders').document(oid).updateData({'state': state});
     await fs.collection('control_orders').document(oid).updateData({'state': state});
-  }
-
-  // TODO: Rivedere
-  Future<CalendarModel> getDrivers(String date, String time) async {
-    final res = await fs.collection(Collections.DAYS).document(date).collection(Collections.TIMES).document(time).get();
-    return CalendarModel.fromJson(res.data);
-  }
-
-  // TODO: Rivedere
-  Future<void> occupyDriver(String date, String time, List<String> free, List<String> occupied, String restId, String did) async {
-    final model = CalendarModel.fromFirebase(await fs.collection(Collections.DAYS).document(date).collection(Collections.TIMES).document(time).collection('restaurant_turns').document(restId).get());
-    model.occupied.add(did);
-    if (free.length > 1)
-      await fs.collection(Collections.DAYS).document(date).collection(Collections.TIMES).document(time).updateData({'free': free, 'occupied': occupied});
-    else
-      await fs.collection(Collections.DAYS).document(date).collection(Collections.TIMES).document(time).updateData({'free': free, 'occupied': occupied, 'isEmpty': true});
-    await fs.collection(Collections.DAYS).document(date).collection(Collections.TIMES).document(time).collection('restaurant_turns').document(restId).updateData({'occupied': model.occupied});
   }
 
   // TODO: Rivedere

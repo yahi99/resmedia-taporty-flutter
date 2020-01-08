@@ -37,12 +37,11 @@ OrderModel _$OrderModelFromJson(Map json) {
     driverId: json['driverId'] as String,
     isReviewed: json['isReviewed'] as bool,
     customerId: json['customerId'] as String,
-    products: (json['products'] as List)
-        ?.map((e) => e == null ? null : ProductOrderModel.fromJson(e as Map))
-        ?.toList(),
+    products: json['products'] as List,
     creationTimestamp: datetimeFromJson(json['creationTimestamp']),
     acceptanceTimestamp: datetimeFromJson(json['acceptanceTimestamp']),
     state: _$enumDecodeNullable(_$OrderStateEnumMap, json['state']),
+    cardId: json['cardId'] as String,
   );
 }
 
@@ -56,8 +55,7 @@ Map<String, dynamic> _$OrderModelToJson(OrderModel instance) {
   }
 
   writeNotNull('path', instance.path);
-  writeNotNull(
-      'products', instance.products?.map((e) => e?.toJson())?.toList());
+  writeNotNull('products', instance.products);
   writeNotNull('productCount', instance.productCount);
   writeNotNull('totalPrice', instance.totalPrice);
   writeNotNull('newProductCount', instance.newProductCount);
@@ -83,6 +81,7 @@ Map<String, dynamic> _$OrderModelToJson(OrderModel instance) {
   writeNotNull('customerAddress', instance.customerAddress);
   writeNotNull('customerPhoneNumber', instance.customerPhoneNumber);
   writeNotNull('customerImageUrl', instance.customerImageUrl);
+  writeNotNull('cardId', instance.cardId);
   writeNotNull('restaurantId', instance.restaurantId);
   writeNotNull('restaurantName', instance.restaurantName);
   writeNotNull(

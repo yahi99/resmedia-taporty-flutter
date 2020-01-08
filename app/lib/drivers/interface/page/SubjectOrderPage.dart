@@ -196,7 +196,7 @@ class _SubjectOrderPageDriverState extends State<SubjectOrderPageDriver> {
                       color: cls.secondaryVariant,
                       onPressed: () async {
                         //TODO: qui và modificata la mappa mettendo il percorso
-                        final restModel = (await Database().getPos(widget.orderModel.restaurantId));
+                        final restModel = (await Database().getRestaurant(widget.orderModel.restaurantId));
                         final restPos = LatLng(restModel.coordinates.latitude, restModel.coordinates.longitude);
                         final driverPos = (await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.high));
                         final driverLat = LatLng(driverPos.latitude, driverPos.longitude);

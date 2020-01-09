@@ -38,7 +38,7 @@ String translateOrderState(OrderState state) {
   }
 }
 
-enum DriverOrderState { ASSIGNED, PICKED_UP, DELIVERED, HIDDEN }
+enum DriverOrderState { PICKED_UP, ASSIGNED, DELIVERED, HIDDEN }
 
 String translateDriverOrderState(DriverOrderState state) {
   switch (state) {

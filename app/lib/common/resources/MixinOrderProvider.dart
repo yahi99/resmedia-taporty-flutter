@@ -27,7 +27,7 @@ mixin MixinOrderProvider on MixinUserProvider, MixinRestaurantProvider {
   }
 
   Stream<List<OrderModel>> getDriverOrders(String uid) {
-    final data = orderCollection.where("driverId", isEqualTo: uid).snapshots();
+    final data = orderCollection.where("driverId", isEqualTo: uid).orderBy("creationTimestamp", descending: true).snapshots();
 
     return data.map((query) {
       return query.documents.map((snap) => OrderModel.fromFirebase(snap)).toList();

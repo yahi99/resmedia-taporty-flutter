@@ -37,7 +37,9 @@ OrderModel _$OrderModelFromJson(Map json) {
     driverId: json['driverId'] as String,
     isReviewed: json['isReviewed'] as bool,
     customerId: json['customerId'] as String,
-    products: json['products'] as List,
+    products: (json['products'] as List)
+        ?.map((e) => e == null ? null : OrderProductModel.fromJson(e as Map))
+        ?.toList(),
     creationTimestamp: datetimeFromJson(json['creationTimestamp']),
     acceptanceTimestamp: datetimeFromJson(json['acceptanceTimestamp']),
     state: _$enumDecodeNullable(_$OrderStateEnumMap, json['state']),
@@ -55,7 +57,8 @@ Map<String, dynamic> _$OrderModelToJson(OrderModel instance) {
   }
 
   writeNotNull('path', instance.path);
-  writeNotNull('products', instance.products);
+  writeNotNull(
+      'products', instance.products?.map((e) => e?.toJson())?.toList());
   writeNotNull('productCount', instance.productCount);
   writeNotNull('totalPrice', instance.totalPrice);
   writeNotNull('newProductCount', instance.newProductCount);

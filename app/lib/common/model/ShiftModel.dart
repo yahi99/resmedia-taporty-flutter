@@ -4,22 +4,36 @@ import 'package:flutter/widgets.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 import 'package:resmedia_taporty_flutter/common/helper/DateTimeSerialization.dart';
+import 'package:resmedia_taporty_flutter/common/helper/GeopointSerialization.dart';
 
 part 'ShiftModel.g.dart';
 
-@JsonSerializable(anyMap: true, explicitToJson: true, includeIfNull: false)
+@JsonSerializable(anyMap: true, explicitToJson: true, includeIfNull: false, nullable: true)
 class ShiftModel extends FirebaseModel {
   @JsonKey(toJson: datetimeToJson, fromJson: datetimeFromJson)
   final DateTime startTime;
   @JsonKey(toJson: datetimeToJson, fromJson: datetimeFromJson)
   final DateTime endTime;
 
-  String get id => startTime.millisecondsSinceEpoch.toString();
+  final String driverId;
+  final double deliveryRadius;
+  @JsonKey(toJson: geopointToJson, fromJson: geopointFromJson)
+  final GeoPoint driverCoordinates;
+  final bool occupied;
+  @JsonKey(toJson: datetimeToJson, fromJson: datetimeFromJson)
+  final DateTime reservationTimestamp;
+
+  String get id => driverId + startTime.millisecondsSinceEpoch.toString();
 
   ShiftModel({
     String path,
     @required this.endTime,
     @required this.startTime,
+    this.driverId,
+    this.deliveryRadius,
+    this.driverCoordinates,
+    this.occupied,
+    this.reservationTimestamp,
   }) : super(path);
 
   @override

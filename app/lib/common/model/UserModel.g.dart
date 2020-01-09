@@ -14,8 +14,6 @@ UserModel _$UserModelFromJson(Map json) {
     numberOfReviews: json['numberOfReviews'] as int,
     averageReviews: (json['averageReviews'] as num)?.toDouble(),
     type: json['type'] as String,
-    lat: (json['lat'] as num)?.toDouble(),
-    lng: (json['lng'] as num)?.toDouble(),
     isDriver: json['isDriver'] as bool,
     restaurantId: json['restaurantId'] as String,
     nominative: json['nominative'] as String,
@@ -27,6 +25,9 @@ UserModel _$UserModelFromJson(Map json) {
     offersApp: json['offersApp'] as bool,
     offersEmail: json['offersEmail'] as bool,
     offersSms: json['offersSms'] as bool,
+    coordinates: geopointFromJson(json['coordinates']),
+    address: json['address'] as String,
+    deliveryRadius: (json['deliveryRadius'] as num)?.toDouble(),
   );
 }
 
@@ -45,18 +46,19 @@ Map<String, dynamic> _$UserModelToJson(UserModel instance) {
   writeNotNull('email', instance.email);
   writeNotNull('phoneNumber', instance.phoneNumber);
   writeNotNull('numberOfReviews', instance.numberOfReviews);
-  val['averageReviews'] = instance.averageReviews;
-  val['restaurantId'] = instance.restaurantId;
-  val['img'] = instance.img;
-  val['notifyEmail'] = instance.notifyEmail;
-  val['notifySms'] = instance.notifySms;
-  val['notifyApp'] = instance.notifyApp;
-  val['offersEmail'] = instance.offersEmail;
-  val['offersSms'] = instance.offersSms;
-  val['offersApp'] = instance.offersApp;
-  val['lat'] = instance.lat;
-  val['lng'] = instance.lng;
-  val['isDriver'] = instance.isDriver;
-  val['type'] = instance.type;
+  writeNotNull('averageReviews', instance.averageReviews);
+  writeNotNull('restaurantId', instance.restaurantId);
+  writeNotNull('img', instance.img);
+  writeNotNull('notifyEmail', instance.notifyEmail);
+  writeNotNull('notifySms', instance.notifySms);
+  writeNotNull('notifyApp', instance.notifyApp);
+  writeNotNull('offersEmail', instance.offersEmail);
+  writeNotNull('offersSms', instance.offersSms);
+  writeNotNull('offersApp', instance.offersApp);
+  writeNotNull('isDriver', instance.isDriver);
+  writeNotNull('type', instance.type);
+  writeNotNull('coordinates', geopointToJson(instance.coordinates));
+  writeNotNull('address', instance.address);
+  writeNotNull('deliveryRadius', instance.deliveryRadius);
   return val;
 }

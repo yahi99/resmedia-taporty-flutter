@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:easy_firebase/easy_firebase.dart';
+import 'package:resmedia_taporty_flutter/common/helper/DateTimeSerialization.dart';
 import 'package:resmedia_taporty_flutter/common/helper/DistanceHelper.dart';
-import 'package:resmedia_taporty_flutter/common/model/DriverReservationModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/RestaurantModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/ShiftModel.dart';
 import 'package:resmedia_taporty_flutter/common/resources/MixinRestaurantProvider.dart';
@@ -11,43 +12,43 @@ mixin MixinShiftProvider on MixinRestaurantProvider {
 
   Future<List<ShiftModel>> getAvailableShifts(DateTime day, String restaurantId, GeoPoint customerCoordinates) async {
     RestaurantModel restaurant = await getRestaurant(restaurantId);
-    var shifts = restaurant.getShifts(day);
+    var startTimes = restaurant.getStartTimes(day);
     var filteredShifts = List<ShiftModel>();
 
-    for (var shift in shifts) {
-      var driverReservations = (await shiftCollection.document(shift.id).collection(Collections.DRIVER_RESERVATIONS).orderBy("reservationTimestamp").getDocuments(source: Source.server))
+    for (var startTime in startTimes) {
+      // Don't show shifts from the past and more than 48 hours in the future
+      if (startTime.compareTo(DateTime.now()) > 0 && startTime.difference(DateTime.now()).inMilliseconds < 48 * 60 * 60 * 1000) continue;
+
+      var reservedShifts = (await shiftCollection.where("startTime", isEqualTo: datetimeToJson(startTime)).orderBy("reservationTimestamp").getDocuments(source: Source.server))
           .documents
-          .map(DriverReservationModel.fromFirebase)
+          .map(ShiftModel.fromFirebase)
           .toList();
-      for (var reservation in driverReservations) {
-        var distanceRestaurantDriver = await DistanceHelper.fetchAproximateDistance(reservation.driverCoordinates, restaurant.coordinates);
-        if (distanceRestaurantDriver > reservation.deliveryRadius) continue;
-        var distanceCustomerDriver = await DistanceHelper.fetchAproximateDistance(reservation.driverCoordinates, customerCoordinates);
-        if (distanceCustomerDriver > reservation.deliveryRadius) continue;
-        if (reservation.occupied != true) {
-          filteredShifts.add(shift);
+      for (var reservedShift in reservedShifts) {
+        var distanceRestaurantDriver = await DistanceHelper.fetchAproximateDistance(reservedShift.driverCoordinates, restaurant.coordinates);
+        if (distanceRestaurantDriver > reservedShift.deliveryRadius) continue;
+        var distanceCustomerDriver = await DistanceHelper.fetchAproximateDistance(reservedShift.driverCoordinates, customerCoordinates);
+        if (distanceCustomerDriver > reservedShift.deliveryRadius) continue;
+        if (reservedShift.occupied != true) {
+          filteredShifts.add(reservedShift);
           break;
         }
       }
     }
 
-    // Don't show shifts from the past and more than 48 hours in the future
-    return filteredShifts.where((shift) => shift.startTime.compareTo(DateTime.now()) > 0 && shift.startTime.difference(DateTime.now()).inMilliseconds < 48 * 60 * 60 * 1000).toList();
+    return filteredShifts;
   }
 
   Future<String> findDriver(ShiftModel shiftModel, String restaurantId, GeoPoint customerCoordinates) async {
     RestaurantModel restaurant = await getRestaurant(restaurantId);
     if (!restaurant.isOpen(datetime: shiftModel.endTime)) return null;
 
-    var reservationDocuments =
-        (await shiftCollection.document(shiftModel.startTime.toIso8601String()).collection(Collections.DRIVER_RESERVATIONS).orderBy("reservationTimestamp").getDocuments(source: Source.server))
-            .documents;
+    var shiftDocuments = (await shiftCollection.where("startTime", isEqualTo: datetimeToJson(shiftModel.startTime)).orderBy("reservationTimestamp").getDocuments(source: Source.server)).documents;
 
     String driverId;
     bool found;
-    for (var document in reservationDocuments) {
+    for (var document in shiftDocuments) {
       await Firestore.instance.runTransaction((Transaction tx) async {
-        var reservation = DriverReservationModel.fromFirebase(await tx.get(document.reference));
+        var reservation = ShiftModel.fromFirebase(await tx.get(document.reference));
         var distanceRestaurantDriver = await DistanceHelper.fetchAproximateDistance(reservation.driverCoordinates, restaurant.coordinates);
         if (distanceRestaurantDriver > reservation.deliveryRadius) return;
         var distanceCustomerDriver = await DistanceHelper.fetchAproximateDistance(reservation.driverCoordinates, customerCoordinates);
@@ -64,5 +65,9 @@ mixin MixinShiftProvider on MixinRestaurantProvider {
     }
     if (!found) return null;
     return driverId;
+  }
+
+  Stream<List<ShiftModel>> getReservedShiftsStream(String driverId) {
+    return shiftCollection.where('driverId', isEqualTo: driverId).snapshots().map((querySnap) => FirebaseDatabase.fromQuerySnaps(querySnap, ShiftModel.fromFirebase));
   }
 }

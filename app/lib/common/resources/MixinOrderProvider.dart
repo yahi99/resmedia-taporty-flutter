@@ -38,7 +38,7 @@ mixin MixinOrderProvider on MixinUserProvider, MixinRestaurantProvider {
     var orderProducts = List<OrderProductModel>();
     for (var cartProduct in cartProducts) {
       if (cartProduct.quantity <= 0) continue;
-      var product = products.firstWhere((p) => p.id == cartProduct.id && customerId == cartProduct.userId);
+      var product = products.firstWhere((p) => p.id == cartProduct.id && customerId == cartProduct.userId, orElse: () => null);
       if (product != null) {
         orderProducts.add(OrderProductModel(imageUrl: product.imageUrl, quantity: cartProduct.quantity, name: product.name, price: product.price));
       }

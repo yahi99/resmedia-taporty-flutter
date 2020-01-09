@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/screen/HomeScreen.dart';
 import 'package:resmedia_taporty_flutter/drivers/logic/bloc/CalendarBloc.dart';
+import 'package:resmedia_taporty_flutter/drivers/logic/bloc/DriverBloc.dart';
 import 'package:resmedia_taporty_flutter/drivers/logic/bloc/TurnBloc.dart';
 import 'package:resmedia_taporty_flutter/common/interface/view/LogoView.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/OrderBloc.dart';
@@ -70,9 +71,11 @@ class _LoginScreenState extends State<LoginScreen> {
     await orderBloc.setDriverStream();
     final turnBloc = TurnBloc.of();
     await turnBloc.setTurnStream(uid);
+    final driverBloc = DriverBloc.of();
+    await driverBloc.setDriverStream();
     final calendarBloc = CalendarBloc.of();
     final date = DateTime.now();
-    await calendarBloc.setDate(DateTime(date.year, date.month, date.day));
+    calendarBloc.setDate(DateTime(date.year, date.month, date.day));
   }
 
   @override

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:resmedia_taporty_flutter/drivers/interface/sliver/SliverOrderVoid.dart';
+import 'package:resmedia_taporty_flutter/drivers/interface/widget/SliverOrderVoid.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/view/TurnView.dart';
 import 'package:resmedia_taporty_flutter/drivers/model/TurnModel.dart';
 

@@ -14,6 +14,12 @@ mixin MixinRestaurantProvider {
     });
   }
 
+  Future<List<RestaurantModel>> getRestaurantList() async {
+    return (await restaurantCollection.getDocuments()).documents.map((snap) {
+      return RestaurantModel.fromFirebase(snap);
+    }).toList();
+  }
+
   Stream<RestaurantModel> getRestaurantStream(String restaurantId) {
     return restaurantCollection.document(restaurantId).snapshots().map(RestaurantModel.fromFirebase);
   }

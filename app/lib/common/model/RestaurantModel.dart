@@ -8,6 +8,7 @@ import 'package:resmedia_taporty_flutter/common/helper/GeopointSerialization.dar
 import 'package:resmedia_taporty_flutter/common/model/HolidayModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/ShiftModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/TimetableModel.dart';
+import 'package:resmedia_taporty_flutter/drivers/model/CalendarModel.dart';
 
 part 'RestaurantModel.g.dart';
 
@@ -64,19 +65,21 @@ class RestaurantModel extends FirebaseModel {
     return false;
   }
 
-  List<ShiftModel> getShifts(DateTime day) {
-    List<ShiftModel> shifts = new List<ShiftModel>();
-    if (isOpen(datetime: day)) return shifts;
+  // TODO: Calcola nel costruttore e genera una mappa Map<DateTime, bool> che indichi se è aperto in un determinato orario
+  List<DateTime> getStartTimes(DateTime day) {
+    List<DateTime> startTimes = new List<DateTime>();
+    if (isHoliday(datetime: day) || !weekdayTimetable[day.weekday].open) return startTimes;
 
     for (var timeslot in weekdayTimetable[day.weekday].timeslots) {
-      var currentShift = timeslot.start.add(Duration(milliseconds: day.millisecondsSinceEpoch));
-      var end = timeslot.end.add(Duration(milliseconds: day.millisecondsSinceEpoch));
-      while (currentShift != end) {
-        shifts.add(ShiftModel(startTime: DateTime.parse(currentShift.toIso8601String()), endTime: DateTime.parse((currentShift = currentShift.add(Duration(minutes: 15))).toIso8601String())));
+      var currentDate = day.add(Duration(hours: timeslot.start.hour, minutes: timeslot.start.minute));
+      var endDate = day.add(Duration(hours: timeslot.end.hour, minutes: timeslot.end.minute));
+      while (currentDate != endDate) {
+        startTimes.add(DateTime.parse(currentDate.toIso8601String()));
+        currentDate = currentDate.add(Duration(minutes: 15));
       }
     }
 
-    return shifts;
+    return startTimes;
   }
 
   String getTimetableString({DateTime datetime}) {

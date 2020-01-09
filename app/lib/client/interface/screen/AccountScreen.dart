@@ -148,15 +148,6 @@ class AccountScreen extends StatelessWidget implements WidgetRoute {
                         padding: EdgeInsets.only(top: 8.0),
                       ),
                       snap.data.model.nominative != null ? Text(snap.data.model.nominative) : Container(),
-                      (snap.data.model.lat != null && snap.data.model.lng != null)
-                          ? StreamBuilder<List<Address>>(
-                              stream: Geocoder.local.findAddressesFromCoordinates(Coordinates(snap.data.model.lat, snap.data.model.lng)).asStream(),
-                              builder: (ctx, loc) {
-                                if (loc.hasData) return Text(loc.data.first.addressLine);
-                                return Container();
-                              },
-                            )
-                          : Container(),
                       const Divider(
                         color: Colors.grey,
                       ),

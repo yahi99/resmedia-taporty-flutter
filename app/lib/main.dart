@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/intl.dart';
 import 'package:resmedia_taporty_flutter/app_localization.dart';
 import 'package:resmedia_taporty_flutter/client/interface/screen/LoginScreen.dart';
 import 'package:resmedia_taporty_flutter/config/ColorTheme.dart';
@@ -16,6 +17,7 @@ import 'package:resmedia_taporty_flutter/config/ColorTheme.dart';
 
 void main() {
   initializeDateFormatting();
+  Intl.defaultLocale = "it"; // TODO: Gestisci meglio
   runApp(RepositoryBuilder(
     backgroundTask: (context, sharedPreferences) async {
       await AssetHandler.init(context);

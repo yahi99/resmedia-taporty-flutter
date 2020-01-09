@@ -24,15 +24,10 @@ class CalendarBloc implements Bloc {
   Stream<List<CalendarModel>> get outCalendar => _calendarControl.stream;
 
   void setDate(DateTime now) {
-    //final user=UserBloc.of();
-    //final restUser=await user.outFirebaseUser.first;
-    //final str=await _db.getDriverOrders(restUser.uid).first;
-
-    print(now.toIso8601String());
     _calendarControl = PublishController.catchStream(source: _db.getShifts(now));
   }
 
-  void setShift(String startTime, String endTime, String day, List<String> users) async {
+  Future setShift(String startTime, String endTime, String day, List<String> users) async {
     final user = UserBloc.of();
     final restUser = await user.outFirebaseUser.first;
     users.add(restUser.uid);

@@ -33,7 +33,7 @@ class TurnBloc implements Bloc {
         return categorized(MonthCategory.values, models, (model) => model.month);
       });
 
-  void setTurnStream(String uid) async {
+  Future setTurnStream(String uid) async {
     //final user = UserBloc.of();
     //final restUser = await user.outFirebaseUser.first;
     //final str=await _db.getDriverOrders(restUser.uid).first;
@@ -42,7 +42,7 @@ class TurnBloc implements Bloc {
     _turnControl.listen(print);
   }
 
-  void setTurnRestStream() async {
+  Future setTurnRestStream() async {
     final user = UserBloc.of();
     final restUser = await user.outUser.first;
     //final str=await _db.getDriverOrders(restUser.uid).first;

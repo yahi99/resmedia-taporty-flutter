@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:resmedia_taporty_flutter/common/model/UserModel.dart';
 import 'package:resmedia_taporty_flutter/config/Collections.dart';
 
@@ -13,5 +14,19 @@ mixin MixinUserProvider {
     return userCollection.document(uid).snapshots().map((snap) {
       return UserModel.fromFirebase(snap);
     });
+  }
+
+  Future<void> updateUserImage(String path, String uid, String previous) async {
+    //TODO: Delete previous image
+    await userCollection.document(uid).updateData({'img': path});
+    if (previous != null) _deleteFile(previous.split('/').last.split('?').first);
+  }
+
+  // TODO: Rivedere
+  String _deleteFile(String path) {
+    final StorageReference ref = FirebaseStorage.instance.ref();
+    ref.child(path).delete();
+    //_path = downloadUrl.toString();
+    return 'ok';
   }
 }

@@ -3,18 +3,15 @@ import 'package:easy_firebase/easy_firebase.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:resmedia_taporty_flutter/common/helper/GeopointSerialization.dart';
 
 part 'UserModel.g.dart';
 
-@JsonSerializable(anyMap: true, explicitToJson: true)
+@JsonSerializable(anyMap: true, explicitToJson: true, includeIfNull: false)
 class UserModel extends UserFirebaseModel {
-  @JsonKey(includeIfNull: false)
   final String nominative;
-  @JsonKey(includeIfNull: false)
   final String email;
-  @JsonKey(includeIfNull: false)
   final String phoneNumber;
-  @JsonKey(includeIfNull: false)
   final int numberOfReviews;
   final double averageReviews;
   final String restaurantId;
@@ -25,10 +22,14 @@ class UserModel extends UserFirebaseModel {
   final bool offersEmail;
   final bool offersSms;
   final bool offersApp;
-  final double lat;
-  final double lng;
   final bool isDriver;
   final String type;
+
+  // Driver specific values
+  @JsonKey(fromJson: geopointFromJson, toJson: geopointToJson)
+  final GeoPoint coordinates;
+  final String address;
+  final double deliveryRadius;
 
   UserModel({
     String path,
@@ -37,8 +38,6 @@ class UserModel extends UserFirebaseModel {
     this.numberOfReviews,
     this.averageReviews,
     this.type,
-    this.lat,
-    this.lng,
     this.isDriver,
     this.restaurantId,
     this.nominative,
@@ -50,10 +49,13 @@ class UserModel extends UserFirebaseModel {
     this.offersApp,
     this.offersEmail,
     this.offersSms,
+    this.coordinates,
+    this.address,
+    this.deliveryRadius,
   }) : super(path: path, fcmToken: fcmToken);
 
   LatLng getPos() {
-    return (lat != null && lng != null) ? LatLng(lat, lng) : null;
+    return (coordinates != null) ? LatLng(coordinates.latitude, coordinates.longitude) : null;
   }
 
   static UserModel fromJson(Map json) => _$UserModelFromJson(json);

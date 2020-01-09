@@ -70,13 +70,11 @@ class UserBloc with MixinFirebaseUserManager implements Bloc {
 
     firebaseUserSub = _firebaseUserController.outFirebaseUser.listen((firebaseUser) async {
       userModelSub?.cancel();
-      print(firebaseUser);
       if (firebaseUser == null) {
         _firebaseUserController.registrationLevel.complete(RegistrationLevel.LV1);
         return;
       }
       userModelSub = _db.getUser(firebaseUser).listen((userModel) async {
-        print(userModel);
         if (userModel == null) {
           _firebaseUserController.registrationLevel.complete(RegistrationLevel.LV2);
           return;

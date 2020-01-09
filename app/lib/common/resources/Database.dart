@@ -101,20 +101,6 @@ class Database extends FirebaseDatabase with MixinFirestoreStripeProvider, Mixin
     await fs.collection('control_orders').document(order.id).updateData({'state': 'CANCELLED'});
   }
 
-  Future<void> updateUserImage(String path, String uid, String previous) async {
-    //TODO: Delete previous image
-    await fs.collection('users').document(uid).updateData({'img': path});
-    if (previous != null) _deleteFile(previous.split('/').last.split('?').first);
-  }
-
-  // TODO: Rivedere
-  String _deleteFile(String path) {
-    final StorageReference ref = FirebaseStorage.instance.ref();
-    ref.child(path).delete();
-    //_path = downloadUrl.toString();
-    return 'ok';
-  }
-
   // TODO: Rivedere
   Future<bool> removeShiftRest(String startTime, String day, String restId) async {
     await fs.collection('restaurants').document(restId).collection('turns').document(day + '§' + startTime).delete();

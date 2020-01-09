@@ -37,7 +37,7 @@ class OrderBloc implements Bloc {
     _userControl.listen(print);
   }
 
-  void setDriverStream() async {
+  Future setDriverStream() async {
     final user = UserBloc.of();
     final restUser = await user.outFirebaseUser.first;
     _driverControl = PublishController.catchStream(source: _db.getDriverOrders(restUser.uid));

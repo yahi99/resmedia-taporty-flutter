@@ -7,5 +7,4 @@ class Collections {
   static const TIMES = 'times';
   static const ORDERS = 'orders';
   static const SHIFTS = 'shifts';
-  static const DRIVER_RESERVATIONS = 'driver_reservations';
 }

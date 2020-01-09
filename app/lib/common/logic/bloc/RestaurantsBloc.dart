@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dash/dash.dart';
 import 'package:easy_blocs/easy_blocs.dart';
 import 'package:meta/meta.dart';
+import 'package:resmedia_taporty_flutter/common/helper/DateTimeHelper.dart';
 import 'package:resmedia_taporty_flutter/common/helper/DistanceHelper.dart';
 import 'package:resmedia_taporty_flutter/common/model/ShiftModel.dart';
 import 'package:resmedia_taporty_flutter/common/resources/Database.dart';
@@ -41,7 +42,7 @@ class RestaurantsBloc implements Bloc {
 
     var restaurantStartTimes = filteredRestaurants.map((restaurant) => restaurant.getStartTimes(date));
 
-    var currentDate = DateTime(date.year, date.month, date.day);
+    var currentDate = DateTimeHelper.getDay(date);
     var endDate = currentDate.add(Duration(days: 1));
 
     var availableShifts = List<DateTime>();

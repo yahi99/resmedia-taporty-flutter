@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -8,14 +9,16 @@ import 'package:resmedia_taporty_flutter/drivers/model/SubjectModel.dart';
 import 'package:resmedia_taporty_flutter/main.dart';
 
 class OrderView extends StatelessWidget {
-  final OrderModel orderModel;
+  final OrderModel order;
 
-  OrderView({Key key, @required this.orderModel}) : super(key: key);
+  OrderView({Key key, @required this.order}) : super(key: key);
+
+  final AutoSizeGroup nameGroup = AutoSizeGroup();
+  final AutoSizeGroup addressGroup = AutoSizeGroup();
 
   @override
   Widget build(BuildContext context) {
-    final sub = orderModel.subjects;
-    return Order(
+    /*return Order(
       isNear: (orderModel.preferredDeliveryTimestamp.difference(DateTime.now()).inMinutes > 0 && orderModel.preferredDeliveryTimestamp.difference(DateTime.now()).inMinutes <= 45) ? true : false,
       endTime: "driverOrderModel.endTime",
       date: "driverOrderModel.day",
@@ -43,6 +46,85 @@ class OrderView extends StatelessWidget {
           ),
         ),
       ],
+    );*/
+    final theme = Theme.of(context);
+    final textTheme = theme.textTheme;
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          children: <Widget>[
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 8.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 6.0),
+                      child: Text(
+                        "Fornitore",
+                        style: TextStyle(fontWeight: FontWeight.bold, color: ColorTheme.RED, fontSize: 12),
+                      ),
+                    ),
+                    AutoSizeText(
+                      order.restaurantName,
+                      group: nameGroup,
+                      minFontSize: 14,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: textTheme.subhead.copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    AutoSizeText(
+                      order.restaurantAddress,
+                      group: addressGroup,
+                      minFontSize: 10,
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(fontSize: 14),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 8.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 6.0),
+                      child: Text(
+                        "Cliente",
+                        style: TextStyle(fontWeight: FontWeight.bold, color: ColorTheme.RED, fontSize: 12),
+                      ),
+                    ),
+                    AutoSizeText(
+                      order.customerName,
+                      group: nameGroup,
+                      minFontSize: 14,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: textTheme.subhead.copyWith(fontWeight: FontWeight.bold),
+                    ),
+                    AutoSizeText(
+                      order.customerAddress,
+                      group: addressGroup,
+                      minFontSize: 10,
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(fontSize: 14),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

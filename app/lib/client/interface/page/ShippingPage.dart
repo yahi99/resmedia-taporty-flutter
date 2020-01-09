@@ -149,9 +149,9 @@ class _ShippingState extends State<ShippingPage> with AutomaticKeepAliveClientMi
                             onTap: () {
                               showDatePicker(
                                 context: context,
-                                firstDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
-                                initialDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
-                                lastDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day).add(Duration(hours: 48)),
+                                firstDate: DateTimeHelper.getDay(DateTime.now()),
+                                initialDate: DateTimeHelper.getDay(DateTime.now()),
+                                lastDate: DateTimeHelper.getDay(DateTime.now()).add(Duration(hours: 48)),
                               ).then((day) {
                                 if (day != null) {
                                   this.setState(() {

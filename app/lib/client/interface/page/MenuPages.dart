@@ -5,6 +5,7 @@ import 'package:resmedia_taporty_flutter/client/logic/bloc/CartBloc.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/RestaurantBloc.dart';
 import 'package:resmedia_taporty_flutter/common/model/ProductModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/RestaurantModel.dart';
+import 'package:resmedia_taporty_flutter/config/ColorTheme.dart';
 
 class FoodPage extends StatelessWidget {
   final RestaurantModel model;
@@ -101,7 +102,7 @@ class GroupsVoid extends StatelessWidget {
         return SliverStickyHeader(
           overlapsContent: true,
           header: Container(
-            color: Colors.grey,
+            color: ColorTheme.LIGHT_GREY,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
               child: DefaultTextStyle(

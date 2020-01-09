@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:resmedia_taporty_flutter/common/helper/DateTimeHelper.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/screen/HomeScreen.dart';
 import 'package:resmedia_taporty_flutter/drivers/logic/bloc/CalendarBloc.dart';
 import 'package:resmedia_taporty_flutter/drivers/logic/bloc/DriverBloc.dart';
@@ -74,8 +75,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final driverBloc = DriverBloc.of();
     await driverBloc.setDriverStream();
     final calendarBloc = CalendarBloc.of();
-    final date = DateTime.now();
-    calendarBloc.setDate(DateTime(date.year, date.month, date.day));
+    calendarBloc.setDate(DateTimeHelper.getDay(DateTime.now()));
   }
 
   @override

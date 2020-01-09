@@ -48,7 +48,7 @@ dependencies:
   google_maps_webservice: ^0.0.16
   flutter_slidable: ^0.5.4
   cloud_functions: ^0.4.1
-  cloud_firestore: ^0.13.0
+  cloud_firestore: ^0.13.0+1
   firebase_storage: ^3.1.0
   firebase_auth: ^0.15.2
   datetime_picker_formfield: ^0.4.3
@@ -58,6 +58,7 @@ dependencies:
   flutter_local_notifications: ^0.8.4
   dash: ^0.5.5
   rxdart: ^0.22.6
+  sticky_headers: ^0.1.8+1
 
   # Scritti e implementati da Simone o Giorgio.
   easy_blocs:

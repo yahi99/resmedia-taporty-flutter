@@ -71,7 +71,6 @@ class NewDriverState extends State<BecomeRestaurantScreen> {
 
     //_path = downloadUrl.toString();
     _path = (await ref.getDownloadURL());
-    print(_path);
     return _path;
   }
 

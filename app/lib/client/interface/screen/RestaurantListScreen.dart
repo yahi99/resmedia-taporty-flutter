@@ -74,7 +74,6 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
 
   void firebaseCloudMessagingListeners() {
     if (Platform.isIOS) iOSPermission();
-    print('ok');
     _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
         print('on message $message');

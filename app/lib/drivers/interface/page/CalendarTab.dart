@@ -1,20 +1,14 @@
-import 'dart:async';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:resmedia_taporty_flutter/common/helper/DateTimeHelper.dart';
-import 'package:resmedia_taporty_flutter/common/logic/bloc/RestaurantBloc.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/RestaurantsBloc.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
 import 'package:resmedia_taporty_flutter/common/model/ShiftModel.dart';
-import 'package:resmedia_taporty_flutter/common/model/UserModel.dart';
 import 'package:resmedia_taporty_flutter/config/ColorTheme.dart';
 import 'package:resmedia_taporty_flutter/drivers/logic/bloc/CalendarBloc.dart';
 import 'package:resmedia_taporty_flutter/drivers/logic/bloc/DriverBloc.dart';
-import 'package:resmedia_taporty_flutter/drivers/model/CalendarModel.dart';
-import 'package:resmedia_taporty_flutter/common/resources/Database.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart' show CalendarCarousel, WeekdayFormat;
 
 class CalendarTab extends StatefulWidget {
@@ -43,8 +37,7 @@ class _CalendarTabState extends State<CalendarTab> with AutomaticKeepAliveClient
   @override
   void initState() {
     super.initState();
-    var now = DateTime.now();
-    _selectedDate = DateTime(now.year, now.month, now.day);
+    _selectedDate = DateTimeHelper.getDay(DateTime.now());
   }
 
   @override
@@ -164,14 +157,14 @@ class _CalendarTabState extends State<CalendarTab> with AutomaticKeepAliveClient
                             return ListView.separated(
                               shrinkWrap: true,
                               physics: NeverScrollableScrollPhysics(),
-                              separatorBuilder: (___, index) => Divider(height: 10, color: Colors.grey),
+                              separatorBuilder: (___, index) => Divider(height: 1, color: Colors.grey),
                               itemCount: availableShifts.length,
                               itemBuilder: (___, index) {
                                 var alreadyReserved = false;
                                 if (reservedShifts != null) if (reservedShifts.firstWhere((reservedShift) => reservedShift.startTime == availableShifts[index], orElse: () => null) != null)
                                   alreadyReserved = true;
                                 return Padding(
-                                  padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16),
+                                  padding: const EdgeInsets.symmetric(horizontal: 16),
                                   child: Row(
                                     children: <Widget>[
                                       Expanded(
@@ -187,6 +180,11 @@ class _CalendarTabState extends State<CalendarTab> with AutomaticKeepAliveClient
                                                 ],
                                               ),
                                             ),
+                                            Container(
+                                              height: 40.0,
+                                              width: 2.0,
+                                              color: Colors.grey,
+                                            ),
                                             if (alreadyReserved) Padding(padding: EdgeInsets.only(top: 8.0, bottom: 8.0, left: 16.0), child: Text("Prenotato"))
                                           ],
                                         ),
@@ -195,6 +193,7 @@ class _CalendarTabState extends State<CalendarTab> with AutomaticKeepAliveClient
                                         Padding(
                                           padding: const EdgeInsets.symmetric(vertical: 8.0),
                                           child: FlatButton(
+                                            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                             child: Text(
                                               'Conferma',
                                             ),
@@ -207,6 +206,7 @@ class _CalendarTabState extends State<CalendarTab> with AutomaticKeepAliveClient
                                         Padding(
                                           padding: const EdgeInsets.symmetric(vertical: 8.0),
                                           child: FlatButton(
+                                            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                             child: Text(
                                               'Annulla',
                                             ),

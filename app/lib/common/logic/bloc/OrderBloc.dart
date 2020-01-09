@@ -20,28 +20,22 @@ class OrderBloc implements Bloc {
 
   PublishSubject<List<OrderModel>> _userControl;
 
-  Stream<List<OrderModel>> get outUserOrders => _userControl.stream;
+  Observable<List<OrderModel>> get outUserOrders => _userControl?.stream;
 
   PublishSubject<List<OrderModel>> _driverControl;
 
-  Stream<List<OrderModel>> get outDriverOrders => _driverControl.stream;
-
-  Stream<Map<OrderState, List<OrderModel>>> get outCategorizedOrders => outDriverOrders.map((models) {
-        return categorized(OrderState.values, models, (model) => model.state);
-      });
+  Observable<List<OrderModel>> get outDriverOrders => _driverControl?.stream;
 
   Future setUserStream() async {
     final user = UserBloc.of();
     final restUser = await user.outFirebaseUser.first;
     _userControl = PublishController.catchStream(source: _db.getUserOrders(restUser.uid));
-    _userControl.listen(print);
   }
 
   Future setDriverStream() async {
     final user = UserBloc.of();
     final restUser = await user.outFirebaseUser.first;
     _driverControl = PublishController.catchStream(source: _db.getDriverOrders(restUser.uid));
-    _driverControl.listen(print);
   }
 
   OrderBloc.instance();

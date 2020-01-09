@@ -6,6 +6,8 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:resmedia_taporty_flutter/common/helper/LoginHelper.dart';
+import 'package:resmedia_taporty_flutter/drivers/interface/page/OrderTab.dart';
+import 'package:resmedia_taporty_flutter/drivers/interface/page/ReservedShiftTab.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/screen/AccountScreenDriver.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/page/CalendarTab.dart';
 import 'package:resmedia_taporty_flutter/drivers/logic/bloc/CalendarBloc.dart';
@@ -129,14 +131,8 @@ class _HomeScreenDriverState extends State<HomeScreenDriver> {
           body: TabBarView(
             physics: const NeverScrollableScrollPhysics(),
             children: <Widget>[
-              /*OrdersPageDriver(
-                        model: categorized(OrderState.values, driverOrderListSnapshot.data, (model) => model.state),
-                      ),
-                      TurnWorkTabDriver(
-                        model: categorized(MonthCategory.values, snap1.data, (model) => model.month),
-                      ),*/
-              Container(),
-              Container(),
+              OrderTab(),
+              ReservedShiftTab(),
               CalendarTab(),
             ],
           ),
@@ -144,23 +140,4 @@ class _HomeScreenDriverState extends State<HomeScreenDriver> {
       ),
     );
   }
-}
-
-Map<C, List<M>> categorized<C, M>(
-  List<C> allCategories,
-  List<M> models,
-  C getterCategory(M model),
-) {
-  final categories = allCategories.where((category) {
-    return models.map(getterCategory).any((modelCategory) => category == modelCategory);
-  });
-  return Map.fromIterable(
-    categories,
-    key: (category) {
-      return category;
-    },
-    value: (category) {
-      return models.where((model) => getterCategory(model) == category).toList();
-    },
-  );
 }

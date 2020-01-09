@@ -16,17 +16,17 @@ enum OrderState { NEW, ACCEPTED, MODIFIED, CANCELLED, READY, PICKED_UP, DELIVERE
 String translateOrderState(OrderState state) {
   switch (state) {
     case OrderState.PICKED_UP:
-      return "Ritirato dal fattorino";
+      return "In consegna";
     case OrderState.REFUSED:
       return "Ordine rifiutato";
     case OrderState.NEW:
-      return "In Accettazione";
+      return "In accettazione";
     case OrderState.ACCEPTED:
-      return "In Consegna";
+      return "In preparazione";
     case OrderState.DELIVERED:
       return "Consegnato";
     case OrderState.CANCELLED:
-      return "Ordine Cancellato";
+      return "Ordine cancellato";
     case OrderState.MODIFIED:
       return "Modifica in attesa";
     case OrderState.READY:
@@ -36,6 +36,28 @@ String translateOrderState(OrderState state) {
     default:
       return "";
   }
+}
+
+enum DriverOrderState { ASSIGNED, PICKED_UP, DELIVERED, HIDDEN }
+
+String translateDriverOrderState(DriverOrderState state) {
+  switch (state) {
+    case DriverOrderState.ASSIGNED:
+      return "Ordini assegnati";
+    case DriverOrderState.PICKED_UP:
+      return "Ordine in consegna";
+    case DriverOrderState.DELIVERED:
+      return "Ordini consegnati";
+    default:
+      return "";
+  }
+}
+
+DriverOrderState orderStateToDriverOrderState(OrderState state) {
+  if (state == OrderState.ACCEPTED || state == OrderState.READY) return DriverOrderState.ASSIGNED;
+  if (state == OrderState.PICKED_UP) return DriverOrderState.PICKED_UP;
+  if (state == OrderState.DELIVERED) return DriverOrderState.DELIVERED;
+  return DriverOrderState.HIDDEN;
 }
 
 @JsonSerializable(anyMap: true, explicitToJson: true, nullable: true, includeIfNull: false)

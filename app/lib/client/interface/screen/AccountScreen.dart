@@ -76,7 +76,6 @@ class AccountScreen extends StatelessWidget implements WidgetRoute {
                       },
                     );
                   }
-                  print(snap.data.model.isDriver);
                   //var temp = snap.data.model.nominative.split(' ');
                   return Column(
                     children: <Widget>[

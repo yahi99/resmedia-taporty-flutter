@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_firebase/easy_firebase.dart';
+import 'package:resmedia_taporty_flutter/common/helper/DateTimeHelper.dart';
 import 'package:resmedia_taporty_flutter/common/helper/DateTimeSerialization.dart';
 import 'package:resmedia_taporty_flutter/common/helper/DistanceHelper.dart';
 import 'package:resmedia_taporty_flutter/common/model/RestaurantModel.dart';
@@ -68,6 +69,11 @@ mixin MixinShiftProvider on MixinRestaurantProvider {
   }
 
   Stream<List<ShiftModel>> getReservedShiftsStream(String driverId) {
-    return shiftCollection.where('driverId', isEqualTo: driverId).snapshots().map((querySnap) => FirebaseDatabase.fromQuerySnaps(querySnap, ShiftModel.fromFirebase));
+    return shiftCollection
+        .where('driverId', isEqualTo: driverId)
+        .where("startTime", isGreaterThanOrEqualTo: datetimeToJson(DateTimeHelper.getDay(DateTime.now())))
+        .orderBy("startTime")
+        .snapshots(includeMetadataChanges: true)
+        .map((querySnap) => FirebaseDatabase.fromQuerySnaps(querySnap, ShiftModel.fromFirebase));
   }
 }

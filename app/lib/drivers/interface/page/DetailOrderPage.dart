@@ -6,23 +6,22 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:resmedia_taporty_flutter/common/helper/DateTimeHelper.dart';
 import 'package:resmedia_taporty_flutter/common/interface/widget/HeaderWidget.dart';
+import 'package:resmedia_taporty_flutter/common/logic/bloc/OrderBloc.dart';
 import 'package:resmedia_taporty_flutter/common/model/OrderModel.dart';
 import 'package:resmedia_taporty_flutter/config/ColorTheme.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/page/CustomerOrderPage.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/page/RestaurantOrderPage.dart';
-
-import '../widget/GoogleMapsUI.dart';
 
 class OrderDetailPage extends StatefulWidget implements WidgetRoute {
   static const ROUTE = "OrderDetailPage";
 
   String get route => OrderDetailPage.ROUTE;
 
-  final OrderModel order;
+  final String orderId;
 
   OrderDetailPage({
     Key key,
-    @required this.order,
+    @required this.orderId,
   }) : super(key: key);
 
   @override
@@ -31,10 +30,17 @@ class OrderDetailPage extends StatefulWidget implements WidgetRoute {
 
 class _OrderDetailPageState extends State<OrderDetailPage> {
   bool isDeactivate = false;
+  final _orderBloc = OrderBloc.of();
 
   void deactivate() {
     super.deactivate();
     isDeactivate = !isDeactivate;
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _orderBloc.setOrderStream(widget.orderId);
   }
 
   @override
@@ -54,66 +60,77 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
           },
         ),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.all(16),
+      body: StreamBuilder<OrderModel>(
+        stream: _orderBloc.outOrder,
+        builder: (_, orderSnapshot) {
+          if (orderSnapshot.connectionState == ConnectionState.active && orderSnapshot.hasData && orderSnapshot.data != null) {
+            var order = orderSnapshot.data;
+            return SingleChildScrollView(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Table(
-                    columnWidths: {
-                      0: FlexColumnWidth(1),
-                      1: FlexColumnWidth(3),
-                    },
-                    children: [
-                      _buildTableRow("CODICE", widget.order.id),
-                      _buildTableRow("DATA", DateFormat("dd-MM-yyyy", "it").format(widget.order.creationTimestamp)),
-                      _buildTableRow("TOTALE", widget.order.totalPrice.toStringAsFixed(2) + " €"),
-                    ],
+                  Padding(
+                    padding: EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Table(
+                          columnWidths: {
+                            0: FlexColumnWidth(1),
+                            1: FlexColumnWidth(3),
+                          },
+                          children: [
+                            _buildTableRow("CODICE", order.id),
+                            _buildTableRow("DATA", DateFormat("dd-MM-yyyy", "it").format(order.creationTimestamp)),
+                            _buildTableRow("TOTALE", order.totalPrice.toStringAsFixed(2) + " €"),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  HeaderWidget("DETTAGLI CONSEGNA"),
+                  Padding(
+                    padding: EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Table(
+                          children: [
+                            _buildTableRow("STATO", translateOrderState(order.state)),
+                            _buildTableRow("DATA CONSEGNA", DateFormat("dd-MM-yyyy", "it").format(order.preferredDeliveryTimestamp)),
+                            _buildTableRow("ORA CONSEGNA", DateTimeHelper.getTimeString(order.preferredDeliveryTimestamp)),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  HeaderWidget("FORNITORE"),
+                  InkWell(
+                    onTap: () => EasyRouter.push(
+                      context,
+                      RestaurantOrderPage(
+                        orderId: widget.orderId,
+                      ),
+                    ),
+                    child: _buildSubjectDetails(order.restaurantImageUrl, order.restaurantName, order.restaurantAddress),
+                  ),
+                  HeaderWidget("CLIENTE"),
+                  InkWell(
+                    onTap: () => EasyRouter.push(
+                      context,
+                      CustomerOrderPage(
+                        orderId: widget.orderId,
+                      ),
+                    ),
+                    child: _buildSubjectDetails(order.customerImageUrl, order.customerName, order.customerAddress),
                   ),
                 ],
               ),
-            ),
-            HeaderWidget("DETTAGLI CONSEGNA"),
-            Padding(
-              padding: EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Table(
-                    children: [
-                      _buildTableRow("STATO", translateOrderState(widget.order.state)),
-                      _buildTableRow("DATA CONSEGNA", DateFormat("dd-MM-yyyy", "it").format(widget.order.preferredDeliveryTimestamp)),
-                      _buildTableRow("ORA CONSEGNA", DateTimeHelper.getTimeString(widget.order.preferredDeliveryTimestamp)),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            HeaderWidget("FORNITORE"),
-            InkWell(
-              onTap: () => EasyRouter.push(
-                context,
-                RestaurantOrderPage(
-                  order: widget.order,
-                ),
-              ),
-              child: _buildSubjectDetails(widget.order.restaurantImageUrl, widget.order.restaurantName, widget.order.restaurantAddress),
-            ),
-            HeaderWidget("CLIENTE"),
-            InkWell(
-              onTap: () => EasyRouter.push(
-                context,
-                CustomerOrderPage(
-                  order: widget.order,
-                ),
-              ),
-              child: _buildSubjectDetails(widget.order.customerImageUrl, widget.order.customerName, widget.order.customerAddress),
-            ),
-          ],
-        ),
+            );
+          }
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        },
       ),
     );
   }

@@ -4,10 +4,13 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:resmedia_taporty_flutter/common/helper/DateTimeHelper.dart';
 import 'package:resmedia_taporty_flutter/common/model/ShiftModel.dart';
+import 'package:resmedia_taporty_flutter/common/resources/Database.dart';
 import 'package:resmedia_taporty_flutter/config/ColorTheme.dart';
+import 'package:toast/toast.dart';
 
 class ShiftView extends StatelessWidget {
   final ShiftModel shift;
+  final Database _db = Database();
 
   ShiftView({Key key, @required this.shift}) : super(key: key);
 
@@ -51,7 +54,14 @@ class ShiftView extends StatelessWidget {
               ),
               textColor: Colors.black,
               color: ColorTheme.LIGHT_GREY,
-              onPressed: () => {},
+              onPressed: () async {
+                try {
+                  await _db.removeShift(shift.driverId, shift.startTime);
+                  Toast.show("Turno annullato", context);
+                } catch (e) {
+                  Toast.show("Errore inaspettato", context);
+                }
+              },
             ),
         ],
       ),

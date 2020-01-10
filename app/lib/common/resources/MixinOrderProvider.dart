@@ -1,6 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:geocoder/model.dart';
-import 'package:resmedia_taporty_flutter/client/model/CartModel.dart';
 import 'package:resmedia_taporty_flutter/client/model/CartProductModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/OrderModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/ProductModel.dart';
@@ -15,7 +13,11 @@ import 'package:resmedia_taporty_flutter/config/Collections.dart';
 mixin MixinOrderProvider on MixinUserProvider, MixinRestaurantProvider {
   final orderCollection = Firestore.instance.collection(Collections.ORDERS);
 
-  Stream<List<OrderModel>> getUserOrders(String uid) {
+  Stream<OrderModel> getOrderStream(String orderId) {
+    return orderCollection.document(orderId).snapshots().map((snap) => OrderModel.fromFirebase(snap));
+  }
+
+  Stream<List<OrderModel>> getUserOrdersStream(String uid) {
     final data = orderCollection.where("customerId", isEqualTo: uid).snapshots();
 
     return data.map((query) {
@@ -26,7 +28,7 @@ mixin MixinOrderProvider on MixinUserProvider, MixinRestaurantProvider {
     });
   }
 
-  Stream<List<OrderModel>> getDriverOrders(String uid) {
+  Stream<List<OrderModel>> getDriverOrdersStream(String uid) {
     final data = orderCollection.where("driverId", isEqualTo: uid).orderBy("creationTimestamp", descending: true).snapshots();
 
     return data.map((query) {
@@ -84,5 +86,27 @@ mixin MixinOrderProvider on MixinUserProvider, MixinRestaurantProvider {
     var documentReference = orderCollection.document();
 
     await documentReference.setData({...order.toJson(), 'creationTimestamp': FieldValue.serverTimestamp(), 'reference': documentReference});
+  }
+
+  Future updateOrderState(String orderId, OrderState state) async {
+    var timestampField;
+    switch (state) {
+      case OrderState.CANCELLED:
+        timestampField = "cancellationTimestamp";
+        break;
+      case OrderState.PICKED_UP:
+        timestampField = "pickupTimestamp";
+        break;
+      case OrderState.DELIVERED:
+        timestampField = "deliveryTimestamp";
+        break;
+      default:
+        return;
+    }
+    await orderCollection.document(orderId).setData({
+      'state': enumEncode(state),
+      'visualized': false,
+      timestampField: FieldValue.serverTimestamp(),
+    }, merge: true);
   }
 }

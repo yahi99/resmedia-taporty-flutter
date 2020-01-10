@@ -16,6 +16,7 @@ class OrderBloc implements Bloc {
   dispose() {
     if (_driverControl != null) _driverControl.close();
     if (_userControl != null) _userControl.close();
+    if (_userControl != null) _orderFetcher.close();
   }
 
   PublishSubject<List<OrderModel>> _userControl;
@@ -26,16 +27,24 @@ class OrderBloc implements Bloc {
 
   Observable<List<OrderModel>> get outDriverOrders => _driverControl?.stream;
 
+  PublishSubject<OrderModel> _orderFetcher;
+
+  Observable<OrderModel> get outOrder => _orderFetcher?.stream;
+
+  setOrderStream(String orderId) {
+    _orderFetcher = PublishController.catchStream(source: _db.getOrderStream(orderId));
+  }
+
   Future setUserStream() async {
     final user = UserBloc.of();
     final restUser = await user.outFirebaseUser.first;
-    _userControl = PublishController.catchStream(source: _db.getUserOrders(restUser.uid));
+    _userControl = PublishController.catchStream(source: _db.getUserOrdersStream(restUser.uid));
   }
 
   Future setDriverStream() async {
     final user = UserBloc.of();
     final restUser = await user.outFirebaseUser.first;
-    _driverControl = PublishController.catchStream(source: _db.getDriverOrders(restUser.uid));
+    _driverControl = PublishController.catchStream(source: _db.getDriverOrdersStream(restUser.uid));
   }
 
   OrderBloc.instance();

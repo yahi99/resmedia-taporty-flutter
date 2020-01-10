@@ -6,9 +6,11 @@ import 'package:resmedia_taporty_flutter/common/helper/DateTimeHelper.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/RestaurantsBloc.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
 import 'package:resmedia_taporty_flutter/common/model/ShiftModel.dart';
+import 'package:resmedia_taporty_flutter/common/resources/Database.dart';
 import 'package:resmedia_taporty_flutter/config/ColorTheme.dart';
 import 'package:resmedia_taporty_flutter/drivers/logic/bloc/DriverBloc.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart' show CalendarCarousel, WeekdayFormat;
+import 'package:toast/toast.dart';
 
 class CalendarTab extends StatefulWidget {
   CalendarTab();
@@ -21,6 +23,7 @@ class _CalendarTabState extends State<CalendarTab> with AutomaticKeepAliveClient
   DateTime _selectedDate;
   var restaurantsBloc = RestaurantsBloc.of();
   var driverBloc = DriverBloc.of();
+  var _db = Database();
 
   @override
   void dispose() {
@@ -194,7 +197,14 @@ class _CalendarTabState extends State<CalendarTab> with AutomaticKeepAliveClient
                                             ),
                                             textColor: Colors.black,
                                             color: ColorTheme.LIGHT_GREY,
-                                            onPressed: () => {},
+                                            onPressed: () async {
+                                              try {
+                                                await _db.addShift(firebaseUserSnapshot.data.uid, availableShifts[index]);
+                                                Toast.show("Turno confermato", context);
+                                              } catch (e) {
+                                                Toast.show("Errore inaspettato", context);
+                                              }
+                                            },
                                           ),
                                         ),
                                       if (alreadyReserved)
@@ -207,7 +217,14 @@ class _CalendarTabState extends State<CalendarTab> with AutomaticKeepAliveClient
                                             ),
                                             textColor: Colors.black,
                                             color: ColorTheme.LIGHT_GREY,
-                                            onPressed: () => {},
+                                            onPressed: () async {
+                                              try {
+                                                await _db.removeShift(firebaseUserSnapshot.data.uid, availableShifts[index]);
+                                                Toast.show("Turno annullato", context);
+                                              } catch (e) {
+                                                Toast.show("Errore inaspettato", context);
+                                              }
+                                            },
                                           ),
                                         ),
                                     ],

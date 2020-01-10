@@ -7,11 +7,14 @@ import 'package:meta/meta.dart';
 import 'package:resmedia_taporty_flutter/common/helper/DateTimeSerialization.dart';
 import 'package:resmedia_taporty_flutter/common/helper/GeopointSerialization.dart';
 import 'package:resmedia_taporty_flutter/common/model/OrderProductModel.dart';
-import 'package:resmedia_taporty_flutter/drivers/model/SubjectModel.dart';
 
 part 'OrderModel.g.dart';
 
 enum OrderState { NEW, ACCEPTED, MODIFIED, CANCELLED, READY, PICKED_UP, DELIVERED, ARCHIVED, REFUSED }
+
+String enumEncode(OrderState state) {
+  return _$OrderStateEnumMap[state];
+}
 
 String translateOrderState(OrderState state) {
   switch (state) {
@@ -151,23 +154,6 @@ class OrderModel extends FirebaseModel {
   }) : super(path);
 
   List<LatLng> get positions => [LatLng(customerCoordinates.latitude, customerCoordinates.longitude)];
-
-  List<SubjectModel> get subjects => [
-        SubjectModel(
-          day: "day",
-          name: restaurantName,
-          address: restaurantAddress,
-          displayName: restaurantName,
-          time: (acceptanceTimestamp != null) ? acceptanceTimestamp : 'Ordine non accettato',
-        ),
-        SubjectModel(
-            day: "day",
-            name: customerName,
-            address: customerAddress,
-            time: "time/creationTimestamp",
-            displayName: customerName,
-            position: LatLng(customerCoordinates.latitude, customerCoordinates.longitude))
-      ];
 
   static OrderModel fromJson(Map json) => _$OrderModelFromJson(json);
 

@@ -3,7 +3,6 @@ import 'package:easy_route/easy_route.dart';
 import 'package:flutter/material.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/OrderBloc.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/page/DetailOrderPage.dart';
-import 'package:resmedia_taporty_flutter/drivers/interface/widget/SliverOrderVoid.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/view/OrderView.dart';
 import 'package:resmedia_taporty_flutter/common/model/OrderModel.dart';
 
@@ -64,7 +63,7 @@ class _OrderTabState extends State<OrderTab> {
                                   onTap: () => EasyRouter.push(
                                     _context,
                                     OrderDetailPage(
-                                      order: orders[index],
+                                      orderId: orders[index].id,
                                     ),
                                   ),
                                   child: OrderView(

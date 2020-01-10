@@ -6,7 +6,6 @@ import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:resmedia_taporty_flutter/common/helper/DateTimeHelper.dart';
 import 'package:resmedia_taporty_flutter/common/model/ShiftModel.dart';
 import 'package:resmedia_taporty_flutter/config/ColorTheme.dart';
-import 'package:resmedia_taporty_flutter/drivers/interface/widget/SliverOrderVoid.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/view/ShiftView.dart';
 import 'package:resmedia_taporty_flutter/drivers/logic/bloc/DriverBloc.dart';
 import 'package:sticky_headers/sticky_headers/widget.dart';
@@ -24,32 +23,6 @@ class _ReservedShiftTabState extends State<ReservedShiftTab> with AutomaticKeepA
   Widget build(BuildContext context) {
     super.build(context);
     var theme = Theme.of(context);
-    /*return Scaffold(
-      body: (widget.model.length > 0)
-          ? CustomScrollView(
-              slivers: widget.model.keys.map<Widget>((nameGroup) {
-                final products = widget.model[nameGroup];
-                return SliverPadding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
-                  sliver: SliverOrderVoid(
-                    title: Text(translateMonthCategory(nameGroup)),
-                    childCount: products.length,
-                    builder: (_context, index) {
-                      return InkWell(
-                        child: TurnView(
-                          model: products[index],
-                        ),
-                      );
-                    },
-                  ),
-                );
-              }).toList(),
-            )
-          : Padding(
-              child: Text('Non ci sono turni.'),
-              padding: EdgeInsets.all(8.0),
-            ),
-    );*/
     return Scaffold(
       body: SingleChildScrollView(
         child: StreamBuilder<List<ShiftModel>>(

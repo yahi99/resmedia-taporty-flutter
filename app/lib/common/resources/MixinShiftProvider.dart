@@ -6,9 +6,10 @@ import 'package:resmedia_taporty_flutter/common/helper/DistanceHelper.dart';
 import 'package:resmedia_taporty_flutter/common/model/RestaurantModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/ShiftModel.dart';
 import 'package:resmedia_taporty_flutter/common/resources/MixinRestaurantProvider.dart';
+import 'package:resmedia_taporty_flutter/common/resources/MixinUserProvider.dart';
 import 'package:resmedia_taporty_flutter/config/Collections.dart';
 
-mixin MixinShiftProvider on MixinRestaurantProvider {
+mixin MixinShiftProvider on MixinRestaurantProvider, MixinUserProvider {
   final shiftCollection = Firestore.instance.collection(Collections.SHIFTS);
 
   Future<List<ShiftModel>> getAvailableShifts(DateTime day, String restaurantId, GeoPoint customerCoordinates) async {
@@ -75,5 +76,25 @@ mixin MixinShiftProvider on MixinRestaurantProvider {
         .orderBy("startTime")
         .snapshots(includeMetadataChanges: true)
         .map((querySnap) => FirebaseDatabase.fromQuerySnaps(querySnap, ShiftModel.fromFirebase));
+  }
+
+  Future addShift(String driverId, DateTime startTime) async {
+    var driver = await getUserById(driverId);
+    var shift = ShiftModel(
+      startTime: startTime,
+      endTime: startTime.add(Duration(minutes: 15)),
+      driverCoordinates: driver.coordinates,
+      driverId: driverId,
+      deliveryRadius: driver.deliveryRadius,
+      occupied: false,
+    );
+    await shiftCollection.document(driverId + startTime.millisecondsSinceEpoch.toString()).setData({
+      ...shift.toJson(),
+      "reservationTimestamp": FieldValue.serverTimestamp(),
+    });
+  }
+
+  Future removeShift(String driverId, DateTime startTime) async {
+    await shiftCollection.document(driverId + startTime.millisecondsSinceEpoch.toString()).delete();
   }
 }

@@ -6,9 +6,6 @@ import 'package:resmedia_taporty_flutter/common/helper/DateTimeHelper.dart';
 import 'package:resmedia_taporty_flutter/common/model/OrderModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/ShiftModel.dart';
 import 'package:resmedia_taporty_flutter/config/ColorTheme.dart';
-import 'package:resmedia_taporty_flutter/drivers/interface/widget/Order.dart';
-import 'package:resmedia_taporty_flutter/drivers/model/SubjectModel.dart';
-import 'package:resmedia_taporty_flutter/main.dart';
 
 class OrderView extends StatelessWidget {
   final OrderModel order;
@@ -110,56 +107,6 @@ class OrderView extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-enum Subject {
-  SUPPLIER,
-  RECEIVER,
-}
-
-class SubjectVoid extends StatelessWidget {
-  final SubjectModel model;
-
-  final Subject subject;
-
-  SubjectVoid({
-    Key key,
-    @required this.model,
-    this.subject: Subject.SUPPLIER,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
-
-    final title = subject == Subject.SUPPLIER ? "Fornitore" : "Cliente";
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(bottom: 4.0),
-            child: Text(
-              title,
-              style: textTheme.subhead.copyWith(fontWeight: FontWeight.bold, color: ColorTheme.RED),
-            ),
-          ),
-          Text(
-            model.displayName,
-            style: textTheme.subhead.copyWith(fontWeight: FontWeight.bold),
-          ),
-          Text(
-            model.address,
-            style: textTheme.body1,
-          ),
-        ],
       ),
     );
   }

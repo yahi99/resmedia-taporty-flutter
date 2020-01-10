@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:resmedia_taporty_flutter/common/helper/DateTimeHelper.dart';
 import 'package:resmedia_taporty_flutter/common/interface/widget/HeaderWidget.dart';
+import 'package:resmedia_taporty_flutter/common/logic/bloc/OrderBloc.dart';
 import 'package:resmedia_taporty_flutter/common/model/OrderModel.dart';
 import 'package:resmedia_taporty_flutter/config/ColorTheme.dart';
-import 'package:resmedia_taporty_flutter/drivers/interface/widget/GoogleMapsUI.dart';
-import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
 import 'package:resmedia_taporty_flutter/common/resources/Database.dart';
+import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class RestaurantOrderPage extends StatefulWidget implements WidgetRoute {
@@ -17,9 +17,9 @@ class RestaurantOrderPage extends StatefulWidget implements WidgetRoute {
 
   String get route => RestaurantOrderPage.ROUTE;
 
-  final OrderModel order;
+  final String orderId;
 
-  RestaurantOrderPage({Key key, this.order}) : super(key: key);
+  RestaurantOrderPage({Key key, this.orderId}) : super(key: key);
 
   @override
   _RestaurantOrderPageState createState() => _RestaurantOrderPageState();
@@ -27,6 +27,14 @@ class RestaurantOrderPage extends StatefulWidget implements WidgetRoute {
 
 class _RestaurantOrderPageState extends State<RestaurantOrderPage> {
   bool isDeactivate = false;
+  final _db = Database();
+  final _orderBloc = OrderBloc.of();
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _orderBloc.setOrderStream(widget.orderId);
+  }
 
   void deactivate() {
     super.deactivate();
@@ -59,8 +67,12 @@ class _RestaurantOrderPageState extends State<RestaurantOrderPage> {
                         icon: Icon(Icons.check),
                         onPressed: () async {
                           EasyRouter.pop(context);
-                          print(widget.order);
-                          Database().updateState(OrderState.PICKED_UP, widget.order.customerId, widget.order.id, widget.order.restaurantId, (await UserBloc.of().outUser.first).model.id);
+                          try {
+                            await _db.updateOrderState(widget.orderId, OrderState.PICKED_UP);
+                            Toast.show("Ordine ritirato", context);
+                          } catch (e) {
+                            Toast.show("Errore inaspettato", context);
+                          }
                         },
                       ),
                     ],
@@ -90,23 +102,34 @@ class _RestaurantOrderPageState extends State<RestaurantOrderPage> {
           },
         ),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            HeaderWidget("POSIZIONE FORNITORE"),
-            _buildMap(),
-            HeaderWidget("INFORMAZIONI"),
-            _buildInfo(),
-            HeaderWidget("STATO ORDINE"),
-            _buildStateComponents(),
-          ],
-        ),
+      body: StreamBuilder<OrderModel>(
+        stream: _orderBloc.outOrder,
+        builder: (_, orderSnapshot) {
+          if (orderSnapshot.connectionState == ConnectionState.active && orderSnapshot.hasData && orderSnapshot.data != null) {
+            var order = orderSnapshot.data;
+            return SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  HeaderWidget("POSIZIONE CLIENTE"),
+                  _buildMap(order),
+                  HeaderWidget("INFORMAZIONI"),
+                  _buildInfo(order),
+                  HeaderWidget("STATO ORDINE"),
+                  _buildStateComponents(order),
+                ],
+              ),
+            );
+          }
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        },
       ),
     );
   }
 
-  _buildMap() {
+  _buildMap(OrderModel order) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(6.0),
       child: Container(
@@ -117,20 +140,20 @@ class _RestaurantOrderPageState extends State<RestaurantOrderPage> {
           mapType: MapType.normal,
           myLocationButtonEnabled: false,
           initialCameraPosition: CameraPosition(
-            target: LatLng(widget.order.restaurantCoordinates.latitude, widget.order.restaurantCoordinates.longitude),
+            target: LatLng(order.restaurantCoordinates.latitude, order.restaurantCoordinates.longitude),
             zoom: 13,
           ),
           markers: Set.from(
             <Marker>[
               Marker(
                 markerId: MarkerId("restaurantCoordinates"),
-                position: LatLng(widget.order.restaurantCoordinates.latitude, widget.order.restaurantCoordinates.longitude),
+                position: LatLng(order.restaurantCoordinates.latitude, order.restaurantCoordinates.longitude),
                 icon: BitmapDescriptor.defaultMarker,
               ),
             ],
           ),
           onTap: (latLng) async {
-            String googleUrl = 'https://www.google.com/maps/search/?api=1&query=${widget.order.restaurantCoordinates.latitude},${widget.order.restaurantCoordinates.longitude}';
+            String googleUrl = 'https://www.google.com/maps/search/?api=1&query=${order.restaurantCoordinates.latitude},${order.restaurantCoordinates.longitude}';
             if (await canLaunch(googleUrl)) {
               await launch(googleUrl);
             }
@@ -140,7 +163,7 @@ class _RestaurantOrderPageState extends State<RestaurantOrderPage> {
     );
   }
 
-  _buildInfo() {
+  _buildInfo(OrderModel order) {
     final textTheme = Theme.of(context).textTheme;
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -154,7 +177,7 @@ class _RestaurantOrderPageState extends State<RestaurantOrderPage> {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(6.0),
                   child: CachedNetworkImage(
-                    imageUrl: widget.order.restaurantImageUrl,
+                    imageUrl: order.restaurantImageUrl,
                     fit: BoxFit.cover,
                     placeholder: (context, url) => Center(
                       child: SizedBox(
@@ -175,13 +198,13 @@ class _RestaurantOrderPageState extends State<RestaurantOrderPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        widget.order.restaurantName,
+                        order.restaurantName,
                         style: textTheme.subhead.copyWith(fontWeight: FontWeight.bold),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(top: 8.0),
                         child: Text(
-                          widget.order.restaurantAddress,
+                          order.restaurantAddress,
                           style: TextStyle(fontSize: 14),
                         ),
                       ),
@@ -190,8 +213,8 @@ class _RestaurantOrderPageState extends State<RestaurantOrderPage> {
                         child: RaisedButton(
                           color: ColorTheme.ACCENT_BLUE,
                           onPressed: () async {
-                            if (await canLaunch("tel:${widget.order.restaurantPhoneNumber}")) {
-                              await launch("tel:${widget.order.restaurantPhoneNumber}");
+                            if (await canLaunch("tel:${order.restaurantPhoneNumber}")) {
+                              await launch("tel:${order.restaurantPhoneNumber}");
                             }
                           },
                           child: Text(
@@ -210,20 +233,20 @@ class _RestaurantOrderPageState extends State<RestaurantOrderPage> {
     );
   }
 
-  _buildStateComponents() {
+  _buildStateComponents(OrderModel order) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 6.0, horizontal: 16.0),
       child: Column(
         children: <Widget>[
-          _getStateText(),
+          _getStateText(order),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
-              if (widget.order.state == OrderState.ACCEPTED || widget.order.state == OrderState.READY)
+              if (order.state == OrderState.ACCEPTED || order.state == OrderState.READY)
                 RaisedButton(
                   color: ColorTheme.ACCENT_BLUE,
                   onPressed: () async {
-                    String googleUrl = 'https://www.google.com/maps/search/?api=1&query=${widget.order.restaurantCoordinates.latitude},${widget.order.restaurantCoordinates.longitude}';
+                    String googleUrl = 'https://www.google.com/maps/search/?api=1&query=${order.restaurantCoordinates.latitude},${order.restaurantCoordinates.longitude}';
                     if (await canLaunch(googleUrl)) {
                       await launch(googleUrl);
                     }
@@ -232,7 +255,7 @@ class _RestaurantOrderPageState extends State<RestaurantOrderPage> {
                     "Start",
                   ),
                 ),
-              if (widget.order.state == OrderState.READY)
+              if (order.state == OrderState.READY)
                 RaisedButton(
                   color: ColorTheme.ACCENT_BLUE,
                   onPressed: () {
@@ -249,17 +272,17 @@ class _RestaurantOrderPageState extends State<RestaurantOrderPage> {
     );
   }
 
-  _getStateText() {
+  _getStateText(OrderModel order) {
     var string;
     var date;
-    if (widget.order.state == OrderState.ACCEPTED) {
-      date = DateTimeHelper.getCompleteDateTimeString(widget.order.acceptanceTimestamp);
+    if (order.state == OrderState.ACCEPTED) {
+      date = DateTimeHelper.getCompleteDateTimeString(order.acceptanceTimestamp);
       string = "L'ordine è stato accettato dal fornitore ed è in stato di preparazione.";
-    } else if (widget.order.state == OrderState.READY) {
-      date = DateTimeHelper.getCompleteDateTimeString(widget.order.readyTimestamp);
+    } else if (order.state == OrderState.READY) {
+      date = DateTimeHelper.getCompleteDateTimeString(order.readyTimestamp);
       string = "L'ordine è pronto per essere ritirato presso il fornitore.";
-    } else if (widget.order.state == OrderState.PICKED_UP || widget.order.state == OrderState.DELIVERED) {
-      date = DateTimeHelper.getCompleteDateTimeString(widget.order.pickupTimestamp);
+    } else if (order.state == OrderState.PICKED_UP || order.state == OrderState.DELIVERED) {
+      date = DateTimeHelper.getCompleteDateTimeString(order.pickupTimestamp);
       string = "Hai ritirato l'ordine dal fornitore.";
     } else
       return Container();

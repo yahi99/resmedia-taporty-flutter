@@ -22,7 +22,7 @@ import 'package:resmedia_taporty_flutter/common/model/OrderModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/RestaurantModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/UserModel.dart';
 
-class Database extends FirebaseDatabase with MixinFirestoreStripeProvider, MixinRestaurantProvider, MixinShiftProvider, MixinUserProvider, MixinOrderProvider, StripeProviderRule {
+class Database extends FirebaseDatabase with MixinFirestoreStripeProvider, MixinRestaurantProvider, MixinUserProvider, MixinShiftProvider, MixinOrderProvider, StripeProviderRule {
   static Database _db;
 
   Database.internal({
@@ -130,14 +130,6 @@ class Database extends FirebaseDatabase with MixinFirestoreStripeProvider, Mixin
     //await fs.collection(cl.USERS).document(uid).updateData({'restaurantId':rid});
     await fs.collection('restaurant_requests').document(uid).setData(
         {'img': img, 'lat': pos.latitude, 'lng': pos.longitude, 'km': cop, 'ragioneSociale': ragSociale, 'partitaIva': partitaIva, 'address': address, 'tipoEsercizio': eseType, 'prodType': prodType});
-  }
-
-  // TODO: Rivedere
-  Future<void> updateState(OrderState state, String uid, String oid, String restId, String driverId) async {
-    await fs.collection(Collections.USERS).document(uid).collection('user_orders').document(oid).updateData({'state': state});
-    await fs.collection(Collections.RESTAURANTS).document(restId).collection('restaurant_orders').document(oid).updateData({'state': state});
-    await fs.collection(Collections.USERS).document(driverId).collection('driver_orders').document(oid).updateData({'state': state});
-    await fs.collection('control_orders').document(oid).updateData({'state': state});
   }
 
   // TODO: Rivedere

@@ -2,7 +2,7 @@ import 'package:easy_firebase/easy_firebase.dart';
 import 'package:easy_route/easy_route.dart';
 import 'package:flutter/material.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/OrderBloc.dart';
-import 'package:resmedia_taporty_flutter/drivers/interface/page/DetailOrderPage.dart';
+import 'package:resmedia_taporty_flutter/drivers/interface/page/OrderDetailPage.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/view/OrderView.dart';
 import 'package:resmedia_taporty_flutter/common/model/OrderModel.dart';
 

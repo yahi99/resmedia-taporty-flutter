@@ -15,26 +15,6 @@
             ]
         },
         {
-            "name": "Restaurant",
-            "program": "app/lib/mainRestaurant.dart",
-            "request": "launch",
-            "type": "dart",
-            "args": [
-                "--flavor",
-                "restaurant"
-            ]
-        },
-        {
-            "name": "Control",
-            "program": "app/lib/mainControl.dart",
-            "request": "launch",
-            "type": "dart",
-            "args": [
-                "--flavor",
-                "control"
-            ]
-        },
-        {
             "name": "Driver",
             "program": "app/lib/mainDriver.dart",
             "request": "launch",

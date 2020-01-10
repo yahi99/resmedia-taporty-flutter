@@ -18,7 +18,7 @@ mixin MixinOrderProvider on MixinUserProvider, MixinRestaurantProvider {
   }
 
   Stream<List<OrderModel>> getUserOrdersStream(String uid) {
-    final data = orderCollection.where("customerId", isEqualTo: uid).snapshots();
+    final data = orderCollection.where("customerId", isEqualTo: uid).orderBy("creationTimestamp", descending: true).snapshots();
 
     return data.map((query) {
       return query.documents.map((snap) {

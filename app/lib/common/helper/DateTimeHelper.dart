@@ -42,4 +42,9 @@ class DateTimeHelper {
   static String getCompleteDateTimeString(DateTime datetime) {
     return DateFormat("dd-MM-yyyy", "it").format(datetime) + " alle " + DateFormat("HH:mm").format(datetime);
   }
+
+  static String getMonthYear(DateTime datetime) {
+    var string = DateFormat("MMMM yyyy", "it").format(datetime);
+    return string.replaceRange(0, 1, string.substring(0, 1).toUpperCase());
+  }
 }

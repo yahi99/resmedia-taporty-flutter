@@ -46,10 +46,12 @@ class _ReservedShiftTabState extends State<ReservedShiftTab> with AutomaticKeepA
                           color: ColorTheme.LIGHT_GREY,
                           width: double.infinity,
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                            child: Text(
-                              weekRange,
-                              style: theme.textTheme.body1,
+                            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                            child: Center(
+                              child: Text(
+                                weekRange,
+                                style: theme.textTheme.body1,
+                              ),
                             ),
                           ),
                         ),
@@ -57,10 +59,8 @@ class _ReservedShiftTabState extends State<ReservedShiftTab> with AutomaticKeepA
                           shrinkWrap: true,
                           physics: NeverScrollableScrollPhysics(),
                           itemBuilder: (context, index) {
-                            return InkWell(
-                              child: ShiftView(
-                                shift: shifts[index],
-                              ),
+                            return ShiftView(
+                              shift: shifts[index],
                             );
                           },
                           separatorBuilder: (_, index) => Divider(height: 1, color: Colors.grey),

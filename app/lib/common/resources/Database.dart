@@ -88,15 +88,6 @@ class Database extends FirebaseDatabase with MixinFirestoreStripeProvider, Mixin
     await fs.collection('users').document(uid).collection('user_orders').document(orderId).updateData({'isReviewed': true});
   }
 
-  // TODO: Rivedere
-  //if the order deletes and the user has already paid the control panel can reimburs the user
-  Future<void> deleteOrder(OrderModel order, String uid) async {
-    await fs.collection('users').document(uid).collection('user_orders').document(order.id).updateData({'state': 'CANCELLED'});
-    await fs.collection('restaurants').document(order.restaurantId).collection('restaurant_orders').document(order.id).updateData({'state': 'CANCELLED'});
-    await fs.collection('users').document(order.driverId).collection('driver_orders').document(order.id).updateData({'state': 'CANCELLED'});
-    await fs.collection('control_orders').document(order.id).updateData({'state': 'CANCELLED'});
-  }
-
   Stream<UserModel> getUser(FirebaseUser user) {
     return fs.collection(Collections.USERS).document(user.uid).snapshots().map((snap) {
       return UserModel.fromFirebase(snap);

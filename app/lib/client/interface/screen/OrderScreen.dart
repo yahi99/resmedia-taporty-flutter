@@ -1,12 +1,16 @@
 import 'package:easy_blocs/easy_blocs.dart';
+import 'package:easy_firebase/easy_firebase.dart';
 import 'package:easy_route/easy_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:resmedia_taporty_flutter/client/interface/view/TypeUserOrderView.dart';
+import 'package:resmedia_taporty_flutter/client/interface/view/OrderView.dart';
+import 'package:resmedia_taporty_flutter/common/helper/DateTimeHelper.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/OrderBloc.dart';
 import 'package:resmedia_taporty_flutter/common/model/OrderModel.dart';
 import 'package:resmedia_taporty_flutter/config/ColorTheme.dart';
+import 'package:resmedia_taporty_flutter/client/interface/page/OrderDetailPage.dart';
+import 'package:sticky_headers/sticky_headers.dart';
 
 class OrderScreen extends StatefulWidget implements WidgetRoute {
   static const ROUTE = "OrderScreen";
@@ -19,19 +23,7 @@ class OrderScreen extends StatefulWidget implements WidgetRoute {
 }
 
 class OrderScreenState extends State<OrderScreen> {
-  static const double SPACE_CELL = 8.0;
-
-  @override
-  void initState() {
-    super.initState();
-    //OrderBloc.of().setRestaurantStream();
-  }
-
-  void dispose() {
-    OrderBloc.close();
-    super.dispose();
-  }
-
+  final _orderBloc = OrderBloc.of();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,49 +33,84 @@ class OrderScreenState extends State<OrderScreen> {
         centerTitle: true,
         actions: <Widget>[],
       ),
-      body: TypesRestaurantView(),
-    );
-  }
-}
+      body: CacheStreamBuilder<List<OrderModel>>(
+        stream: _orderBloc.outUserOrders,
+        builder: (context, orderListSnapshot) {
+          if (orderListSnapshot.connectionState == ConnectionState.active) {
+            if (orderListSnapshot.hasData && orderListSnapshot.data.length > 0) {
+              var firstMonth = DateTimeHelper.getMonthYear(orderListSnapshot.data.first.creationTimestamp);
+              var lastMonth = DateTimeHelper.getMonthYear(orderListSnapshot.data.first.creationTimestamp);
+              var currentDate = DateTime(orderListSnapshot.data.first.creationTimestamp.year, orderListSnapshot.data.first.creationTimestamp.month);
+              var monthCategories = List<String>();
+              do {
+                monthCategories.add(firstMonth);
+                if (currentDate.month == 1)
+                  currentDate = DateTime(currentDate.year - 1, 12);
+                else
+                  currentDate = DateTime(currentDate.year, currentDate.month - 1);
+              } while (monthCategories.last != lastMonth);
+              monthCategories.add(lastMonth);
 
-class TypesRestaurantView extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final orderBloc = OrderBloc.of();
-    return CacheStreamBuilder<List<OrderModel>>(
-      stream: orderBloc.outUserOrders,
-      builder: (context, orderSnapshots) {
-        if (!orderSnapshots.hasData)
-          return Center(
-            child: CircularProgressIndicator(),
-          );
-        return (orderSnapshots.data.length > 0)
-            ? SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    itemCount: orderSnapshots.data.length,
-                    itemBuilder: (context, index) {
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: TypeOrderView(
-                          order: orderSnapshots.data[index],
+              var categorizedOrders = categorized<String, OrderModel>(monthCategories, orderListSnapshot.data, (order) => DateTimeHelper.getMonthYear(order.creationTimestamp));
+              return SingleChildScrollView(
+                child: Column(
+                  children: categorizedOrders.keys.map<Widget>(
+                    (monthCategory) {
+                      final orders = categorizedOrders[monthCategory];
+                      return StickyHeader(
+                        header: Container(
+                          color: ColorTheme.LIGHT_GREY,
+                          width: double.infinity,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                            child: Center(
+                              child: Text(
+                                monthCategory.toUpperCase(),
+                              ),
+                            ),
+                          ),
+                        ),
+                        content: ListView.separated(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemCount: orders.length,
+                          itemBuilder: (context, index) {
+                            return InkWell(
+                              onTap: () => EasyRouter.push(
+                                context,
+                                OrderDetailPage(
+                                  orderId: orders[index].id,
+                                ),
+                              ),
+                              child: OrderView(
+                                order: orders[index],
+                              ),
+                            );
+                          },
+                          separatorBuilder: (_, __) => Divider(
+                            color: Colors.grey,
+                            height: 0,
+                          ),
                         ),
                       );
                     },
-                  ),
+                  ).toList(),
                 ),
-              )
-            : Padding(
-                child: Text(
-                  'Non ci sono ordini.',
-                  style: Theme.of(context).textTheme.subtitle,
-                ),
-                padding: EdgeInsets.all(8.0),
               );
-      },
+            }
+            return Padding(
+              child: Text(
+                'Non ci sono ordini.',
+                style: Theme.of(context).textTheme.subtitle,
+              ),
+              padding: EdgeInsets.all(8.0),
+            );
+          }
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        },
+      ),
     );
   }
 }

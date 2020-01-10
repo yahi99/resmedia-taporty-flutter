@@ -4,31 +4,30 @@ import 'package:easy_route/easy_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:resmedia_taporty_flutter/common/helper/DateTimeHelper.dart';
-import 'package:resmedia_taporty_flutter/drivers/interface/screen/DetailedOrderUser.dart';
+import 'package:resmedia_taporty_flutter/config/ColorTheme.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
 import 'package:resmedia_taporty_flutter/common/resources/Database.dart';
 import 'package:resmedia_taporty_flutter/common/model/OrderModel.dart';
-import 'package:toast/toast.dart';
 
-class TypeOrderView extends StatefulWidget implements WidgetRoute {
-  static const String ROUTE = "TypeOrderView";
+class OrderView extends StatefulWidget implements WidgetRoute {
+  static const String ROUTE = "OrderView";
 
   String get route => ROUTE;
 
   final OrderModel order;
 
-  const TypeOrderView({
+  const OrderView({
     Key key,
     this.order,
   }) : super(key: key);
 
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  _OrderViewState createState() => _OrderViewState();
 }
 
-class _LoginScreenState extends State<TypeOrderView> {
+class _OrderViewState extends State<OrderView> {
   List<String> points = ['1', '2', '3', '4', '5'];
 
   String pointF, pointR;
@@ -68,6 +67,7 @@ class _LoginScreenState extends State<TypeOrderView> {
     return (dateTime.day.toString() + '/' + dateTime.month.toString() + '/' + dateTime.year.toString());
   }
 
+  // TODO: Da usare
   void _addReview(BuildContext context) {
     showDialog(
         context: context,
@@ -194,93 +194,75 @@ class _LoginScreenState extends State<TypeOrderView> {
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
-    return Slidable(
-      actionPane: SlidableDrawerActionPane(),
-      actionExtentRatio: 0.25,
-      secondaryActions: <Widget>[
-        IconSlideAction(
-          icon: Icons.close,
-          color: theme.accentColor,
-          onTap: () async {
-            if (widget.order.state != OrderState.CANCELLED)
-              Database().deleteOrder(widget.order, (await UserBloc.of().outUser.first).model.id).then((value) {
-                Toast.show('Ordine cancellato!', context);
-              });
-            else {
-              Toast.show('Ordine già cancellato!', context);
-            }
-          },
-        )
-      ],
-      child: InkWell(
-        child: Stack(
-          alignment: Alignment.center,
-          children: <Widget>[
-            Center(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  minWidth: 186,
-                  minHeight: 48,
+    return Row(
+      children: <Widget>[
+        Container(color: ColorTheme.STATE_COLORS[widget.order.state], width: 5, height: 120),
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8.0),
+                  child: Text(DateTimeHelper.getDateTimeString(widget.order.creationTimestamp), style: TextStyle(fontSize: 14)),
                 ),
-                child: Container(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                Text(
+                  "Ordine #${widget.order.id}",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 15,
+                  ),
+                ),
+                Text(translateOrderState(widget.order.state), style: TextStyle(fontSize: 14)),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: Row(
                     children: <Widget>[
-                      ListView(
-                        physics: NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        children: <Widget>[
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text('Prezzo totale: ', style: theme.textTheme.subtitle),
-                              Text(widget.order.newTotalPrice.toStringAsFixed(2) + ' €'),
-                            ],
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              /*Text('Data Ordine: ',
-                                  style: theme.textTheme.subtitle),
-                              Text(widget.model.timeR),*/
-                              Text('Data ed ora consegna: ', style: theme.textTheme.subtitle),
-                              Text(DateTimeHelper.getDateTimeString(widget.order.preferredDeliveryTimestamp)),
-                              Text('Stato Ordine: ', style: theme.textTheme.subtitle),
-                              Text(translateOrderState(widget.order.state)),
-                            ],
-                          ),
-                        ],
+                      RichText(
+                        text: TextSpan(
+                          children: [
+                            WidgetSpan(
+                              child: Padding(
+                                padding: const EdgeInsets.only(bottom: 2.0, right: 3),
+                                child: Icon(FontAwesomeIcons.hamburger, size: 15),
+                              ),
+                            ),
+                            TextSpan(
+                              text: widget.order.productCount.toString(),
+                              style: theme.textTheme.body1.copyWith(fontSize: 15),
+                            ),
+                          ],
+                        ),
                       ),
-                      (widget.order.state == OrderState.DELIVERED && widget.order.isReviewed == null)
-                          ? RaisedButton(
-                              child: Text('Lascia una Recensione'),
-                              onPressed: () {
-                                _addReview(context);
-                              },
-                            )
-                          : Container(),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 8.0),
+                        child: RichText(
+                          text: TextSpan(
+                            children: [
+                              WidgetSpan(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(bottom: 2.0, right: 3),
+                                  child: Icon(FontAwesomeIcons.euroSign, size: 15),
+                                ),
+                              ),
+                              TextSpan(
+                                text: widget.order.totalPrice.toStringAsFixed(2),
+                                style: theme.textTheme.body1.copyWith(fontSize: 15),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ],
                   ),
-                  padding: EdgeInsets.all(4.0),
-                  decoration: BoxDecoration(
-                      border: Border.all(
-                    color: (widget.order.preferredDeliveryTimestamp.difference(DateTime.now()).inMinutes > 0 && widget.order.preferredDeliveryTimestamp.difference(DateTime.now()).inMinutes <= 45)
-                        ? Colors.red
-                        : Colors.black,
-                  )),
-                ),
-              ),
+                )
+              ],
             ),
-          ],
+          ),
         ),
-        onTap: () {
-          EasyRouter.push(
-              context,
-              DetailedOrderUser(
-                order: widget.order,
-              ));
-        },
-      ),
+        Center(child: Icon(Icons.arrow_forward_ios, size: 13)),
+      ],
     );
   }
 }

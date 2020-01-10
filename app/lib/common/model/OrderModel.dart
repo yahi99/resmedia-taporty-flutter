@@ -66,6 +66,7 @@ DriverOrderState orderStateToDriverOrderState(OrderState state) {
 @JsonSerializable(anyMap: true, explicitToJson: true, nullable: true, includeIfNull: false)
 class OrderModel extends FirebaseModel {
   final List<OrderProductModel> products;
+  final List<OrderProductModel> newProducts;
   final int productCount;
   final double totalPrice;
   final int newProductCount;
@@ -147,6 +148,7 @@ class OrderModel extends FirebaseModel {
     this.isReviewed,
     this.customerId,
     this.products,
+    this.newProducts,
     this.creationTimestamp,
     this.acceptanceTimestamp,
     this.state,

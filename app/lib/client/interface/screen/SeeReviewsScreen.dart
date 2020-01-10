@@ -6,8 +6,6 @@ import 'package:resmedia_taporty_flutter/common/model/RestaurantModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/ReviewModel.dart';
 import 'package:resmedia_taporty_flutter/config/ColorTheme.dart';
 
-import '../../../main.dart';
-
 class SeeReviewsScreen extends StatefulWidget implements WidgetRoute {
   static const String ROUTE = "SeeReviewsScreen";
 

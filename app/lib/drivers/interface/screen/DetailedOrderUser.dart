@@ -1,7 +1,5 @@
 import 'package:easy_route/easy_route.dart';
 import 'package:flutter/material.dart';
-import 'package:resmedia_taporty_flutter/client/model/CartModel.dart';
-import 'package:resmedia_taporty_flutter/client/model/CartProductModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/OrderProductModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/OrderModel.dart';
 

@@ -5,7 +5,6 @@ import 'package:easy_route/easy_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:resmedia_taporty_flutter/client/interface/screen/RestaurantListScreen.dart';
 import 'package:resmedia_taporty_flutter/common/interface/view/LogoView.dart';

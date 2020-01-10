@@ -7,7 +7,6 @@ import 'package:easy_widget/easy_widget.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:geocoder/geocoder.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:resmedia_taporty_flutter/common/helper/LoginHelper.dart';
 import 'package:resmedia_taporty_flutter/client/interface/screen/BecomeDriverScreen.dart';
@@ -104,8 +103,8 @@ class AccountScreen extends StatelessWidget implements WidgetRoute {
                                   child: Container(
                                     width: double.infinity,
                                     height: double.infinity,
-                                    child: (img.data.img != null)
-                                        ? CircleAvatar(backgroundImage: CachedNetworkImageProvider(img.data.img))
+                                    child: (img.data.imageUrl != null)
+                                        ? CircleAvatar(backgroundImage: CachedNetworkImageProvider(img.data.imageUrl))
                                         : CircleAvatar(
                                             backgroundColor: Colors.black,
                                           ),
@@ -126,7 +125,7 @@ class AccountScreen extends StatelessWidget implements WidgetRoute {
                                 ImagePicker.pickImage(source: ImageSource.camera).then((file) {
                                   if (file != null) {
                                     uploadFile(file.path).then((path) async {
-                                      Database().updateUserImage(path, snap.data.model.id, snap.data.model.img).then((value) {
+                                      Database().updateUserImage(path, snap.data.model.id, snap.data.model.imageUrl).then((value) {
                                         Toast.show('Cambiato!', context, duration: 3);
                                       });
                                     });

@@ -28,6 +28,9 @@ class CartProductModel {
   }
 
   @override
+  int get hashCode => super.hashCode;
+
+  @override
   bool operator ==(o) => o is CartProductModel && o.id == id && o.restaurantId == restaurantId && o.userId == userId;
 
   String toString() => "ProductCart(id: $id, numItemsOrdered: $quantity, restaurantId: $restaurantId, userId: $userId)";

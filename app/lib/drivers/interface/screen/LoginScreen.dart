@@ -37,7 +37,6 @@ class _LoginScreenState extends State<LoginScreen> {
   //end my code
 
   final FirebaseSignInBloc _submitBloc = FirebaseSignInBloc.init(controller: UserBloc.of());
-  final _userBloc = UserBloc.of();
 
   //StreamSubscription registrationLevelSub;
 
@@ -80,8 +79,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final cls = theme.colorScheme;
     return StreamBuilder<FirebaseUser>(
       stream: FirebaseAuth.instance.onAuthStateChanged,
       builder: (ctx, userSnapshot) {

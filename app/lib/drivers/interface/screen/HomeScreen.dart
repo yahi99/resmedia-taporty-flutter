@@ -7,7 +7,7 @@ import 'package:flutter/widgets.dart';
 import 'package:resmedia_taporty_flutter/common/helper/LoginHelper.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/page/OrderTab.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/page/ReservedShiftTab.dart';
-import 'package:resmedia_taporty_flutter/drivers/interface/screen/AccountScreenDriver.dart';
+import 'package:resmedia_taporty_flutter/drivers/interface/screen/AccountScreen.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/page/CalendarTab.dart';
 import 'package:resmedia_taporty_flutter/drivers/logic/bloc/DriverBloc.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
@@ -99,7 +99,7 @@ class _HomeScreenDriverState extends State<HomeScreenDriver> {
             title: Text("Home"),
             actions: <Widget>[
               IconButton(
-                onPressed: () => EasyRouter.push(context, AccountScreenDriver()),
+                onPressed: () => EasyRouter.push(context, AccountScreen()),
                 icon: Icon(Icons.account_circle),
               )
             ],

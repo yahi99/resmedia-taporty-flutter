@@ -88,10 +88,6 @@ class _RestaurantOrderPageState extends State<RestaurantOrderPage> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final tt = theme.textTheme;
-    final cls = theme.colorScheme;
-
     return Scaffold(
       appBar: AppBar(
         title: Text("Fornitore"),

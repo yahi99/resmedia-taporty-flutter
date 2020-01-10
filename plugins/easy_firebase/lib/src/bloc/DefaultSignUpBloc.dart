@@ -1,4 +1,3 @@
-
 /*import 'package:easy_firebase/easy_firebase.dart';
 import 'package:easy_firebase/src/bloc/SubmitBloc.dart';
 import 'package:easy_firebase/src/checkers/Checker.dart';
@@ -8,7 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:meta/meta.dart';
 
 
-@deprecated
+
 abstract class DefaultSignUpBloc<U> extends SubmitBloc<U> {
   final EmailChecker _emailChecker;
   CheckerRule<EmailAuthError> get emailChecker => _emailChecker;

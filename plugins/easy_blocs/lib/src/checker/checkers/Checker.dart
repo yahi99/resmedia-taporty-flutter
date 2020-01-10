@@ -4,15 +4,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:meta/meta.dart';
 import 'package:flutter/services.dart';
 
-
-// TODO: Separare il checker dal controller. Il controller dovrà ereditare da CacheSubject e mixare con il checker
 abstract class Checker<V, S> extends FingerNode implements CheckerRule<V, S> {
   final CacheSubject<DataField<V>> _controller;
   final Hand hand;
 
   /// [FocusHandlerRule] manages the next focus
-  Checker({@required this.hand, DataField<V> update,
-  }) : this._controller = CacheSubject.seeded(update??DataField<V>() ), super(hand: hand);
+  Checker({
+    @required this.hand,
+    DataField<V> update,
+  })  : this._controller = CacheSubject.seeded(update ?? DataField<V>()),
+        super(hand: hand);
 
   Stream<DataField<V>> get outData => _controller.stream;
 
@@ -44,7 +45,6 @@ abstract class Checker<V, S> extends FingerNode implements CheckerRule<V, S> {
   }
 }
 
-
 abstract class CheckerRule<V, S> implements FingerNode {
   Stream<DataField<V>> get outData;
 
@@ -63,14 +63,15 @@ abstract class CheckerRule<V, S> implements FingerNode {
   void nextFinger(BuildContext context);
 }
 
-
 class DataField<V> {
   final Object error;
   final V value;
   final bool obscureText;
 
   const DataField({
-    this.error, this.value, this.obscureText: false,
+    this.error,
+    this.value,
+    this.obscureText: false,
   }) : assert(obscureText != null);
 
   String get text => value == null ? null : value.toString();
@@ -78,6 +79,7 @@ class DataField<V> {
   DataField<V> copyWith({V value, bool obscureText}) {
     return _copyWith(value: value, obscureText: obscureText);
   }
+
   DataField<V> addError(Object error) {
     return _copyWith(error: error);
   }
@@ -85,8 +87,8 @@ class DataField<V> {
   DataField<V> _copyWith({Object error, V value, bool obscureText}) {
     return DataField(
       error: error,
-      value: value??this.value,
-      obscureText: obscureText??this.obscureText,
+      value: value ?? this.value,
+      obscureText: obscureText ?? this.obscureText,
     );
   }
 }

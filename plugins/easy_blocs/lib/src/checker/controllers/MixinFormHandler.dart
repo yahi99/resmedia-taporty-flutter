@@ -3,9 +3,8 @@ import 'package:easy_blocs/src/checker/controllers/SubmitController.dart';
 import 'package:flutter/widgets.dart';
 import 'package:meta/meta.dart';
 
-
 /// Must call [formHandler.dispose()]
-@deprecated
+
 mixin MixinFormHandler implements FormHandler {
   FormHandler get formHandler;
 
@@ -24,6 +23,7 @@ mixin MixinFormHandler implements FormHandler {
   Future<void> submit<V>(Submitter<V> onSubmit) async {
     await formHandler.submit(onSubmit);
   }
+
   /// Validate Fields before save values
   @mustCallSuper
   Future<bool> preValidate() async {

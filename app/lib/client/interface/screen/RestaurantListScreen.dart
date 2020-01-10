@@ -8,7 +8,6 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoder/geocoder.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:meta/meta.dart';
 import 'package:resmedia_taporty_flutter/common/helper/LoginHelper.dart';
@@ -23,8 +22,6 @@ import 'package:resmedia_taporty_flutter/common/resources/Database.dart';
 import 'package:resmedia_taporty_flutter/common/model/RestaurantModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/UserModel.dart';
 import 'package:resmedia_taporty_flutter/config/ColorTheme.dart';
-
-import '../../../main.dart';
 
 class RestaurantListScreen extends StatefulWidget implements WidgetRoute {
   static const ROUTE = 'RestaurantListScreen';

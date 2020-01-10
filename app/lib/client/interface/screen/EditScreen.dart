@@ -90,8 +90,8 @@ class SnackBarPage extends StatelessWidget {
                                   child: Container(
                                     width: double.infinity,
                                     height: double.infinity,
-                                    child: (img.data.img != null)
-                                        ? CircleAvatar(backgroundImage: CachedNetworkImageProvider(img.data.img))
+                                    child: (img.data.imageUrl != null)
+                                        ? CircleAvatar(backgroundImage: CachedNetworkImageProvider(img.data.imageUrl))
                                         : CircleAvatar(
                                             backgroundColor: Colors.black,
                                           ),

@@ -16,8 +16,6 @@ import 'package:rxdart/rxdart.dart';
 
 import 'package:resmedia_taporty_flutter/common/resources/Database.dart';
 
-import '../../../main.dart';
-
 class UserBloc with MixinFirebaseUserManager implements Bloc {
   final Database _db = Database();
 

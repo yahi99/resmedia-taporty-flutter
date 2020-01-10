@@ -1,7 +1,6 @@
 import 'package:easy_widget/src/navigation/DefaultNavigationController.dart';
 import 'package:flutter/material.dart';
 
-
 class NavigationBar extends StatefulWidget {
   final TabController controller;
 
@@ -24,16 +23,20 @@ class NavigationBar extends StatefulWidget {
   final bool showUnselectedLabels;
   final bool showSelectedLabels;
 
-  const NavigationBar({Key key,
+  const NavigationBar({
+    Key key,
     this.controller,
     @required this.items,
     this.elevation: 8.0,
     this.type,
     this.backgroundColor,
     this.iconSize: 24.0,
-    this.selectedItemColor, this.unselectedItemColor,
-    this.selectedFontSize: 14.0, this.unselectedFontSize: 12.0, // TODO: Add Sp Transformer
-    this.showUnselectedLabels, this.showSelectedLabels: true,
+    this.selectedItemColor,
+    this.unselectedItemColor,
+    this.selectedFontSize: 14.0,
+    this.unselectedFontSize: 12.0,
+    this.showUnselectedLabels,
+    this.showSelectedLabels: true,
   }) : super(key: key);
 
   @override
@@ -57,7 +60,7 @@ class _NavigationBarState extends State<NavigationBar> {
   }
 
   void _updateController() {
-    final newController = widget.controller??DefaultNavigationController.of(context);
+    final newController = widget.controller ?? DefaultNavigationController.of(context);
     assert(newController != null, "Pass a [TabController] or use [DefaultNavigationController]");
     if (_controller == newController) {
       return;
@@ -82,7 +85,6 @@ class _NavigationBarState extends State<NavigationBar> {
 
   @override
   Widget build(BuildContext context) {
-
     return BottomNavigationBar(
       currentIndex: _currentIndex,
       onTap: _onTapListener,

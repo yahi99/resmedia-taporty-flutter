@@ -7,16 +7,13 @@ import 'package:easy_stripe/easy_stripe.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:geocoder/model.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:resmedia_taporty_flutter/client/model/CartModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/ReviewModel.dart';
 import 'package:resmedia_taporty_flutter/common/resources/MixinOrderProvider.dart';
 import 'package:resmedia_taporty_flutter/common/resources/MixinRestaurantProvider.dart';
 import 'package:resmedia_taporty_flutter/common/resources/MixinShiftProvider.dart';
 import 'package:resmedia_taporty_flutter/common/resources/MixinUserProvider.dart';
 import 'package:resmedia_taporty_flutter/config/Collections.dart';
-import 'package:resmedia_taporty_flutter/common/model/ShiftModel.dart';
 
 import 'package:resmedia_taporty_flutter/common/model/OrderModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/RestaurantModel.dart';

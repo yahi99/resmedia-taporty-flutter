@@ -8,7 +8,6 @@ import 'package:resmedia_taporty_flutter/common/interface/widget/HeaderWidget.da
 import 'package:resmedia_taporty_flutter/common/logic/bloc/OrderBloc.dart';
 import 'package:resmedia_taporty_flutter/common/model/OrderModel.dart';
 import 'package:resmedia_taporty_flutter/config/ColorTheme.dart';
-import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
 import 'package:resmedia_taporty_flutter/common/resources/Database.dart';
 import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -90,7 +89,6 @@ class _CustomerOrderPageState extends State<CustomerOrderPage> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
         title: Text("Cliente"),

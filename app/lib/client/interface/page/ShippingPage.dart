@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:geocoder/model.dart';
 import 'package:resmedia_taporty_flutter/common/helper/DateTimeHelper.dart';
 import 'package:resmedia_taporty_flutter/common/model/RestaurantModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/ShiftModel.dart';
@@ -13,7 +12,6 @@ import 'package:resmedia_taporty_flutter/client/interface/view/BottonButtonBar.d
 import 'package:resmedia_taporty_flutter/client/interface/view/InputField.dart';
 import 'package:resmedia_taporty_flutter/common/resources/Database.dart';
 import 'package:resmedia_taporty_flutter/common/model/UserModel.dart';
-import 'package:rxdart/rxdart.dart';
 import 'package:toast/toast.dart';
 
 class ShippingPage extends StatefulWidget {

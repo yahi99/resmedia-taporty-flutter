@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 /// Deprecated for Navigator Widget
-@deprecated
+
 class PapyrusController {
   final List<VoidCallback> _listeners = [];
   final List<Widget> _children = [];
@@ -42,7 +42,6 @@ class PapyrusController {
   }
 }
 
-@deprecated
 class PapyrusNavigator extends InheritedWidget {
   final PapyrusController controller;
 
@@ -68,7 +67,6 @@ class PapyrusNavigator extends InheritedWidget {
   }
 }
 
-@deprecated
 class DefaultPapyrusController extends StatefulWidget {
   final Widget child;
 
@@ -78,7 +76,6 @@ class DefaultPapyrusController extends StatefulWidget {
   _DefaultPapyrusControllerState createState() => _DefaultPapyrusControllerState();
 }
 
-@deprecated
 class _DefaultPapyrusControllerState extends State<DefaultPapyrusController> {
   PapyrusController _controller;
 
@@ -103,7 +100,6 @@ class _DefaultPapyrusControllerState extends State<DefaultPapyrusController> {
   }
 }
 
-@deprecated
 class PapyrusView extends StatefulWidget {
   final PapyrusController controller;
   final Widget child;
@@ -114,7 +110,6 @@ class PapyrusView extends StatefulWidget {
   _PapyrusViewState createState() => _PapyrusViewState();
 }
 
-@deprecated
 class _PapyrusViewState extends State<PapyrusView> with TickerProviderStateMixin {
   PapyrusController _controller;
 
@@ -144,7 +139,6 @@ class _PapyrusViewState extends State<PapyrusView> with TickerProviderStateMixin
   }
 }
 
-@deprecated
 class PapyrusBackIconButton extends StatefulWidget {
   final PapyrusController controller;
   final Widget icon;
@@ -157,7 +151,6 @@ class PapyrusBackIconButton extends StatefulWidget {
   _PapyrusBackIconButtonState createState() => _PapyrusBackIconButtonState();
 }
 
-@deprecated
 class _PapyrusBackIconButtonState extends State<PapyrusBackIconButton> {
   PapyrusController _controller;
   bool _isEnable;
@@ -201,7 +194,6 @@ class _PapyrusBackIconButtonState extends State<PapyrusBackIconButton> {
   }
 }
 
-@deprecated
 class PapyrusBar extends StatelessWidget implements PreferredSizeWidget {
   final Widget leading, title;
   final List<Widget> actions;

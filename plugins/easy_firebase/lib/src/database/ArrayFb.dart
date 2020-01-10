@@ -5,32 +5,39 @@ import 'package:easy_firebase/src/database/Models.dart';
 import 'package:easy_firebase/src/database/Resolver.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-
 T caster<T>(dynamic value) {
   switch (T) {
-    case String: {
-      return value as T;
-    } break;
-    case int: {
-      return int.tryParse(value) as T;
-    } break;
-    case double: {
-      return double.tryParse(value) as T;
-    } break;
+    case String:
+      {
+        return value as T;
+      }
+      break;
+    case int:
+      {
+        return int.tryParse(value) as T;
+      }
+      break;
+    case double:
+      {
+        return double.tryParse(value) as T;
+      }
+      break;
     default:
       return resolverFromJson(T, value);
   }
 }
 
-
 /// Nella classe che contiene questi oggetti deve essere presente @JsonSerializable()
 /// con parametri (anyMap: true, explicitToJson: true)
 
-
 /// Ordine crescente
 /// {V: true, V: true, V: true}
-@JsonSerializable(createFactory: false, createToJson: false,)
-class ArrayFirst<V> extends ListBase<V>{ //ArrayBool
+@JsonSerializable(
+  createFactory: false,
+  createToJson: false,
+)
+class ArrayFirst<V> extends ListBase<V> {
+  //ArrayBool
   final List<V> _ls;
 
   ArrayFirst(this._ls);
@@ -47,8 +54,7 @@ class ArrayFirst<V> extends ListBase<V>{ //ArrayBool
   @override
   void operator []=(int index, V value) => _ls[index] = value;
 
-  factory ArrayFirst.fromJson(Map<String, dynamic> map) =>
-      ArrayFirst(map.keys.map((value) => caster<V>(value)).cast<V>().toList());
+  factory ArrayFirst.fromJson(Map<String, dynamic> map) => ArrayFirst(map.keys.map((value) => caster<V>(value)).cast<V>().toList());
 
   Map<V, bool> toJson() {
     final _map = Map<V, bool>();
@@ -57,9 +63,11 @@ class ArrayFirst<V> extends ListBase<V>{ //ArrayBool
   }
 }
 
-
 /// {0: V, 1: V, 2: V}
-@JsonSerializable(createFactory: false, createToJson: false,)
+@JsonSerializable(
+  createFactory: false,
+  createToJson: false,
+)
 class Array<V> extends ListBase<V> {
   final List<V> _ls;
 
@@ -78,21 +86,25 @@ class Array<V> extends ListBase<V> {
   void operator []=(int index, V value) => _ls[index] = value;
 
   factory Array.fromJson(Map<String, dynamic> map) {
-    return Array((map.keys.toList()..sort()).map((key) {
-      return caster<V>(map[key]);
-    }).cast<V>().toList());
+    return Array((map.keys.toList()..sort())
+        .map((key) {
+          return caster<V>(map[key]);
+        })
+        .cast<V>()
+        .toList());
   }
 
   Map<String, dynamic> toJson() => _ls.asMap().map((index, value) {
-    return MapEntry('$index', value is JsonRule
-        ? (value is FirebaseModel ? (value.toJson()..remove('id')..remove('path'))
-        : value.toJson()) : value);
-  });
+        return MapEntry('$index', value is JsonRule ? (value is FirebaseModel ? (value.toJson()..remove('id')..remove('path')) : value.toJson()) : value);
+      });
 }
 
 /// {"ad32c34vfa4v": (...), "scn39c329r43vt53": (...), "48n4yv785y934": (...)}
-@JsonSerializable(createFactory: false, createToJson: false,)
-class ArrayDocObj<O extends PartialDocumentModel> extends ListBase<O>{
+@JsonSerializable(
+  createFactory: false,
+  createToJson: false,
+)
+class ArrayDocObj<O extends PartialDocumentModel> extends ListBase<O> {
   final List<O> _ls;
 
   ArrayDocObj(this._ls) : assert(_ls != null);
@@ -122,19 +134,14 @@ class ArrayDocObj<O extends PartialDocumentModel> extends ListBase<O>{
   }
 }
 
-
-
-
-
-
-
-
-
 /// Ordine crescente
 /// {"Guido": true, "Michele": true, "Francesco": true}
-@JsonSerializable(createFactory: false, createToJson: false,)
-@deprecated
-class ArrayPrimitiveBool<V> extends ListBase<V>{ //ArrayBool
+@JsonSerializable(
+  createFactory: false,
+  createToJson: false,
+)
+class ArrayPrimitiveBool<V> extends ListBase<V> {
+  //ArrayBool
   final List<V> _ls;
 
   ArrayPrimitiveBool(this._ls);
@@ -151,8 +158,7 @@ class ArrayPrimitiveBool<V> extends ListBase<V>{ //ArrayBool
   @override
   void operator []=(int index, V value) => _ls[index] = value;
 
-  factory ArrayPrimitiveBool.fromJson(Map<String, bool> map) =>
-      ArrayPrimitiveBool(map.keys.map((value) => caster<V>(value)).toList());
+  factory ArrayPrimitiveBool.fromJson(Map<String, bool> map) => ArrayPrimitiveBool(map.keys.map((value) => caster<V>(value)).toList());
 
   Map<V, bool> toJson() {
     final _map = Map<V, bool>();
@@ -162,8 +168,11 @@ class ArrayPrimitiveBool<V> extends ListBase<V>{ //ArrayBool
 }
 
 /// {0: "Michele", 1: "Guido", 2: "Francesco"}
-@deprecated
-@JsonSerializable(createFactory: false, createToJson: false,)
+
+@JsonSerializable(
+  createFactory: false,
+  createToJson: false,
+)
 class ArrayNumPrimitive<V> extends ListBase<V> {
   final List<V> _ls;
 
@@ -187,9 +196,12 @@ class ArrayNumPrimitive<V> extends ListBase<V> {
 }
 
 /// {"ad32c34vfa4v": true, "scn39c329r43vt53": true, "48n4yv785y934": true}
-@deprecated
-@JsonSerializable(createFactory: false, createToJson: false,)
-class ArrayDocBool<T extends FirebaseModel> extends ListBase<T>{
+
+@JsonSerializable(
+  createFactory: false,
+  createToJson: false,
+)
+class ArrayDocBool<T extends FirebaseModel> extends ListBase<T> {
   Iterable<String> _keys;
   List<T> _ls = const [];
 
@@ -225,9 +237,12 @@ class ArrayDocBool<T extends FirebaseModel> extends ListBase<T>{
 }
 
 /// {0: {...}, 1: {...}, 2: {...}}
-@deprecated
-@JsonSerializable(createFactory: false, createToJson: false,)
-class ArrayNumMap<V extends JsonRule> extends ListBase<V>{
+
+@JsonSerializable(
+  createFactory: false,
+  createToJson: false,
+)
+class ArrayNumMap<V extends JsonRule> extends ListBase<V> {
   final List<V> _ls;
 
   ArrayNumMap(this._ls);
@@ -256,4 +271,3 @@ class ArrayNumMap<V extends JsonRule> extends ListBase<V>{
     return _ls.asMap().map((index, obj) => MapEntry('$index', obj.toJson()));
   }
 }
-

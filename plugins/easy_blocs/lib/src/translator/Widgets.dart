@@ -87,7 +87,6 @@ class TranslationButton extends StatelessWidget {
   }
 }
 
-// TODO: COMPLETARE
 class TranslationsInputDecoration extends InputDecoration {
   final Translations translationsHintText;
 

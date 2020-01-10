@@ -1,14 +1,11 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_route/easy_route.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:resmedia_taporty_flutter/common/helper/DateTimeHelper.dart';
 import 'package:resmedia_taporty_flutter/common/interface/widget/HeaderWidget.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/OrderBloc.dart';
 import 'package:resmedia_taporty_flutter/common/model/OrderModel.dart';
-import 'package:resmedia_taporty_flutter/config/ColorTheme.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/page/CustomerOrderPage.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/page/RestaurantOrderPage.dart';
 
@@ -45,8 +42,6 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: true,

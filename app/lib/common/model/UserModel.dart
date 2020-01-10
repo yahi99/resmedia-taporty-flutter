@@ -14,15 +14,14 @@ class UserModel extends UserFirebaseModel {
   final String phoneNumber;
   final int numberOfReviews;
   final double averageReviews;
-  final String restaurantId;
-  final String img;
+  final String imageUrl;
   final bool notifyEmail;
   final bool notifySms;
   final bool notifyApp;
   final bool offersEmail;
   final bool offersSms;
   final bool offersApp;
-  final bool isDriver;
+  // TODO: Usare i custom claims per rappresentare il ruolo di un utente
   final String type;
 
   // Driver specific values
@@ -34,12 +33,10 @@ class UserModel extends UserFirebaseModel {
   UserModel({
     String path,
     String fcmToken,
-    this.img,
+    this.imageUrl,
     this.numberOfReviews,
     this.averageReviews,
     this.type,
-    this.isDriver,
-    this.restaurantId,
     this.nominative,
     this.email,
     this.phoneNumber,
@@ -65,6 +62,7 @@ class UserModel extends UserFirebaseModel {
   Map<String, dynamic> toJson() => _$UserModelToJson(this);
 }
 
+// TODO: Elimina e rivedi il funzionamento dell'UserBloc
 class User extends UserBase<UserModel> {
   User(FirebaseUser userFb, UserModel model) : super(userFb, model);
 }

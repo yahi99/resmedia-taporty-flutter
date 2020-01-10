@@ -6,7 +6,6 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 import 'package:resmedia_taporty_flutter/common/helper/GeopointSerialization.dart';
 import 'package:resmedia_taporty_flutter/common/model/HolidayModel.dart';
-import 'package:resmedia_taporty_flutter/common/model/ShiftModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/TimetableModel.dart';
 
 part 'RestaurantModel.g.dart';

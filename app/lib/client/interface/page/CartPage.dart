@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:resmedia_taporty_flutter/client/interface/screen/CheckoutScreen.dart';
-import 'package:resmedia_taporty_flutter/client/interface/screen/RestaurantScreen.dart';
 import 'package:resmedia_taporty_flutter/client/interface/view/BottonButtonBar.dart';
 import 'package:resmedia_taporty_flutter/client/interface/view/ProductViewCart.dart';
 import 'package:resmedia_taporty_flutter/client/logic/bloc/CartBloc.dart';

@@ -29,42 +29,6 @@ class _OrderTabState extends State<OrderTab> {
 
   @override
   Widget build(BuildContext context) {
-    /*return Scaffold(
-      body: (widget.model.length > 0)
-          ? CustomScrollView(
-              //controller: RubberScrollController.of(context),
-              //physics: NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              slivers: widget.model.keys.map<Widget>(
-                (nameGroup) {
-                  final driverOrderModels = widget.model[nameGroup];
-                  return SliverPadding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
-                    sliver: SliverOrderVoid(
-                      title: Text(translateOrderState(nameGroup)),
-                      childCount: driverOrderModels.length,
-                      builder: (_context, index) {
-                        return InkWell(
-                          onTap: () => EasyRouter.push(
-                              _context,
-                              DetailOrderPageDriver(
-                                model: driverOrderModels[index],
-                              )),
-                          child: OrderView(
-                            orderModel: driverOrderModels[index],
-                          ),
-                        );
-                      },
-                    ),
-                  );
-                },
-              ).toList(),
-            )
-          : Padding(
-              child: Text('Non ci sono ordini.'),
-              padding: EdgeInsets.all(8.0),
-            ),
-    );*/
     var theme = Theme.of(context);
     return Scaffold(
       body: SingleChildScrollView(
@@ -99,8 +63,8 @@ class _OrderTabState extends State<OrderTab> {
                                 return InkWell(
                                   onTap: () => EasyRouter.push(
                                     _context,
-                                    DetailOrderPageDriver(
-                                      model: orders[index],
+                                    OrderDetailPage(
+                                      order: orders[index],
                                     ),
                                   ),
                                   child: OrderView(

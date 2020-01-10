@@ -38,4 +38,8 @@ class DateTimeHelper {
     var endOfWeek = startOfWeek.add(Duration(days: 6));
     return DateFormat("d MMMM").format(startOfWeek) + " - " + DateFormat("d MMMM").format(endOfWeek);
   }
+
+  static String getCompleteDateTimeString(DateTime datetime) {
+    return DateFormat("dd-MM-yyyy", "it").format(datetime) + " alle " + DateFormat("HH:mm").format(datetime);
+  }
 }

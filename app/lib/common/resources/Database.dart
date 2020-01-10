@@ -207,7 +207,7 @@ class Database extends FirebaseDatabase with MixinFirestoreStripeProvider, Mixin
   }
 
   // TODO: Rivedere
-  Future<void> updateState(String state, String uid, String oid, String restId, String driverId) async {
+  Future<void> updateState(OrderState state, String uid, String oid, String restId, String driverId) async {
     await fs.collection(Collections.USERS).document(uid).collection('user_orders').document(oid).updateData({'state': state});
     await fs.collection(Collections.RESTAURANTS).document(restId).collection('restaurant_orders').document(oid).updateData({'state': state});
     await fs.collection(Collections.USERS).document(driverId).collection('driver_orders').document(oid).updateData({'state': state});

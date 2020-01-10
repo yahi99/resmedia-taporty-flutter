@@ -10,10 +10,7 @@ import 'package:resmedia_taporty_flutter/drivers/interface/page/OrderTab.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/page/ReservedShiftTab.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/screen/AccountScreenDriver.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/page/CalendarTab.dart';
-import 'package:resmedia_taporty_flutter/drivers/logic/bloc/CalendarBloc.dart';
 import 'package:resmedia_taporty_flutter/drivers/logic/bloc/DriverBloc.dart';
-import 'package:resmedia_taporty_flutter/drivers/logic/bloc/TurnBloc.dart';
-import 'package:resmedia_taporty_flutter/drivers/model/CalendarModel.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/OrderBloc.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
 
@@ -30,7 +27,6 @@ class HomeScreenDriver extends StatefulWidget implements WidgetRoute {
 class _HomeScreenDriverState extends State<HomeScreenDriver> {
   final DriverBloc _driverBloc = DriverBloc.of();
   DateTime date = DateTime.now();
-  final CalendarBloc _calendarBloc = CalendarBloc.of();
 
   BuildContext dialog;
 
@@ -84,7 +80,6 @@ class _HomeScreenDriverState extends State<HomeScreenDriver> {
     UserBloc.of().logout();
     LoginHelper().signOut();
     _driverBloc.close();
-    _calendarBloc.close();
     super.dispose();
   }
 
@@ -97,10 +92,6 @@ class _HomeScreenDriverState extends State<HomeScreenDriver> {
   @override
   Widget build(BuildContext context) {
     dialog = context;
-    final turnBloc = TurnBloc.of();
-    final orderBloc = OrderBloc.of();
-    final userBloc = UserBloc.of();
-    final calStream = StreamController<List<CalendarModel>>();
     return DefaultPapyrusController(
       child: DefaultTabController(
         length: 3,

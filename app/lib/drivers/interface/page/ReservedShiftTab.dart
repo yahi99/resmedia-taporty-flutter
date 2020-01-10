@@ -9,7 +9,6 @@ import 'package:resmedia_taporty_flutter/config/ColorTheme.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/widget/SliverOrderVoid.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/view/ShiftView.dart';
 import 'package:resmedia_taporty_flutter/drivers/logic/bloc/DriverBloc.dart';
-import 'package:resmedia_taporty_flutter/drivers/model/TurnModel.dart';
 import 'package:sticky_headers/sticky_headers/widget.dart';
 
 class ReservedShiftTab extends StatefulWidget {

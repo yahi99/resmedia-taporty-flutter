@@ -16,9 +16,8 @@ import 'package:resmedia_taporty_flutter/common/resources/MixinRestaurantProvide
 import 'package:resmedia_taporty_flutter/common/resources/MixinShiftProvider.dart';
 import 'package:resmedia_taporty_flutter/common/resources/MixinUserProvider.dart';
 import 'package:resmedia_taporty_flutter/config/Collections.dart';
-import 'package:resmedia_taporty_flutter/drivers/model/CalendarModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/ShiftModel.dart';
-import 'package:resmedia_taporty_flutter/drivers/model/TurnModel.dart';
+
 import 'package:resmedia_taporty_flutter/common/model/OrderModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/RestaurantModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/UserModel.dart';
@@ -101,82 +100,9 @@ class Database extends FirebaseDatabase with MixinFirestoreStripeProvider, Mixin
     await fs.collection('control_orders').document(order.id).updateData({'state': 'CANCELLED'});
   }
 
-  // TODO: Rivedere
-  Future<bool> removeShiftRest(String startTime, String day, String restId) async {
-    await fs.collection('restaurants').document(restId).collection('turns').document(day + '§' + startTime).delete();
-    final modelRest = CalendarModel.fromFirebase(await fs.collection('days').document(day).collection('times').document(startTime).collection('restaurant_turns').document(restId).get());
-    final model = CalendarModel.fromFirebase(await fs.collection('days').document(day).collection('times').document(startTime).get());
-    final tempRest = modelRest.number;
-    final temp = model.number;
-    /*
-    final free=modelRest.occupied;
-    for(int i=1;i<free.length;i++){
-      removeShiftDriver(startTime, day, free.elementAt(i));
-    }
-     */
-    if (temp == tempRest) {
-      await fs.collection('days').document(day).collection('times').document(startTime).collection('restaurant_turns').document(restId).delete();
-      fs.collection('days').document(day).collection('times').document(startTime).delete();
-      fs.collection('days').document(day).delete();
-    } else {
-      await fs.collection('days').document(day).collection('times').document(startTime).collection('restaurant_turns').document(restId).delete();
-      fs.collection('days').document(day).collection('times').document(startTime).updateData({'number': (temp - tempRest)});
-    }
-
-    return true;
-  }
-
-  // TODO: Rivedere
-  Future<bool> removeShiftDriver(String startTime, String day, String driver) async {
-    print(day + '§' + startTime);
-    await fs.collection('users').document(driver).collection('turns').document(day + '§' + startTime).delete();
-    final model = CalendarModel.fromFirebase(await fs.collection('days').document(day).collection('times').document(startTime).get());
-    final temp = model.free;
-    temp.remove(driver);
-    await fs.collection('days').document(day).collection('times').document(startTime).updateData({'free': temp});
-    return true;
-  }
-
   Stream<UserModel> getUser(FirebaseUser user) {
     return fs.collection(Collections.USERS).document(user.uid).snapshots().map((snap) {
       return UserModel.fromFirebase(snap);
-    });
-  }
-
-  // TODO: Rivedere
-  Stream<List<TurnModel>> getTurns(String uid) {
-    final data = fs.collection(Collections.USERS).document(uid).collection(Collections.TURNS).where('year', isEqualTo: DateTime.now().year).snapshots();
-
-    return data.map((query) {
-      return query.documents.map((snap) => TurnModel.fromFirebase(snap)).toList();
-    });
-  }
-
-  // TODO: Rivedere
-  Stream<List<TurnModel>> getTurnsRest(String restId) {
-    final data = fs.collection(Collections.RESTAURANTS).document(restId).collection(Collections.TURNS).where('year', isEqualTo: DateTime.now().year).snapshots();
-
-    return data.map((query) {
-      return query.documents.map((snap) => TurnModel.fromFirebase(snap)).toList();
-    });
-  }
-
-  // TODO: Rivedere
-  Stream<List<ShiftModel>> getUsersTurn(String day) {
-    final data = fs.collection('days').document(day).collection('times').snapshots();
-
-    return data.map((query) {
-      return query.documents.map((snap) => ShiftModel.fromFirebase(snap)).toList();
-    });
-  }
-
-  // TODO: Rivedere
-  Stream<List<CalendarModel>> getShifts(DateTime now) {
-    //final temp=.replaceAll(' ', 'T');
-    final data = fs.collection(Collections.DAYS).document(now.toIso8601String()).collection(Collections.TIMES).snapshots();
-
-    return data.map((query) {
-      return query.documents.map((snap) => CalendarModel.fromFirebase(snap)).toList();
     });
   }
 

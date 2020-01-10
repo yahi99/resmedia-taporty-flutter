@@ -8,7 +8,6 @@ import 'package:geocoder/model.dart';
 import 'package:resmedia_taporty_flutter/common/helper/DateTimeHelper.dart';
 import 'package:resmedia_taporty_flutter/common/model/RestaurantModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/ShiftModel.dart';
-import 'package:resmedia_taporty_flutter/drivers/model/CalendarModel.dart';
 import 'package:resmedia_taporty_flutter/client/interface/screen/CheckoutScreen.dart';
 import 'package:resmedia_taporty_flutter/client/interface/view/BottonButtonBar.dart';
 import 'package:resmedia_taporty_flutter/client/interface/view/InputField.dart';

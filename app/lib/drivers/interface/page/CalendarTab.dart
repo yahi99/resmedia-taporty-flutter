@@ -7,7 +7,6 @@ import 'package:resmedia_taporty_flutter/common/logic/bloc/RestaurantsBloc.dart'
 import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
 import 'package:resmedia_taporty_flutter/common/model/ShiftModel.dart';
 import 'package:resmedia_taporty_flutter/config/ColorTheme.dart';
-import 'package:resmedia_taporty_flutter/drivers/logic/bloc/CalendarBloc.dart';
 import 'package:resmedia_taporty_flutter/drivers/logic/bloc/DriverBloc.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart' show CalendarCarousel, WeekdayFormat;
 
@@ -19,9 +18,6 @@ class CalendarTab extends StatefulWidget {
 }
 
 class _CalendarTabState extends State<CalendarTab> with AutomaticKeepAliveClientMixin {
-  final _calendarBloc = CalendarBloc.of();
-  int count = 0;
-
   DateTime _selectedDate;
   var restaurantsBloc = RestaurantsBloc.of();
   var driverBloc = DriverBloc.of();
@@ -29,7 +25,6 @@ class _CalendarTabState extends State<CalendarTab> with AutomaticKeepAliveClient
   @override
   void dispose() {
     super.dispose();
-    _calendarBloc.close();
   }
 
   String _driverId;

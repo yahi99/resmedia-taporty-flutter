@@ -8,7 +8,6 @@ import 'package:resmedia_taporty_flutter/common/helper/GeopointSerialization.dar
 import 'package:resmedia_taporty_flutter/common/model/HolidayModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/ShiftModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/TimetableModel.dart';
-import 'package:resmedia_taporty_flutter/drivers/model/CalendarModel.dart';
 
 part 'RestaurantModel.g.dart';
 

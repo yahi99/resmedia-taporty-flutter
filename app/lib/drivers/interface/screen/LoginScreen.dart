@@ -5,11 +5,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:resmedia_taporty_flutter/common/helper/DateTimeHelper.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/screen/HomeScreen.dart';
-import 'package:resmedia_taporty_flutter/drivers/logic/bloc/CalendarBloc.dart';
 import 'package:resmedia_taporty_flutter/drivers/logic/bloc/DriverBloc.dart';
-import 'package:resmedia_taporty_flutter/drivers/logic/bloc/TurnBloc.dart';
 import 'package:resmedia_taporty_flutter/common/interface/view/LogoView.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/OrderBloc.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
@@ -70,12 +67,8 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> setDriver(String uid) async {
     final orderBloc = OrderBloc.of();
     await orderBloc.setDriverStream();
-    final turnBloc = TurnBloc.of();
-    await turnBloc.setTurnStream(uid);
     final driverBloc = DriverBloc.of();
     await driverBloc.setDriverStream();
-    final calendarBloc = CalendarBloc.of();
-    calendarBloc.setDate(DateTimeHelper.getDay(DateTime.now()));
   }
 
   @override

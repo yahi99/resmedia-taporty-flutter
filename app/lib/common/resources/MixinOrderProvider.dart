@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:resmedia_taporty_flutter/client/model/CartProductModel.dart';
+import 'package:resmedia_taporty_flutter/common/helper/DateTimeSerialization.dart';
 import 'package:resmedia_taporty_flutter/common/model/OrderModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/ProductModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/OrderProductModel.dart';
@@ -48,8 +49,8 @@ mixin MixinOrderProvider on MixinUserProvider, MixinRestaurantProvider {
     return orderProducts;
   }
 
-  Future<void> createOrder(List<CartProductModel> cartProducts, String customerId, GeoPoint customerCoordinates, String customerAddress, String customerPhone, String restaurantId, String driverId,
-      ShiftModel selectedShift, String cardId) async {
+  Future<void> createOrder(List<CartProductModel> cartProducts, String customerId, GeoPoint customerCoordinates, String customerAddress, String customerName, String customerPhone, String restaurantId,
+      String driverId, ShiftModel selectedShift, String cardId) async {
     UserModel customer = await getUserById(customerId);
     UserModel driver = await getUserById(driverId);
     RestaurantModel restaurant = await getRestaurant(restaurantId);
@@ -66,7 +67,7 @@ mixin MixinOrderProvider on MixinUserProvider, MixinRestaurantProvider {
       totalPrice: orderProducts.fold(0, (price, product) => price + product.quantity * product.price),
       state: OrderState.NEW,
       customerImageUrl: customer.imageUrl,
-      customerName: customer.nominative,
+      customerName: customerName,
       customerCoordinates: customerCoordinates,
       customerAddress: customerAddress,
       customerPhoneNumber: customerPhone,
@@ -79,13 +80,14 @@ mixin MixinOrderProvider on MixinUserProvider, MixinRestaurantProvider {
       restaurantAddress: restaurant.address,
       restaurantPhoneNumber: restaurant.phoneNumber,
       cardId: cardId,
+      creationTimestamp: DateTime.now(),
       products: orderProducts,
     );
 
     // TODO: Genera l'id dell'ordine da te
     var documentReference = orderCollection.document();
 
-    await documentReference.setData({...order.toJson(), 'creationTimestamp': FieldValue.serverTimestamp(), 'reference': documentReference});
+    await documentReference.setData({...order.toJson(), 'reference': documentReference});
   }
 
   Future updateOrderState(String orderId, OrderState state) async {
@@ -103,10 +105,30 @@ mixin MixinOrderProvider on MixinUserProvider, MixinRestaurantProvider {
       default:
         return;
     }
-    await orderCollection.document(orderId).setData({
-      'state': enumEncode(state),
-      'visualized': false,
-      timestampField: FieldValue.serverTimestamp(),
-    }, merge: true);
+    var document = orderCollection.document(orderId);
+    bool error = false;
+    await Firestore.instance.runTransaction((Transaction tx) async {
+      var order = OrderModel.fromFirebase(await tx.get(document));
+      if (state == OrderState.CANCELLED && (order.state != OrderState.NEW || order.state != OrderState.ACCEPTED || order.state != OrderState.READY)) {
+        error = true;
+        return;
+      }
+      if (state == OrderState.PICKED_UP && order.state == OrderState.PICKED_UP) return;
+      if (state == OrderState.PICKED_UP && order.state != OrderState.READY) {
+        error = true;
+        return;
+      }
+      if (state == OrderState.DELIVERED && order.state != OrderState.PICKED_UP) {
+        error = true;
+        return;
+      }
+      await tx.update(document, {
+        'state': enumEncode(state),
+        'visualized': false,
+        'replied': false,
+        timestampField: datetimeToJson(DateTime.now()),
+      });
+    });
+    if (error) throw new Exception(); // TODO: Definire meglio l'eccezione
   }
 }

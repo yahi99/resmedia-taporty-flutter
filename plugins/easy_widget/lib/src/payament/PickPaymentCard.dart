@@ -1,12 +1,12 @@
 import 'package:easy_widget/easy_widget.dart';
 import 'package:flutter/material.dart';
 
-
 class PickPaymentCardDialog extends StatelessWidget {
   final VoidCallback onAddPaymentCard;
   final Stream<List<Widget>> outCards;
 
-  const PickPaymentCardDialog({Key key,
+  const PickPaymentCardDialog({
+    Key key,
     @required this.onAddPaymentCard,
     @required this.outCards,
   }) : super(key: key);
@@ -14,25 +14,29 @@ class PickPaymentCardDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      content: AspectRatio(
-        aspectRatio: 1,
+      content: Container(
+        constraints: BoxConstraints(maxHeight: 300),
         child: StreamBuilder<List<Widget>>(
           stream: outCards,
           builder: (context, snapshot) {
-            if (!snapshot.hasData)
-              return CircularProgressIndicator();
+            if (!snapshot.hasData) return CircularProgressIndicator();
 
             final cards = snapshot.data;
-            if (cards.length < 1)
-              return NoPaymentCard();
+            if (cards.length < 1) return NoPaymentCard();
 
-            return ListViewSeparated.builder(
-              itemCount: cards.length,
-              separator: const Divider(),
-              itemBuilder: (_, index) {
-                final card = cards[index];
-                return card;
-              },
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                ListViewSeparated.builder(
+                  shrinkWrap: true,
+                  itemCount: cards.length,
+                  separator: const Divider(),
+                  itemBuilder: (_, index) {
+                    final card = cards[index];
+                    return card;
+                  },
+                ),
+              ],
             );
           },
         ),
@@ -42,7 +46,7 @@ class PickPaymentCardDialog extends StatelessWidget {
           onPressed: () {
             Navigator.pop(context);
           },
-          child: Text("Anulla"),
+          child: Text("Annulla"),
         ),
         FlatButton(
           onPressed: onAddPaymentCard,

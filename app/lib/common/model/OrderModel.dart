@@ -92,6 +92,10 @@ class OrderModel extends FirebaseModel {
   final DateTime pickupTimestamp;
   @JsonKey(toJson: datetimeToJson, fromJson: datetimeFromJson)
   final DateTime deliveryTimestamp;
+  @JsonKey(toJson: datetimeToJson, fromJson: datetimeFromJson)
+  final DateTime refusalTimestamp;
+  @JsonKey(toJson: datetimeToJson, fromJson: datetimeFromJson)
+  final DateTime archiviationTimestamp;
 
   // Customer info
   final String customerId;
@@ -151,6 +155,8 @@ class OrderModel extends FirebaseModel {
     this.newProducts,
     this.creationTimestamp,
     this.acceptanceTimestamp,
+    this.refusalTimestamp,
+    this.archiviationTimestamp,
     this.state,
     this.cardId,
   }) : super(path);

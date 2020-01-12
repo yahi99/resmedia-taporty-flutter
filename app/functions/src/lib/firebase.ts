@@ -1,8 +1,8 @@
 import * as admin from 'firebase-admin'
 
 // tslint:disable-next-line: no-use-before-declare
-export { app, fs, sms }
+export { app, firebase, messaging }
 
 const app = admin.initializeApp()
-const fs = admin.firestore(app)
-const sms = admin.messaging(app)
+const firebase = admin.firestore(app)
+const messaging = admin.messaging(app)

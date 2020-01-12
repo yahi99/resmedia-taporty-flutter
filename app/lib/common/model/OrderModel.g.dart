@@ -45,6 +45,8 @@ OrderModel _$OrderModelFromJson(Map json) {
         ?.toList(),
     creationTimestamp: datetimeFromJson(json['creationTimestamp']),
     acceptanceTimestamp: datetimeFromJson(json['acceptanceTimestamp']),
+    refusalTimestamp: datetimeFromJson(json['refusalTimestamp']),
+    archiviationTimestamp: datetimeFromJson(json['archiviationTimestamp']),
     state: _$enumDecodeNullable(_$OrderStateEnumMap, json['state']),
     cardId: json['cardId'] as String,
   );
@@ -82,6 +84,9 @@ Map<String, dynamic> _$OrderModelToJson(OrderModel instance) {
   writeNotNull('readyTimestamp', datetimeToJson(instance.readyTimestamp));
   writeNotNull('pickupTimestamp', datetimeToJson(instance.pickupTimestamp));
   writeNotNull('deliveryTimestamp', datetimeToJson(instance.deliveryTimestamp));
+  writeNotNull('refusalTimestamp', datetimeToJson(instance.refusalTimestamp));
+  writeNotNull(
+      'archiviationTimestamp', datetimeToJson(instance.archiviationTimestamp));
   writeNotNull('customerId', instance.customerId);
   writeNotNull('customerName', instance.customerName);
   writeNotNull(

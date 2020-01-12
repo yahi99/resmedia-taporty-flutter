@@ -255,24 +255,25 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
       padding: const EdgeInsets.all(16),
       child: Row(
         children: <Widget>[
-          Container(
-            width: 80,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(6.0),
-              child: CachedNetworkImage(
-                imageUrl: imageUrl,
-                fit: BoxFit.cover,
-                placeholder: (context, url) => SizedBox(
-                  height: 30.0,
-                  width: 30.0,
-                  child: Center(
-                    child: CircularProgressIndicator(),
+          if (imageUrl != null)
+            Container(
+              width: 80,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(6.0),
+                child: CachedNetworkImage(
+                  imageUrl: imageUrl,
+                  fit: BoxFit.cover,
+                  placeholder: (context, url) => SizedBox(
+                    height: 30.0,
+                    width: 30.0,
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                    ),
                   ),
+                  errorWidget: (context, url, error) => Center(child: Icon(Icons.error, color: Colors.grey)),
                 ),
-                errorWidget: (context, url, error) => Center(child: Icon(Icons.error, color: Colors.grey)),
               ),
             ),
-          ),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4.0),
@@ -284,13 +285,14 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                     name,
                     style: textTheme.subhead.copyWith(fontWeight: FontWeight.bold),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8.0),
-                    child: Text(
-                      phoneNumber,
-                      style: TextStyle(fontSize: 14),
+                  if (phoneNumber != null)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: Text(
+                        phoneNumber,
+                        style: TextStyle(fontSize: 14),
+                      ),
                     ),
-                  ),
                 ],
               ),
             ),
@@ -333,11 +335,11 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
         string = "L'ordine è arrivato a destinazione.";
         break;
       case OrderState.ARCHIVED:
-        date = DateTimeHelper.getCompleteDateTimeString(order.modificationTimestamp);
+        date = DateTimeHelper.getCompleteDateTimeString(order.archiviationTimestamp);
         string = "L'ordine è stato archiviato dopo essere stato modificato.";
         break;
       case OrderState.REFUSED:
-        date = DateTimeHelper.getCompleteDateTimeString(order.acceptanceTimestamp);
+        date = DateTimeHelper.getCompleteDateTimeString(order.refusalTimestamp);
         string = "L'ordine è stato rifiutato dal fornitore.";
         break;
     }

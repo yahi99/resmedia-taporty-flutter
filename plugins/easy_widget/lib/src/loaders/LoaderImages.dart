@@ -6,7 +6,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:path/path.dart';
 
-
 class AssetHandler {
   static AssetHandler _instance;
 
@@ -14,8 +13,9 @@ class AssetHandler {
   final List<AssetFolder> assetContent;
 
   @protected
-  AssetHandler.internal({@required this.context, @required this.assetContent}) :
-        assert(context != null), assert(assetContent != null);
+  AssetHandler.internal({@required this.context, @required this.assetContent})
+      : assert(context != null),
+        assert(assetContent != null);
 
   static Future<List<AssetFolder>> loadAssetContent(BuildContext context) async {
     assert(context != null);
@@ -24,7 +24,7 @@ class AssetHandler {
     final folders = List<AssetFolder>();
 
     assetContent.forEach((path, dataPath) {
-      final startFile = path.lastIndexOf("/")+1;
+      final startFile = path.lastIndexOf("/") + 1;
       final folderPath = path.substring(0, startFile);
 
       final folder = folders.firstWhere((directory) => directory.path == folderPath, orElse: () {
@@ -53,7 +53,8 @@ class AssetHandler {
     if (_instance == null) {
       assert(context != null);
       _instance = AssetHandler.internal(
-        context: context, assetContent: await loadAssetContent(context),
+        context: context,
+        assetContent: await loadAssetContent(context),
       );
     }
     return _instance;
@@ -81,36 +82,32 @@ class AssetHandler {
   }
 }
 
-
 class AssetFolder extends ListBase<AssetFile> {
   final String path;
   final List<AssetFile> _files;
 
   AssetFolder({
-    @required this.path, List<AssetFile> files,
-  }) : assert(path != null), assert(files != null),
-  this._files = files;
+    @required this.path,
+    List<AssetFile> files,
+  })  : assert(path != null),
+        assert(files != null),
+        this._files = files;
 
   AssetFile getFileByTitle(String titleFile) {
     return _files.firstWhere((file) => file.title == titleFile, orElse: () => null);
   }
+
   AssetFile getFileByEnum(Object enumObject) {
     assert(enumObject != null);
     return getFileByTitle(enumObject.toString().split(".").last);
   }
+
   AssetFile getFileByLocale(Locale locale) {
-    return getFileByTitle(locale.languageCode)??getFileByTitle('en');
+    return getFileByTitle(locale.languageCode) ?? getFileByTitle('en');
   }
 
   Future<void> cacheImages() async {
     await Future.forEach<AssetFile>(_files, (file) => AssetHandler._instance.cacheImage(file.path));
-  }
-
-  @override
-  int get hashCode => hash(path);
-  @override
-  bool operator ==(other) {
-    return other is AssetFolder && path == other.path;
   }
 
   @override
@@ -131,7 +128,6 @@ class AssetFolder extends ListBase<AssetFile> {
   set length(int newLength) => throw "Not Usable";
 }
 
-
 class AssetFile {
   final String folderPath;
   final String name;
@@ -139,13 +135,12 @@ class AssetFile {
 
   AssetFile({@required this.folderPath, @required this.name, @required this.files});
 
-  String get path => folderPath+name;
+  String get path => folderPath + name;
   String get title => name.split(".").first;
 
   @override
   String toString() => path;
 }
-
 
 /*static const PAYMENT_CARD = {
     ""

@@ -1,7 +1,7 @@
 import * as functions from 'firebase-functions';
 // tslint:disable-next-line: no-implicit-dependencies
 import * as Stripe from 'stripe';
-import { fs,sms} from './firebase';
+import { firebase as firebase, messaging} from './firebase';
 import * as admin from 'firebase-admin'
 
 // tslint:disable-next-line: no-use-before-declare
@@ -11,16 +11,16 @@ const currency = 'EUR';
 
 const createStripeCustomer = functions.auth.user().onCreate(async (user, context) => {
   const customer = await stripe.customers.create({email: user.email});
-  return fs.collection('stripe_customers').doc(user.uid).set({customer_id: customer.id});
+  return firebase.collection('stripe_customers').doc(user.uid).set({customer_id: customer.id});
 });
 
 
 // When a user deletes their account, clean up after them
 const cleanupUser = functions.auth.user().onDelete(async (user) => {
-  const snap = await fs.collection('stripe_customers').doc(user.uid).get();
+  const snap = await firebase.collection('stripe_customers').doc(user.uid).get();
   const customerData = snap.data();
   await stripe.customers.del(customerData!.customer_id);
-  return fs.collection('stripe_customers').doc(user.uid).delete();
+  return firebase.collection('stripe_customers').doc(user.uid).delete();
 });
 
 // When a user creates their account, assign them a type
@@ -29,20 +29,20 @@ const createUser = functions.firestore
   .onCreate(async (change,context) => {
   const user=change.data();
   if(user!== undefined){
-    await fs.collection('users').doc(user.uid).update({'type':'user'});
+    await firebase.collection('users').doc(user.uid).update({'type':'user'});
   }
 });
 
 const addPaymentSource = functions.https.onCall(async (data, context) => {
   const token = data!.token;
-  const customerData = (await fs.collection('stripe_customers').doc(context.auth!.uid).get()).data();
+  const customerData = (await firebase.collection('stripe_customers').doc(context.auth!.uid).get()).data();
   const customer =  customerData!.customer_id;
   const response = await stripe.customers.createSource(customer, {source: token}, {api_key: functions.config().stripe.token});
   const mapResponse = (response as {[field:string]: any})
   const fingerPrint = mapResponse['card']['fingerprint']
   console.log("sourceId", fingerPrint)
   mapResponse.token = token
-  await fs.collection('stripe_customers').doc(context.auth!.uid)
+  await firebase.collection('stripe_customers').doc(context.auth!.uid)
           .collection("sources").doc(fingerPrint)
           .set(response);
   return {"documentId": fingerPrint,}
@@ -56,7 +56,7 @@ const sendToDeviceDriver = functions.firestore
     const order = change.after.data();
     if(order!== undefined){
       console.log(order.driver);
-      const querySnapshot = await fs
+      const querySnapshot = await firebase
       .collection('users')
       .doc(order.driver)
       .get();
@@ -74,7 +74,7 @@ const sendToDeviceDriver = functions.firestore
               click_action: 'FLUTTER_NOTIFICATION_CLICK'
               }
             };
-            return sms.sendToDevice(tokens, payload);
+            return messaging.sendToDevice(tokens, payload);
           }
           else if(order.state==='DELETED'){
             console.log(order.state);
@@ -86,7 +86,7 @@ const sendToDeviceDriver = functions.firestore
               click_action: 'FLUTTER_NOTIFICATION_CLICK'
               }
             };
-            return sms.sendToDevice(tokens, payload);
+            return messaging.sendToDevice(tokens, payload);
           }
         }
       }
@@ -102,7 +102,7 @@ const sendToDevice = functions.firestore
     const order = change.after.data();
     if(order!== undefined){
       console.log(order.uid);
-      const querySnapshot = await fs
+      const querySnapshot = await firebase
       .collection('users')
       .doc(order.uid)
       .get();
@@ -119,7 +119,7 @@ const sendToDevice = functions.firestore
             click_action: 'FLUTTER_NOTIFICATION_CLICK'
             }
           };
-          return sms.sendToDevice(tokens, payload);
+          return messaging.sendToDevice(tokens, payload);
         }
       }
     }
@@ -131,14 +131,14 @@ const sendToDevice = functions.firestore
   .onWrite(async (change,context) => {
     const request = change.after.data();
     if(request!== undefined){
-      const querySnapshot = await fs
+      const querySnapshot = await firebase
       .collection('control_users')
       .doc('users')
       .get();
       const control=querySnapshot.data();
       if( control!== undefined) {
         for(const entry of control.users){
-          const query = await fs
+          const query = await firebase
           .collection('users')
           .doc(entry)
           .get();
@@ -155,7 +155,7 @@ const sendToDevice = functions.firestore
                 click_action: 'FLUTTER_NOTIFICATION_CLICK'
                 }
               };
-              sms.sendToDevice(tokens, payload).catch((err) => console.log(err)).then(() => console.log('ok')).catch(() => 'Obligatory catch');
+              messaging.sendToDevice(tokens, payload).catch((err) => console.log(err)).then(() => console.log('ok')).catch(() => 'Obligatory catch');
             }
           }
         }
@@ -169,14 +169,14 @@ const sendToDevice = functions.firestore
   .onWrite(async (change,context) => {
     const request = change.after.data();
     if(request!== undefined){
-      const querySnapshot = await fs
+      const querySnapshot = await firebase
       .collection('control_users')
       .doc('users')
       .get();
       const control=querySnapshot.data();
       if( control!== undefined) {
         for(const entry of control.users){
-          const query = await fs
+          const query = await firebase
           .collection('users')
           .doc(entry)
           .get();
@@ -193,7 +193,7 @@ const sendToDevice = functions.firestore
                 click_action: 'FLUTTER_NOTIFICATION_CLICK'
                 }
               };
-              sms.sendToDevice(tokens, payload).catch((err) => console.log(err)).then(() => console.log('ok')).catch(() => 'Obligatory catch');
+              messaging.sendToDevice(tokens, payload).catch((err) => console.log(err)).then(() => console.log('ok')).catch(() => 'Obligatory catch');
             }
           }
         }
@@ -207,14 +207,14 @@ const sendToDevice = functions.firestore
   .onWrite(async (change,context) => {
     const request = change.after.data();
     if(request!== undefined){
-      const querySnapshot = await fs
+      const querySnapshot = await firebase
       .collection('control_users')
       .doc('users')
       .get();
       const control=querySnapshot.data();
       if( control!== undefined) {
         for(const entry of control.users){
-          const query = await fs
+          const query = await firebase
           .collection('users')
           .doc(entry)
           .get();
@@ -231,7 +231,7 @@ const sendToDevice = functions.firestore
                 click_action: 'FLUTTER_NOTIFICATION_CLICK'
                 }
               };
-              sms.sendToDevice(tokens, payload).catch((err) => console.log(err)).then(() => console.log('ok')).catch(() => 'Obligatory catch');
+              messaging.sendToDevice(tokens, payload).catch((err) => console.log(err)).then(() => console.log('ok')).catch(() => 'Obligatory catch');
             }
           }
         }
@@ -248,13 +248,13 @@ const sendToDevice = functions.firestore
     const order = change.after.data();
     if(order!== undefined){
       console.log(order.restaurantId);
-      const querySnapshot = await fs
+      const querySnapshot = await firebase
       .collection('restaurants')
       .doc(order.restaurantId)
       .get();
       const restaurant=querySnapshot.data();
       if(restaurant!== undefined){
-        const query = await fs
+        const query = await firebase
         .collection('users')
         .doc(restaurant.uid)
         .get();
@@ -272,7 +272,7 @@ const sendToDevice = functions.firestore
                 click_action: 'FLUTTER_NOTIFICATION_CLICK'
                 }
               };
-              return sms.sendToDevice(tokens, payload);
+              return messaging.sendToDevice(tokens, payload);
             }
             else if(order.state==='DELETED'){
               const payload: admin.messaging.MessagingPayload = {
@@ -283,7 +283,7 @@ const sendToDevice = functions.firestore
                 click_action: 'FLUTTER_NOTIFICATION_CLICK'
                 }
               };
-              return sms.sendToDevice(tokens, payload);
+              return messaging.sendToDevice(tokens, payload);
             }
             else if(order.state==='DELIVERED'){
               const payload: admin.messaging.MessagingPayload = {
@@ -294,7 +294,7 @@ const sendToDevice = functions.firestore
                 click_action: 'FLUTTER_NOTIFICATION_CLICK'
                 }
               };
-              return sms.sendToDevice(tokens, payload);
+              return messaging.sendToDevice(tokens, payload);
             }
           }
         }
@@ -407,17 +407,17 @@ const updateState = functions.https.onCall(async (data, context) => {
   const uid=data.uid;
   const did=data.did;
   const timeS=data.timeS;
-  if(state==='ACCEPTED') await fs.collection('restaurants').doc(rid).collection('restaurant_orders').doc(oid).update({'state':state,'timeS':timeS,'isPaid':true});
-  else await fs.collection('restaurants').doc(rid).collection('restaurant_orders').doc(oid).update({'state':state,'timeS':timeS});
-  await fs.collection('users').doc(did).collection('driver_orders').doc(oid).update({'state':state,'timeS':timeS});
-  await fs.collection('users').doc(uid).collection('user_orders').doc(oid).update({'state':state,'timeS':timeS});
+  if(state==='ACCEPTED') await firebase.collection('restaurants').doc(rid).collection('restaurant_orders').doc(oid).update({'state':state,'timeS':timeS,'isPaid':true});
+  else await firebase.collection('restaurants').doc(rid).collection('restaurant_orders').doc(oid).update({'state':state,'timeS':timeS});
+  await firebase.collection('users').doc(did).collection('driver_orders').doc(oid).update({'state':state,'timeS':timeS});
+  await firebase.collection('users').doc(uid).collection('user_orders').doc(oid).update({'state':state,'timeS':timeS});
   if(state==='DENIED'){
     const day=data.day;
     const startTime=data.startTime;
     const free=data.free;
     const occupied=data.occupied;
     const isEmpty=data.isEmpty;
-    await fs.collection('days').doc(day).collection('times').doc(startTime).update({'free':free,'occupied':occupied,'isEmpty':isEmpty});
+    await firebase.collection('days').doc(day).collection('times').doc(startTime).update({'free':free,'occupied':occupied,'isEmpty':isEmpty});
   }
   return {"documentId": "id",}
 });
@@ -426,49 +426,49 @@ const updateUser = functions.https.onCall(async (data, context) => {
   const uid=data.uid;
   const email=data.email;
   const nominative=data.nominative;
-  await fs.collection('users').doc(uid).update({'email':email,'nominative':nominative});
+  await firebase.collection('users').doc(uid).update({'email':email,'nominative':nominative});
   return {"documentId": "id",}
 });
 
 const updateNotifyEmail = functions.https.onCall(async (data, context) => {
   const uid=data.uid;
   const notifyEmail=data.notifyEmail;
-  await fs.collection('users').doc(uid).update({'notifyEmail':notifyEmail});
+  await firebase.collection('users').doc(uid).update({'notifyEmail':notifyEmail});
   return {"documentId": "id",}
 });
 
 const updateNotifySms = functions.https.onCall(async (data, context) => {
   const uid=data.uid;
   const notifySms=data.notifySms;
-  await fs.collection('users').doc(uid).update({'notifySms':notifySms});
+  await firebase.collection('users').doc(uid).update({'notifySms':notifySms});
   return {"documentId": "id",}
 });
 
 const updateNotifyApp = functions.https.onCall(async (data, context) => {
   const uid=data.uid;
   const notifyApp=data.notifyApp;
-  await fs.collection('users').doc(uid).update({'notifyApp':notifyApp});
+  await firebase.collection('users').doc(uid).update({'notifyApp':notifyApp});
   return {"documentId": "id",}
 });
 
 const updateOffersEmail = functions.https.onCall(async (data, context) => {
   const uid=data.uid;
   const offersEmail=data.offersEmail;
-  await fs.collection('users').doc(uid).update({'offersEmail':offersEmail});
+  await firebase.collection('users').doc(uid).update({'offersEmail':offersEmail});
   return {"documentId": "id",}
 });
 
 const updateOffersSms = functions.https.onCall(async (data, context) => {
   const uid=data.uid;
   const offersSms=data.offersSms;
-  await fs.collection('users').doc(uid).update({'offersSms':offersSms});
+  await firebase.collection('users').doc(uid).update({'offersSms':offersSms});
   return {"documentId": "id",}
 });
 
 const updateOffersApp = functions.https.onCall(async (data, context) => {
   const uid=data.uid;
   const offersApp=data.offersApp;
-  await fs.collection('users').doc(uid).update({'offersApp':offersApp});
+  await firebase.collection('users').doc(uid).update({'offersApp':offersApp});
   return {"documentId": "id",}
 });
 
@@ -483,8 +483,8 @@ const setShift = functions.https.onCall(async (data, context) => {
   const isEmpty=data.isEmpty;
   console.log(users);
   console.log(isEmpty);
-  await fs.collection('days').doc(day).collection('times').doc(startTime).update({'free':users,'isEmpty':isEmpty});
-  await fs.collection('users').doc(uid).collection('turns').doc(day+'§'+startTime).create({'startTime':startTime,'endTime':endTime,'day':day,'month':month,'year':year});
+  await firebase.collection('days').doc(day).collection('times').doc(startTime).update({'free':users,'isEmpty':isEmpty});
+  await firebase.collection('users').doc(uid).collection('turns').doc(day+'§'+startTime).create({'startTime':startTime,'endTime':endTime,'day':day,'month':month,'year':year});
   return {"documentId": "id",}
 });
 
@@ -495,7 +495,7 @@ const createStripeCharge = functions.https.onCall(async (data, context) => {
     const drinkIds = data.drinkIds;
     const restaurantId=data.restaurantId;
     const uid=data.uid;
-    const customerRef=fs.collection('stripe_customers').doc(uid)
+    const customerRef=firebase.collection('stripe_customers').doc(uid)
     const customerData=(await customerRef.get()).data();
     const customer = customerData!.customer_id;
     console.log(customer);
@@ -546,7 +546,7 @@ const createStripeCharge = functions.firestore
 async function calculatePrice(products: string [],collectionId: string,restaurantId:string): Promise<number>{
   let price = 0
   for(const entry of products){
-    const product=(await(fs.collection('restaurants').doc(restaurantId).collection(collectionId).doc(entry)).get()).data()
+    const product=(await(firebase.collection('restaurants').doc(restaurantId).collection(collectionId).doc(entry)).get()).data()
     //console.log(product.price)
     price +=product?parseInt(product.price,10):0
   }

@@ -68,7 +68,7 @@ class CartBloc extends Bloc {
     final firebaseUser = await userBloc.outUser.first;
     var products = await inDeleteCart(restaurantId);
 
-    await _db.createOrder(products, firebaseUser.model.id, customerCoordinates, customerAddress, data.phone, restaurantId, driverId, data.selectedShift, data.cardId);
+    await _db.createOrder(products, firebaseUser.model.id, customerCoordinates, customerAddress, data.name, data.phone, restaurantId, driverId, data.selectedShift, data.cardId);
 
     return true;
   }

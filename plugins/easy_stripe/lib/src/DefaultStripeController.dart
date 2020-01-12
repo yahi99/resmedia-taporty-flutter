@@ -9,10 +9,7 @@ import 'package:flutter/foundation.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:stripe_payment/stripe_payment.dart';
 
-
 abstract class StripeManager {
-  String get assetFolder;
-
   Stream<List<StripeSourceModel>> get outCards;
 
   Stream<StripeSourceModel> get outCard;
@@ -22,18 +19,17 @@ abstract class StripeManager {
   Future<void> inPickSource(String paymentCardId);
 }
 
-
 class DefaultStripeController implements Controller, StripeManager {
   final StripeProviderRule provider;
   String _userId;
-  final String assetFolder;
 
   StreamSubscription userIdSub, cardsSub, cardSub;
   DefaultStripeController({
-    @required publishableKey, @required Stream<String> outUserId, @required this.provider,
-    this.assetFolder: PaymentCard.ASSET_FOLDER,
-  }) : assert(provider != null), assert(publishableKey != null) {
-
+    @required publishableKey,
+    @required Stream<String> outUserId,
+    @required this.provider,
+  })  : assert(provider != null),
+        assert(publishableKey != null) {
     StripeSource.setPublishableKey(publishableKey);
 
     cardsController.onListen = () async {
@@ -48,11 +44,11 @@ class DefaultStripeController implements Controller, StripeManager {
 
     cardController.onListen = () async {
       final cards = await outCards.first;
-      if(cards.isNotEmpty) {
+      if (cards.isNotEmpty) {
         final card = cards.reduce((currentCard, newCard) {
-          return currentCard.lastUse.compareTo(newCard.lastUse) < 0
-              ? newCard
-              : currentCard;
+          if (newCard.lastUse == null) return currentCard;
+          if (currentCard.lastUse == null) return newCard;
+          return currentCard.lastUse.compareTo(newCard.lastUse) < 0 ? newCard : currentCard;
         });
         inPickSource(card.id);
       }
@@ -77,23 +73,21 @@ class DefaultStripeController implements Controller, StripeManager {
   Future<void> onAddPaymentCard() async {
     final sourceToken = await StripeSource.addSource();
     if (sourceToken == null) return;
-    final paymentCardId = await provider.addStripeSourceModel(_userId, StripeSourceModel(
-      token: sourceToken,
-    ));
+    final paymentCardId = await provider.addStripeSourceModel(
+        _userId,
+        StripeSourceModel(
+          token: sourceToken,
+        ));
     await inPickSource(paymentCardId);
   }
 
   Future<void> inPickSource(String paymentCardId) async {
-    cardSub = outCards.map((cards) => cards.firstWhere((card) => card.id == paymentCardId))
-        .listen(cardController.add);
+    cardSub = outCards.map((cards) => cards.firstWhere((card) => card.id == paymentCardId)).listen(cardController.add);
   }
 }
 
-
 mixin MixinStripeManager implements StripeManager {
   StripeManager get stripeManager;
-
-  String get assetFolder => stripeManager.assetFolder;
 
   Stream<List<StripeSourceModel>> get outCards => stripeManager.outCards;
 
@@ -101,5 +95,3 @@ mixin MixinStripeManager implements StripeManager {
 
   Future<void> onAddPaymentCard() => stripeManager.onAddPaymentCard();
 }
-
-

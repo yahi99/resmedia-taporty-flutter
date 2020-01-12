@@ -4,13 +4,11 @@ import 'package:easy_stripe/src/StripeSourceModel.dart';
 import 'package:easy_widget/easy_widget.dart';
 import 'package:flutter/material.dart';
 
-
-
-
 class StripePickSource extends StatelessWidget {
   final StripeManager manager;
 
-  const StripePickSource({Key key,
+  const StripePickSource({
+    Key key,
     @required this.manager,
   }) : super(key: key);
 
@@ -20,7 +18,9 @@ class StripePickSource extends StatelessWidget {
       stream: manager.outCard,
       builder: (_, snap) {
         if (snap.connectionState == ConnectionState.none)
-          return Center(child: CircularProgressIndicator(),);
+          return Center(
+            child: CircularProgressIndicator(),
+          );
 
         if (!snap.hasData)
           return InkWell(
@@ -32,7 +32,7 @@ class StripePickSource extends StatelessWidget {
           onTap: () {
             showDialog(
               context: context,
-              builder: (_) => StripPickSourceDialog(
+              builder: (_) => StripePickSourceDialog(
                 manager: manager,
               ),
             );
@@ -47,27 +47,31 @@ class StripePickSource extends StatelessWidget {
   }
 }
 
-
-class StripPickSourceDialog extends StatelessWidget {
+class StripePickSourceDialog extends StatelessWidget {
   final StripeManager manager;
 
-  const StripPickSourceDialog({Key key, @required this.manager}) : super(key: key);
+  const StripePickSourceDialog({Key key, @required this.manager}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return PickPaymentCardDialog(
       onAddPaymentCard: manager.onAddPaymentCard,
       outCards: manager.outCards.map((cards) {
-        return cards == null ? null : cards.map((card) {
-          return InkWell(
-            onTap: () => manager.inPickSource(card.id),
-            child: StripeSourceView(
-              manager: manager,
-              model: card,
-              isDense: true,
-            ),
-          );
-        }).toList();
+        return cards == null
+            ? null
+            : cards.map((card) {
+                return InkWell(
+                  onTap: () {
+                    manager.inPickSource(card.id);
+                    Navigator.pop(context);
+                  },
+                  child: StripeSourceView(
+                    manager: manager,
+                    model: card,
+                    isDense: true,
+                  ),
+                );
+              }).toList();
       }),
     );
   }

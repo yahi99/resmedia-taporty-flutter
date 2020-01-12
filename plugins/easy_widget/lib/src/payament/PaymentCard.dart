@@ -1,4 +1,3 @@
-import 'package:easy_widget/easy_widget.dart';
 import 'package:flutter/material.dart';
 
 enum BrandOfPaymentCard {
@@ -10,6 +9,16 @@ enum BrandOfPaymentCard {
   unionPay,
   visa,
 }
+
+const Map<BrandOfPaymentCard, String> ASSET_OF_PAYMENT_CARD = {
+  BrandOfPaymentCard.americanExpress: "packages/easy_widget/assets/imgs/payment_card/americanExpress.png",
+  BrandOfPaymentCard.dinersClub: "packages/easy_widget/assets/imgs/payment_card/dinersClub.png",
+  BrandOfPaymentCard.discover: "packages/easy_widget/assets/imgs/payment_card/discover.png",
+  BrandOfPaymentCard.JCB: "packages/easy_widget/assets/imgs/payment_card/JCB.png",
+  BrandOfPaymentCard.mastercard: "packages/easy_widget/assets/imgs/payment_card/mastercard.png",
+  BrandOfPaymentCard.unionPay: null,
+  BrandOfPaymentCard.visa: "packages/easy_widget/assets/imgs/payment_card/visa.png",
+};
 
 const STRING_OF_PAYMENT_CARD = <BrandOfPaymentCard, String>{
   BrandOfPaymentCard.americanExpress: "American Express",
@@ -32,16 +41,13 @@ const STRING_OF_PAYMENT_CARD = <BrandOfPaymentCard, String>{
 
 class PaymentCard extends StatelessWidget {
   static const PAINT_SIZE = 64.0;
-  static const ASSET_FOLDER = "packages/easy_widget/assets/imgs/payment_card/";
 
-  final String assetFolder;
   final BrandOfPaymentCard type;
   final String last4;
   final bool isDense;
 
   PaymentCard({
     Key key,
-    this.assetFolder: ASSET_FOLDER,
     @required this.type,
     @required this.last4,
     this.isDense: false,
@@ -62,34 +68,37 @@ class PaymentCard extends StatelessWidget {
     final theme = Theme.of(context);
     final tt = theme.textTheme;
 
-    // final assetFile = AssetHandler().getFolder(assetFolder).getFileByEnum(type);
-
-    final assetFile = type == null ? null : AssetHandler().getFolder(assetFolder).getFileByEnum(type);
+    final assetPath = type == null ? null : ASSET_OF_PAYMENT_CARD[type];
 
     return Row(
       children: <Widget>[
-        assetFile == null
+        assetPath == null
             ? const Icon(
                 Icons.credit_card,
                 size: PAINT_SIZE,
               )
             : Image.asset(
-                assetFile.path,
+                assetPath,
                 width: PAINT_SIZE,
                 height: PAINT_SIZE,
                 fit: BoxFit.contain,
               ),
-        SizedBox(
-          width: 16.0,
+        Padding(
+          padding: const EdgeInsets.only(left: 10.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                type == null ? "Unknown" : STRING_OF_PAYMENT_CARD[type],
+                style: tt.subtitle,
+              ),
+              Text(
+                "**** **** **** $last4",
+                style: TextStyle(fontSize: 11, color: Colors.grey),
+              ),
+            ],
+          ),
         ),
-        Text(
-          type == null ? "Unknow" : STRING_OF_PAYMENT_CARD[type],
-          style: tt.subtitle,
-        ),
-        SizedBox(
-          width: 8.0,
-        ),
-        Text(isDense == true ? '... $last4' : 'XXXX XXXX XXXX $last4'),
       ],
     );
   }

@@ -19,7 +19,7 @@ mixin MixinShiftProvider on MixinRestaurantProvider, MixinUserProvider {
 
     for (var startTime in startTimes) {
       // Don't show shifts from the past and more than 48 hours in the future
-      if (startTime.compareTo(DateTime.now()) > 0 && startTime.difference(DateTime.now()).inMilliseconds < 48 * 60 * 60 * 1000) continue;
+      if (startTime.compareTo(DateTime.now()) < 0 || startTime.difference(DateTime.now()).inMilliseconds > 48 * 60 * 60 * 1000) continue;
 
       var reservedShifts = (await shiftCollection.where("startTime", isEqualTo: datetimeToJson(startTime)).orderBy("reservationTimestamp").getDocuments(source: Source.server))
           .documents
@@ -60,7 +60,7 @@ mixin MixinShiftProvider on MixinRestaurantProvider, MixinUserProvider {
             'occupied': true,
           });
           found = true;
-          driverId = reservation.id;
+          driverId = reservation.driverId;
         }
       });
       if (found) break;
@@ -90,7 +90,7 @@ mixin MixinShiftProvider on MixinRestaurantProvider, MixinUserProvider {
     );
     await shiftCollection.document(driverId + startTime.millisecondsSinceEpoch.toString()).setData({
       ...shift.toJson(),
-      "reservationTimestamp": FieldValue.serverTimestamp(),
+      "reservationTimestamp": datetimeToJson(DateTime.now()),
     });
   }
 

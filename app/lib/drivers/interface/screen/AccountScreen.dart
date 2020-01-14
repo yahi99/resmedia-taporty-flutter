@@ -42,7 +42,7 @@ class AccountScreen extends StatelessWidget implements WidgetRoute {
             return Center(
               child: CircularProgressIndicator(),
             );
-          return StreamBuilder(
+          return StreamBuilder<UserModel>(
             stream: Database().getUser(snap.data.userFb),
             builder: (ctx, userModelSnapshot) {
               if (snap.hasData && userModelSnapshot.hasData) {
@@ -118,7 +118,7 @@ class AccountScreen extends StatelessWidget implements WidgetRoute {
                         ),
                         children: <Widget>[
                           Text(
-                            user.customerName,
+                            user.nominative,
                             style: theme.textTheme.subhead,
                           ),
                           Text(

@@ -7,22 +7,21 @@ part 'ReviewModel.g.dart';
 
 @JsonSerializable(anyMap: true, explicitToJson: true)
 class ReviewModel extends FirebaseModel {
-  final double points;
-  final String strPoints,oid,userId,nominative;
+  final double rating;
+  final String description, orderId, userId, customerName;
 
   ReviewModel({
     @required String path,
-    @required this.nominative,
-    @required this.strPoints,
+    @required this.customerName,
+    @required this.description,
     @required this.userId,
-    @required this.oid,
-    @required this.points,
+    @required this.orderId,
+    @required this.rating,
   }) : super(path);
 
   static ReviewModel fromJson(Map json) => _$ReviewModelFromJson(json);
 
-  static ReviewModel fromFirebase(DocumentSnapshot snap) =>
-      FirebaseModel.fromFirebase(fromJson, snap);
+  static ReviewModel fromFirebase(DocumentSnapshot snap) => FirebaseModel.fromFirebase(fromJson, snap);
 
   Map<String, dynamic> toJson() => _$ReviewModelToJson(this);
 }

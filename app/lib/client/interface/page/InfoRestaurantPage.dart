@@ -3,6 +3,7 @@ import 'package:easy_route/easy_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:rating_bar/rating_bar.dart';
 import 'package:resmedia_taporty_flutter/client/interface/screen/SeeReviewsScreen.dart';
 import 'package:resmedia_taporty_flutter/common/model/RestaurantModel.dart';
 
@@ -36,56 +37,84 @@ class InfoRestaurantPage extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 12.0 * 2),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text(
-                      model.id,
-                      style: theme.textTheme.headline,
-                    ),
-                    // Nome del ristorante
-                    Text(
-                      address,
-                      style: theme.textTheme.subhead,
-                    ),
-                    // Città - Indirizzo, civico
-                    SizedBox(height: 16),
-                    model.description != null
-                        ? Text(
-                            model.description,
-                            style: theme.textTheme.body1,
-                            textAlign: TextAlign.justify,
-                          )
-                        : Container(),
-                    SizedBox(height: 16),
-                    InkWell(
-                      child: Row(
-                        children: <Widget>[Icon(Icons.star), Icon(Icons.star), model.averageReviews != null ? Text(' ' + model.averageReviews.toString()) : Container(), Text(' Buono')],
+                padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 18.0),
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(
+                        model.id,
+                        textAlign: TextAlign.center,
+                        style: theme.textTheme.headline,
                       ),
-                      onTap: () {
-                        EasyRouter.push(
-                            context,
-                            SeeReviewsScreen(
-                              model: model,
-                            ));
-                      },
-                    ),
-                    SizedBox(height: 16),
-                    /*
-                    model.deliveryFee != null
-                        ? Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              'Costo consegna:\n' + model.deliveryFee.toString() + '\n',
-                              style: theme.textTheme.overline,
+                      Text(
+                        address,
+                        textAlign: TextAlign.center,
+                        style: theme.textTheme.body1.copyWith(fontSize: 14),
+                      ),
+                      if (model.description != null)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
+                          child: Text(
+                            model.description,
+                            style: theme.textTheme.subhead,
+                          ),
+                        ),
+                      if (model.averageReviews != null)
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8.0),
+                          child: InkWell(
+                            child: Row(
+                              children: <Widget>[
+                                RatingBar.readOnly(
+                                  initialRating: model.averageReviews,
+                                  filledIcon: Icons.star,
+                                  emptyIcon: Icons.star_border,
+                                  halfFilledIcon: Icons.star_half,
+                                  isHalfAllowed: true,
+                                  emptyColor: Colors.yellow,
+                                  filledColor: Colors.yellow,
+                                  halfFilledColor: Colors.yellow,
+                                  size: 26,
+                                ),
+                                model.averageReviews != null ? Text(' ' + model.averageReviews.toString()) : Container(),
+                              ],
                             ),
-                          )
-                        : Container(),*/
-                  ],
+                            onTap: () {
+                              EasyRouter.push(
+                                context,
+                                SeeReviewsScreen(
+                                  model: model,
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                    ],
+                  ),
                 ),
               ),
             ],
+          ),
+        ),
+        Align(
+          alignment: Alignment.bottomLeft,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 30),
+            child: RichText(
+              text: TextSpan(
+                children: [
+                  TextSpan(
+                    text: "Orario di oggi:\n",
+                    style: theme.textTheme.body1.copyWith(fontSize: 15),
+                  ),
+                  TextSpan(
+                    text: model.getTimetableString(),
+                    style: theme.textTheme.body1.copyWith(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+            ),
           ),
         ),
         Align(

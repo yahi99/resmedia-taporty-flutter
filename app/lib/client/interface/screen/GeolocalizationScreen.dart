@@ -42,7 +42,12 @@ class _GeoLocScreenState extends State<GeoLocScreen> {
   void _focusNodePlaces() async {
     // show input autocomplete with selected mode
     // then get the Prediction selected
-    Prediction p = await PlacesAutocomplete.show(context: context, apiKey: _key);
+    Prediction p = await PlacesAutocomplete.show(
+      context: context,
+      apiKey: _key,
+      language: "it",
+      hint: "Cerca",
+    );
     displayPrediction(p);
   }
 
@@ -96,17 +101,23 @@ class _GeoLocScreenState extends State<GeoLocScreen> {
                     hintText: 'Via Mario Rossi',
                   ),
                 ),
-                IconButton(
-                    icon: Icon(Icons.check),
-                    color: Colors.blue,
-                    onPressed: () async {
-                      if (isValid) {
-                        EasyRouter.pushAndRemoveAll(context,
-                            RestaurantListScreen(customerCoordinates: customerCoordinates, customerAddress: customerAddress, isAnonymous: false, user: (await UserBloc.of().outUser.first).model));
-                      } else {
-                        Toast.show('Inserire un indirizzo valido', context);
-                      }
-                    }),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    FlatButton(
+                      child: Icon(Icons.check),
+                      color: Colors.blue,
+                      onPressed: () async {
+                        if (isValid) {
+                          EasyRouter.pushAndRemoveAll(context,
+                              RestaurantListScreen(customerCoordinates: customerCoordinates, customerAddress: customerAddress, isAnonymous: false, user: (await UserBloc.of().outUser.first).model));
+                        } else {
+                          Toast.show('Inserire un indirizzo valido', context);
+                        }
+                      },
+                    ),
+                  ],
+                ),
               ]);
         },
       ),

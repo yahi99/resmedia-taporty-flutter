@@ -48,11 +48,11 @@ class SnackBarPage extends StatelessWidget {
             return Center(
               child: CircularProgressIndicator(),
             );
-          return StreamBuilder(
+          return StreamBuilder<UserModel>(
               stream: Database().getUser(snap.data.userFb),
-              builder: (ctx, model) {
-                if (snap.hasData && model.hasData) {
-                  if (model.data.type != 'user' && model.data.type != null) {
+              builder: (ctx, userSnapshot) {
+                if (snap.hasData && userSnapshot.hasData) {
+                  if (userSnapshot.data.type != 'user' && userSnapshot.data.type != null) {
                     return RaisedButton(
                       child: Text('Sei stato disabilitato clicca per fare logout'),
                       onPressed: () {
@@ -75,38 +75,29 @@ class SnackBarPage extends StatelessWidget {
                               fit: BoxFit.cover,
                             ),
                           ),
-                          StreamBuilder<UserModel>(
-                            stream: Database().getUserByIdStream(snap.data.model.id),
-                            builder: (ctx, img) {
-                              if (!img.hasData)
-                                return Center(
-                                  child: CircularProgressIndicator(),
-                                );
-                              return Padding(
-                                padding: EdgeInsets.only(top: 25.0),
-                                child: Container(
-                                  width: 190.0,
-                                  height: 190.0,
-                                  child: Container(
-                                    width: double.infinity,
-                                    height: double.infinity,
-                                    child: (img.data.imageUrl != null)
-                                        ? CircleAvatar(backgroundImage: CachedNetworkImageProvider(img.data.imageUrl))
-                                        : CircleAvatar(
-                                            backgroundColor: Colors.black,
-                                          ),
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
+                          Padding(
+                            padding: EdgeInsets.only(top: 25.0),
+                            child: Container(
+                              width: 190.0,
+                              height: 190.0,
+                              child: Container(
+                                width: double.infinity,
+                                height: double.infinity,
+                                child: (userSnapshot.data.imageUrl != null)
+                                    ? CircleAvatar(backgroundImage: CachedNetworkImageProvider(userSnapshot.data.imageUrl))
+                                    : Image(
+                                        fit: BoxFit.cover,
+                                        image: AssetImage("assets/img/default_profile_photo.jpg"),
+                                      ),
+                              ),
+                            ),
+                          )
                         ],
                       ),
                       Padding(
                         padding: EdgeInsets.only(top: 8.0),
                       ),
-                      (snap.data.model.nominative != null) ? Text(snap.data.model.nominative) : Container(),
-                      Text('Assisi'),
+                      (userSnapshot.data.nominative != null) ? Text(userSnapshot.data.nominative) : Container(),
                       const Divider(
                         color: Colors.grey,
                       ),
@@ -120,7 +111,7 @@ class SnackBarPage extends StatelessWidget {
                             children: <Widget>[
                               TextFormField(
                                 key: _nameKey,
-                                initialValue: snap.data.model.nominative,
+                                initialValue: userSnapshot.data.nominative,
                                 style: theme.textTheme.subhead,
                                 validator: (value) {
                                   if (value.isEmpty) {
@@ -131,7 +122,7 @@ class SnackBarPage extends StatelessWidget {
                               ),
                               TextFormField(
                                 key: _passKey,
-                                initialValue: snap.data.model.email,
+                                initialValue: userSnapshot.data.email,
                                 style: theme.textTheme.subhead,
                                 validator: (value) {
                                   if (value.isEmpty) {

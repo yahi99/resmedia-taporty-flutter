@@ -71,14 +71,15 @@ class AccountScreen extends StatelessWidget implements WidgetRoute {
                               width: double.infinity,
                               height: double.infinity,
                               child: (user.imageUrl != null)
-                                  ? CircleAvatar(backgroundImage: CachedNetworkImageProvider(user.imageUrl))
-                                  : CircleAvatar(
-                                      backgroundColor: Colors.black,
+                                  ? CircleAvatar(backgroundColor: Colors.white, backgroundImage: CachedNetworkImageProvider(user.imageUrl))
+                                  : Image(
+                                      fit: BoxFit.cover,
+                                      image: AssetImage("assets/img/default_profile_photo.jpg"),
                                     ),
                             ),
                           ),
                         ),
-                        Padding(
+                        /*Padding(
                           padding: EdgeInsets.only(top: 25.0, left: 140.0),
                           child: IconButton(
                             iconSize: 50.0,
@@ -104,7 +105,7 @@ class AccountScreen extends StatelessWidget implements WidgetRoute {
                               });
                             },
                           ),
-                        ),
+                        ),*/
                       ],
                     ),
                     Padding(
@@ -120,7 +121,7 @@ class AccountScreen extends StatelessWidget implements WidgetRoute {
                         ),
                         children: <Widget>[
                           Text(
-                            user.nominative,
+                            user.customerName,
                             style: theme.textTheme.subhead,
                           ),
                           Text(

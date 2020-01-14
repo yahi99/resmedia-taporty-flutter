@@ -42,9 +42,10 @@ const onRestaurantRequestChanged = functions.firestore.document('restaurant_requ
                 },
                 3: {
                     open: true,
-                    timeslotCount: 1,
+                    timeslotCount: 2,
                     timeslots: [
-                        { start: "09:00", end: "18:00" }
+                        { start: "11:30", end: "15:00" },
+                        { start: "19:00", end: "23:30" }
                     ]
                 },
                 4: {

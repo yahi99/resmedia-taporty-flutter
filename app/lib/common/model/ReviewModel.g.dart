@@ -9,11 +9,11 @@ part of 'ReviewModel.dart';
 ReviewModel _$ReviewModelFromJson(Map json) {
   return ReviewModel(
     path: json['path'] as String,
-    nominative: json['nominative'] as String,
-    strPoints: json['strPoints'] as String,
+    customerName: json['customerName'] as String,
+    description: json['description'] as String,
     userId: json['userId'] as String,
-    oid: json['oid'] as String,
-    points: (json['points'] as num)?.toDouble(),
+    orderId: json['orderId'] as String,
+    rating: (json['rating'] as num)?.toDouble(),
   );
 }
 
@@ -27,10 +27,10 @@ Map<String, dynamic> _$ReviewModelToJson(ReviewModel instance) {
   }
 
   writeNotNull('path', instance.path);
-  val['points'] = instance.points;
-  val['strPoints'] = instance.strPoints;
-  val['oid'] = instance.oid;
+  val['rating'] = instance.rating;
+  val['description'] = instance.description;
+  val['orderId'] = instance.orderId;
   val['userId'] = instance.userId;
-  val['nominative'] = instance.nominative;
+  val['customerName'] = instance.customerName;
   return val;
 }

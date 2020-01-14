@@ -107,7 +107,7 @@ class _RestaurantOrderPageState extends State<RestaurantOrderPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  HeaderWidget("POSIZIONE CLIENTE"),
+                  HeaderWidget("POSIZIONE FORNITORE"),
                   _buildMap(order),
                   HeaderWidget("INFORMAZIONI"),
                   _buildInfo(order),
@@ -169,7 +169,7 @@ class _RestaurantOrderPageState extends State<RestaurantOrderPage> {
           Row(
             children: <Widget>[
               Container(
-                height: 150,
+                constraints: BoxConstraints(maxWidth: 130, maxHeight: 130),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(6.0),
                   child: CachedNetworkImage(

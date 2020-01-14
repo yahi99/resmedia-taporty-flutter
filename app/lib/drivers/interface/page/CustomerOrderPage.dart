@@ -162,6 +162,24 @@ class _CustomerOrderPageState extends State<CustomerOrderPage> {
 
   _buildInfo(OrderModel order) {
     final textTheme = Theme.of(context).textTheme;
+    Widget imageWidget = Image(
+      fit: BoxFit.cover,
+      image: AssetImage("assets/img/default_profile_photo.jpg"),
+    );
+    if (order.customerImageUrl != null && order.customerImageUrl != "") {
+      imageWidget = CachedNetworkImage(
+        imageUrl: order.customerImageUrl,
+        fit: BoxFit.cover,
+        placeholder: (context, url) => Center(
+          child: SizedBox(
+            child: CircularProgressIndicator(),
+            height: 50.0,
+            width: 50.0,
+          ),
+        ),
+        errorWidget: (context, url, error) => Center(child: Icon(Icons.error, color: Colors.grey)),
+      );
+    }
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
@@ -170,21 +188,10 @@ class _CustomerOrderPageState extends State<CustomerOrderPage> {
           Row(
             children: <Widget>[
               Container(
-                height: 150,
+                constraints: BoxConstraints(maxWidth: 130, maxHeight: 130),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(6.0),
-                  child: CachedNetworkImage(
-                    imageUrl: order.customerImageUrl,
-                    fit: BoxFit.cover,
-                    placeholder: (context, url) => Center(
-                      child: SizedBox(
-                        child: CircularProgressIndicator(),
-                        height: 50.0,
-                        width: 50.0,
-                      ),
-                    ),
-                    errorWidget: (context, url, error) => Center(child: Icon(Icons.error, color: Colors.grey)),
-                  ),
+                  child: imageWidget,
                 ),
               ),
               Expanded(

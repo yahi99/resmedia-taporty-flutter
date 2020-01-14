@@ -62,7 +62,10 @@ class _CheckoutScreenState extends State<SeeReviewsScreen> {
             shrinkWrap: true,
             itemBuilder: (ctx, index) {
               final model = snap.data.elementAt(index);
-              return Review(model: model);
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Card(child: Review(model: model)),
+              );
             },
             separatorBuilder: (ctx, index) {
               return Divider(
@@ -89,22 +92,21 @@ class Review extends StatelessWidget {
       children: <Widget>[
         Padding(
           child: Text(
-            model.nominative,
+            model.customerName,
             style: tt.subtitle,
           ),
           padding: EdgeInsets.all(8.0),
         ),
         Padding(
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Container(
-                child: Text(model.strPoints),
-                width: MediaQuery.of(context).size.width * 8 / 10,
-              ),
-              Expanded(
+              Text(model.description),
+              Padding(
+                padding: const EdgeInsets.only(left: 16.0),
                 child: Row(
                   children: <Widget>[
-                    Text(model.points.toString()),
+                    Text(model.rating.toString()),
                     Icon(Icons.star),
                   ],
                 ),

@@ -29,7 +29,7 @@ class _SettingsState extends State<SettingsScreen> {
         if (!snap.hasData) return Center(child: CircularProgressIndicator());
         return Scaffold(
           appBar: AppBar(
-            title: Text("Settings"),
+            title: Text("Impostazioni"),
           ),
           body: Padding(
             padding: const EdgeInsets.only(top: 12.0 * 2),

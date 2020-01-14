@@ -103,9 +103,10 @@ class AccountScreen extends StatelessWidget implements WidgetRoute {
                                     width: double.infinity,
                                     height: double.infinity,
                                     child: (img.data.imageUrl != null)
-                                        ? CircleAvatar(backgroundImage: CachedNetworkImageProvider(img.data.imageUrl))
-                                        : CircleAvatar(
-                                            backgroundColor: Colors.black,
+                                        ? CircleAvatar(backgroundColor: Colors.white, backgroundImage: CachedNetworkImageProvider(img.data.imageUrl))
+                                        : Image(
+                                            fit: BoxFit.cover,
+                                            image: AssetImage("assets/img/default_profile_photo.jpg"),
                                           ),
                                   ),
                                 ),
@@ -222,14 +223,14 @@ class AccountScreen extends StatelessWidget implements WidgetRoute {
                               children: <Widget>[
                                 Icon(Icons.settings),
                                 FlatButton(
-                                  child: Text('Settings', style: theme.textTheme.subhead),
+                                  child: Text('Impostazioni', style: theme.textTheme.subhead),
                                   onPressed: () => {EasyRouter.push(context, SettingsScreen())},
                                 ),
                               ],
                             ),
                             Row(
                               children: <Widget>[
-                                Icon(Icons.settings),
+                                Icon(Icons.exit_to_app),
                                 FlatButton(
                                     child: Text('Log Out', style: theme.textTheme.subhead),
                                     onPressed: () {

@@ -60,7 +60,7 @@ class SnackBarPage extends StatelessWidget {
                   padding: const EdgeInsets.only(top: 12.0 * 2),
                   child: TextFormField(
                     decoration: InputDecoration(
-                      hintText: 'Password',
+                      hintText: 'Password corrente',
                     ),
                     key: _passKeyB,
                     obscureText: true,

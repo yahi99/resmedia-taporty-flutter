@@ -153,6 +153,24 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
 
   _buildSubjectDetails(String imageUrl, String name, String address) {
     var textTheme = Theme.of(context).textTheme;
+    Widget imageWidget = Image(
+      fit: BoxFit.cover,
+      image: AssetImage("assets/img/default_profile_photo.jpg"),
+    );
+    if (imageUrl != null && imageUrl != "") {
+      imageWidget = CachedNetworkImage(
+        imageUrl: imageUrl,
+        fit: BoxFit.cover,
+        placeholder: (context, url) => SizedBox(
+          height: 30.0,
+          width: 30.0,
+          child: Center(
+            child: CircularProgressIndicator(),
+          ),
+        ),
+        errorWidget: (context, url, error) => Center(child: Icon(Icons.error, color: Colors.grey)),
+      );
+    }
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Row(
@@ -161,18 +179,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
             width: 80,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(6.0),
-              child: CachedNetworkImage(
-                imageUrl: imageUrl,
-                fit: BoxFit.cover,
-                placeholder: (context, url) => Center(
-                  child: SizedBox(
-                    child: CircularProgressIndicator(),
-                    height: 30.0,
-                    width: 30.0,
-                  ),
-                ),
-                errorWidget: (context, url, error) => Center(child: Icon(Icons.error, color: Colors.grey)),
-              ),
+              child: imageWidget,
             ),
           ),
           Expanded(

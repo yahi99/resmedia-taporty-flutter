@@ -118,7 +118,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                     child: Text('Invia'),
                     onPressed: () async {
                       try {
-                        await _db.addRestaurantReview(order.restaurantId, order.customerId, order.id, _restRating, _restReviewBodyKey.currentState.value);
+                        await _db.addRestaurantReview(order.restaurantId, order.customerId, order.customerName, order.id, _restRating, _restReviewBodyKey.currentState.value);
                         Toast.show("Recensione aggiunta con successo!", context);
                         EasyRouter.pop(context);
                       } catch (err) {
@@ -202,7 +202,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                     child: Text('Invia'),
                     onPressed: () async {
                       try {
-                        await _db.addDriverReview(order.driverId, order.customerId, order.id, _driverRating, _driverReviewBodyKey.currentState.value);
+                        await _db.addDriverReview(order.driverId, order.customerId, order.customerName, order.id, _driverRating, _driverReviewBodyKey.currentState.value);
                         Toast.show("Recensione aggiunta con successo!", context);
                         EasyRouter.pop(context);
                       } catch (err) {
@@ -448,6 +448,24 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
 
   _buildSubjectDetails(String imageUrl, String name, String phoneNumber) {
     var textTheme = Theme.of(context).textTheme;
+    Widget imageWidget = Image(
+      fit: BoxFit.cover,
+      image: AssetImage("assets/img/default_profile_photo.jpg"),
+    );
+    if (imageUrl != null && imageUrl != "") {
+      imageWidget = CachedNetworkImage(
+        imageUrl: imageUrl,
+        fit: BoxFit.cover,
+        placeholder: (context, url) => SizedBox(
+          height: 30.0,
+          width: 30.0,
+          child: Center(
+            child: CircularProgressIndicator(),
+          ),
+        ),
+        errorWidget: (context, url, error) => Center(child: Icon(Icons.error, color: Colors.grey)),
+      );
+    }
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Row(
@@ -457,18 +475,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
               width: 80,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(6.0),
-                child: CachedNetworkImage(
-                  imageUrl: imageUrl,
-                  fit: BoxFit.cover,
-                  placeholder: (context, url) => SizedBox(
-                    height: 30.0,
-                    width: 30.0,
-                    child: Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  ),
-                  errorWidget: (context, url, error) => Center(child: Icon(Icons.error, color: Colors.grey)),
-                ),
+                child: imageWidget,
               ),
             ),
           Expanded(

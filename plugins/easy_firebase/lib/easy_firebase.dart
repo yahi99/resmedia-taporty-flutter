@@ -1,11 +1,7 @@
 library easy_firebase;
 
-export 'src/bloc/DefaultLoggerBloc.dart';
-export 'src/bloc/FirebaseLoggerBloc.dart';
-export 'src/bloc/DefaultSignInBloc.dart';
 export 'src/bloc/FirebaseSignInBloc.dart';
 export 'src/bloc/FirebaseSignUpBloc.dart';
-export 'src/bloc/FirebaseUserBloc.dart';
 
 export 'src/controllers/FirebaseUserController.dart';
 

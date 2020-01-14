@@ -1,12 +1,9 @@
 import 'package:easy_stripe/easy_stripe.dart';
-import 'package:easy_widget/easy_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:resmedia_taporty_flutter/client/interface/screen/CheckoutScreen.dart';
 import 'package:resmedia_taporty_flutter/client/interface/view/BottonButtonBar.dart';
-import 'package:resmedia_taporty_flutter/client/interface/view/InputField.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
 
 class PaymentPage extends StatefulWidget {

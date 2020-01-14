@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
 import 'package:resmedia_taporty_flutter/common/model/UserModel.dart';
+import 'package:toast/toast.dart';
 
 class ChangePasswordScreen extends StatefulWidget implements WidgetRoute {
   static const ROUTE = 'ChangePasswordScreen';
@@ -111,9 +112,8 @@ class SnackBarPage extends StatelessWidget {
                         if (result != null && result.uid == snap.data.userFb.uid) isCorrect = true;
                         if (_formKey.currentState.validate()) {
                           snap.data.userFb.updatePassword(_passKey.currentState.value.toString()).then((_) {
-                            Scaffold.of(context).showSnackBar(SnackBar(
-                              content: Text('Password cambiata!'),
-                            ));
+                            Toast.show("Password cambiata con successo!", context);
+                            EasyRouter.pop(context);
                           }).catchError((error) {
                             print(error);
                             if (error is PlatformException) {

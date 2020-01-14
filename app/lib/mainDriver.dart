@@ -4,8 +4,7 @@ import 'package:easy_widget/easy_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:intl/date_symbol_data_local.dart';
-import 'package:intl/intl.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:resmedia_taporty_flutter/app_localization.dart';
 import 'package:resmedia_taporty_flutter/config/ColorTheme.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/screen/LoginScreen.dart';
@@ -16,8 +15,6 @@ import 'package:resmedia_taporty_flutter/drivers/interface/screen/LoginScreen.da
 //blue = Color(0xFF1565c0), blue_s = Color(0xFF003c8f); // 0F5DDB
 
 void main() async {
-  initializeDateFormatting();
-  Intl.defaultLocale = "it"; // TODO: Gestisci meglio
   runApp(RepositoryBuilder(
     backgroundTask: (context, sharedPreferences) async {
       await AssetHandler.init(context);
@@ -115,6 +112,11 @@ class _TaportyState extends State<Taporty> {
       ),
       localizationsDelegates: [
         AppLocalizationsDelegate(),
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ],
+      supportedLocales: [
+        const Locale("it"),
       ],
       initialRoute: LoginScreen.ROUTE,
       onGenerateRoute: EasyRouter.onGenerateRouteBuilder((_) => LoginScreen(), LoginScreen.ROUTE),

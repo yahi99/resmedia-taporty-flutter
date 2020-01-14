@@ -1,15 +1,15 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_route/easy_route.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:rating_bar/rating_bar.dart';
 import 'package:resmedia_taporty_flutter/common/helper/DateTimeHelper.dart';
 import 'package:resmedia_taporty_flutter/common/interface/widget/HeaderWidget.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/OrderBloc.dart';
 import 'package:resmedia_taporty_flutter/common/model/OrderModel.dart';
 import 'package:resmedia_taporty_flutter/common/resources/Database.dart';
 import 'package:resmedia_taporty_flutter/config/ColorTheme.dart';
-import 'package:resmedia_taporty_flutter/drivers/interface/page/CustomerOrderPage.dart';
-import 'package:resmedia_taporty_flutter/drivers/interface/page/RestaurantOrderPage.dart';
 import 'package:toast/toast.dart';
 
 import 'OrderCartPage.dart';
@@ -44,6 +44,179 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     _orderBloc.setOrderStream(widget.orderId);
+  }
+
+  final _restReviewBodyKey = new GlobalKey<FormFieldState>();
+  final _driverReviewBodyKey = new GlobalKey<FormFieldState>();
+  double _restRating = 5;
+  double _driverRating = 5;
+
+  // TODO: Metti in un widget a sè stante e definisci il ReviewModel
+  void _addRestaurantReview(OrderModel order) {
+    showDialog(
+      context: context,
+      builder: (_context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Row(
+                children: <Widget>[
+                  Padding(
+                    child: AutoSizeText('Recensione fornitore'),
+                    padding: EdgeInsets.only(bottom: 12.0, right: 12.0),
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  RatingBar(
+                    initialRating: 5,
+                    onRatingChanged: (val) {
+                      _restRating = val;
+                    },
+                    filledIcon: Icons.star,
+                    emptyIcon: Icons.star_border,
+                    halfFilledIcon: Icons.star_half,
+                    isHalfAllowed: true,
+                    emptyColor: Colors.yellow,
+                    filledColor: Colors.yellow,
+                    halfFilledColor: Colors.yellow,
+                    size: 25.0,
+                  ),
+                ],
+              ),
+              Padding(
+                child: TextFormField(
+                  key: _restReviewBodyKey,
+                  textInputAction: TextInputAction.done,
+                  validator: (value) {
+                    if (value.length == 0) {
+                      return 'Inserisci valutazione';
+                    }
+                    return null;
+                  },
+                  decoration: InputDecoration(
+                    hintText: "Inserisci una recensione...",
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey, width: 0.0),
+                    ),
+                  ),
+                  maxLines: 10,
+                  minLines: 5,
+                  keyboardType: TextInputType.text,
+                ),
+                padding: EdgeInsets.only(top: 8.0, bottom: 8.0),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  RaisedButton(
+                    child: Text('Invia'),
+                    onPressed: () async {
+                      try {
+                        await _db.addRestaurantReview(order.restaurantId, order.customerId, order.id, _restRating, _restReviewBodyKey.currentState.value);
+                        Toast.show("Recensione aggiunta con successo!", context);
+                        EasyRouter.pop(context);
+                      } catch (err) {
+                        Toast.show("Errore inaspettato!", context);
+                      }
+                    },
+                  ),
+                ],
+              )
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  // TODO: Refactor
+  void _addDriverReview(OrderModel order) {
+    showDialog(
+      context: context,
+      builder: (_context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Row(
+                children: <Widget>[
+                  Padding(
+                    child: AutoSizeText('Recensione fattorino'),
+                    padding: EdgeInsets.only(bottom: 12.0, right: 12.0),
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  RatingBar(
+                    initialRating: 5,
+                    onRatingChanged: (val) {
+                      _driverRating = val;
+                    },
+                    filledIcon: Icons.star,
+                    emptyIcon: Icons.star_border,
+                    halfFilledIcon: Icons.star_half,
+                    isHalfAllowed: true,
+                    emptyColor: Colors.yellow,
+                    filledColor: Colors.yellow,
+                    halfFilledColor: Colors.yellow,
+                    size: 25.0,
+                  ),
+                ],
+              ),
+              Padding(
+                child: TextFormField(
+                  key: _driverReviewBodyKey,
+                  textInputAction: TextInputAction.done,
+                  validator: (value) {
+                    if (value.length == 0) {
+                      return 'Inserisci valutazione';
+                    }
+                    return null;
+                  },
+                  decoration: InputDecoration(
+                    hintText: "Inserisci una recensione...",
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.grey, width: 0.0),
+                    ),
+                  ),
+                  maxLines: 10,
+                  minLines: 5,
+                  keyboardType: TextInputType.text,
+                ),
+                padding: EdgeInsets.only(top: 8.0, bottom: 8.0),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  RaisedButton(
+                    child: Text('Invia'),
+                    onPressed: () async {
+                      try {
+                        await _db.addDriverReview(order.driverId, order.customerId, order.id, _driverRating, _driverReviewBodyKey.currentState.value);
+                        Toast.show("Recensione aggiunta con successo!", context);
+                        EasyRouter.pop(context);
+                      } catch (err) {
+                        Toast.show("Errore inaspettato!", context);
+                      }
+                    },
+                  ),
+                ],
+              )
+            ],
+          ),
+        );
+      },
+    );
   }
 
   void _askCancelConfirmation() async {
@@ -196,25 +369,49 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                     ),
                   ),
                   HeaderWidget("FORNITORE"),
-                  InkWell(
-                    onTap: () => EasyRouter.push(
-                      context,
-                      RestaurantOrderPage(
-                        orderId: widget.orderId,
-                      ),
+                  if (order.hasRestaurantReview != true && order.state == OrderState.DELIVERED)
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        _buildSubjectDetails(order.restaurantImageUrl, order.restaurantName, order.restaurantPhoneNumber),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
+                          child: InkWell(
+                            onTap: () => _addRestaurantReview(order),
+                            child: Text(
+                              "Lascia una recensione",
+                              style: TextStyle(
+                                decoration: TextDecoration.underline,
+                                color: ColorTheme.BLUE,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                    child: _buildSubjectDetails(order.restaurantImageUrl, order.restaurantName, order.restaurantPhoneNumber),
-                  ),
+                  if (order.hasRestaurantReview == true || order.state != OrderState.DELIVERED) _buildSubjectDetails(order.restaurantImageUrl, order.restaurantName, order.restaurantPhoneNumber),
                   HeaderWidget("FATTORINO"),
-                  InkWell(
-                    onTap: () => EasyRouter.push(
-                      context,
-                      CustomerOrderPage(
-                        orderId: widget.orderId,
-                      ),
+                  if (order.hasDriverReview != true && order.state == OrderState.DELIVERED)
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        _buildSubjectDetails(order.driverImageUrl, order.driverName, order.driverPhoneNumber),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
+                          child: InkWell(
+                            onTap: () => _addDriverReview(order),
+                            child: Text(
+                              "Lascia una recensione",
+                              style: TextStyle(
+                                decoration: TextDecoration.underline,
+                                color: ColorTheme.BLUE,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                    child: _buildSubjectDetails(order.driverImageUrl, order.driverName, order.driverPhoneNumber),
-                  ),
+                  if (order.hasDriverReview == true || order.state != OrderState.DELIVERED) _buildSubjectDetails(order.driverImageUrl, order.driverName, order.driverPhoneNumber),
                   _buildCancelWidgets(order.state),
                 ],
               ),

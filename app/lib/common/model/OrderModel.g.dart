@@ -35,7 +35,8 @@ OrderModel _$OrderModelFromJson(Map json) {
     driverImageUrl: json['driverImageUrl'] as String,
     restaurantId: json['restaurantId'] as String,
     driverId: json['driverId'] as String,
-    isReviewed: json['isReviewed'] as bool,
+    hasRestaurantReview: json['hasRestaurantReview'] as bool,
+    hasDriverReview: json['hasDriverReview'] as bool,
     customerId: json['customerId'] as String,
     products: (json['products'] as List)
         ?.map((e) => e == null ? null : OrderProductModel.fromJson(e as Map))
@@ -71,7 +72,8 @@ Map<String, dynamic> _$OrderModelToJson(OrderModel instance) {
   writeNotNull('newProductCount', instance.newProductCount);
   writeNotNull('newTotalPrice', instance.newTotalPrice);
   writeNotNull('state', _$OrderStateEnumMap[instance.state]);
-  writeNotNull('isReviewed', instance.isReviewed);
+  writeNotNull('hasRestaurantReview', instance.hasRestaurantReview);
+  writeNotNull('hasDriverReview', instance.hasDriverReview);
   writeNotNull('creationTimestamp', datetimeToJson(instance.creationTimestamp));
   writeNotNull(
       'acceptanceTimestamp', datetimeToJson(instance.acceptanceTimestamp));

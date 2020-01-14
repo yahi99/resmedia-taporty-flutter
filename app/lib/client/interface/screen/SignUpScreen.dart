@@ -57,24 +57,25 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   void _showPolicyDialog(BuildContext context) {
     showDialog(
-        context: context,
-        builder: (_context) {
-          return AlertDialog(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
-            content: Scaffold(
-              body: ListView(
-                shrinkWrap: true,
-                children: <Widget>[
-                  AutoSizeText('Privacy Policy'),
-                  RaisedButton(
-                    child: Text('  Chiudi  '),
-                    onPressed: () => EasyRouter.pop(context),
-                  ),
-                ],
-              ),
+      context: context,
+      builder: (_context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
+          content: Scaffold(
+            body: ListView(
+              shrinkWrap: true,
+              children: <Widget>[
+                AutoSizeText('Privacy Policy'),
+                RaisedButton(
+                  child: Text('  Chiudi  '),
+                  onPressed: () => EasyRouter.pop(context),
+                ),
+              ],
             ),
-          );
-        });
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -90,66 +91,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
             ),
           ),
           children: [
-            /*TextField(
-            decoration: InputDecoration(
-              labelText: 'E-mail',
-            ),
-            keyboardType: TextInputType.emailAddress,
-          ),
-          SizedBox(height: SPACE,),
-          TextField(
-            decoration: InputDecoration(
-              labelText: 'Password',
-            ),
-            obscureText: true,
-          ),
-          SizedBox(height: SPACE,),
-
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Expanded(
-                child: RaisedButton(
-                  onPressed: () {
-                    if (Flavor.CLIENT == FlavorBloc.of().flavor)
-                      EasyRouter.push(context, GeoLocScreen());
-                    EasyRouter.push(context, HomeScreenDriver());
-                  },
-                  child: Text('Sign up', style: theme.textTheme.button,),
-                ),
-              ),
-              SizedBox(width: SPACE,),
-              Expanded(
-                child: RaisedButton(
-                  color: cls.primary,
-                  onPressed: () {
-                    if (Flavor.CLIENT == FlavorBloc.of().flavor)
-                      EasyRouter.push(context, GeoLocScreen());
-                    EasyRouter.push(context, HomeScreenDriver());
-                  },
-                  child: Text('Login'),
-                ),
-              ),
-            ],
-          ),
-
-          SizedBox(height: SPACE*3,),
-          RaisedButton.icon(
-            onPressed: () {},
-            icon: Icon(FontAwesomeIcons.facebookF),
-            label: Text('Login with Facebook'),
-          ),
-          RaisedButton(
-            color: Colors.white,
-            child: Text('Continua senza registrazione',),
-            onPressed: () {
-              EasyRouter.push(context, GeoLocScreen());
-            },
-          )*/
             Form(
               key: _submitBloc.formKey,
               child: Column(
                 children: <Widget>[
+                  // TODO: Aggiungere il nominativo dell'utente
                   EmailField(
                     checker: _submitBloc.emailChecker,
                   ),

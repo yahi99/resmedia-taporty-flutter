@@ -121,7 +121,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         Expanded(
                           child: SubmitButton.raised(
                             controller: _submitBloc.submitController,
-                            child: FittedText('Login'),
+                            child: FittedText('Accedi'),
                           ),
                         ),
                       ],
@@ -174,7 +174,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           Expanded(
                             child: SubmitButton.raised(
                               controller: _submitBloc.submitController,
-                              child: FittedText('Login'),
+                              child: FittedText('Accedi'),
                             ),
                           ),
                         ],
@@ -223,7 +223,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     Expanded(
                       child: SubmitButton.raised(
                         controller: _submitBloc.submitController,
-                        child: FittedText('Login'),
+                        child: FittedText('Accedi'),
                       ),
                     ),
                   ],

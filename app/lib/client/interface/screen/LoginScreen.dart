@@ -1,6 +1,4 @@
 import 'dart:async';
-
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_blocs/easy_blocs.dart';
 import 'package:easy_firebase/easy_firebase.dart';
@@ -9,7 +7,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geocoder/geocoder.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -155,40 +152,6 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  void _showDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (_context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
-          content: Scaffold(
-            body: ListView(
-              shrinkWrap: true,
-              children: <Widget>[
-                AutoSizeText('Per poter diventare un fattorino/ristoratore è necessario registrarsi.'),
-                AutoSizeText('Una volta registrato effettua il login e in alto alla pagina principale troverai un\'icona per entrare nelle impostazioni del tuo account'),
-                Padding(
-                  child: Image.asset('assets/img/account.jpg'),
-                  padding: EdgeInsets.only(top: 12.0, bottom: 12.0),
-                ),
-                AutoSizeText('Quando sei entrato nelle impostazioni c\'è una lista di possibili azioni, seleziona Diventa un fattorino/ristoratore'),
-                Padding(
-                  child: Image.asset('assets/img/upgrade.jpg'),
-                  padding: EdgeInsets.only(top: 12.0, bottom: 12.0),
-                ),
-                AutoSizeText('Compila i campi richiesti ed una volta inviata la richiesta verrà presa in visione nel minor tempo possibile e verrai notificato se la richiesta è andata a buon fine'),
-                RaisedButton(
-                  child: Text('  Chiudi  '),
-                  onPressed: () => EasyRouter.pop(context),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
   @override
   void dispose() {
     FirebaseSignInBloc.close();
@@ -283,7 +246,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       onPressed: () {
                         EasyRouter.push(context, SignUpScreen());
                       },
-                      child: FittedText('Sign up'),
+                      child: FittedText('Registrati'),
                     ),
                   ),
                   SizedBox(
@@ -292,12 +255,12 @@ class _LoginScreenState extends State<LoginScreen> {
                   Expanded(
                     child: SubmitButton.raised(
                       controller: _submitBloc.submitController,
-                      child: FittedText('Login'),
+                      child: FittedText('Accedi'),
                     ),
                   ),
                 ],
               ),
-              SizedBox(
+              /*SizedBox(
                 height: 12.0 * 3,
               ),
               RaisedButton.icon(
@@ -305,24 +268,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   _submitBloc.submitterGoogle();
                 },
                 icon: Icon(FontAwesomeIcons.google),
-                label: Text('Login with Google'),
-              ),
-              RaisedButton(
-                color: Colors.white,
-                child: Container(
-                  width: double.infinity,
-                  child: Center(
-                    child: AutoSizeText(
-                      "Diventa un fattorino/ristoratore",
-                      maxLines: 1,
-                      minFontSize: 6.0,
-                    ),
-                  ),
-                ),
-                onPressed: () {
-                  _showDialog(context);
-                },
-              ),
+                label: Text('Login con Google'),
+              ),*/
             ],
           ),
         ),

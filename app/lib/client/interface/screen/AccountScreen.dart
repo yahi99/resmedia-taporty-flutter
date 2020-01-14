@@ -9,8 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:resmedia_taporty_flutter/common/helper/LoginHelper.dart';
-import 'package:resmedia_taporty_flutter/client/interface/screen/BecomeDriverScreen.dart';
-import 'package:resmedia_taporty_flutter/client/interface/screen/BecomeRestaurantScreen.dart';
 import 'package:resmedia_taporty_flutter/client/interface/screen/ChangePasswordScreeen.dart';
 import 'package:resmedia_taporty_flutter/client/interface/screen/EditScreen.dart';
 import 'package:resmedia_taporty_flutter/client/interface/screen/LegalNotesScreen.dart';
@@ -22,6 +20,7 @@ import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
 import 'package:resmedia_taporty_flutter/common/resources/Database.dart';
 import 'package:resmedia_taporty_flutter/common/model/UserModel.dart';
 import 'package:toast/toast.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AccountScreen extends StatelessWidget implements WidgetRoute {
   static const ROUTE = 'AccountScreen';
@@ -166,7 +165,12 @@ class AccountScreen extends StatelessWidget implements WidgetRoute {
                                 Icon(Icons.directions_car),
                                 FlatButton(
                                   child: Text('Diventa un Fattorino', style: theme.textTheme.subhead),
-                                  onPressed: () => {EasyRouter.push(context, BecomeDriverScreen())},
+                                  onPressed: () async {
+                                    var url = "https://taporty-requests.firebaseapp.com/?type=driver";
+                                    if (await canLaunch(url)) {
+                                      await launch(url);
+                                    }
+                                  },
                                 ),
                               ],
                             ),
@@ -175,7 +179,12 @@ class AccountScreen extends StatelessWidget implements WidgetRoute {
                                 Icon(Icons.directions_car),
                                 FlatButton(
                                   child: Text('Diventa un ristoratore', style: theme.textTheme.subhead),
-                                  onPressed: () => {EasyRouter.push(context, BecomeRestaurantScreen())},
+                                  onPressed: () async {
+                                    var url = "https://taporty-requests.firebaseapp.com/?type=restaurant";
+                                    if (await canLaunch(url)) {
+                                      await launch(url);
+                                    }
+                                  },
                                 ),
                               ],
                             ),

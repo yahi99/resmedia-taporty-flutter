@@ -11,15 +11,13 @@ import 'package:geolocator/geolocator.dart';
 import 'package:resmedia_taporty_flutter/common/model/ReviewModel.dart';
 import 'package:resmedia_taporty_flutter/common/resources/MixinOrderProvider.dart';
 import 'package:resmedia_taporty_flutter/common/resources/MixinRestaurantProvider.dart';
+import 'package:resmedia_taporty_flutter/common/resources/MixinReviewProvider.dart';
 import 'package:resmedia_taporty_flutter/common/resources/MixinShiftProvider.dart';
 import 'package:resmedia_taporty_flutter/common/resources/MixinUserProvider.dart';
 import 'package:resmedia_taporty_flutter/config/Collections.dart';
-
-import 'package:resmedia_taporty_flutter/common/model/OrderModel.dart';
-import 'package:resmedia_taporty_flutter/common/model/RestaurantModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/UserModel.dart';
 
-class Database extends FirebaseDatabase with MixinFirestoreStripeProvider, MixinRestaurantProvider, MixinUserProvider, MixinShiftProvider, MixinOrderProvider, StripeProviderRule {
+class Database extends FirebaseDatabase with MixinFirestoreStripeProvider, MixinRestaurantProvider, MixinUserProvider, MixinShiftProvider, MixinOrderProvider, MixinReviewProvider, StripeProviderRule {
   static Database _db;
 
   Database.internal({
@@ -50,42 +48,6 @@ class Database extends FirebaseDatabase with MixinFirestoreStripeProvider, Mixin
 
   Future<void> createUserGoogle({@required String uid, @required String nominative, @required String email}) async {
     await fs.collection(Collections.USERS).document(uid).setData({'nominative': nominative, users.fcmToken: await fbMs.getToken(), 'email': email});
-  }
-
-  // TODO: Rivedere
-  Future<void> pushRestaurantReview(String restId, int points, String strPoints, String oid, String uid, String nominative) async {
-    final model = RestaurantModel.fromFirebase(await fs.collection('restaurants').document(restId).get());
-    double average;
-    int number;
-    if (model.numberOfReviews != null) {
-      average = (model.averageReviews * model.numberOfReviews + points) / (model.numberOfReviews + 1);
-      number = model.numberOfReviews + 1;
-    } else {
-      average = points / 1.0;
-      number = 1;
-    }
-    await fs.collection('restaurants').document(restId).updateData({'numberOfReviews': number, 'averageReviews': average});
-    await fs.collection('restaurants').document(restId).collection('reviews').add({'points': points, 'strPoints': strPoints, 'oid': oid, 'userId': uid, 'nominative': nominative});
-  }
-
-  // TODO: Rivedere
-  Future<void> pushDriverReview(String driverId, int points, String strPoints, String uid, String orderId, String nominative) async {
-    final model = UserModel.fromFirebase(await fs.collection('users').document(driverId).get());
-    double average;
-    int number;
-    if (model.numberOfReviews != null) {
-      average = (model.averageReviews * model.numberOfReviews + points) / (model.numberOfReviews + 1);
-      number = model.numberOfReviews + 1;
-    } else {
-      average = points / 1.0;
-      number = 1;
-    }
-    await fs.collection('users').document(driverId).updateData({'numberOfReviews': number, 'averageReviews': average});
-    await fs.collection('users').document(driverId).collection('reviews').add({'points': points, 'strPoints': strPoints, 'oid': orderId, 'userId': uid, 'nominative': nominative});
-  }
-
-  Future<void> setOrderToReviewed(String uid, String orderId) async {
-    await fs.collection('users').document(uid).collection('user_orders').document(orderId).updateData({'isReviewed': true});
   }
 
   Stream<UserModel> getUser(FirebaseUser user) {

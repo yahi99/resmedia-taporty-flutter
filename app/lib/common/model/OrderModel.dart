@@ -73,7 +73,8 @@ class OrderModel extends FirebaseModel {
   final double newTotalPrice;
 
   final OrderState state;
-  final bool isReviewed;
+  final bool hasRestaurantReview;
+  final bool hasDriverReview;
 
   // Timestamps
   @JsonKey(toJson: datetimeToJson, fromJson: datetimeFromJson)
@@ -149,7 +150,8 @@ class OrderModel extends FirebaseModel {
     this.driverImageUrl,
     this.restaurantId,
     this.driverId,
-    this.isReviewed,
+    this.hasRestaurantReview,
+    this.hasDriverReview,
     this.customerId,
     this.products,
     this.newProducts,

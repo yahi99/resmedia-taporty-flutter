@@ -30,7 +30,7 @@ dependencies:
   flutter_google_places: ^0.2.3
   path_provider: ^1.5.1
   image_picker: ^0.6.2
-  intl: ^0.15.8
+  intl: ^0.16.0
   shared_preferences: ^0.5.6
   geolocator: ^5.1.5
   geocoder: ^0.2.1
@@ -51,7 +51,6 @@ dependencies:
   cloud_firestore: ^0.13.0+1
   firebase_storage: ^3.1.0
   firebase_auth: ^0.15.2
-  datetime_picker_formfield: ^0.4.3
   firebase_messaging: ^6.0.8
   mailer: ^3.0.4
   rubber: ^0.4.0
@@ -59,6 +58,10 @@ dependencies:
   dash: ^0.5.5
   rxdart: ^0.22.6
   sticky_headers: ^0.1.8+1
+  rating_bar: ^0.2.0
+
+  flutter_localizations:
+    sdk: flutter
 
   # Scritti e implementati da Simone o Giorgio.
   easy_blocs:

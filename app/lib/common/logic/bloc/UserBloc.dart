@@ -23,7 +23,6 @@ class UserBloc with MixinFirebaseUserManager implements Bloc {
   dispose() {
     if (_userReviewController != null) _userReviewController.close();
     _userController?.close();
-    _fcmTokenSubscription?.cancel();
     _notificationController?.close();
   }
 
@@ -39,8 +38,6 @@ class UserBloc with MixinFirebaseUserManager implements Bloc {
   BehaviorSubject<User> _userController;
 
   Stream<User> get outUser => _userController.stream;
-
-  StreamSubscription<String> _fcmTokenSubscription;
 
   NotificationModelFirebase _notification;
   PublishSubject<NotificationModelFirebase> _notificationController;
@@ -76,16 +73,6 @@ class UserBloc with MixinFirebaseUserManager implements Bloc {
         if (userModel == null) {
           _firebaseUserController.registrationLevel.complete(RegistrationLevel.LV2);
           return;
-        }
-
-        if (userModel.fcmToken != _user?.model?.fcmToken) {
-          _fcmTokenSubscription?.cancel();
-          _fcmTokenSubscription = await _db.autoRefreshFcmToken(
-            userModel,
-            notificationFunctions: FirebaseNotificationFunctions.all((model) async {
-              _notificationHandler(model);
-            }),
-          );
         }
 
         _userController.add(_user = User(firebaseUser, userModel));

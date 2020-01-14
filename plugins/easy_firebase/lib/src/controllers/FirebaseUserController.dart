@@ -206,15 +206,7 @@ class LoginHelper {
 
     final FirebaseUser firebaseUser = (await firebaseAuth.signInWithCredential(authCredential)).user;
     print("Eseguito l'accesso con Google di ${firebaseUser.email}.");
-    //Database().putUser(firebaseUser);
-    /*Database().getUser(firebaseUser).first.then((userId) async {
-      if (userId == null) {
-        await Database().createUserGoogle(
-            uid: firebaseUser.uid,
-            nominative: firebaseUser.displayName,
-            email: firebaseUser.email);
-      }
-    });*/
+
     return firebaseUser;
   }
 

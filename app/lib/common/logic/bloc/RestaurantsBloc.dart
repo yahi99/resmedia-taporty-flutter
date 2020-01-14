@@ -35,7 +35,7 @@ class RestaurantsBloc implements Bloc {
     var restaurants = await _db.getRestaurantList();
     var filteredRestaurants = List<RestaurantModel>();
     for (var restaurant in restaurants) {
-      if ((await DistanceHelper.fetchAproximateDistance(restaurant.coordinates, driver.coordinates)) <= driver.deliveryRadius) filteredRestaurants.add(restaurant);
+      if ((await DistanceHelper.fetchAproximateDistance(restaurant.coordinates, driver.coordinates)) <= driver.deliveryRadius * 1000) filteredRestaurants.add(restaurant);
     }
 
     var restaurantStartTimes = filteredRestaurants.map((restaurant) => restaurant.getStartTimes(date));

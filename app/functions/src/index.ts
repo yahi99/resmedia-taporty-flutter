@@ -1,5 +1,6 @@
-import { addPaymentSource, createStripeCharge, createStripeCustomer, sendToDevice, sendToDeviceDriver, sendToDeviceRestaurant, driverRequests, restaurantRequests, productRequests, cleanupUser, updateState, setShift, updateUser, updateOffersEmail, updateOffersSms, updateOffersApp, updateNotifySms, updateNotifyApp, updateNotifyEmail } from './lib/payment_function';
+import { addPaymentSource, createStripeCharge, createStripeCustomer, sendToDevice, sendToDeviceDriver, sendToDeviceRestaurant, driverRequests, restaurantRequests, productRequests, cleanupUser, updateState, setShift, updateUser, updateOffersEmail, updateOffersSms, updateOffersApp, updateNotifySms, updateNotifyApp, updateNotifyEmail, createUser } from './lib/payment_function';
 import { onOrderCreate, onOrderUpdate, onOrderCancellationRefund } from './lib/orders_function';
+import { onRestaurantRequestChanged, onDriverRequestChanged } from './lib/requests';
 
 // Start writing Firebase Functions
 // https://firebase.google.com/docs/functions/typescript
@@ -30,3 +31,6 @@ exports.updateOffersApp = updateOffersApp;
 exports.onOrderCreate = onOrderCreate;
 exports.onOrderUpdate = onOrderUpdate;
 exports.onOrderCancellationRefund = onOrderCancellationRefund;
+exports.onRestaurantRequestChanged = onRestaurantRequestChanged;
+exports.onDriverRequestChanged = onDriverRequestChanged;
+exports.createUser = createUser;

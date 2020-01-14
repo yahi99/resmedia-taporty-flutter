@@ -1,6 +1,6 @@
 import * as functions from 'firebase-functions';
 import * as moment from 'moment';
-import { firebase } from './firebase';
+import { firestore } from './firebase';
 import OrderStates from './models/order_states';
 import { Timestamp } from '@google-cloud/firestore';
 
@@ -21,7 +21,7 @@ const onOrderCreate = functions.firestore.document('orders/{orderId}').onCreate(
             timestamp: order.creationTimestamp,
         });
 
-        let notificationRef = firebase.collection("restaurants").doc(order.restaurantId).collection("notifications").doc();
+        let notificationRef = firestore.collection("restaurants").doc(order.restaurantId).collection("notifications").doc();
         await notificationRef.set({
             oldState: null,
             newState: OrderStates.NEW,
@@ -43,7 +43,7 @@ const onOrderUpdate = functions.firestore.document('orders/{orderId}').onUpdate(
     if (oldOrder.state === newOrder.state)
         return;
 
-    let notificationRef = firebase.collection("restaurants").doc(newOrder.restaurantId).collection("notifications").doc();
+    let notificationRef = firestore.collection("restaurants").doc(newOrder.restaurantId).collection("notifications").doc();
 
     if (newOrder.state === OrderStates.ACCEPTED) {
         if (oldOrder.state === OrderStates.MODIFIED) {

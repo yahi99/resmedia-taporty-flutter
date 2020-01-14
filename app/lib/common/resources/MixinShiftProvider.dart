@@ -27,9 +27,9 @@ mixin MixinShiftProvider on MixinRestaurantProvider, MixinUserProvider {
           .toList();
       for (var reservedShift in reservedShifts) {
         var distanceRestaurantDriver = await DistanceHelper.fetchAproximateDistance(reservedShift.driverCoordinates, restaurant.coordinates);
-        if (distanceRestaurantDriver > reservedShift.deliveryRadius) continue;
+        if (distanceRestaurantDriver > reservedShift.deliveryRadius * 1000) continue;
         var distanceCustomerDriver = await DistanceHelper.fetchAproximateDistance(reservedShift.driverCoordinates, customerCoordinates);
-        if (distanceCustomerDriver > reservedShift.deliveryRadius) continue;
+        if (distanceCustomerDriver > reservedShift.deliveryRadius * 1000) continue;
         if (reservedShift.occupied != true) {
           filteredShifts.add(reservedShift);
           break;
@@ -52,9 +52,9 @@ mixin MixinShiftProvider on MixinRestaurantProvider, MixinUserProvider {
       await Firestore.instance.runTransaction((Transaction tx) async {
         var reservation = ShiftModel.fromFirebase(await tx.get(document.reference));
         var distanceRestaurantDriver = await DistanceHelper.fetchAproximateDistance(reservation.driverCoordinates, restaurant.coordinates);
-        if (distanceRestaurantDriver > reservation.deliveryRadius) return;
+        if (distanceRestaurantDriver > reservation.deliveryRadius * 1000) return;
         var distanceCustomerDriver = await DistanceHelper.fetchAproximateDistance(reservation.driverCoordinates, customerCoordinates);
-        if (distanceCustomerDriver > reservation.deliveryRadius) return;
+        if (distanceCustomerDriver > reservation.deliveryRadius * 1000) return;
         if (reservation.occupied != true) {
           tx.update(document.reference, {
             'occupied': true,

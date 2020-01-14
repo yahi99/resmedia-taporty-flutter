@@ -57,20 +57,6 @@ android {
             versionCode flutterVersionCode.toInteger()
             versionName flutterVersionName
         }
-
-        control {
-            dimension "flavors"
-            applicationId "it.resmedia.taporty.control"
-            versionCode flutterVersionCode.toInteger()
-            versionName flutterVersionName
-        }
-
-        restaurant {
-            dimension "flavors"
-            applicationId "it.resmedia.taporty.restaurant"
-            versionCode flutterVersionCode.toInteger()
-            versionName flutterVersionName
-        }
     }
     
        

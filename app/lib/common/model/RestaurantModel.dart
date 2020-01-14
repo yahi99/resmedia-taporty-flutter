@@ -85,7 +85,7 @@ class RestaurantModel extends FirebaseModel {
     var timetable = weekdayTimetable[datetime.weekday];
 
     var result = "";
-    if (isOpen(datetime: datetime)) {
+    if (!isHoliday(datetime: datetime) && weekdayTimetable[datetime.weekday].open) {
       bool first = true;
       for (var timeslot in timetable.timeslots) {
         if (!first) {

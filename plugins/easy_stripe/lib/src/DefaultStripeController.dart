@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:easy_blocs/easy_blocs.dart';
 import 'package:easy_stripe/src/StripeSourceModel.dart';
 import 'package:easy_stripe/src/StripeProvider.dart';
-import 'package:easy_widget/easy_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:rxdart/rxdart.dart';

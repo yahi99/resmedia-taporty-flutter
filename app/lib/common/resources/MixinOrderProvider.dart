@@ -135,7 +135,7 @@ mixin MixinOrderProvider on MixinUserProvider, MixinRestaurantProvider {
     } else if (prevState == OrderState.ACCEPTED || prevState == OrderState.READY) {
       await orderCollection.document(orderId).updateData({
         'state': orderStateEncode(OrderState.MODIFIED),
-        'prevState': prevState,
+        'prevState': orderStateEncode(prevState),
         'modificationTimestamp': datetimeToJson(DateTime.now()),
         'newProductCount': orderProducts.fold(0, (count, product) => count + product.quantity),
         'newTotalPrice': orderProducts.fold(0, (price, product) => price + product.quantity * product.price),
@@ -163,7 +163,7 @@ mixin MixinOrderProvider on MixinUserProvider, MixinRestaurantProvider {
     bool error = false;
     await Firestore.instance.runTransaction((Transaction tx) async {
       var order = OrderModel.fromFirebase(await tx.get(document));
-      if (state == OrderState.CANCELLED && (order.state != OrderState.NEW || order.state != OrderState.ACCEPTED || order.state != OrderState.READY)) {
+      if (state == OrderState.CANCELLED && (order.state != OrderState.NEW && order.state != OrderState.ACCEPTED && order.state != OrderState.READY)) {
         error = true;
         return;
       }

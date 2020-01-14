@@ -247,7 +247,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                           EasyRouter.pop(context);
                           try {
                             await _db.updateOrderState(widget.orderId, OrderState.CANCELLED);
-                            Toast.show("Ordine consegnato", context);
+                            Toast.show("Ordine cancellato", context);
                           } catch (e) {
                             print(e);
                             Toast.show("Errore inaspettato", context);

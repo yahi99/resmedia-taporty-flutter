@@ -12,7 +12,7 @@ part 'OrderModel.g.dart';
 
 enum OrderState { NEW, ACCEPTED, MODIFIED, CANCELLED, READY, PICKED_UP, DELIVERED, ARCHIVED, REFUSED }
 
-String enumEncode(OrderState state) {
+String orderStateEncode(OrderState state) {
   return _$OrderStateEnumMap[state];
 }
 

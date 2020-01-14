@@ -43,7 +43,7 @@ mixin MixinOrderProvider on MixinUserProvider, MixinRestaurantProvider {
       if (cartProduct.quantity <= 0) continue;
       var product = products.firstWhere((p) => p.id == cartProduct.id && customerId == cartProduct.userId, orElse: () => null);
       if (product != null) {
-        orderProducts.add(OrderProductModel(imageUrl: product.imageUrl, quantity: cartProduct.quantity, name: product.name, price: product.price));
+        orderProducts.add(OrderProductModel(id: product.id, imageUrl: product.imageUrl, quantity: cartProduct.quantity, name: product.name, price: product.price));
       }
     }
     return orderProducts;
@@ -90,6 +90,60 @@ mixin MixinOrderProvider on MixinUserProvider, MixinRestaurantProvider {
     await documentReference.setData({...order.toJson(), 'reference': documentReference});
   }
 
+  // TODO: Da mettere dentro una Transaction
+  Future<void> modifyOrder(String orderId, OrderState prevState, List<OrderProductModel> orderProducts) async {
+    orderProducts = orderProducts.where((o) => o.quantity > 0).toList();
+
+    if (prevState == OrderState.NEW) {
+      var order = await getOrderStream(orderId).first;
+
+      var newOrder = OrderModel(
+        productCount: orderProducts.fold(0, (count, product) => count + product.quantity),
+        totalPrice: orderProducts.fold(0, (price, product) => price + product.quantity * product.price),
+        products: orderProducts,
+        preferredDeliveryTimestamp: order.preferredDeliveryTimestamp,
+        creationTimestamp: DateTime.now(),
+        customerName: order.customerName,
+        customerCoordinates: order.customerCoordinates,
+        customerAddress: order.customerAddress,
+        customerPhoneNumber: order.customerPhoneNumber,
+        customerImageUrl: order.customerImageUrl,
+        restaurantName: order.restaurantName,
+        restaurantCoordinates: order.restaurantCoordinates,
+        restaurantAddress: order.restaurantAddress,
+        restaurantPhoneNumber: order.restaurantPhoneNumber,
+        restaurantImageUrl: order.restaurantImageUrl,
+        driverName: order.driverName,
+        driverPhoneNumber: order.driverPhoneNumber,
+        driverImageUrl: order.driverImageUrl,
+        restaurantId: order.restaurantId,
+        driverId: order.driverId,
+        customerId: order.customerId,
+        state: OrderState.NEW,
+        cardId: order.cardId,
+      );
+
+      var documentReference = orderCollection.document();
+
+      await documentReference.setData({...newOrder.toJson(), 'reference': documentReference, 'oldOrderId': order.id});
+
+      await orderCollection.document(orderId).updateData({
+        'state': orderStateEncode(OrderState.ARCHIVED),
+        'archiviationTimestamp': datetimeToJson(DateTime.now()),
+        'newOrderId': documentReference.documentID,
+      });
+    } else if (prevState == OrderState.ACCEPTED || prevState == OrderState.READY) {
+      await orderCollection.document(orderId).updateData({
+        'state': orderStateEncode(OrderState.MODIFIED),
+        'prevState': prevState,
+        'modificationTimestamp': datetimeToJson(DateTime.now()),
+        'newProductCount': orderProducts.fold(0, (count, product) => count + product.quantity),
+        'newTotalPrice': orderProducts.fold(0, (price, product) => price + product.quantity * product.price),
+        'newProducts': orderProducts.map((o) => o.toJson()).toList(),
+      });
+    }
+  }
+
   Future updateOrderState(String orderId, OrderState state) async {
     var timestampField;
     switch (state) {
@@ -123,7 +177,7 @@ mixin MixinOrderProvider on MixinUserProvider, MixinRestaurantProvider {
         return;
       }
       await tx.update(document, {
-        'state': enumEncode(state),
+        'state': orderStateEncode(state),
         'visualized': false,
         'replied': false,
         timestampField: datetimeToJson(DateTime.now()),

@@ -10,12 +10,14 @@ part 'OrderProductModel.g.dart';
 
 @JsonSerializable(anyMap: true, explicitToJson: true)
 class OrderProductModel {
+  final String id;
   final String name;
   final double price;
   final String imageUrl;
-  final int quantity;
+  int quantity;
 
   OrderProductModel({
+    @required this.id,
     @required this.name,
     @required this.price,
     @required this.quantity,

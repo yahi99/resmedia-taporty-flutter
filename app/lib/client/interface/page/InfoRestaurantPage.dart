@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_route/easy_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -21,9 +22,17 @@ class InfoRestaurantPage extends StatelessWidget {
             children: <Widget>[
               AspectRatio(
                 aspectRatio: 1.5,
-                child: Image.network(
-                  model.imageUrl,
+                child: CachedNetworkImage(
+                  imageUrl: model.imageUrl,
                   fit: BoxFit.fitHeight,
+                  placeholder: (context, url) => SizedBox(
+                    height: 30.0,
+                    width: 30.0,
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  ),
+                  errorWidget: (context, url, error) => Center(child: Icon(Icons.error, color: Colors.grey)),
                 ),
               ),
               Padding(

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_blocs/easy_blocs.dart';
 import 'package:easy_widget/easy_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -48,9 +49,17 @@ class ProductView extends StatelessWidget {
                       aspectRatio: 1,
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(16.0),
-                        child: Image.network(
-                          model.imageUrl,
+                        child: CachedNetworkImage(
+                          imageUrl: model.imageUrl,
                           fit: BoxFit.fitHeight,
+                          placeholder: (context, url) => SizedBox(
+                            height: 30.0,
+                            width: 30.0,
+                            child: Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                          ),
+                          errorWidget: (context, url, error) => Center(child: Icon(Icons.error, color: Colors.grey)),
                         ),
                       ),
                     ),
@@ -96,7 +105,7 @@ class CartStepperButton extends StatelessWidget {
       builder: (_, snapshot) {
         if (!snapshot.hasData) return const SizedBox();
         final cart = snapshot.data;
-        return CacheStreamBuilder<FirebaseUser>(
+        return StreamBuilder<FirebaseUser>(
           stream: user.outFirebaseUser,
           builder: (context, snap) {
             if (!snap.hasData)

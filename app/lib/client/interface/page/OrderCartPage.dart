@@ -1,8 +1,11 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_route/easy_route.dart';
 import 'package:flutter/material.dart';
+import 'package:resmedia_taporty_flutter/client/interface/page/ModifyOrderCartPage.dart';
 import 'package:resmedia_taporty_flutter/common/interface/widget/HeaderWidget.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/OrderBloc.dart';
 import 'package:resmedia_taporty_flutter/common/model/OrderModel.dart';
+import 'package:resmedia_taporty_flutter/common/model/OrderProductModel.dart';
 import 'package:resmedia_taporty_flutter/config/ColorTheme.dart';
 
 class OrderCartPage extends StatefulWidget implements WidgetRoute {
@@ -80,9 +83,17 @@ class _OrderCartPageState extends State<OrderCartPage> {
                                     aspectRatio: 1,
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(16.0),
-                                      child: Image.network(
-                                        products[index].imageUrl,
+                                      child: CachedNetworkImage(
+                                        imageUrl: products[index].imageUrl,
                                         fit: BoxFit.fitHeight,
+                                        placeholder: (context, url) => SizedBox(
+                                          height: 30.0,
+                                          width: 30.0,
+                                          child: Center(
+                                            child: CircularProgressIndicator(),
+                                          ),
+                                        ),
+                                        errorWidget: (context, url, error) => Center(child: Icon(Icons.error, color: Colors.grey)),
                                       ),
                                     ),
                                   ),
@@ -115,7 +126,7 @@ class _OrderCartPageState extends State<OrderCartPage> {
                     color: Colors.grey,
                     height: 0,
                   ),
-                  _buildModifyWidgets(orderSnapshot.data.state),
+                  _buildModifyWidgets(orderSnapshot.data),
                 ],
               ),
             );
@@ -128,8 +139,8 @@ class _OrderCartPageState extends State<OrderCartPage> {
     );
   }
 
-  _buildModifyWidgets(OrderState state) {
-    if (state == OrderState.NEW || state == OrderState.ACCEPTED || state == OrderState.READY) {
+  _buildModifyWidgets(OrderModel order) {
+    if (order.state == OrderState.NEW || order.state == OrderState.ACCEPTED || order.state == OrderState.READY) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -138,7 +149,14 @@ class _OrderCartPageState extends State<OrderCartPage> {
             padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: RaisedButton(
               color: ColorTheme.ACCENT_BLUE,
-              onPressed: () {},
+              onPressed: () {
+                EasyRouter.push(
+                  context,
+                  ModifyOrderCartPage(
+                    order: order,
+                  ),
+                );
+              },
               child: Text(
                 "Modifica ordine",
               ),
@@ -147,7 +165,7 @@ class _OrderCartPageState extends State<OrderCartPage> {
         ],
       );
     }
-    if (state == OrderState.PICKED_UP) {
+    if (order.state == OrderState.PICKED_UP) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[

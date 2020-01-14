@@ -4,7 +4,6 @@ import 'package:easy_blocs/src/json.dart';
 import 'package:easy_blocs/src/storages/VersionHandler.dart';
 import 'package:flutter/cupertino.dart';
 
-
 abstract class Storage with MixinVersionManager {
   final VersionManager versionManager;
 
@@ -15,9 +14,7 @@ abstract class Storage with MixinVersionManager {
   /// Not ovveride this method
   @protected
   Future<String> getString({String defaultValue}) async {
-    return versionManager.isCorrectVersion
-        ? await onGetString(defaultValue: defaultValue)
-        : defaultValue;
+    return versionManager.isCorrectVersion ? await onGetString(defaultValue: defaultValue) : defaultValue;
   }
 
   Future<String> onGetString({String defaultValue});
@@ -28,11 +25,18 @@ abstract class Storage with MixinVersionManager {
     await onSetString(value: value);
     await updateVersion();
   }
+
   Future<void> onSetString({@required String value});
 
   Future<Map<String, dynamic>> getMap({Map<String, dynamic> defaultValue}) async {
     final raw = await getString();
-    return raw == null ? defaultValue : jsonDecode(raw);
+    var result;
+    try {
+      result = raw == null ? defaultValue : jsonDecode(raw);
+    } catch (err) {
+      result = defaultValue;
+    }
+    return result;
   }
 
   @mustCallSuper

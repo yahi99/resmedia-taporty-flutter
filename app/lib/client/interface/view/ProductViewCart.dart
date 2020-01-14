@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_blocs/easy_blocs.dart';
 import 'package:easy_widget/easy_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -68,9 +69,17 @@ class ProductViewCart extends StatelessWidget {
                               aspectRatio: 1,
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(16.0),
-                                child: Image.network(
-                                  model.imageUrl,
+                                child: CachedNetworkImage(
+                                  imageUrl: model.imageUrl,
                                   fit: BoxFit.fitHeight,
+                                  placeholder: (context, url) => SizedBox(
+                                    height: 30.0,
+                                    width: 30.0,
+                                    child: Center(
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                  ),
+                                  errorWidget: (context, url, error) => Center(child: Icon(Icons.error, color: Colors.grey)),
                                 ),
                               ),
                             ),
@@ -96,7 +105,7 @@ class ProductViewCart extends StatelessWidget {
                           onDecrease: () => cartController.inDecrease(model.id, model.restaurantId, snap.data.uid),
                           onIncrement: () {
                             if (model.maxQuantity != 0 && model.maxQuantity <= cart.getProduct(model.id, model.restaurantId, snap.data.uid)?.quantity)
-                              Toast.show('Limite massimo prodotti', context, duration: 3);
+                              Toast.show("Massima quantità ordinabile raggiunta", context, duration: 3);
                             else {
                               Vibration.vibrate(duration: 65);
                               cartController.inIncrement(model.id, model.restaurantId, snap.data.uid, model.price, model.type);

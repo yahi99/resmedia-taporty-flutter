@@ -90,6 +90,10 @@ lint/tmp/
 gen-external-apklibs
 output.json
 
+# Replacement of .externalNativeBuild directories introduced
+# with Android Studio 3.5.
+.cxx/
+
 ### Dart ###
 # See https://www.dartlang.org/guides/libraries/private-files
 
@@ -116,6 +120,7 @@ doc/api/
 # Flutter/Dart/Pub related
 **/doc/api/
 .flutter-plugins
+.flutter-plugins-dependencies
 .pub-cache/
 .pub/
 
@@ -321,4 +326,3 @@ fabric.properties
 !/gradle/wrapper/gradle-wrapper.jar
 
 # End of https://www.gitignore.io/api/dart,xcode,gradle,android,flutter,androidstudio
-app/android/key.properties

@@ -1,12 +1,6 @@
-import 'package:easy_route/easy_route.dart';
 import 'package:flutter/material.dart';
 
-class LegalNotesScreen extends StatefulWidget implements WidgetRoute {
-  static const ROUTE = 'LegalNotesScreen';
-
-  @override
-  String get route => ROUTE;
-
+class LegalNotesScreen extends StatefulWidget {
   @override
   _LegalNotesState createState() => _LegalNotesState();
 }

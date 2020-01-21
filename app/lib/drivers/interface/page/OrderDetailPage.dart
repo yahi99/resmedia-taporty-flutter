@@ -1,19 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:easy_route/easy_route.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:resmedia_taporty_flutter/common/helper/DateTimeHelper.dart';
 import 'package:resmedia_taporty_flutter/common/interface/widget/HeaderWidget.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/OrderBloc.dart';
 import 'package:resmedia_taporty_flutter/common/model/OrderModel.dart';
-import 'package:resmedia_taporty_flutter/drivers/interface/page/CustomerOrderPage.dart';
-import 'package:resmedia_taporty_flutter/drivers/interface/page/SupplierOrderPage.dart';
+import 'package:resmedia_taporty_flutter/drivers/interface/page/CustomerDetailPage.dart';
+import 'package:resmedia_taporty_flutter/drivers/interface/page/SupplierDetailPage.dart';
 
-class OrderDetailPage extends StatefulWidget implements WidgetRoute {
-  static const ROUTE = "OrderDetailPage";
-
-  String get route => OrderDetailPage.ROUTE;
-
+class OrderDetailPage extends StatefulWidget {
   final String orderId;
 
   OrderDetailPage({
@@ -26,13 +21,7 @@ class OrderDetailPage extends StatefulWidget implements WidgetRoute {
 }
 
 class _OrderDetailPageState extends State<OrderDetailPage> {
-  bool isDeactivate = false;
   final _orderBloc = OrderBloc.of();
-
-  void deactivate() {
-    super.deactivate();
-    isDeactivate = !isDeactivate;
-  }
 
   @override
   void didChangeDependencies() {
@@ -51,7 +40,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
-            EasyRouter.pop(context);
+            Navigator.pop(context);
           },
         ),
       ),
@@ -100,20 +89,24 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                   ),
                   HeaderWidget("FORNITORE"),
                   InkWell(
-                    onTap: () => EasyRouter.push(
+                    onTap: () => Navigator.push(
                       context,
-                      SupplierOrderPage(
-                        orderId: widget.orderId,
+                      MaterialPageRoute(
+                        builder: (context) => SupplierDetailPage(
+                          orderId: widget.orderId,
+                        ),
                       ),
                     ),
                     child: _buildSubjectDetails(order.supplierImageUrl, order.supplierName, order.supplierAddress),
                   ),
                   HeaderWidget("CLIENTE"),
                   InkWell(
-                    onTap: () => EasyRouter.push(
+                    onTap: () => Navigator.push(
                       context,
-                      CustomerOrderPage(
-                        orderId: widget.orderId,
+                      MaterialPageRoute(
+                        builder: (context) => CustomerDetailPage(
+                          orderId: widget.orderId,
+                        ),
                       ),
                     ),
                     child: _buildSubjectDetails(order.customerImageUrl, order.customerName, order.customerAddress),

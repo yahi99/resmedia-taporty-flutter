@@ -1,5 +1,4 @@
 import 'package:easy_blocs/easy_blocs.dart';
-import 'package:easy_route/easy_route.dart';
 import 'package:easy_widget/easy_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,12 +6,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:resmedia_taporty_flutter/app_localization.dart';
 import 'package:resmedia_taporty_flutter/config/ColorTheme.dart';
+import 'package:resmedia_taporty_flutter/drivers/interface/screen/AccountScreen.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/screen/LoginScreen.dart';
-
-/// flutter build --flavor development -t lib/main-dev.dart
-
-//const red = Color(0xFFd50000), s_red = Color(0xFF9b0000), // B71C1C
-//blue = Color(0xFF1565c0), blue_s = Color(0xFF003c8f); // 0F5DDB
 
 void main() async {
   runApp(RepositoryBuilder(
@@ -118,11 +113,11 @@ class _TaportyState extends State<Taporty> {
       supportedLocales: [
         const Locale("it"),
       ],
-      initialRoute: LoginScreen.ROUTE,
-      onGenerateRoute: EasyRouter.onGenerateRouteBuilder((_) => LoginScreen(), LoginScreen.ROUTE),
-      navigatorObservers: <NavigatorObserver>[
-        SwipeBackObserver(),
-      ],
+      routes: {
+        "/login": (context) => LoginScreen(),
+        "/account": (context) => AccountScreen(),
+      },
+      initialRoute: "/login",
     );
   }
 }

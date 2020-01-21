@@ -1,6 +1,5 @@
 import 'package:easy_blocs/easy_blocs.dart';
 import 'package:easy_firebase/easy_firebase.dart';
-import 'package:easy_route/easy_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -12,17 +11,12 @@ import 'package:resmedia_taporty_flutter/config/ColorTheme.dart';
 import 'package:resmedia_taporty_flutter/client/interface/page/OrderDetailPage.dart';
 import 'package:sticky_headers/sticky_headers.dart';
 
-class OrderScreen extends StatefulWidget implements WidgetRoute {
-  static const ROUTE = "OrderScreen";
-
+class OrderListScreen extends StatefulWidget {
   @override
-  String get route => OrderScreen.ROUTE;
-
-  @override
-  OrderScreenState createState() => OrderScreenState();
+  OrderListScreenState createState() => OrderListScreenState();
 }
 
-class OrderScreenState extends State<OrderScreen> {
+class OrderListScreenState extends State<OrderListScreen> {
   final _orderBloc = OrderBloc.of();
   @override
   Widget build(BuildContext context) {
@@ -76,10 +70,12 @@ class OrderScreenState extends State<OrderScreen> {
                           itemCount: orders.length,
                           itemBuilder: (context, index) {
                             return InkWell(
-                              onTap: () => EasyRouter.push(
+                              onTap: () => Navigator.push(
                                 context,
-                                OrderDetailPage(
-                                  orderId: orders[index].id,
+                                MaterialPageRoute(
+                                  builder: (context) => OrderDetailPage(
+                                    orderId: orders[index].id,
+                                  ),
                                 ),
                               ),
                               child: OrderView(

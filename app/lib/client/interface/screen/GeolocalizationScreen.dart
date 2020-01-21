@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:easy_route/easy_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
@@ -11,21 +10,15 @@ import 'package:resmedia_taporty_flutter/common/interface/view/LogoView.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
 import 'package:toast/toast.dart';
 
-class GeoLocScreen extends StatefulWidget implements WidgetRoute {
-  static const ROUTE = "GeoLocScreen";
+class GeolocalizationScreen extends StatefulWidget {
+  GeolocalizationScreen();
 
   @override
-  String get route => GeoLocScreen.ROUTE;
-
-  final bool isAnonymous;
-
-  GeoLocScreen({this.isAnonymous});
-
-  @override
-  _GeoLocScreenState createState() => _GeoLocScreenState();
+  _GeolocalizationScreenState createState() => _GeolocalizationScreenState();
 }
 
-class _GeoLocScreenState extends State<GeoLocScreen> {
+class _GeolocalizationScreenState extends State<GeolocalizationScreen> {
+  // TODO: Capire a cosa serve e spostarla nelle variabili globali
   static final String _key = 'AIzaSyAmJyflDR6W10z738vMkLz9Oham51HR790';
 
   GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: _key);
@@ -109,8 +102,19 @@ class _GeoLocScreenState extends State<GeoLocScreen> {
                       color: Colors.blue,
                       onPressed: () async {
                         if (isValid) {
-                          EasyRouter.pushAndRemoveAll(context,
-                              SupplierListScreen(customerCoordinates: customerCoordinates, customerAddress: customerAddress, isAnonymous: false, user: (await UserBloc.of().outUser.first).model));
+                          var user = (await UserBloc.of().outUser.first).model;
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => SupplierListScreen(
+                                customerCoordinates: customerCoordinates,
+                                customerAddress: customerAddress,
+                                isAnonymous: false,
+                                user: user,
+                              ),
+                            ),
+                            (Route<dynamic> route) => false,
+                          );
                         } else {
                           Toast.show('Inserire un indirizzo valido', context);
                         }

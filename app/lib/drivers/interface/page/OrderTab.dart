@@ -1,30 +1,17 @@
 import 'package:easy_firebase/easy_firebase.dart';
-import 'package:easy_route/easy_route.dart';
 import 'package:flutter/material.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/OrderBloc.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/page/OrderDetailPage.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/view/OrderView.dart';
 import 'package:resmedia_taporty_flutter/common/model/OrderModel.dart';
 
-class OrderTab extends StatefulWidget implements WidgetRoute {
-  static const ROUTE = "OrderTab";
-
-  String get route => OrderTab.ROUTE;
-
-  OrderTab();
-
+class OrderTab extends StatefulWidget {
   @override
   _OrderTabState createState() => _OrderTabState();
 }
 
 class _OrderTabState extends State<OrderTab> {
   final orderBloc = OrderBloc.of();
-  bool isDeactivate = false;
-
-  void deactivate() {
-    super.deactivate();
-    isDeactivate = !isDeactivate;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,10 +47,12 @@ class _OrderTabState extends State<OrderTab> {
                               itemCount: orders.length,
                               itemBuilder: (_context, index) {
                                 return InkWell(
-                                  onTap: () => EasyRouter.push(
+                                  onTap: () => Navigator.push(
                                     _context,
-                                    OrderDetailPage(
-                                      orderId: orders[index].id,
+                                    MaterialPageRoute(
+                                      builder: (context) => OrderDetailPage(
+                                        orderId: orders[index].id,
+                                      ),
                                     ),
                                   ),
                                   child: OrderView(

@@ -1,23 +1,15 @@
 import 'dart:io';
-import 'package:easy_route/easy_route.dart';
-import 'package:easy_widget/easy_widget.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:resmedia_taporty_flutter/common/helper/LoginHelper.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/page/OrderTab.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/page/ReservedShiftTab.dart';
-import 'package:resmedia_taporty_flutter/drivers/interface/screen/AccountScreen.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/page/CalendarTab.dart';
 import 'package:resmedia_taporty_flutter/drivers/logic/bloc/DriverBloc.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
 
-class HomeScreenDriver extends StatefulWidget implements WidgetRoute {
-  static const ROUTE = 'HomeScreenDriver';
-
-  @override
-  String get route => ROUTE;
-
+class HomeScreenDriver extends StatefulWidget {
   @override
   _HomeScreenDriverState createState() => _HomeScreenDriverState();
 }
@@ -90,41 +82,42 @@ class _HomeScreenDriverState extends State<HomeScreenDriver> {
   @override
   Widget build(BuildContext context) {
     dialog = context;
-    return DefaultPapyrusController(
-      child: DefaultTabController(
-        length: 3,
-        child: Scaffold(
-          appBar: AppBar(
-            leading: PapyrusBackIconButton(),
-            title: Text("Home"),
-            actions: <Widget>[
-              IconButton(
-                onPressed: () => EasyRouter.push(context, AccountScreen()),
-                icon: Icon(Icons.account_circle),
-              )
-            ],
-            bottom: TabBar(
-              tabs: [
-                Tab(
-                  text: 'Ordini',
-                ),
-                Tab(
-                  text: 'Turni',
-                ),
-                Tab(
-                  text: 'Calendario',
-                ),
-              ],
-            ),
+    return DefaultTabController(
+      length: 3,
+      child: Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () => Navigator.pop(context, false),
           ),
-          body: TabBarView(
-            physics: const NeverScrollableScrollPhysics(),
-            children: <Widget>[
-              OrderTab(),
-              ReservedShiftTab(),
-              CalendarTab(),
+          title: Text("Home"),
+          actions: <Widget>[
+            IconButton(
+              onPressed: () => Navigator.pushNamed(context, "/account"),
+              icon: Icon(Icons.account_circle),
+            )
+          ],
+          bottom: TabBar(
+            tabs: [
+              Tab(
+                text: 'Ordini',
+              ),
+              Tab(
+                text: 'Turni',
+              ),
+              Tab(
+                text: 'Calendario',
+              ),
             ],
           ),
+        ),
+        body: TabBarView(
+          physics: const NeverScrollableScrollPhysics(),
+          children: <Widget>[
+            OrderTab(),
+            ReservedShiftTab(),
+            CalendarTab(),
+          ],
         ),
       ),
     );

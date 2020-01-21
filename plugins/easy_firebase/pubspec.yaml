@@ -15,8 +15,6 @@ dependencies:
 
   easy_blocs:
     path: ../easy_blocs
-  easy_route:
-    path: ../easy_route
 
   firebase_auth: any
   firebase_messaging: any

@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:easy_blocs/easy_blocs.dart';
 import 'package:easy_firebase/easy_firebase.dart';
-import 'package:easy_route/easy_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -11,17 +10,12 @@ import 'package:resmedia_taporty_flutter/common/interface/view/LogoView.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
 import 'package:resmedia_taporty_flutter/common/resources/Database.dart';
 
-class SignUpScreen extends StatefulWidget implements WidgetRoute {
-  static const ROUTE = "SignUpScreen";
-
+class SignupScreen extends StatefulWidget {
   @override
-  String get route => ROUTE;
-
-  @override
-  _SignUpScreenState createState() => _SignUpScreenState();
+  _SignupScreenState createState() => _SignupScreenState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
+class _SignupScreenState extends State<SignupScreen> {
   final _userBloc = UserBloc.of();
   final FirebaseSignUpBloc _submitBloc = FirebaseSignUpBloc.init(controller: UserBloc.of());
 
@@ -36,7 +30,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       if (!res) return;
       final user = await _userBloc.outFirebaseUser.first;
       if (user != null) Database().createUserGoogle(uid: user.uid, nominative: user.displayName, email: user.email);
-      EasyRouter.pop(context);
+      Navigator.pop(context);
     };
   }
 
@@ -68,7 +62,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 AutoSizeText('Privacy Policy'),
                 RaisedButton(
                   child: Text('  Chiudi  '),
-                  onPressed: () => EasyRouter.pop(context),
+                  onPressed: () => Navigator.pop(context),
                 ),
               ],
             ),

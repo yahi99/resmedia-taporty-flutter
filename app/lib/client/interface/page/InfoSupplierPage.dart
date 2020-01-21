@@ -1,10 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:easy_route/easy_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:rating_bar/rating_bar.dart';
-import 'package:resmedia_taporty_flutter/client/interface/screen/SeeReviewsScreen.dart';
+import 'package:resmedia_taporty_flutter/client/interface/screen/SupplierReviewListScreen.dart';
 import 'package:resmedia_taporty_flutter/common/model/SupplierModel.dart';
 
 class InfoSupplierPage extends StatelessWidget {
@@ -81,10 +80,12 @@ class InfoSupplierPage extends StatelessWidget {
                               ],
                             ),
                             onTap: () {
-                              EasyRouter.push(
+                              Navigator.push(
                                 context,
-                                SeeReviewsScreen(
-                                  model: model,
+                                MaterialPageRoute(
+                                  builder: (context) => SupplierReviewListScreen(
+                                    model: model,
+                                  ),
                                 ),
                               );
                             },

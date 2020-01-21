@@ -1,6 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:easy_route/easy_route.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:rating_bar/rating_bar.dart';
@@ -14,11 +13,7 @@ import 'package:toast/toast.dart';
 
 import 'OrderCartPage.dart';
 
-class OrderDetailPage extends StatefulWidget implements WidgetRoute {
-  static const ROUTE = "OrderDetailPage";
-
-  String get route => OrderDetailPage.ROUTE;
-
+class OrderDetailPage extends StatefulWidget {
   final String orderId;
 
   OrderDetailPage({
@@ -31,14 +26,8 @@ class OrderDetailPage extends StatefulWidget implements WidgetRoute {
 }
 
 class _OrderDetailPageState extends State<OrderDetailPage> {
-  bool isDeactivate = false;
   final _orderBloc = OrderBloc.of();
   final _db = Database();
-
-  void deactivate() {
-    super.deactivate();
-    isDeactivate = !isDeactivate;
-  }
 
   @override
   void didChangeDependencies() {
@@ -120,7 +109,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                       try {
                         await _db.addSupplierReview(order.supplierId, order.customerId, order.customerName, order.id, _restRating, _restReviewBodyKey.currentState.value);
                         Toast.show("Recensione aggiunta con successo!", context);
-                        EasyRouter.pop(context);
+                        Navigator.pop(context);
                       } catch (err) {
                         Toast.show("Errore inaspettato!", context);
                       }
@@ -204,7 +193,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                       try {
                         await _db.addDriverReview(order.driverId, order.customerId, order.customerName, order.id, _driverRating, _driverReviewBodyKey.currentState.value);
                         Toast.show("Recensione aggiunta con successo!", context);
-                        EasyRouter.pop(context);
+                        Navigator.pop(context);
                       } catch (err) {
                         Toast.show("Errore inaspettato!", context);
                       }
@@ -238,13 +227,13 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                       IconButton(
                         icon: Icon(Icons.close),
                         onPressed: () {
-                          EasyRouter.pop(context);
+                          Navigator.pop(context);
                         },
                       ),
                       IconButton(
                         icon: Icon(Icons.check),
                         onPressed: () async {
-                          EasyRouter.pop(context);
+                          Navigator.pop(context);
                           try {
                             await _db.updateOrderState(widget.orderId, OrderState.CANCELLED);
                             Toast.show("Ordine cancellato", context);
@@ -277,7 +266,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
-            EasyRouter.pop(context);
+            Navigator.pop(context);
           },
         ),
       ),
@@ -316,7 +305,12 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                   ),
                   Divider(color: Colors.grey, height: 0),
                   InkWell(
-                    onTap: () => EasyRouter.push(context, OrderCartPage(orderId: order.id)),
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => OrderCartPage(orderId: order.id),
+                      ),
+                    ),
                     child: Row(
                       children: <Widget>[
                         Expanded(

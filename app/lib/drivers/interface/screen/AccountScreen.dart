@@ -2,20 +2,15 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:easy_route/easy_route.dart';
-import 'package:easy_widget/easy_widget.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:resmedia_taporty_flutter/common/helper/LoginHelper.dart';
+import 'package:resmedia_taporty_flutter/common/interface/widget/ListViewSeparated.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
 import 'package:resmedia_taporty_flutter/common/resources/Database.dart';
 import 'package:resmedia_taporty_flutter/common/model/UserModel.dart';
 
-class AccountScreen extends StatelessWidget implements WidgetRoute {
-  static const ROUTE = 'AccountScreen';
-
-  String get route => ROUTE;
-
+class AccountScreen extends StatelessWidget {
   Future<String> uploadFile(String filePath) async {
     final Uint8List bytes = File(filePath).readAsBytesSync();
     final Directory tempDir = Directory.systemTemp;
@@ -133,12 +128,13 @@ class AccountScreen extends StatelessWidget implements WidgetRoute {
                             children: <Widget>[
                               Icon(Icons.settings),
                               FlatButton(
-                                  child: Text('Log Out', style: theme.textTheme.subhead),
-                                  onPressed: () {
-                                    UserBloc.of().logout();
-                                    LoginHelper().signOut();
-                                    EasyRouter.pop(context);
-                                  }),
+                                child: Text('Log Out', style: theme.textTheme.subhead),
+                                onPressed: () {
+                                  UserBloc.of().logout();
+                                  LoginHelper().signOut();
+                                  Navigator.pop(context);
+                                },
+                              ),
                             ],
                           ),
                         ].map((child) {

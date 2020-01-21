@@ -1,5 +1,4 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:easy_route/easy_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -12,34 +11,18 @@ import 'package:resmedia_taporty_flutter/common/resources/Database.dart';
 import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class CustomerOrderPage extends StatefulWidget implements WidgetRoute {
-  static const ROUTE = "CustomerOrderPage";
-
-  String get route => CustomerOrderPage.ROUTE;
-
+class CustomerDetailPage extends StatefulWidget {
   final String orderId;
 
-  CustomerOrderPage({Key key, this.orderId}) : super(key: key);
+  CustomerDetailPage({Key key, this.orderId}) : super(key: key);
 
   @override
-  _CustomerOrderPageState createState() => _CustomerOrderPageState();
+  _CustomerDetailPageState createState() => _CustomerDetailPageState();
 }
 
-class _CustomerOrderPageState extends State<CustomerOrderPage> {
-  bool isDeactivate = false;
+class _CustomerDetailPageState extends State<CustomerDetailPage> {
   final _db = Database();
   final _orderBloc = OrderBloc.of();
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _orderBloc.setOrderStream(widget.orderId);
-  }
-
-  void deactivate() {
-    super.deactivate();
-    isDeactivate = !isDeactivate;
-  }
 
   void _askPermission() async {
     showDialog(
@@ -60,13 +43,13 @@ class _CustomerOrderPageState extends State<CustomerOrderPage> {
                       IconButton(
                         icon: Icon(Icons.close),
                         onPressed: () {
-                          EasyRouter.pop(context);
+                          Navigator.pop(context);
                         },
                       ),
                       IconButton(
                         icon: Icon(Icons.check),
                         onPressed: () async {
-                          EasyRouter.pop(context);
+                          Navigator.pop(context);
                           try {
                             await _db.updateOrderState(widget.orderId, OrderState.DELIVERED);
                             Toast.show("Ordine consegnato", context);
@@ -95,7 +78,7 @@ class _CustomerOrderPageState extends State<CustomerOrderPage> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
-            EasyRouter.pop(context);
+            Navigator.pop(context);
           },
         ),
       ),

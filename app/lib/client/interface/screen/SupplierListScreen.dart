@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_blocs/easy_blocs.dart';
-import 'package:easy_route/easy_route.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +13,6 @@ import 'package:meta/meta.dart';
 import 'package:resmedia_taporty_flutter/common/helper/LoginHelper.dart';
 import 'package:resmedia_taporty_flutter/client/interface/screen/AccountScreen.dart';
 import 'package:resmedia_taporty_flutter/client/interface/screen/GeolocalizationScreen.dart';
-import 'package:resmedia_taporty_flutter/client/interface/screen/LoginScreen.dart';
 import 'package:resmedia_taporty_flutter/client/interface/screen/SupplierScreen.dart';
 import 'package:resmedia_taporty_flutter/client/interface/widget/SearchBar.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/SuppliersBloc.dart';
@@ -24,10 +22,7 @@ import 'package:resmedia_taporty_flutter/common/model/SupplierModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/UserModel.dart';
 import 'package:resmedia_taporty_flutter/config/ColorTheme.dart';
 
-class SupplierListScreen extends StatefulWidget implements WidgetRoute {
-  static const ROUTE = 'SupplierListScreen';
-
-  String get route => ROUTE;
+class SupplierListScreen extends StatefulWidget {
   final UserModel user;
   final GeoPoint customerCoordinates;
   final String customerAddress;
@@ -116,7 +111,7 @@ class _SupplierListScreenState extends State<SupplierListScreen> {
         leading: IconButton(
           icon: Icon(Icons.public),
           onPressed: () {
-            EasyRouter.push(context, GeoLocScreen(isAnonymous: false));
+            Navigator.pushNamed(context, "/geolocalization");
           },
         ),
         title: Text('Ristoranti nella tua zona'),
@@ -126,7 +121,7 @@ class _SupplierListScreenState extends State<SupplierListScreen> {
           IconButton(
             icon: Icon(Icons.account_circle),
             onPressed: () {
-              EasyRouter.push(context, AccountScreen());
+              Navigator.pushNamed(context, "/account");
             },
           ),
         ],
@@ -157,7 +152,7 @@ class _SupplierListScreenState extends State<SupplierListScreen> {
                               onPressed: () {
                                 UserBloc.of().logout();
                                 LoginHelper().signOut();
-                                EasyRouter.pushAndRemoveAll(context, LoginScreen());
+                                Navigator.pushNamedAndRemoveUntil(context, "/login", (Route<dynamic> route) => false);
                               },
                             );
                           }
@@ -209,15 +204,14 @@ class _SupplierListScreenState extends State<SupplierListScreen> {
                 padding: const EdgeInsets.symmetric(vertical: 4.0),
                 child: InkWell(
                   onTap: () async {
-                    EasyRouter.push(
+                    Navigator.push(
                       context,
-                      SupplierScreen(
-                        supplierAddress: (await Geocoder.local.findAddressesFromCoordinates(new Coordinates(supplierList[index].coordinates.latitude, supplierList[index].coordinates.longitude)))
-                            .first
-                            .addressLine,
-                        customerCoordinates: widget.customerCoordinates,
-                        customerAddress: widget.customerAddress,
-                        supplierModel: supplierList[index],
+                      MaterialPageRoute(
+                        builder: (context) => SupplierScreen(
+                          customerCoordinates: widget.customerCoordinates,
+                          customerAddress: widget.customerAddress,
+                          supplier: supplierList[index],
+                        ),
                       ),
                     );
                   },
@@ -240,16 +234,6 @@ class SupplierView extends StatelessWidget {
     @required this.model,
   })  : assert(model != null),
         super(key: key);
-
-  String toDay(int weekday) {
-    if (weekday == 1) return 'Lunedì';
-    if (weekday == 2) return 'Martedì';
-    if (weekday == 3) return 'Mercoledì';
-    if (weekday == 4) return 'Giovedì';
-    if (weekday == 5) return 'Venerdì';
-    if (weekday == 6) return 'Sabato';
-    return 'Domenica';
-  }
 
   @override
   Widget build(BuildContext context) {

@@ -1,5 +1,4 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:easy_route/easy_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -12,21 +11,16 @@ import 'package:resmedia_taporty_flutter/common/resources/Database.dart';
 import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class SupplierOrderPage extends StatefulWidget implements WidgetRoute {
-  static const ROUTE = "SupplierOrderPage";
-
-  String get route => SupplierOrderPage.ROUTE;
-
+class SupplierDetailPage extends StatefulWidget {
   final String orderId;
 
-  SupplierOrderPage({Key key, this.orderId}) : super(key: key);
+  SupplierDetailPage({Key key, this.orderId}) : super(key: key);
 
   @override
-  _SupplierOrderPageState createState() => _SupplierOrderPageState();
+  _SupplierDetailPageState createState() => _SupplierDetailPageState();
 }
 
-class _SupplierOrderPageState extends State<SupplierOrderPage> {
-  bool isDeactivate = false;
+class _SupplierDetailPageState extends State<SupplierDetailPage> {
   final _db = Database();
   final _orderBloc = OrderBloc.of();
 
@@ -34,11 +28,6 @@ class _SupplierOrderPageState extends State<SupplierOrderPage> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     _orderBloc.setOrderStream(widget.orderId);
-  }
-
-  void deactivate() {
-    super.deactivate();
-    isDeactivate = !isDeactivate;
   }
 
   void _askPermission() async {
@@ -60,13 +49,13 @@ class _SupplierOrderPageState extends State<SupplierOrderPage> {
                       IconButton(
                         icon: Icon(Icons.close),
                         onPressed: () {
-                          EasyRouter.pop(context);
+                          Navigator.pop(context);
                         },
                       ),
                       IconButton(
                         icon: Icon(Icons.check),
                         onPressed: () async {
-                          EasyRouter.pop(context);
+                          Navigator.pop(context);
                           try {
                             await _db.updateOrderState(widget.orderId, OrderState.PICKED_UP);
                             Toast.show("Ordine ritirato", context);
@@ -94,7 +83,7 @@ class _SupplierOrderPageState extends State<SupplierOrderPage> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
-            EasyRouter.pop(context);
+            Navigator.pop(context);
           },
         ),
       ),

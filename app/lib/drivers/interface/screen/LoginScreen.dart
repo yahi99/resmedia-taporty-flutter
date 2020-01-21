@@ -1,6 +1,5 @@
 import 'package:easy_blocs/easy_blocs.dart';
 import 'package:easy_firebase/easy_firebase.dart';
-import 'package:easy_route/easy_route.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,14 +12,7 @@ import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
 import 'package:resmedia_taporty_flutter/common/resources/Database.dart';
 import 'package:resmedia_taporty_flutter/common/model/UserModel.dart';
 
-//import 'package:flutter_facebook_login/flutter_facebook_login.dart';
-//import 'package:firebase_auth/firebase_auth.dart';
-
-class LoginScreen extends StatefulWidget implements WidgetRoute {
-  static const String ROUTE = "LoginScreen";
-
-  String get route => ROUTE;
-
+class LoginScreen extends StatefulWidget {
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
@@ -107,17 +99,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     Row(
                       children: <Widget>[
-                        /*Expanded(
-                  child: RaisedButton(
-                    onPressed: () {
-                      EasyRouter.push(context, SignUpScreen());
-                    },
-                    child: FittedText('Sign up'),
-                  ),
-                ),
-                SizedBox(
-                  width: SPACE,
-                ),*/
                         Expanded(
                           child: SubmitButton.raised(
                             controller: _submitBloc.submitController,

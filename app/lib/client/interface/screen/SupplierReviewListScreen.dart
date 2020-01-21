@@ -1,4 +1,3 @@
-import 'package:easy_route/easy_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/SupplierBloc.dart';
@@ -6,32 +5,20 @@ import 'package:resmedia_taporty_flutter/common/model/SupplierModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/ReviewModel.dart';
 import 'package:resmedia_taporty_flutter/config/ColorTheme.dart';
 
-class SeeReviewsScreen extends StatefulWidget implements WidgetRoute {
-  static const String ROUTE = "SeeReviewsScreen";
-
-  String get route => SeeReviewsScreen.ROUTE;
+// TODO: Rendi più carino da vedere
+class SupplierReviewListScreen extends StatefulWidget {
   final SupplierModel model;
 
-  SeeReviewsScreen({
+  SupplierReviewListScreen({
     Key key,
     @required this.model,
   }) : super(key: key);
 
   @override
-  _CheckoutScreenState createState() => _CheckoutScreenState();
+  _SupplierReviewListScreenState createState() => _SupplierReviewListScreenState();
 }
 
-class _CheckoutScreenState extends State<SeeReviewsScreen> {
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
+class _SupplierReviewListScreenState extends State<SupplierReviewListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

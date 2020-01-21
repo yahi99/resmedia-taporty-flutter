@@ -1,6 +1,4 @@
 import 'dart:async';
-
-import 'package:easy_route/easy_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -9,11 +7,7 @@ import 'package:resmedia_taporty_flutter/common/helper/DateTimeHelper.dart';
 import 'package:resmedia_taporty_flutter/config/ColorTheme.dart';
 import 'package:resmedia_taporty_flutter/common/model/OrderModel.dart';
 
-class OrderView extends StatefulWidget implements WidgetRoute {
-  static const String ROUTE = "OrderView";
-
-  String get route => ROUTE;
-
+class OrderView extends StatefulWidget {
   final OrderModel order;
 
   const OrderView({
@@ -26,42 +20,6 @@ class OrderView extends StatefulWidget implements WidgetRoute {
 }
 
 class _OrderViewState extends State<OrderView> {
-  List<String> points = ['1', '2', '3', '4', '5'];
-
-  String pointF, pointR;
-
-  StreamController pointStreamF;
-  StreamController pointStreamR;
-
-  List<DropdownMenuItem> dropPoint = List<DropdownMenuItem>();
-
-  @override
-  void initState() {
-    super.initState();
-    pointStreamF = new StreamController<String>.broadcast();
-    pointStreamR = new StreamController<String>.broadcast();
-    for (int i = 0; i < points.length; i++) {
-      dropPoint.add(DropdownMenuItem(
-        child: Text(points[i]),
-        value: points[i],
-      ));
-    }
-    pointF = points[points.length - 1];
-    pointR = points[points.length - 1];
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    pointStreamF.close();
-    pointStreamR.close();
-  }
-
-  String toDate(String date) {
-    final DateTime dateTime = DateTime.parse(date);
-    return (dateTime.day.toString() + '/' + dateTime.month.toString() + '/' + dateTime.year.toString());
-  }
-
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);

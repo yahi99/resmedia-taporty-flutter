@@ -1,5 +1,5 @@
-import 'package:easy_widget/easy_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:resmedia_taporty_flutter/common/interface/widget/ListViewSeparated.dart';
 
 class AccountPageDriver extends StatelessWidget {
   @override

@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_blocs/easy_blocs.dart';
 import 'package:easy_firebase/easy_firebase.dart';
-import 'package:easy_route/easy_route.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +11,6 @@ import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:resmedia_taporty_flutter/client/interface/screen/GeolocalizationScreen.dart';
 import 'package:resmedia_taporty_flutter/client/interface/screen/SupplierListScreen.dart';
-import 'package:resmedia_taporty_flutter/client/interface/screen/SignUpScreen.dart';
 import 'package:resmedia_taporty_flutter/common/interface/view/LogoView.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
 import 'package:resmedia_taporty_flutter/common/resources/Database.dart';
@@ -21,20 +19,12 @@ import 'package:resmedia_taporty_flutter/common/model/UserModel.dart';
 //import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 //import 'package:firebase_auth/firebase_auth.dart';
 
-class LoginScreen extends StatefulWidget implements WidgetRoute {
-  static const String ROUTE = "LoginScreen";
-
-  String get route => ROUTE;
-
+class LoginScreen extends StatefulWidget {
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  static const ROUTE = "LoginScreen";
-
-  String get route => ROUTE;
-
   bool isVerified;
   var permission;
 
@@ -67,10 +57,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     children: <Widget>[
                       RaisedButton(
                         onPressed: () {
-                          EasyRouter.pushAndRemoveAll(
-                            context,
-                            GeoLocScreen(isAnonymous: isAnon),
-                          );
+                          Navigator.pushNamedAndRemoveUntil(context, "/geolocalization", (route) => false);
                         },
                         textColor: Colors.white,
                         color: Colors.red,
@@ -83,11 +70,19 @@ class _LoginScreenState extends State<LoginScreen> {
                           try {
                             var position = await Geolocator().getCurrentPosition();
                             var customerCoordinates = GeoPoint(position.latitude, position.longitude);
+                            var user = (await _userBloc.outUser.first).model;
                             var customerAddress = (await Geocoder.local.findAddressesFromCoordinates(Coordinates(position.latitude, position.longitude))).first.addressLine;
-                            await EasyRouter.pushAndRemoveAll(
-                              context,
-                              SupplierListScreen(isAnonymous: isAnon, customerCoordinates: customerCoordinates, customerAddress: customerAddress, user: (await _userBloc.outUser.first).model),
-                            );
+                            await Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => SupplierListScreen(
+                                    isAnonymous: isAnon,
+                                    customerCoordinates: customerCoordinates,
+                                    customerAddress: customerAddress,
+                                    user: user,
+                                  ),
+                                ),
+                                (route) => false);
                           } catch (e) {}
                         },
                         color: Colors.green,
@@ -133,7 +128,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           user.sendEmailVerification();
                           UserBloc.of().logout();
                           LoginHelper().signOut();
-                          EasyRouter.pop(context);
+                          Navigator.pop(context);
                         },
                         color: Colors.blue,
                         textColor: Colors.white,
@@ -184,7 +179,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 builder: (ctx, userId) {
                   if (userId.hasData && (userId.data.type == null || userId.data.type == 'user')) {
                     if (userSnapshot.data.isEmailVerified) {
-                      return GeoLocScreen();
+                      return GeolocalizationScreen();
                     }
                     return _buildLoginForm(showConfirmEmail: true, user: userSnapshot.data);
                   }
@@ -244,7 +239,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   Expanded(
                     child: RaisedButton(
                       onPressed: () {
-                        EasyRouter.push(context, SignUpScreen());
+                        Navigator.pushNamed(context, "/signup");
                       },
                       child: FittedText('Registrati'),
                     ),
@@ -260,16 +255,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ],
               ),
-              /*SizedBox(
-                height: 12.0 * 3,
-              ),
-              RaisedButton.icon(
-                onPressed: () {
-                  _submitBloc.submitterGoogle();
-                },
-                icon: Icon(FontAwesomeIcons.google),
-                label: Text('Login con Google'),
-              ),*/
             ],
           ),
         ),

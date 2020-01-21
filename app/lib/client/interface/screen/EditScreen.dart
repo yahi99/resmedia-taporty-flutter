@@ -1,20 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:easy_blocs/easy_blocs.dart';
-import 'package:easy_route/easy_route.dart';
-import 'package:easy_widget/easy_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:resmedia_taporty_flutter/client/interface/screen/LoginScreen.dart';
+import 'package:resmedia_taporty_flutter/common/interface/widget/FittedText.dart';
+import 'package:resmedia_taporty_flutter/common/interface/widget/ListViewSeparated.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
 import 'package:resmedia_taporty_flutter/common/resources/Database.dart';
 import 'package:resmedia_taporty_flutter/common/model/UserModel.dart';
 
-class EditScreen extends StatefulWidget implements WidgetRoute {
-  static const ROUTE = 'EditScreen';
-
-  @override
-  String get route => ROUTE;
-
+class EditScreen extends StatefulWidget {
   @override
   _EditState createState() => _EditState();
 }
@@ -57,10 +50,10 @@ class SnackBarPage extends StatelessWidget {
                       child: Text('Sei stato disabilitato clicca per fare logout'),
                       onPressed: () {
                         UserBloc.of().logout();
-                        EasyRouter.pushAndRemoveAll(context, LoginScreen());
+                        Navigator.pushNamedAndRemoveUntil(context, "/login", (Route<dynamic> route) => false);
                       },
                     );
-                    //EasyRouter.pushAndRemoveAll(context, LoginScreen());
+                    //Navigator.pushNamedAndRemoveUntil(context, "/login", (Route<dynamic> route) => false);
                   }
                   //var temp = snap.data.model.nominative.split(' ');
                   return Column(

@@ -1,8 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:easy_route/easy_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:resmedia_taporty_flutter/client/interface/screen/LoginScreen.dart';
 import 'package:resmedia_taporty_flutter/common/helper/LoginHelper.dart';
 import 'package:resmedia_taporty_flutter/client/interface/screen/AccountScreen.dart';
 import 'package:resmedia_taporty_flutter/client/interface/page/CartPage.dart';
@@ -17,10 +15,7 @@ import 'package:resmedia_taporty_flutter/common/model/SupplierModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/UserModel.dart';
 import 'package:resmedia_taporty_flutter/config/ColorTheme.dart';
 
-class CheckoutScreen extends StatefulWidget implements WidgetRoute {
-  static const String ROUTE = "ProductsScreen";
-
-  String get route => CheckoutScreen.ROUTE;
+class CheckoutScreen extends StatefulWidget {
   final SupplierModel supplier;
   final UserModel user;
   final GeoPoint customerCoordinates;
@@ -67,7 +62,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> with TickerProviderStat
             IconButton(
               icon: Icon(Icons.account_circle),
               onPressed: () {
-                EasyRouter.push(context, AccountScreen());
+                Navigator.pushNamed(context, "/account");
               },
             )
           ],
@@ -128,10 +123,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> with TickerProviderStat
                             onPressed: () {
                               UserBloc.of().logout();
                               LoginHelper().signOut();
-                              EasyRouter.pushAndRemoveAll(context, LoginScreen());
+                              Navigator.pushNamedAndRemoveUntil(context, "/login", (Route<dynamic> route) => false);
                             },
                           );
-                          //EasyRouter.pushAndRemoveAll(context, LoginScreen());
+                          //Navigator.pushNamedAndRemoveUntil(context, "/login", (Route<dynamic> route) => false);
                         }
                         if (rest.data.isDisabled != null && rest.data.isDisabled) {
                           return Padding(

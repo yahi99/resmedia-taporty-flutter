@@ -1,5 +1,4 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:easy_route/easy_route.dart';
 import 'package:flutter/material.dart';
 import 'package:resmedia_taporty_flutter/client/interface/page/ModifyOrderCartPage.dart';
 import 'package:resmedia_taporty_flutter/common/interface/widget/HeaderWidget.dart';
@@ -7,11 +6,7 @@ import 'package:resmedia_taporty_flutter/common/logic/bloc/OrderBloc.dart';
 import 'package:resmedia_taporty_flutter/common/model/OrderModel.dart';
 import 'package:resmedia_taporty_flutter/config/ColorTheme.dart';
 
-class OrderCartPage extends StatefulWidget implements WidgetRoute {
-  static const ROUTE = "OrderCartPage";
-
-  String get route => OrderCartPage.ROUTE;
-
+class OrderCartPage extends StatefulWidget {
   final String orderId;
 
   OrderCartPage({
@@ -24,13 +19,7 @@ class OrderCartPage extends StatefulWidget implements WidgetRoute {
 }
 
 class _OrderCartPageState extends State<OrderCartPage> {
-  bool isDeactivate = false;
   final _orderBloc = OrderBloc.of();
-
-  void deactivate() {
-    super.deactivate();
-    isDeactivate = !isDeactivate;
-  }
 
   @override
   void didChangeDependencies() {
@@ -50,7 +39,7 @@ class _OrderCartPageState extends State<OrderCartPage> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
-            EasyRouter.pop(context);
+            Navigator.pop(context);
           },
         ),
       ),
@@ -149,10 +138,12 @@ class _OrderCartPageState extends State<OrderCartPage> {
             child: RaisedButton(
               color: ColorTheme.ACCENT_BLUE,
               onPressed: () {
-                EasyRouter.push(
+                Navigator.push(
                   context,
-                  ModifyOrderCartPage(
-                    order: order,
+                  MaterialPageRoute(
+                    builder: (context) => ModifyOrderCartPage(
+                      order: order,
+                    ),
                   ),
                 );
               },

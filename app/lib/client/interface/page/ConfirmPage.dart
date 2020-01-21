@@ -1,12 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:easy_route/easy_route.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:resmedia_taporty_flutter/client/interface/page/CartPage.dart';
 import 'package:resmedia_taporty_flutter/client/interface/screen/CheckoutScreen.dart';
-import 'package:resmedia_taporty_flutter/client/interface/screen/SupplierScreen.dart';
 import 'package:resmedia_taporty_flutter/client/interface/view/BottonButtonBar.dart';
 import 'package:resmedia_taporty_flutter/client/logic/bloc/CartBloc.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/SupplierBloc.dart';
@@ -66,7 +64,8 @@ class _ConfirmState extends State<ConfirmPage> with AutomaticKeepAliveClientMixi
           actions: <Widget>[
             FlatButton(
               onPressed: () {
-                EasyRouter.popUntil(context, SupplierScreen.ROUTE);
+                // TODO: Rimuovere fino alla home
+                Navigator.pushNamedAndRemoveUntil(context, "/geolocalization", (route) => false);
               },
               textColor: cls.secondary,
               child: Text(

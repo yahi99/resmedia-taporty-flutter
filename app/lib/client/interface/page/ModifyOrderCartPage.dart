@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:easy_route/easy_route.dart';
-import 'package:easy_widget/easy_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:resmedia_taporty_flutter/client/interface/widget/StepperButton.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/SupplierBloc.dart';
 import 'package:resmedia_taporty_flutter/common/model/OrderModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/OrderProductModel.dart';
@@ -11,11 +10,7 @@ import 'package:resmedia_taporty_flutter/config/ColorTheme.dart';
 import 'package:toast/toast.dart';
 import 'package:vibration/vibration.dart';
 
-class ModifyOrderCartPage extends StatefulWidget implements WidgetRoute {
-  static const ROUTE = "ModifyOrderCartPage";
-
-  String get route => ModifyOrderCartPage.ROUTE;
-
+class ModifyOrderCartPage extends StatefulWidget {
   final OrderModel order;
 
   ModifyOrderCartPage({
@@ -63,7 +58,7 @@ class _ModifyOrderCartPageState extends State<ModifyOrderCartPage> {
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
-            EasyRouter.pop(context);
+            Navigator.pop(context);
           },
         ),
       ),
@@ -180,7 +175,7 @@ class _ModifyOrderCartPageState extends State<ModifyOrderCartPage> {
                         RaisedButton(
                           color: ColorTheme.ACCENT_BLUE,
                           onPressed: () {
-                            EasyRouter.pop(context);
+                            Navigator.pop(context);
                           },
                           child: Text(
                             "Annulla",
@@ -191,7 +186,7 @@ class _ModifyOrderCartPageState extends State<ModifyOrderCartPage> {
                           onPressed: () async {
                             try {
                               await Database().modifyOrder(widget.order.id, widget.order.state, orderProducts);
-                              EasyRouter.pop(context);
+                              Navigator.pop(context);
                               Toast.show("Modifica inviata", context);
                             } catch (err) {
                               print(err);

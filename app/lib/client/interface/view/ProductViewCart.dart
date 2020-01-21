@@ -1,10 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_blocs/easy_blocs.dart';
-import 'package:easy_widget/easy_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:resmedia_taporty_flutter/client/interface/widget/StepperButton.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
 import 'package:resmedia_taporty_flutter/client/logic/bloc/CartController.dart';
 import 'package:resmedia_taporty_flutter/client/model/CartModel.dart';

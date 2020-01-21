@@ -1,20 +1,13 @@
 import 'dart:io';
 import 'dart:typed_data';
-
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:easy_route/easy_route.dart';
-import 'package:easy_widget/easy_widget.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:resmedia_taporty_flutter/common/helper/LoginHelper.dart';
-import 'package:resmedia_taporty_flutter/client/interface/screen/ChangePasswordScreeen.dart';
 import 'package:resmedia_taporty_flutter/client/interface/screen/EditScreen.dart';
-import 'package:resmedia_taporty_flutter/client/interface/screen/LegalNotesScreen.dart';
-import 'package:resmedia_taporty_flutter/client/interface/screen/OrderScreen.dart';
-import 'package:resmedia_taporty_flutter/client/interface/screen/SettingsScreen.dart';
-import 'package:resmedia_taporty_flutter/client/interface/screen/LoginScreen.dart';
+import 'package:resmedia_taporty_flutter/common/interface/widget/ListViewSeparated.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/OrderBloc.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
 import 'package:resmedia_taporty_flutter/common/resources/Database.dart';
@@ -22,11 +15,7 @@ import 'package:resmedia_taporty_flutter/common/model/UserModel.dart';
 import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class AccountScreen extends StatelessWidget implements WidgetRoute {
-  static const ROUTE = 'AccountScreen';
-
-  String get route => ROUTE;
-
+class AccountScreen extends StatelessWidget {
   Future<String> uploadFile(String filePath) async {
     final Uint8List bytes = File(filePath).readAsBytesSync();
     final Directory tempDir = Directory.systemTemp;
@@ -46,7 +35,12 @@ class AccountScreen extends StatelessWidget implements WidgetRoute {
       appBar: AppBar(
         actions: <Widget>[
           IconButton(
-            onPressed: () => {EasyRouter.push(context, EditScreen())},
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => EditScreen(),
+              ),
+            ),
             icon: Icon(Icons.mode_edit),
           )
         ],
@@ -69,7 +63,7 @@ class AccountScreen extends StatelessWidget implements WidgetRoute {
                       onPressed: () {
                         UserBloc.of().logout();
                         LoginHelper().signOut();
-                        EasyRouter.pushAndRemoveAll(context, LoginScreen());
+                        Navigator.pushNamedAndRemoveUntil(context, "/login", (Route<dynamic> route) => false);
                         //UserBloc.close();
                       },
                     );
@@ -196,7 +190,7 @@ class AccountScreen extends StatelessWidget implements WidgetRoute {
                                   child: Text('Lista ordini', style: theme.textTheme.subhead),
                                   onPressed: () async {
                                     await OrderBloc.of().setUserStream();
-                                    EasyRouter.push(context, OrderScreen());
+                                    Navigator.pushNamed(context, "/orderList");
                                   },
                                 ),
                               ],
@@ -206,7 +200,7 @@ class AccountScreen extends StatelessWidget implements WidgetRoute {
                                 Icon(Icons.insert_drive_file),
                                 FlatButton(
                                   child: Text('Note legali', style: theme.textTheme.subhead),
-                                  onPressed: () => {EasyRouter.push(context, LegalNotesScreen())},
+                                  onPressed: () => Navigator.pushNamed(context, "/legalNotes"),
                                 ),
                               ],
                             ),
@@ -215,7 +209,7 @@ class AccountScreen extends StatelessWidget implements WidgetRoute {
                                 Icon(Icons.lock_outline),
                                 FlatButton(
                                   child: Text('Cambia password', style: theme.textTheme.subhead),
-                                  onPressed: () => {EasyRouter.push(context, ChangePasswordScreen())},
+                                  onPressed: () => Navigator.pushNamed(context, "/changePassword"),
                                 ),
                               ],
                             ),
@@ -224,7 +218,7 @@ class AccountScreen extends StatelessWidget implements WidgetRoute {
                                 Icon(Icons.settings),
                                 FlatButton(
                                   child: Text('Impostazioni', style: theme.textTheme.subhead),
-                                  onPressed: () => {EasyRouter.push(context, SettingsScreen())},
+                                  onPressed: () => Navigator.pushNamed(context, "/settings"),
                                 ),
                               ],
                             ),
@@ -232,14 +226,16 @@ class AccountScreen extends StatelessWidget implements WidgetRoute {
                               children: <Widget>[
                                 Icon(Icons.exit_to_app),
                                 FlatButton(
-                                    child: Text('Log Out', style: theme.textTheme.subhead),
-                                    onPressed: () {
-                                      user.logout().then((onValue) {
+                                  child: Text('Log Out', style: theme.textTheme.subhead),
+                                  onPressed: () {
+                                    user.logout().then(
+                                      (onValue) {
                                         LoginHelper().signOut();
-                                        EasyRouter.pushAndRemoveAll(context, LoginScreen());
-                                        //UserBloc.close();
-                                      });
-                                    }),
+                                        Navigator.pushNamedAndRemoveUntil(context, "/login", (Route<dynamic> route) => false);
+                                      },
+                                    );
+                                  },
+                                ),
                               ],
                             ),
                           ].map((child) {

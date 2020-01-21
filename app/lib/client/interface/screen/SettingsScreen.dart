@@ -1,25 +1,14 @@
-import 'package:easy_route/easy_route.dart';
 import 'package:flutter/material.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
 import 'package:resmedia_taporty_flutter/common/model/UserModel.dart';
 
-class SettingsScreen extends StatefulWidget implements WidgetRoute {
-  static const ROUTE = 'SettingsScreen';
-
-  @override
-  String get route => ROUTE;
-
+class SettingsScreen extends StatefulWidget {
   @override
   _SettingsState createState() => _SettingsState();
 }
 
 class _SettingsState extends State<SettingsScreen> {
   final user = UserBloc.of();
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {

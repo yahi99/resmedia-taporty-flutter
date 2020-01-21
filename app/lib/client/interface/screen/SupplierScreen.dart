@@ -1,13 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:easy_route/easy_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:resmedia_taporty_flutter/client/interface/screen/LoginScreen.dart';
 import 'package:resmedia_taporty_flutter/common/helper/LoginHelper.dart';
 import 'package:resmedia_taporty_flutter/client/model/CartModel.dart';
 import 'package:resmedia_taporty_flutter/client/model/CartProductModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/ProductModel.dart';
-import 'package:resmedia_taporty_flutter/client/interface/screen/AccountScreen.dart';
 import 'package:resmedia_taporty_flutter/client/interface/page/InfoSupplierPage.dart';
 import 'package:resmedia_taporty_flutter/client/interface/page/MenuPages.dart';
 import 'package:resmedia_taporty_flutter/client/interface/screen/CheckoutScreen.dart';
@@ -18,16 +15,12 @@ import 'package:resmedia_taporty_flutter/common/resources/Database.dart';
 import 'package:resmedia_taporty_flutter/common/model/SupplierModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/UserModel.dart';
 
-class SupplierScreen extends StatefulWidget implements WidgetRoute {
-  static const ROUTE = 'SupplierScreen';
-
-  String get route => ROUTE;
-  final SupplierModel supplierModel;
+class SupplierScreen extends StatefulWidget {
+  final SupplierModel supplier;
   final GeoPoint customerCoordinates;
   final String customerAddress;
-  final String supplierAddress;
 
-  SupplierScreen({Key key, @required this.supplierModel, @required this.customerCoordinates, @required this.customerAddress, @required this.supplierAddress}) : super(key: key);
+  SupplierScreen({Key key, @required this.supplier, @required this.customerCoordinates, @required this.customerAddress}) : super(key: key);
 
   @override
   _SupplierScreenState createState() => _SupplierScreenState();
@@ -53,14 +46,14 @@ class _SupplierScreenState extends State<SupplierScreen> {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     List<CartProductModel> productCartList = List<CartProductModel>();
-    final supplierBloc = SupplierBloc.init(supplierId: widget.supplierModel.id);
+    final supplierBloc = SupplierBloc.init(supplierId: widget.supplier.id);
     return DefaultTabController(
       length: 3,
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: colorScheme.primary,
           centerTitle: true,
-          title: Text(widget.supplierModel.id),
+          title: Text(widget.supplier.id),
           actions: <Widget>[
             StreamBuilder<CartModel>(
               stream: CartBloc.of().outCart,
@@ -125,7 +118,7 @@ class _SupplierScreenState extends State<SupplierScreen> {
             IconButton(
               icon: Icon(Icons.account_circle),
               onPressed: () {
-                EasyRouter.push(context, AccountScreen());
+                Navigator.pushNamed(context, "/account");
               },
             )
           ],
@@ -149,7 +142,7 @@ class _SupplierScreenState extends State<SupplierScreen> {
                 child: CircularProgressIndicator(),
               );
             return StreamBuilder<SupplierModel>(
-              stream: SupplierBloc.init(supplierId: widget.supplierModel.id).outSupplier,
+              stream: SupplierBloc.init(supplierId: widget.supplier.id).outSupplier,
               builder: (context, rest) {
                 return StreamBuilder(
                     stream: Database().getUser(user.data.userFb),
@@ -161,10 +154,9 @@ class _SupplierScreenState extends State<SupplierScreen> {
                             onPressed: () {
                               UserBloc.of().logout();
                               LoginHelper().signOut();
-                              EasyRouter.pushAndRemoveAll(context, LoginScreen());
+                              Navigator.pushNamedAndRemoveUntil(context, "/login", (Route<dynamic> route) => false);
                             },
                           );
-                          //EasyRouter.pushAndRemoveAll(context, LoginScreen());
                         }
                         if (rest.data.isDisabled != null && rest.data.isDisabled) {
                           return Padding(
@@ -174,9 +166,9 @@ class _SupplierScreenState extends State<SupplierScreen> {
                         }
                         return TabBarView(
                           children: <Widget>[
-                            InfoSupplierPage(model: widget.supplierModel, address: widget.supplierAddress),
-                            FoodPage(model: widget.supplierModel),
-                            DrinkPage(model: widget.supplierModel),
+                            InfoSupplierPage(model: widget.supplier, address: widget.supplier.address),
+                            FoodPage(model: widget.supplier),
+                            DrinkPage(model: widget.supplier),
                           ],
                         );
                       }
@@ -216,13 +208,15 @@ class _SupplierScreenState extends State<SupplierScreen> {
 
   _pushCheckoutScreen() {
     UserBloc.of().outUser.first.then((user) {
-      EasyRouter.push(
+      Navigator.push(
         context,
-        CheckoutScreen(
-          supplier: widget.supplierModel,
-          user: user.model,
-          customerCoordinates: widget.customerCoordinates,
-          customerAddress: widget.customerAddress,
+        MaterialPageRoute(
+          builder: (context) => CheckoutScreen(
+            supplier: widget.supplier,
+            user: user.model,
+            customerCoordinates: widget.customerCoordinates,
+            customerAddress: widget.customerAddress,
+          ),
         ),
       );
     });

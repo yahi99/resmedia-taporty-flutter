@@ -1,18 +1,19 @@
 import 'package:easy_blocs/easy_blocs.dart';
-import 'package:easy_route/easy_route.dart';
 import 'package:easy_widget/easy_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:resmedia_taporty_flutter/app_localization.dart';
+import 'package:resmedia_taporty_flutter/client/interface/screen/AccountScreen.dart';
+import 'package:resmedia_taporty_flutter/client/interface/screen/ChangePasswordScreeen.dart';
+import 'package:resmedia_taporty_flutter/client/interface/screen/GeolocalizationScreen.dart';
+import 'package:resmedia_taporty_flutter/client/interface/screen/LegalNotesScreen.dart';
 import 'package:resmedia_taporty_flutter/client/interface/screen/LoginScreen.dart';
+import 'package:resmedia_taporty_flutter/client/interface/screen/OrderListScreen.dart';
+import 'package:resmedia_taporty_flutter/client/interface/screen/SettingsScreen.dart';
+import 'package:resmedia_taporty_flutter/client/interface/screen/SignupScreen.dart';
 import 'package:resmedia_taporty_flutter/config/ColorTheme.dart';
-
-/// flutter build --flavor development -t lib/main-dev.dart
-
-//const red = Color(0xFFd50000), s_red = Color(0xFF9b0000), // B71C1C
-//blue = Color(0xFF1565c0), blue_s = Color(0xFF003c8f); // 0F5DDB
 
 void main() {
   runApp(RepositoryBuilder(
@@ -118,11 +119,18 @@ class _TaportyState extends State<Taporty> {
       supportedLocales: <Locale>[
         const Locale("it"),
       ],
-      initialRoute: LoginScreen.ROUTE,
-      onGenerateRoute: EasyRouter.onGenerateRouteBuilder((_) => LoginScreen(), LoginScreen.ROUTE),
-      navigatorObservers: <NavigatorObserver>[
-        SwipeBackObserver(),
-      ],
+      routes: {
+        "/login": (context) => LoginScreen(),
+        "/signup": (context) => SignupScreen(),
+        "/account": (context) => AccountScreen(),
+        "/orderList": (context) => OrderListScreen(),
+        "/legalNotes": (context) => LegalNotesScreen(),
+        "/changePassword": (context) => ChangePasswordScreen(),
+        "/settings": (context) => SettingsScreen(),
+        "/geolocalization": (context) => GeolocalizationScreen(),
+      },
+      // TODO: Aggiungere SplashScreen (vedi SalentoSmart)
+      initialRoute: "/login",
     );
   }
 }

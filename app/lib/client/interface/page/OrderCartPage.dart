@@ -5,7 +5,6 @@ import 'package:resmedia_taporty_flutter/client/interface/page/ModifyOrderCartPa
 import 'package:resmedia_taporty_flutter/common/interface/widget/HeaderWidget.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/OrderBloc.dart';
 import 'package:resmedia_taporty_flutter/common/model/OrderModel.dart';
-import 'package:resmedia_taporty_flutter/common/model/OrderProductModel.dart';
 import 'package:resmedia_taporty_flutter/config/ColorTheme.dart';
 
 class OrderCartPage extends StatefulWidget implements WidgetRoute {

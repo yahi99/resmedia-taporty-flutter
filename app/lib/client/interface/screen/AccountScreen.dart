@@ -181,7 +181,7 @@ class AccountScreen extends StatelessWidget implements WidgetRoute {
                                 FlatButton(
                                   child: Text('Diventa un ristoratore', style: theme.textTheme.subhead),
                                   onPressed: () async {
-                                    var url = "https://taporty-requests.firebaseapp.com/?type=restaurant";
+                                    var url = "https://taporty-requests.firebaseapp.com/?type=supplier";
                                     if (await canLaunch(url)) {
                                       await launch(url);
                                     }

@@ -12,20 +12,20 @@ import 'package:resmedia_taporty_flutter/common/resources/Database.dart';
 import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class RestaurantOrderPage extends StatefulWidget implements WidgetRoute {
-  static const ROUTE = "RestaurantOrderPage";
+class SupplierOrderPage extends StatefulWidget implements WidgetRoute {
+  static const ROUTE = "SupplierOrderPage";
 
-  String get route => RestaurantOrderPage.ROUTE;
+  String get route => SupplierOrderPage.ROUTE;
 
   final String orderId;
 
-  RestaurantOrderPage({Key key, this.orderId}) : super(key: key);
+  SupplierOrderPage({Key key, this.orderId}) : super(key: key);
 
   @override
-  _RestaurantOrderPageState createState() => _RestaurantOrderPageState();
+  _SupplierOrderPageState createState() => _SupplierOrderPageState();
 }
 
-class _RestaurantOrderPageState extends State<RestaurantOrderPage> {
+class _SupplierOrderPageState extends State<SupplierOrderPage> {
   bool isDeactivate = false;
   final _db = Database();
   final _orderBloc = OrderBloc.of();
@@ -136,20 +136,20 @@ class _RestaurantOrderPageState extends State<RestaurantOrderPage> {
           mapType: MapType.normal,
           myLocationButtonEnabled: false,
           initialCameraPosition: CameraPosition(
-            target: LatLng(order.restaurantCoordinates.latitude, order.restaurantCoordinates.longitude),
+            target: LatLng(order.supplierCoordinates.latitude, order.supplierCoordinates.longitude),
             zoom: 13,
           ),
           markers: Set.from(
             <Marker>[
               Marker(
-                markerId: MarkerId("restaurantCoordinates"),
-                position: LatLng(order.restaurantCoordinates.latitude, order.restaurantCoordinates.longitude),
+                markerId: MarkerId("supplierCoordinates"),
+                position: LatLng(order.supplierCoordinates.latitude, order.supplierCoordinates.longitude),
                 icon: BitmapDescriptor.defaultMarker,
               ),
             ],
           ),
           onTap: (latLng) async {
-            String googleUrl = 'https://www.google.com/maps/search/?api=1&query=${order.restaurantCoordinates.latitude},${order.restaurantCoordinates.longitude}';
+            String googleUrl = 'https://www.google.com/maps/search/?api=1&query=${order.supplierCoordinates.latitude},${order.supplierCoordinates.longitude}';
             if (await canLaunch(googleUrl)) {
               await launch(googleUrl);
             }
@@ -173,7 +173,7 @@ class _RestaurantOrderPageState extends State<RestaurantOrderPage> {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(6.0),
                   child: CachedNetworkImage(
-                    imageUrl: order.restaurantImageUrl,
+                    imageUrl: order.supplierImageUrl,
                     fit: BoxFit.cover,
                     placeholder: (context, url) => Center(
                       child: SizedBox(
@@ -194,13 +194,13 @@ class _RestaurantOrderPageState extends State<RestaurantOrderPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        order.restaurantName,
+                        order.supplierName,
                         style: textTheme.subhead.copyWith(fontWeight: FontWeight.bold),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(top: 8.0),
                         child: Text(
-                          order.restaurantAddress,
+                          order.supplierAddress,
                           style: TextStyle(fontSize: 14),
                         ),
                       ),
@@ -209,8 +209,8 @@ class _RestaurantOrderPageState extends State<RestaurantOrderPage> {
                         child: RaisedButton(
                           color: ColorTheme.ACCENT_BLUE,
                           onPressed: () async {
-                            if (await canLaunch("tel:${order.restaurantPhoneNumber}")) {
-                              await launch("tel:${order.restaurantPhoneNumber}");
+                            if (await canLaunch("tel:${order.supplierPhoneNumber}")) {
+                              await launch("tel:${order.supplierPhoneNumber}");
                             }
                           },
                           child: Text(
@@ -242,7 +242,7 @@ class _RestaurantOrderPageState extends State<RestaurantOrderPage> {
                 RaisedButton(
                   color: ColorTheme.ACCENT_BLUE,
                   onPressed: () async {
-                    String googleUrl = 'https://www.google.com/maps/search/?api=1&query=${order.restaurantCoordinates.latitude},${order.restaurantCoordinates.longitude}';
+                    String googleUrl = 'https://www.google.com/maps/search/?api=1&query=${order.supplierCoordinates.latitude},${order.supplierCoordinates.longitude}';
                     if (await canLaunch(googleUrl)) {
                       await launch(googleUrl);
                     }

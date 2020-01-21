@@ -42,33 +42,33 @@ class CartBloc extends Bloc {
     _productController.close();
   }
 
-  Future<List<CartProductModel>> inDeleteCart(String restaurantId) async {
+  Future<List<CartProductModel>> inDeleteCart(String supplierId) async {
     final cart = await outCart.first;
     final firebaseUser = await user.outFirebaseUser.first;
     var cartProducts = cart.products;
     List<CartProductModel> products = List<CartProductModel>();
     for (int i = 0; i < cartProducts.length; i++) {
-      if (cartProducts.elementAt(i).userId == firebaseUser.uid && cartProducts.elementAt(i).restaurantId == restaurantId) {
+      if (cartProducts.elementAt(i).userId == firebaseUser.uid && cartProducts.elementAt(i).supplierId == supplierId) {
         products.add(cartProducts.elementAt(i));
       }
     }
 
     for (int i = 0; i < products.length; i++) {
-      _cartController.inRemove(products.elementAt(i).id, restaurantId, firebaseUser.uid);
+      _cartController.inRemove(products.elementAt(i).id, supplierId, firebaseUser.uid);
     }
     return products;
   }
 
-  Future<String> findDriver(ShiftModel selectedShift, String restaurantId, GeoPoint customerCoordinates) async {
-    return _db.findDriver(selectedShift, restaurantId, customerCoordinates);
+  Future<String> findDriver(ShiftModel selectedShift, String supplierId, GeoPoint customerCoordinates) async {
+    return _db.findDriver(selectedShift, supplierId, customerCoordinates);
   }
 
-  Future<bool> signer(String restaurantId, String driverId, GeoPoint customerCoordinates, String customerAddress, CheckoutScreenData data) async {
+  Future<bool> signer(String supplierId, String driverId, GeoPoint customerCoordinates, String customerAddress, CheckoutScreenData data) async {
     final userBloc = UserBloc.of();
     final firebaseUser = await userBloc.outUser.first;
-    var products = await inDeleteCart(restaurantId);
+    var products = await inDeleteCart(supplierId);
 
-    await _db.createOrder(products, firebaseUser.model.id, customerCoordinates, customerAddress, data.name, data.phone, restaurantId, driverId, data.selectedShift, data.cardId);
+    await _db.createOrder(products, firebaseUser.model.id, customerCoordinates, customerAddress, data.name, data.phone, supplierId, driverId, data.selectedShift, data.cardId);
 
     return true;
   }

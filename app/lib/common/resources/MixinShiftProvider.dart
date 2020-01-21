@@ -3,18 +3,18 @@ import 'package:easy_firebase/easy_firebase.dart';
 import 'package:resmedia_taporty_flutter/common/helper/DateTimeHelper.dart';
 import 'package:resmedia_taporty_flutter/common/helper/DateTimeSerialization.dart';
 import 'package:resmedia_taporty_flutter/common/helper/DistanceHelper.dart';
-import 'package:resmedia_taporty_flutter/common/model/RestaurantModel.dart';
+import 'package:resmedia_taporty_flutter/common/model/SupplierModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/ShiftModel.dart';
-import 'package:resmedia_taporty_flutter/common/resources/MixinRestaurantProvider.dart';
+import 'package:resmedia_taporty_flutter/common/resources/MixinSupplierProvider.dart';
 import 'package:resmedia_taporty_flutter/common/resources/MixinUserProvider.dart';
 import 'package:resmedia_taporty_flutter/config/Collections.dart';
 
-mixin MixinShiftProvider on MixinRestaurantProvider, MixinUserProvider {
+mixin MixinShiftProvider on MixinSupplierProvider, MixinUserProvider {
   final shiftCollection = Firestore.instance.collection(Collections.SHIFTS);
 
-  Future<List<ShiftModel>> getAvailableShifts(DateTime day, String restaurantId, GeoPoint customerCoordinates) async {
-    RestaurantModel restaurant = await getRestaurant(restaurantId);
-    var startTimes = restaurant.getStartTimes(day);
+  Future<List<ShiftModel>> getAvailableShifts(DateTime day, String supplierId, GeoPoint customerCoordinates) async {
+    SupplierModel supplier = await getSupplier(supplierId);
+    var startTimes = supplier.getStartTimes(day);
     var filteredShifts = List<ShiftModel>();
 
     for (var startTime in startTimes) {
@@ -26,8 +26,8 @@ mixin MixinShiftProvider on MixinRestaurantProvider, MixinUserProvider {
           .map(ShiftModel.fromFirebase)
           .toList();
       for (var reservedShift in reservedShifts) {
-        var distanceRestaurantDriver = await DistanceHelper.fetchAproximateDistance(reservedShift.driverCoordinates, restaurant.coordinates);
-        if (distanceRestaurantDriver > reservedShift.deliveryRadius * 1000) continue;
+        var distanceSupplierDriver = await DistanceHelper.fetchAproximateDistance(reservedShift.driverCoordinates, supplier.coordinates);
+        if (distanceSupplierDriver > reservedShift.deliveryRadius * 1000) continue;
         var distanceCustomerDriver = await DistanceHelper.fetchAproximateDistance(reservedShift.driverCoordinates, customerCoordinates);
         if (distanceCustomerDriver > reservedShift.deliveryRadius * 1000) continue;
         if (reservedShift.occupied != true) {
@@ -40,9 +40,9 @@ mixin MixinShiftProvider on MixinRestaurantProvider, MixinUserProvider {
     return filteredShifts;
   }
 
-  Future<String> findDriver(ShiftModel shiftModel, String restaurantId, GeoPoint customerCoordinates) async {
-    RestaurantModel restaurant = await getRestaurant(restaurantId);
-    if (!restaurant.isOpen(datetime: shiftModel.endTime)) return null;
+  Future<String> findDriver(ShiftModel shiftModel, String supplierId, GeoPoint customerCoordinates) async {
+    SupplierModel supplier = await getSupplier(supplierId);
+    if (!supplier.isOpen(datetime: shiftModel.endTime)) return null;
 
     var shiftDocuments = (await shiftCollection.where("startTime", isEqualTo: datetimeToJson(shiftModel.startTime)).orderBy("reservationTimestamp").getDocuments(source: Source.server)).documents;
 
@@ -51,8 +51,8 @@ mixin MixinShiftProvider on MixinRestaurantProvider, MixinUserProvider {
     for (var document in shiftDocuments) {
       await Firestore.instance.runTransaction((Transaction tx) async {
         var reservation = ShiftModel.fromFirebase(await tx.get(document.reference));
-        var distanceRestaurantDriver = await DistanceHelper.fetchAproximateDistance(reservation.driverCoordinates, restaurant.coordinates);
-        if (distanceRestaurantDriver > reservation.deliveryRadius * 1000) return;
+        var distanceSupplierDriver = await DistanceHelper.fetchAproximateDistance(reservation.driverCoordinates, supplier.coordinates);
+        if (distanceSupplierDriver > reservation.deliveryRadius * 1000) return;
         var distanceCustomerDriver = await DistanceHelper.fetchAproximateDistance(reservation.driverCoordinates, customerCoordinates);
         if (distanceCustomerDriver > reservation.deliveryRadius * 1000) return;
         if (reservation.occupied != true) {

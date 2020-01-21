@@ -1,22 +1,22 @@
 import * as functions from 'firebase-functions';
 import { firestore } from './firebase';
 
-const onRestaurantReviewCreated = functions.firestore
-    .document('/restaurants/{restaurantId}/reviews/{reviewId}')
+const onSupplierReviewCreated = functions.firestore
+    .document('/suppliers/{supplierId}/reviews/{reviewId}')
     .onCreate(async (snapshot, context) => {
-        const documentReference = firestore.collection("restaurants").doc(context.params.restaurantId);
+        const documentReference = firestore.collection("suppliers").doc(context.params.supplierId);
 
         return firestore.runTransaction((tx) => {
-            return tx.get(documentReference).then((restaurantSnapshot) => {
-                let oldReviewCount = restaurantSnapshot.get("numberOfReviews") === undefined ? 0 : restaurantSnapshot.get("numberOfReviews");
+            return tx.get(documentReference).then((supplierSnapshot) => {
+                let oldReviewCount = supplierSnapshot.get("numberOfReviews") === undefined ? 0 : supplierSnapshot.get("numberOfReviews");
                 let reviewCount = oldReviewCount + 1;
-                let oldRating = restaurantSnapshot.get("averageReviews") === undefined ? 0 : restaurantSnapshot.get("averageReviews");
+                let oldRating = supplierSnapshot.get("averageReviews") === undefined ? 0 : supplierSnapshot.get("averageReviews");
                 let rating = (oldRating *
                     oldReviewCount +
                     snapshot.get("rating")) /
                     reviewCount;
 
-                return tx.update(restaurantSnapshot.ref, {
+                return tx.update(supplierSnapshot.ref, {
                     'numberOfReviews': reviewCount,
                     'averageReviews': rating
                 });
@@ -47,4 +47,4 @@ const onDriverReviewCreated = functions.firestore
         });
     });
 
-export { onDriverReviewCreated, onRestaurantReviewCreated };
+export { onDriverReviewCreated, onSupplierReviewCreated };

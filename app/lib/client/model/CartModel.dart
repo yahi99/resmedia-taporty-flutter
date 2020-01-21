@@ -11,23 +11,23 @@ class CartModel {
 
   const CartModel({this.products: const []}) : assert(products != null);
 
-  CartProductModel getProduct(String id, String restaurantId, String userId) {
-    return products.firstWhere((item) => item.id == id && item.restaurantId == restaurantId && item.userId == userId, orElse: () => null);
+  CartProductModel getProduct(String id, String supplierId, String userId) {
+    return products.firstWhere((item) => item.id == id && item.supplierId == supplierId && item.userId == userId, orElse: () => null);
   }
 
   int getTotalItems(List<CartProductModel> products) {
     return products.fold(0, (price, product) => price + product.quantity);
   }
 
-  double getPrice(String id, double price, String restaurantId, String userId) => (price * getProduct(id, restaurantId, userId).quantity.toDouble());
+  double getPrice(String id, double price, String supplierId, String userId) => (price * getProduct(id, supplierId, userId).quantity.toDouble());
 
-  double getTotalPrice(List<CartProductModel> products, String uid, String restaurantId) {
-    return products.fold(0, (price, product) => price + ((getProduct(product.id, restaurantId, uid) == product) ? getPrice(product.id, product.price, product.restaurantId, product.userId) : 0));
+  double getTotalPrice(List<CartProductModel> products, String uid, String supplierId) {
+    return products.fold(0, (price, product) => price + ((getProduct(product.id, supplierId, uid) == product) ? getPrice(product.id, product.price, product.supplierId, product.userId) : 0));
   }
 
-  bool increment(String id, String restaurantId, String userId, double price, String type) {
-    final product = getProduct(id, restaurantId, userId);
-    return product == null ? onInsert(CartProductModel(id: id, quantity: 1, restaurantId: restaurantId, userId: userId, price: price, type: type)) : onIncrement(product.increment());
+  bool increment(String id, String supplierId, String userId, double price, String type) {
+    final product = getProduct(id, supplierId, userId);
+    return product == null ? onInsert(CartProductModel(id: id, quantity: 1, supplierId: supplierId, userId: userId, price: price, type: type)) : onIncrement(product.increment());
   }
 
   bool delete(String id, String restId, String uid) {
@@ -53,15 +53,15 @@ class CartModel {
     return true;
   }
 
-  bool decrease(String id, String restaurantId, String userId) {
-    var product = getProduct(id, restaurantId, userId);
+  bool decrease(String id, String supplierId, String userId) {
+    var product = getProduct(id, supplierId, userId);
     if (product == null) return false;
     product = product.decrease();
     return product.quantity <= 0 ? onRemove(product) : onDecrease(product);
   }
 
-  bool remove(String id, String restaurantId, String userId) {
-    var product = getProduct(id, restaurantId, userId);
+  bool remove(String id, String supplierId, String userId) {
+    var product = getProduct(id, supplierId, userId);
     if (product == null) return false;
     return onRemove(product);
   }

@@ -1,9 +1,9 @@
 import * as functions from 'firebase-functions';
 import { firestore, auth } from './firebase';
 import RequestStates from './models/request_states';
-import { sgMail, RESTAURANT_REQUEST_REFUSED_TEMPLATE, RESTAURANT_REQUEST_ACCEPTED_TEMPLATE, DRIVER_REQUEST_ACCEPTED_TEMPLATE, DRIVER_REQUEST_REFUSED_TEMPLATE } from './sendgrid';
+import { sgMail, SUPPLIER_REQUEST_REFUSED_TEMPLATE, SUPPLIER_REQUEST_ACCEPTED_TEMPLATE, DRIVER_REQUEST_ACCEPTED_TEMPLATE, DRIVER_REQUEST_REFUSED_TEMPLATE } from './sendgrid';
 
-const onRestaurantRequestChanged = functions.firestore.document('restaurant_requests/{requestId}').onUpdate(async (change, context) => {
+const onSupplierRequestChanged = functions.firestore.document('supplier_requests/{requestId}').onUpdate(async (change, context) => {
     let newRequest = change.after.data();
     let prevRequest = change.before.data();
     if (newRequest === undefined || prevRequest === undefined)
@@ -13,9 +13,9 @@ const onRestaurantRequestChanged = functions.firestore.document('restaurant_requ
         return;
 
     if (newRequest.state === RequestStates.ACCEPTED) {
-        var restaurantRef = firestore.collection('restaurants').doc();
-        await restaurantRef.set({
-            name: newRequest.restaurantName,
+        var supplierRef = firestore.collection('suppliers').doc();
+        await supplierRef.set({
+            name: newRequest.supplierName,
             partitaIVA: newRequest.partitaIVA,
             description: newRequest.description,
             imageUrl: newRequest.imageUrl,
@@ -88,21 +88,21 @@ const onRestaurantRequestChanged = functions.firestore.document('restaurant_requ
                     end: "02-01",
                 }
             ],
-            reference: restaurantRef,
+            reference: supplierRef,
         });
 
         await firestore.collection('users').doc(newRequest.uid).set({
             nominative: newRequest.name,
             email: newRequest.email,
-            type: 'restaurant-admin',
+            type: 'supplier-admin',
         });
 
-        await auth.setCustomUserClaims(newRequest.uid, { restaurantAdmin: true, restaurantId: restaurantRef.id });
+        await auth.setCustomUserClaims(newRequest.uid, { supplierAdmin: true, supplierId: supplierRef.id });
         
         await sgMail.send({
             to: newRequest.email,
             from: 'noreply@taporty-779ff.firebaseapp.com',
-            templateId: RESTAURANT_REQUEST_ACCEPTED_TEMPLATE,
+            templateId: SUPPLIER_REQUEST_ACCEPTED_TEMPLATE,
             dynamicTemplateData: {
                 name: newRequest.name
             }
@@ -113,7 +113,7 @@ const onRestaurantRequestChanged = functions.firestore.document('restaurant_requ
         await sgMail.send({
             to: newRequest.email,
             from: 'noreply@taporty-779ff.firebaseapp.com',
-            templateId: RESTAURANT_REQUEST_REFUSED_TEMPLATE,
+            templateId: SUPPLIER_REQUEST_REFUSED_TEMPLATE,
             dynamicTemplateData: {
                 name: newRequest.name
             }
@@ -166,4 +166,4 @@ const onDriverRequestChanged = functions.firestore.document('driver_requests/{re
     }
 });
 
-export { onRestaurantRequestChanged, onDriverRequestChanged }
+export { onSupplierRequestChanged, onDriverRequestChanged }

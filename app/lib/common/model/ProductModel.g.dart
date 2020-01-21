@@ -14,7 +14,7 @@ ProductModel _$ProductModelFromJson(Map json) {
     maxQuantity: json['maxQuantity'] as int,
     type: json['type'] as String,
     category: _$enumDecodeNullable(_$ProductCategoryEnumMap, json['category']),
-    restaurantId: json['restaurantId'] as String,
+    supplierId: json['supplierId'] as String,
     imageUrl: json['imageUrl'] as String,
   );
 }
@@ -35,7 +35,7 @@ Map<String, dynamic> _$ProductModelToJson(ProductModel instance) {
   val['maxQuantity'] = instance.maxQuantity;
   val['type'] = instance.type;
   val['category'] = _$ProductCategoryEnumMap[instance.category];
-  val['restaurantId'] = instance.restaurantId;
+  val['supplierId'] = instance.supplierId;
   return val;
 }
 

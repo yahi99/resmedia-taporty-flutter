@@ -4,14 +4,14 @@ import 'package:resmedia_taporty_flutter/common/helper/DateTimeSerialization.dar
 import 'package:resmedia_taporty_flutter/common/model/OrderModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/ProductModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/OrderProductModel.dart';
-import 'package:resmedia_taporty_flutter/common/model/RestaurantModel.dart';
+import 'package:resmedia_taporty_flutter/common/model/SupplierModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/ShiftModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/UserModel.dart';
-import 'package:resmedia_taporty_flutter/common/resources/MixinRestaurantProvider.dart';
+import 'package:resmedia_taporty_flutter/common/resources/MixinSupplierProvider.dart';
 import 'package:resmedia_taporty_flutter/common/resources/MixinUserProvider.dart';
 import 'package:resmedia_taporty_flutter/config/Collections.dart';
 
-mixin MixinOrderProvider on MixinUserProvider, MixinRestaurantProvider {
+mixin MixinOrderProvider on MixinUserProvider, MixinSupplierProvider {
   final orderCollection = Firestore.instance.collection(Collections.ORDERS);
 
   Stream<OrderModel> getOrderStream(String orderId) {
@@ -49,19 +49,19 @@ mixin MixinOrderProvider on MixinUserProvider, MixinRestaurantProvider {
     return orderProducts;
   }
 
-  Future<void> createOrder(List<CartProductModel> cartProducts, String customerId, GeoPoint customerCoordinates, String customerAddress, String customerName, String customerPhone, String restaurantId,
+  Future<void> createOrder(List<CartProductModel> cartProducts, String customerId, GeoPoint customerCoordinates, String customerAddress, String customerName, String customerPhone, String supplierId,
       String driverId, ShiftModel selectedShift, String cardId) async {
     UserModel customer = await getUserById(customerId);
     UserModel driver = await getUserById(driverId);
-    RestaurantModel restaurant = await getRestaurant(restaurantId);
-    List<ProductModel> products = await getProductList(restaurantId);
+    SupplierModel supplier = await getSupplier(supplierId);
+    List<ProductModel> products = await getProductList(supplierId);
 
     var orderProducts = _getOrderProducts(products, cartProducts, customerId);
 
     var order = OrderModel(
       customerId: customerId,
       driverId: driverId,
-      restaurantId: restaurantId,
+      supplierId: supplierId,
       preferredDeliveryTimestamp: selectedShift.endTime,
       productCount: orderProducts.fold(0, (count, product) => count + product.quantity),
       totalPrice: orderProducts.fold(0, (price, product) => price + product.quantity * product.price),
@@ -74,11 +74,11 @@ mixin MixinOrderProvider on MixinUserProvider, MixinRestaurantProvider {
       driverImageUrl: driver.imageUrl,
       driverName: driver.nominative,
       driverPhoneNumber: driver.phoneNumber,
-      restaurantImageUrl: restaurant.imageUrl,
-      restaurantName: restaurant.name,
-      restaurantCoordinates: restaurant.coordinates,
-      restaurantAddress: restaurant.address,
-      restaurantPhoneNumber: restaurant.phoneNumber,
+      supplierImageUrl: supplier.imageUrl,
+      supplierName: supplier.name,
+      supplierCoordinates: supplier.coordinates,
+      supplierAddress: supplier.address,
+      supplierPhoneNumber: supplier.phoneNumber,
       cardId: cardId,
       creationTimestamp: DateTime.now(),
       products: orderProducts,
@@ -108,15 +108,15 @@ mixin MixinOrderProvider on MixinUserProvider, MixinRestaurantProvider {
         customerAddress: order.customerAddress,
         customerPhoneNumber: order.customerPhoneNumber,
         customerImageUrl: order.customerImageUrl,
-        restaurantName: order.restaurantName,
-        restaurantCoordinates: order.restaurantCoordinates,
-        restaurantAddress: order.restaurantAddress,
-        restaurantPhoneNumber: order.restaurantPhoneNumber,
-        restaurantImageUrl: order.restaurantImageUrl,
+        supplierName: order.supplierName,
+        supplierCoordinates: order.supplierCoordinates,
+        supplierAddress: order.supplierAddress,
+        supplierPhoneNumber: order.supplierPhoneNumber,
+        supplierImageUrl: order.supplierImageUrl,
         driverName: order.driverName,
         driverPhoneNumber: order.driverPhoneNumber,
         driverImageUrl: order.driverImageUrl,
-        restaurantId: order.restaurantId,
+        supplierId: order.supplierId,
         driverId: order.driverId,
         customerId: order.customerId,
         state: OrderState.NEW,

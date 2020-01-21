@@ -33,13 +33,13 @@ class ProductViewCart extends StatelessWidget {
               return Center(
                 child: CircularProgressIndicator(),
               );
-            var temp = snapshot.data.getProduct(model.id, model.restaurantId, snap.data.uid);
+            var temp = snapshot.data.getProduct(model.id, model.supplierId, snap.data.uid);
             if (temp == null || temp.quantity == 0) return const SizedBox();
             final theme = Theme.of(context);
-            final product = cart.getProduct(model.id, model.restaurantId, snap.data.uid);
+            final product = cart.getProduct(model.id, model.supplierId, snap.data.uid);
             if (product != null && product.delete) {
               print(product.id + '  ' + product.delete.toString() + '  cart');
-              cartController.inRemove(model.id, model.restaurantId, snap.data.uid);
+              cartController.inRemove(model.id, model.supplierId, snap.data.uid);
             }
             return Slidable(
               actionPane: SlidableDrawerActionPane(),
@@ -50,7 +50,7 @@ class ProductViewCart extends StatelessWidget {
                   icon: Icons.close,
                   onTap: () async {
                     final userId = (await UserBloc.of().outUser.first).model.id;
-                    cartController.inRemove(model.id, model.restaurantId, userId);
+                    cartController.inRemove(model.id, model.supplierId, userId);
                   },
                 ),
               ],
@@ -101,14 +101,14 @@ class ProductViewCart extends StatelessWidget {
                       ),
                       StepperButton(
                           direction: Axis.vertical,
-                          child: Text('${cart.getProduct(model.id, model.restaurantId, snap.data.uid)?.quantity ?? 0}'),
-                          onDecrease: () => cartController.inDecrease(model.id, model.restaurantId, snap.data.uid),
+                          child: Text('${cart.getProduct(model.id, model.supplierId, snap.data.uid)?.quantity ?? 0}'),
+                          onDecrease: () => cartController.inDecrease(model.id, model.supplierId, snap.data.uid),
                           onIncrement: () {
-                            if (model.maxQuantity != 0 && model.maxQuantity <= cart.getProduct(model.id, model.restaurantId, snap.data.uid)?.quantity)
+                            if (model.maxQuantity != 0 && model.maxQuantity <= cart.getProduct(model.id, model.supplierId, snap.data.uid)?.quantity)
                               Toast.show("Massima quantità ordinabile raggiunta", context, duration: 3);
                             else {
                               Vibration.vibrate(duration: 65);
-                              cartController.inIncrement(model.id, model.restaurantId, snap.data.uid, model.price, model.type);
+                              cartController.inIncrement(model.id, model.supplierId, snap.data.uid, model.price, model.type);
                             }
                           }),
                     ],

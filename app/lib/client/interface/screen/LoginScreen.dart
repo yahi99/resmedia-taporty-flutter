@@ -11,7 +11,7 @@ import 'package:geocoder/geocoder.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:resmedia_taporty_flutter/client/interface/screen/GeolocalizationScreen.dart';
-import 'package:resmedia_taporty_flutter/client/interface/screen/RestaurantListScreen.dart';
+import 'package:resmedia_taporty_flutter/client/interface/screen/SupplierListScreen.dart';
 import 'package:resmedia_taporty_flutter/client/interface/screen/SignUpScreen.dart';
 import 'package:resmedia_taporty_flutter/common/interface/view/LogoView.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
@@ -86,7 +86,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             var customerAddress = (await Geocoder.local.findAddressesFromCoordinates(Coordinates(position.latitude, position.longitude))).first.addressLine;
                             await EasyRouter.pushAndRemoveAll(
                               context,
-                              RestaurantListScreen(isAnonymous: isAnon, customerCoordinates: customerCoordinates, customerAddress: customerAddress, user: (await _userBloc.outUser.first).model),
+                              SupplierListScreen(isAnonymous: isAnon, customerCoordinates: customerCoordinates, customerAddress: customerAddress, user: (await _userBloc.outUser.first).model),
                             );
                           } catch (e) {}
                         },

@@ -1,7 +1,7 @@
-import { addPaymentSource, createStripeCharge, createStripeCustomer, sendToDevice, sendToDeviceDriver, sendToDeviceRestaurant, driverRequests, restaurantRequests, productRequests, cleanupUser, updateState, setShift, updateUser, updateOffersEmail, updateOffersSms, updateOffersApp, updateNotifySms, updateNotifyApp, updateNotifyEmail, createUser } from './lib/payment_function';
+import { addPaymentSource, createStripeCharge, createStripeCustomer, sendToDevice, sendToDeviceDriver, sendToDeviceSupplier, driverRequests, supplierRequests, productRequests, cleanupUser, updateState, setShift, updateUser, updateOffersEmail, updateOffersSms, updateOffersApp, updateNotifySms, updateNotifyApp, updateNotifyEmail, createUser } from './lib/payment_function';
 import { onOrderCreate, onOrderUpdate, onOrderCancellationRefund } from './lib/orders_function';
-import { onRestaurantRequestChanged, onDriverRequestChanged } from './lib/requests';
-import { onDriverReviewCreated, onRestaurantReviewCreated } from './lib/reviews_function';
+import { onSupplierRequestChanged, onDriverRequestChanged } from './lib/requests';
+import { onDriverReviewCreated, onSupplierReviewCreated } from './lib/reviews_function';
 
 // Start writing Firebase Functions
 // https://firebase.google.com/docs/functions/typescript
@@ -10,10 +10,10 @@ import { onDriverReviewCreated, onRestaurantReviewCreated } from './lib/reviews_
 // npm install @google-cloud/firestore
 
 exports.sendToDevice = sendToDevice;
-exports.sendToDeviceRestaurant = sendToDeviceRestaurant;
+exports.sendToDeviceSupplier = sendToDeviceSupplier;
 exports.sendToDeviceDriver = sendToDeviceDriver;
 exports.driverRequests = driverRequests;
-exports.restaurantRequests = restaurantRequests;
+exports.supplierRequests = supplierRequests;
 exports.productRequests = productRequests;
 exports.updateState = updateState;
 exports.createStripeCustomer = createStripeCustomer;
@@ -32,8 +32,8 @@ exports.updateOffersApp = updateOffersApp;
 exports.onOrderCreate = onOrderCreate;
 exports.onOrderUpdate = onOrderUpdate;
 exports.onOrderCancellationRefund = onOrderCancellationRefund;
-exports.onRestaurantRequestChanged = onRestaurantRequestChanged;
+exports.onSupplierRequestChanged = onSupplierRequestChanged;
 exports.onDriverRequestChanged = onDriverRequestChanged;
 exports.createUser = createUser;
 exports.onDriverReviewCreated = onDriverReviewCreated;
-exports.onRestaurantReviewCreated = onRestaurantReviewCreated;
+exports.onSupplierReviewCreated = onSupplierReviewCreated;

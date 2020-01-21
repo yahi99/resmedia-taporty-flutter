@@ -5,47 +5,47 @@ import 'package:resmedia_taporty_flutter/common/helper/DateTimeHelper.dart';
 import 'package:resmedia_taporty_flutter/common/helper/DistanceHelper.dart';
 import 'package:resmedia_taporty_flutter/common/resources/Database.dart';
 import 'package:resmedia_taporty_flutter/generated/provider.dart';
-import 'package:resmedia_taporty_flutter/common/model/RestaurantModel.dart';
+import 'package:resmedia_taporty_flutter/common/model/SupplierModel.dart';
 import 'package:rxdart/rxdart.dart';
 
-class RestaurantsBloc implements Bloc {
+class SuppliersBloc implements Bloc {
   final _db = Database();
 
   @protected
   dispose() {
-    _restaurantsControl.close();
+    _suppliersControl.close();
     _availableStartTimesFetcher.close();
   }
 
-  PublishSubject<List<RestaurantModel>> _restaurantsControl;
+  PublishSubject<List<SupplierModel>> _suppliersControl;
 
-  Stream<List<RestaurantModel>> get outRestaurants => _restaurantsControl.stream;
+  Stream<List<SupplierModel>> get outSuppliers => _suppliersControl.stream;
 
   PublishSubject<List<DateTime>> _availableStartTimesFetcher;
 
   Observable<List<DateTime>> get outAvailableStartTimes => _availableStartTimesFetcher.stream;
 
-  RestaurantsBloc.instance() {
-    _restaurantsControl = PublishController.catchStream(source: _db.getRestaurantListStream());
+  SuppliersBloc.instance() {
+    _suppliersControl = PublishController.catchStream(source: _db.getSupplierListStream());
     _availableStartTimesFetcher = PublishSubject();
   }
 
   fetchAvailableStartTimes(DateTime date, String driverId) async {
     var driver = await _db.getUserById(driverId);
-    var restaurants = await _db.getRestaurantList();
-    var filteredRestaurants = List<RestaurantModel>();
-    for (var restaurant in restaurants) {
-      if ((await DistanceHelper.fetchAproximateDistance(restaurant.coordinates, driver.coordinates)) <= driver.deliveryRadius * 1000) filteredRestaurants.add(restaurant);
+    var suppliers = await _db.getSupplierList();
+    var filteredSuppliers = List<SupplierModel>();
+    for (var supplier in suppliers) {
+      if ((await DistanceHelper.fetchAproximateDistance(supplier.coordinates, driver.coordinates)) <= driver.deliveryRadius * 1000) filteredSuppliers.add(supplier);
     }
 
-    var restaurantStartTimes = filteredRestaurants.map((restaurant) => restaurant.getStartTimes(date));
+    var supplierStartTimes = filteredSuppliers.map((supplier) => supplier.getStartTimes(date));
 
     var currentDate = DateTimeHelper.getDay(date);
     var endDate = currentDate.add(Duration(days: 1));
 
     var availableShifts = List<DateTime>();
     while (currentDate != endDate) {
-      for (var startTimes in restaurantStartTimes) {
+      for (var startTimes in supplierStartTimes) {
         var foundStartTime = startTimes.firstWhere((startTime) => startTime == currentDate, orElse: () => null);
         if (foundStartTime != null) {
           availableShifts.add(foundStartTime);
@@ -59,7 +59,7 @@ class RestaurantsBloc implements Bloc {
     _availableStartTimesFetcher.sink.add(availableShifts);
   }
 
-  factory RestaurantsBloc.of() => $Provider.of<RestaurantsBloc>();
+  factory SuppliersBloc.of() => $Provider.of<SuppliersBloc>();
 
-  static void close() => $Provider.dispose<RestaurantsBloc>();
+  static void close() => $Provider.dispose<SuppliersBloc>();
 }

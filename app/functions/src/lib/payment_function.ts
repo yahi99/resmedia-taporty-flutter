@@ -5,7 +5,7 @@ import { firestore, messaging } from './firebase';
 import * as admin from 'firebase-admin'
 
 // tslint:disable-next-line: no-use-before-declare
-export { createStripeCustomer, cleanupUser, createStripeCharge, addPaymentSource, createUser, updateState, sendToDeviceDriver, sendToDeviceRestaurant, productRequests, restaurantRequests, setShift, updateUser, updateOffersEmail, updateOffersSms, updateOffersApp, updateNotifySms, updateNotifyApp, updateNotifyEmail, sendToDevice, driverRequests }
+export { createStripeCustomer, cleanupUser, createStripeCharge, addPaymentSource, createUser, updateState, sendToDeviceDriver, sendToDeviceSupplier, productRequests, supplierRequests, setShift, updateUser, updateOffersEmail, updateOffersSms, updateOffersApp, updateNotifySms, updateNotifyApp, updateNotifyEmail, sendToDevice, driverRequests }
 const stripe = new Stripe(functions.config().stripe.token);
 const currency = 'EUR';
 
@@ -165,8 +165,8 @@ const driverRequests = functions.firestore
     return 'ok';
   });
 
-const restaurantRequests = functions.firestore
-  .document('restaurant_requests/{userId}')
+const supplierRequests = functions.firestore
+  .document('supplier_requests/{userId}')
   .onWrite(async (change, context) => {
     const request = change.after.data();
     if (request !== undefined) {
@@ -227,7 +227,7 @@ const productRequests = functions.firestore
               const payload: admin.messaging.MessagingPayload = {
                 notification: {
                   title: 'Richiesta prodotto',
-                  body: request.restaurantId + ' richiede di aggiungere un prodotto',
+                  body: request.supplierId + ' richiede di aggiungere un prodotto',
                   icon: 'your-icon-url',
                   click_action: 'FLUTTER_NOTIFICATION_CLICK'
                 }
@@ -241,29 +241,29 @@ const productRequests = functions.firestore
     return 'ok';
   });
 
-const sendToDeviceRestaurant = functions.firestore
-  .document('restaurants/{restaurantId}/restaurant_orders/{orderId}')
+const sendToDeviceSupplier = functions.firestore
+  .document('suppliers/{supplierId}/supplier_orders/{orderId}')
   .onWrite(async (change, context) => {
 
 
     const order = change.after.data();
     if (order !== undefined) {
-      console.log(order.restaurantId);
+      console.log(order.supplierId);
       const querySnapshot = await firestore
-        .collection('restaurants')
-        .doc(order.restaurantId)
+        .collection('suppliers')
+        .doc(order.supplierId)
         .get();
-      const restaurant = querySnapshot.data();
-      if (restaurant !== undefined) {
+      const supplier = querySnapshot.data();
+      if (supplier !== undefined) {
         const query = await firestore
           .collection('users')
-          .doc(restaurant.uid)
+          .doc(supplier.uid)
           .get();
         const user = query.data();
         if (user !== undefined) {
           const tokens = user.fcmToken;
           console.log(tokens);
-          if (user.type === 'restaurant') {
+          if (user.type === 'supplier') {
             if (order.state === 'ACCEPTED') {
               const payload: admin.messaging.MessagingPayload = {
                 notification: {
@@ -306,7 +306,7 @@ const sendToDeviceRestaurant = functions.firestore
 
 /*
   const sendToDeviceDriver = functions.firestore
-  .document('restaurants/{restaurantId}/restaurant_orders/{orderId}')
+  .document('suppliers/{supplierId}/supplier_orders/{orderId}')
   .onWrite(async (change,context) => {
     const order = change.after.data();
     if(order!== undefined){
@@ -345,8 +345,8 @@ const sendToDeviceRestaurant = functions.firestore
     return 'ok';
   });
 
-const sendToDeviceRestaurant = functions.firestore
-  .document('restaurants/{userId}/restaurant_orders/{orderId}')
+const sendToDeviceSupplier = functions.firestore
+  .document('suppliers/{userId}/supplier_orders/{orderId}')
   .onWrite(async (change,context) => {
 
     
@@ -361,7 +361,7 @@ const sendToDeviceRestaurant = functions.firestore
       if( user!== undefined) {
         const tokens = user.fcmToken;
         console.log(tokens);
-        if(user.type==='restaurant'){
+        if(user.type==='supplier'){
           if(order.state==='PENDING'){
             const payload: admin.messaging.MessagingPayload = {
             notification: {
@@ -408,8 +408,8 @@ const updateState = functions.https.onCall(async (data, context) => {
   const uid = data.uid;
   const did = data.did;
   const timeS = data.timeS;
-  if (state === 'ACCEPTED') await firestore.collection('restaurants').doc(rid).collection('restaurant_orders').doc(oid).update({ 'state': state, 'timeS': timeS, 'isPaid': true });
-  else await firestore.collection('restaurants').doc(rid).collection('restaurant_orders').doc(oid).update({ 'state': state, 'timeS': timeS });
+  if (state === 'ACCEPTED') await firestore.collection('suppliers').doc(rid).collection('supplier_orders').doc(oid).update({ 'state': state, 'timeS': timeS, 'isPaid': true });
+  else await firestore.collection('suppliers').doc(rid).collection('supplier_orders').doc(oid).update({ 'state': state, 'timeS': timeS });
   await firestore.collection('users').doc(did).collection('driver_orders').doc(oid).update({ 'state': state, 'timeS': timeS });
   await firestore.collection('users').doc(uid).collection('user_orders').doc(oid).update({ 'state': state, 'timeS': timeS });
   if (state === 'DENIED') {
@@ -494,7 +494,7 @@ const createStripeCharge = functions.https.onCall(async (data, context) => {
   try {
     const foodIds = data.foodIds;
     const drinkIds = data.drinkIds;
-    const restaurantId = data.restaurantId;
+    const supplierId = data.supplierId;
     const uid = data.uid;
     const customerRef = firestore.collection('stripe_customers').doc(uid)
     const customerData = (await customerRef.get()).data();
@@ -502,7 +502,7 @@ const createStripeCharge = functions.https.onCall(async (data, context) => {
     console.log(customer);
     const idempotencyKey = data.oid;
     console.log(uid);
-    const amount = ((await calculatePrice(foodIds, 'foods', restaurantId)) + (await calculatePrice(drinkIds, 'drinks', restaurantId))) * 100;
+    const amount = ((await calculatePrice(foodIds, 'foods', supplierId)) + (await calculatePrice(drinkIds, 'drinks', supplierId))) * 100;
     //const idempotencyKey = context.params.id;
     const charge: Stripe.charges.IChargeCreationOptions = { amount, currency, customer };
     console.log(data.fingerprint);
@@ -544,10 +544,10 @@ const createStripeCharge = functions.firestore
 });
 */
 
-async function calculatePrice(products: string[], collectionId: string, restaurantId: string): Promise<number> {
+async function calculatePrice(products: string[], collectionId: string, supplierId: string): Promise<number> {
   let price = 0
   for (const entry of products) {
-    const product = (await (firestore.collection('restaurants').doc(restaurantId).collection(collectionId).doc(entry)).get()).data()
+    const product = (await (firestore.collection('suppliers').doc(supplierId).collection(collectionId).doc(entry)).get()).data()
     //console.log(product.price)
     price += product ? parseInt(product.price, 10) : 0
   }

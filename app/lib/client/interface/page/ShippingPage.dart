@@ -5,7 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:resmedia_taporty_flutter/common/helper/DateTimeHelper.dart';
-import 'package:resmedia_taporty_flutter/common/model/RestaurantModel.dart';
+import 'package:resmedia_taporty_flutter/common/model/SupplierModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/ShiftModel.dart';
 import 'package:resmedia_taporty_flutter/client/interface/screen/CheckoutScreen.dart';
 import 'package:resmedia_taporty_flutter/client/interface/view/BottonButtonBar.dart';
@@ -18,9 +18,9 @@ class ShippingPage extends StatefulWidget {
   final UserModel user;
   final TabController controller;
   final GeoPoint customerCoordinates;
-  final RestaurantModel restaurant;
+  final SupplierModel supplier;
 
-  ShippingPage({@required this.user, @required this.customerCoordinates, @required this.restaurant, @required this.controller});
+  ShippingPage({@required this.user, @required this.customerCoordinates, @required this.supplier, @required this.controller});
 
   @override
   _ShippingState createState() => _ShippingState();
@@ -154,7 +154,7 @@ class _ShippingState extends State<ShippingPage> with AutomaticKeepAliveClientMi
                                   this.setState(() {
                                     _dateController.value = TextEditingValue(text: toDate(day));
                                     _selectedShift = null;
-                                    _availableShiftsFuture = Database().getAvailableShifts(day, widget.restaurant.id, widget.customerCoordinates);
+                                    _availableShiftsFuture = Database().getAvailableShifts(day, widget.supplier.id, widget.customerCoordinates);
                                   });
                                 }
                               });

@@ -6,24 +6,24 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:resmedia_taporty_flutter/client/interface/page/CartPage.dart';
 import 'package:resmedia_taporty_flutter/client/interface/screen/CheckoutScreen.dart';
-import 'package:resmedia_taporty_flutter/client/interface/screen/RestaurantScreen.dart';
+import 'package:resmedia_taporty_flutter/client/interface/screen/SupplierScreen.dart';
 import 'package:resmedia_taporty_flutter/client/interface/view/BottonButtonBar.dart';
 import 'package:resmedia_taporty_flutter/client/logic/bloc/CartBloc.dart';
-import 'package:resmedia_taporty_flutter/common/logic/bloc/RestaurantBloc.dart';
+import 'package:resmedia_taporty_flutter/common/logic/bloc/SupplierBloc.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
 import 'package:resmedia_taporty_flutter/common/model/ProductModel.dart';
-import 'package:resmedia_taporty_flutter/common/model/RestaurantModel.dart';
+import 'package:resmedia_taporty_flutter/common/model/SupplierModel.dart';
 import 'package:toast/toast.dart';
 
 class ConfirmPage extends StatefulWidget {
-  final RestaurantModel restaurant;
+  final SupplierModel supplier;
   final GeoPoint customerCoordinates;
   final String customerAddress;
   final TabController controller;
 
   ConfirmPage({
     Key key,
-    @required this.restaurant,
+    @required this.supplier,
     @required this.customerAddress,
     @required this.customerCoordinates,
     @required this.controller,
@@ -66,7 +66,7 @@ class _ConfirmState extends State<ConfirmPage> with AutomaticKeepAliveClientMixi
           actions: <Widget>[
             FlatButton(
               onPressed: () {
-                EasyRouter.popUntil(context, RestaurantScreen.ROUTE);
+                EasyRouter.popUntil(context, SupplierScreen.ROUTE);
               },
               textColor: cls.secondary,
               child: Text(
@@ -89,7 +89,7 @@ class _ConfirmState extends State<ConfirmPage> with AutomaticKeepAliveClientMixi
   Widget build(BuildContext context) {
     super.build(context);
     final tt = Theme.of(context);
-    final restaurantBloc = RestaurantBloc.init(restaurantId: widget.restaurant.id);
+    final supplierBloc = SupplierBloc.init(supplierId: widget.supplier.id);
     final cartBloc = CartBloc.of();
     final user = UserBloc.of();
     return StreamBuilder<FirebaseUser>(
@@ -105,7 +105,7 @@ class _ConfirmState extends State<ConfirmPage> with AutomaticKeepAliveClientMixi
             ),
           ),
           body: StreamBuilder<List<ProductModel>>(
-            stream: restaurantBloc.outProducts,
+            stream: supplierBloc.outProducts,
             builder: (context, AsyncSnapshot<List<ProductModel>> productListSnapshot) {
               if (!productListSnapshot.hasData)
                 return Center(
@@ -113,7 +113,7 @@ class _ConfirmState extends State<ConfirmPage> with AutomaticKeepAliveClientMixi
                 );
               return ProductsFoodDrinkBuilder(
                 products: productListSnapshot.data,
-                id: widget.restaurant.id,
+                id: widget.supplier.id,
               );
             },
           ),
@@ -130,9 +130,9 @@ class _ConfirmState extends State<ConfirmPage> with AutomaticKeepAliveClientMixi
                 onPressed: () async {
                   if (valid(context)) {
                     final state = CheckoutScreenInheritedWidget.of(context);
-                    var driverId = await cartBloc.findDriver(state.selectedShift, widget.restaurant.id, widget.customerCoordinates);
+                    var driverId = await cartBloc.findDriver(state.selectedShift, widget.supplier.id, widget.customerCoordinates);
                     if (driverId != null) {
-                      await cartBloc.signer(widget.restaurant.id, driverId, widget.customerCoordinates, widget.customerAddress, state);
+                      await cartBloc.signer(widget.supplier.id, driverId, widget.customerCoordinates, widget.customerAddress, state);
                       _showPaymentDialog(context);
                     } else {
                       Toast.show('Fattorino non più disponibile nell\'orario selezionato!\nCambia l\'orario e riprova.', context);

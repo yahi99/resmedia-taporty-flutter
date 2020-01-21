@@ -2,9 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_route/easy_route.dart';
 import 'package:easy_widget/easy_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:resmedia_taporty_flutter/common/interface/widget/HeaderWidget.dart';
-import 'package:resmedia_taporty_flutter/common/logic/bloc/OrderBloc.dart';
-import 'package:resmedia_taporty_flutter/common/logic/bloc/RestaurantBloc.dart';
+import 'package:resmedia_taporty_flutter/common/logic/bloc/SupplierBloc.dart';
 import 'package:resmedia_taporty_flutter/common/model/OrderModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/OrderProductModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/ProductModel.dart';
@@ -30,7 +28,7 @@ class ModifyOrderCartPage extends StatefulWidget implements WidgetRoute {
 }
 
 class _ModifyOrderCartPageState extends State<ModifyOrderCartPage> {
-  RestaurantBloc _restBloc;
+  SupplierBloc _restBloc;
   List<OrderProductModel> orderProducts;
 
   @override
@@ -49,7 +47,7 @@ class _ModifyOrderCartPageState extends State<ModifyOrderCartPage> {
 
   @override
   void didChangeDependencies() {
-    _restBloc = RestaurantBloc.init(restaurantId: widget.order.restaurantId);
+    _restBloc = SupplierBloc.init(supplierId: widget.order.supplierId);
     super.didChangeDependencies();
   }
 

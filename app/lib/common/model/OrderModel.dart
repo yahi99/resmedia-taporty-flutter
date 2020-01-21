@@ -73,7 +73,7 @@ class OrderModel extends FirebaseModel {
   final double newTotalPrice;
 
   final OrderState state;
-  final bool hasRestaurantReview;
+  final bool hasSupplierReview;
   final bool hasDriverReview;
 
   // Timestamps
@@ -108,14 +108,14 @@ class OrderModel extends FirebaseModel {
   final String customerImageUrl;
   final String cardId;
 
-  // Restaurant info
-  final String restaurantId;
-  final String restaurantName;
+  // Supplier info
+  final String supplierId;
+  final String supplierName;
   @JsonKey(toJson: geopointToJson, fromJson: geopointFromJson)
-  final GeoPoint restaurantCoordinates;
-  final String restaurantAddress;
-  final String restaurantPhoneNumber;
-  final String restaurantImageUrl;
+  final GeoPoint supplierCoordinates;
+  final String supplierAddress;
+  final String supplierPhoneNumber;
+  final String supplierImageUrl;
 
   // Driver info
   final String driverId;
@@ -140,17 +140,17 @@ class OrderModel extends FirebaseModel {
     this.customerAddress,
     this.customerPhoneNumber,
     this.customerImageUrl,
-    this.restaurantName,
-    this.restaurantCoordinates,
-    this.restaurantAddress,
-    this.restaurantPhoneNumber,
-    this.restaurantImageUrl,
+    this.supplierName,
+    this.supplierCoordinates,
+    this.supplierAddress,
+    this.supplierPhoneNumber,
+    this.supplierImageUrl,
     this.driverName,
     this.driverPhoneNumber,
     this.driverImageUrl,
-    this.restaurantId,
+    this.supplierId,
     this.driverId,
-    this.hasRestaurantReview,
+    this.hasSupplierReview,
     this.hasDriverReview,
     this.customerId,
     this.products,

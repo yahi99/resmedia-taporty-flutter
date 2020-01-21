@@ -25,17 +25,17 @@ OrderModel _$OrderModelFromJson(Map json) {
     customerAddress: json['customerAddress'] as String,
     customerPhoneNumber: json['customerPhoneNumber'] as String,
     customerImageUrl: json['customerImageUrl'] as String,
-    restaurantName: json['restaurantName'] as String,
-    restaurantCoordinates: geopointFromJson(json['restaurantCoordinates']),
-    restaurantAddress: json['restaurantAddress'] as String,
-    restaurantPhoneNumber: json['restaurantPhoneNumber'] as String,
-    restaurantImageUrl: json['restaurantImageUrl'] as String,
+    supplierName: json['supplierName'] as String,
+    supplierCoordinates: geopointFromJson(json['supplierCoordinates']),
+    supplierAddress: json['supplierAddress'] as String,
+    supplierPhoneNumber: json['supplierPhoneNumber'] as String,
+    supplierImageUrl: json['supplierImageUrl'] as String,
     driverName: json['driverName'] as String,
     driverPhoneNumber: json['driverPhoneNumber'] as String,
     driverImageUrl: json['driverImageUrl'] as String,
-    restaurantId: json['restaurantId'] as String,
+    supplierId: json['supplierId'] as String,
     driverId: json['driverId'] as String,
-    hasRestaurantReview: json['hasRestaurantReview'] as bool,
+    hasSupplierReview: json['hasSupplierReview'] as bool,
     hasDriverReview: json['hasDriverReview'] as bool,
     customerId: json['customerId'] as String,
     products: (json['products'] as List)
@@ -72,7 +72,7 @@ Map<String, dynamic> _$OrderModelToJson(OrderModel instance) {
   writeNotNull('newProductCount', instance.newProductCount);
   writeNotNull('newTotalPrice', instance.newTotalPrice);
   writeNotNull('state', _$OrderStateEnumMap[instance.state]);
-  writeNotNull('hasRestaurantReview', instance.hasRestaurantReview);
+  writeNotNull('hasSupplierReview', instance.hasSupplierReview);
   writeNotNull('hasDriverReview', instance.hasDriverReview);
   writeNotNull('creationTimestamp', datetimeToJson(instance.creationTimestamp));
   writeNotNull(
@@ -97,13 +97,13 @@ Map<String, dynamic> _$OrderModelToJson(OrderModel instance) {
   writeNotNull('customerPhoneNumber', instance.customerPhoneNumber);
   writeNotNull('customerImageUrl', instance.customerImageUrl);
   writeNotNull('cardId', instance.cardId);
-  writeNotNull('restaurantId', instance.restaurantId);
-  writeNotNull('restaurantName', instance.restaurantName);
+  writeNotNull('supplierId', instance.supplierId);
+  writeNotNull('supplierName', instance.supplierName);
   writeNotNull(
-      'restaurantCoordinates', geopointToJson(instance.restaurantCoordinates));
-  writeNotNull('restaurantAddress', instance.restaurantAddress);
-  writeNotNull('restaurantPhoneNumber', instance.restaurantPhoneNumber);
-  writeNotNull('restaurantImageUrl', instance.restaurantImageUrl);
+      'supplierCoordinates', geopointToJson(instance.supplierCoordinates));
+  writeNotNull('supplierAddress', instance.supplierAddress);
+  writeNotNull('supplierPhoneNumber', instance.supplierPhoneNumber);
+  writeNotNull('supplierImageUrl', instance.supplierImageUrl);
   writeNotNull('driverId', instance.driverId);
   writeNotNull('driverName', instance.driverName);
   writeNotNull('driverPhoneNumber', instance.driverPhoneNumber);

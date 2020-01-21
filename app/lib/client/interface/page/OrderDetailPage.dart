@@ -52,7 +52,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
   double _driverRating = 5;
 
   // TODO: Metti in un widget a sè stante e definisci il ReviewModel
-  void _addRestaurantReview(OrderModel order) {
+  void _addSupplierReview(OrderModel order) {
     showDialog(
       context: context,
       builder: (_context) {
@@ -118,7 +118,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                     child: Text('Invia'),
                     onPressed: () async {
                       try {
-                        await _db.addRestaurantReview(order.restaurantId, order.customerId, order.customerName, order.id, _restRating, _restReviewBodyKey.currentState.value);
+                        await _db.addSupplierReview(order.supplierId, order.customerId, order.customerName, order.id, _restRating, _restReviewBodyKey.currentState.value);
                         Toast.show("Recensione aggiunta con successo!", context);
                         EasyRouter.pop(context);
                       } catch (err) {
@@ -369,15 +369,15 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                     ),
                   ),
                   HeaderWidget("FORNITORE"),
-                  if (order.hasRestaurantReview != true && order.state == OrderState.DELIVERED)
+                  if (order.hasSupplierReview != true && order.state == OrderState.DELIVERED)
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        _buildSubjectDetails(order.restaurantImageUrl, order.restaurantName, order.restaurantPhoneNumber),
+                        _buildSubjectDetails(order.supplierImageUrl, order.supplierName, order.supplierPhoneNumber),
                         Padding(
                           padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
                           child: InkWell(
-                            onTap: () => _addRestaurantReview(order),
+                            onTap: () => _addSupplierReview(order),
                             child: Text(
                               "Lascia una recensione",
                               style: TextStyle(
@@ -389,7 +389,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                         ),
                       ],
                     ),
-                  if (order.hasRestaurantReview == true || order.state != OrderState.DELIVERED) _buildSubjectDetails(order.restaurantImageUrl, order.restaurantName, order.restaurantPhoneNumber),
+                  if (order.hasSupplierReview == true || order.state != OrderState.DELIVERED) _buildSubjectDetails(order.supplierImageUrl, order.supplierName, order.supplierPhoneNumber),
                   HeaderWidget("FATTORINO"),
                   if (order.hasDriverReview != true && order.state == OrderState.DELIVERED)
                     Column(

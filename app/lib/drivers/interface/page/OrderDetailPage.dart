@@ -7,7 +7,7 @@ import 'package:resmedia_taporty_flutter/common/interface/widget/HeaderWidget.da
 import 'package:resmedia_taporty_flutter/common/logic/bloc/OrderBloc.dart';
 import 'package:resmedia_taporty_flutter/common/model/OrderModel.dart';
 import 'package:resmedia_taporty_flutter/drivers/interface/page/CustomerOrderPage.dart';
-import 'package:resmedia_taporty_flutter/drivers/interface/page/RestaurantOrderPage.dart';
+import 'package:resmedia_taporty_flutter/drivers/interface/page/SupplierOrderPage.dart';
 
 class OrderDetailPage extends StatefulWidget implements WidgetRoute {
   static const ROUTE = "OrderDetailPage";
@@ -102,11 +102,11 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                   InkWell(
                     onTap: () => EasyRouter.push(
                       context,
-                      RestaurantOrderPage(
+                      SupplierOrderPage(
                         orderId: widget.orderId,
                       ),
                     ),
-                    child: _buildSubjectDetails(order.restaurantImageUrl, order.restaurantName, order.restaurantAddress),
+                    child: _buildSubjectDetails(order.supplierImageUrl, order.supplierName, order.supplierAddress),
                   ),
                   HeaderWidget("CLIENTE"),
                   InkWell(

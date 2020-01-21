@@ -14,15 +14,15 @@ class $Provider extends Provider {
           return BlocCache.getBlocInstance(
               "UserBloc", () => UserBloc.instance());
         }
-      case RestaurantBloc:
+      case SupplierBloc:
         {
           return BlocCache.getBlocInstance(
-              "RestaurantBloc", () => RestaurantBloc.instance());
+              "SupplierBloc", () => SupplierBloc.instance());
         }
-      case RestaurantsBloc:
+      case SuppliersBloc:
         {
           return BlocCache.getBlocInstance(
-              "RestaurantsBloc", () => RestaurantsBloc.instance());
+              "SuppliersBloc", () => SuppliersBloc.instance());
         }
       case RepositoryBloc:
         {
@@ -60,14 +60,14 @@ class $Provider extends Provider {
           BlocCache.dispose("UserBloc");
           break;
         }
-      case RestaurantBloc:
+      case SupplierBloc:
         {
-          BlocCache.dispose("RestaurantBloc");
+          BlocCache.dispose("SupplierBloc");
           break;
         }
-      case RestaurantsBloc:
+      case SuppliersBloc:
         {
-          BlocCache.dispose("RestaurantsBloc");
+          BlocCache.dispose("SuppliersBloc");
           break;
         }
       case RepositoryBloc:

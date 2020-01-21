@@ -10,14 +10,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:resmedia_taporty_flutter/common/model/ReviewModel.dart';
 import 'package:resmedia_taporty_flutter/common/resources/MixinOrderProvider.dart';
-import 'package:resmedia_taporty_flutter/common/resources/MixinRestaurantProvider.dart';
+import 'package:resmedia_taporty_flutter/common/resources/MixinSupplierProvider.dart';
 import 'package:resmedia_taporty_flutter/common/resources/MixinReviewProvider.dart';
 import 'package:resmedia_taporty_flutter/common/resources/MixinShiftProvider.dart';
 import 'package:resmedia_taporty_flutter/common/resources/MixinUserProvider.dart';
 import 'package:resmedia_taporty_flutter/config/Collections.dart';
 import 'package:resmedia_taporty_flutter/common/model/UserModel.dart';
 
-class Database extends FirebaseDatabase with MixinFirestoreStripeProvider, MixinRestaurantProvider, MixinUserProvider, MixinShiftProvider, MixinOrderProvider, MixinReviewProvider, StripeProviderRule {
+class Database extends FirebaseDatabase with MixinFirestoreStripeProvider, MixinSupplierProvider, MixinUserProvider, MixinShiftProvider, MixinOrderProvider, MixinReviewProvider, StripeProviderRule {
   static Database _db;
 
   Database.internal({
@@ -77,8 +77,8 @@ class Database extends FirebaseDatabase with MixinFirestoreStripeProvider, Mixin
       @required address,
       @required eseType,
       @required prodType}) async {
-    //await fs.collection(cl.USERS).document(uid).updateData({'restaurantId':rid});
-    await fs.collection('restaurant_requests').document(uid).setData(
+    //await fs.collection(cl.USERS).document(uid).updateData({'supplierId':rid});
+    await fs.collection('supplier_requests').document(uid).setData(
         {'img': img, 'lat': pos.latitude, 'lng': pos.longitude, 'km': cop, 'ragioneSociale': ragSociale, 'partitaIva': partitaIva, 'address': address, 'tipoEsercizio': eseType, 'prodType': prodType});
   }
 

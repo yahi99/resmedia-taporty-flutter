@@ -9,11 +9,11 @@ import 'package:resmedia_taporty_flutter/client/interface/page/CartPage.dart';
 import 'package:resmedia_taporty_flutter/client/interface/page/ConfirmPage.dart';
 import 'package:resmedia_taporty_flutter/client/interface/page/PaymentPage.dart';
 import 'package:resmedia_taporty_flutter/client/interface/page/ShippingPage.dart';
-import 'package:resmedia_taporty_flutter/common/logic/bloc/RestaurantBloc.dart';
+import 'package:resmedia_taporty_flutter/common/logic/bloc/SupplierBloc.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
 import 'package:resmedia_taporty_flutter/common/model/ShiftModel.dart';
 import 'package:resmedia_taporty_flutter/common/resources/Database.dart';
-import 'package:resmedia_taporty_flutter/common/model/RestaurantModel.dart';
+import 'package:resmedia_taporty_flutter/common/model/SupplierModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/UserModel.dart';
 import 'package:resmedia_taporty_flutter/config/ColorTheme.dart';
 
@@ -21,12 +21,12 @@ class CheckoutScreen extends StatefulWidget implements WidgetRoute {
   static const String ROUTE = "ProductsScreen";
 
   String get route => CheckoutScreen.ROUTE;
-  final RestaurantModel restaurant;
+  final SupplierModel supplier;
   final UserModel user;
   final GeoPoint customerCoordinates;
   final String customerAddress;
 
-  CheckoutScreen({Key key, @required this.restaurant, @required this.user, @required this.customerCoordinates, @required this.customerAddress}) : super(key: key);
+  CheckoutScreen({Key key, @required this.supplier, @required this.user, @required this.customerCoordinates, @required this.customerAddress}) : super(key: key);
 
   @override
   _CheckoutScreenState createState() => _CheckoutScreenState();
@@ -111,8 +111,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> with TickerProviderStat
           child: StreamBuilder<User>(
             stream: UserBloc.of().outUser,
             builder: (ctx, user) {
-              return StreamBuilder<RestaurantModel>(
-                stream: RestaurantBloc.init(restaurantId: widget.restaurant.id).outRestaurant,
+              return StreamBuilder<SupplierModel>(
+                stream: SupplierBloc.init(supplierId: widget.supplier.id).outSupplier,
                 builder: (ctx, rest) {
                   if (!user.hasData)
                     return Center(
@@ -145,20 +145,20 @@ class _CheckoutScreenState extends State<CheckoutScreen> with TickerProviderStat
                             physics: NeverScrollableScrollPhysics(),
                             children: <Widget>[
                               CartPage(
-                                restaurant: widget.restaurant,
+                                supplier: widget.supplier,
                                 controller: controller,
                               ),
                               ShippingPage(
                                 user: widget.user,
                                 customerCoordinates: widget.customerCoordinates,
-                                restaurant: widget.restaurant,
+                                supplier: widget.supplier,
                                 controller: controller,
                               ),
                               PaymentPage(
                                 controller,
                               ),
                               ConfirmPage(
-                                restaurant: widget.restaurant,
+                                supplier: widget.supplier,
                                 customerCoordinates: widget.customerCoordinates,
                                 customerAddress: widget.customerAddress,
                                 controller: controller,

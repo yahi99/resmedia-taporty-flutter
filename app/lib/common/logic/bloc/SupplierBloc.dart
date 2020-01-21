@@ -7,29 +7,29 @@ import 'package:flutter/widgets.dart';
 import 'package:resmedia_taporty_flutter/common/resources/Database.dart';
 import 'package:resmedia_taporty_flutter/generated/provider.dart';
 import 'package:resmedia_taporty_flutter/common/model/ProductModel.dart';
-import 'package:resmedia_taporty_flutter/common/model/RestaurantModel.dart';
+import 'package:resmedia_taporty_flutter/common/model/SupplierModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/ReviewModel.dart';
 import 'package:rxdart/rxdart.dart';
 
-class RestaurantBloc implements Bloc {
+class SupplierBloc implements Bloc {
   final _db = Database();
 
   @protected
   dispose() {
-    _restaurantController?.close();
+    _supplierController?.close();
     _productsController?.close();
     _foodsController?.close();
     _drinksController?.close();
-    _restaurantReviewController.close();
+    _supplierReviewController.close();
   }
 
-  BehaviorSubject<RestaurantModel> _restaurantController;
+  BehaviorSubject<SupplierModel> _supplierController;
 
-  Stream<RestaurantModel> get outRestaurant => _restaurantController.stream;
+  Stream<SupplierModel> get outSupplier => _supplierController.stream;
 
-  BehaviorSubject<List<ReviewModel>> _restaurantReviewController;
+  BehaviorSubject<List<ReviewModel>> _supplierReviewController;
 
-  Stream<List<ReviewModel>> get outRestaurantReview => _restaurantReviewController.stream;
+  Stream<List<ReviewModel>> get outSupplierReview => _supplierReviewController.stream;
 
   BehaviorSubject<List<ProductModel>> _productsController;
 
@@ -57,19 +57,19 @@ class RestaurantBloc implements Bloc {
 
   bool isInit = false;
 
-  RestaurantBloc.instance();
+  SupplierBloc.instance();
 
-  factory RestaurantBloc.of() => $Provider.of<RestaurantBloc>();
+  factory SupplierBloc.of() => $Provider.of<SupplierBloc>();
 
-  factory RestaurantBloc.init({@required String restaurantId}) {
-    final bc = RestaurantBloc.of();
-    bc._restaurantController = BehaviorController.catchStream(source: bc._db.getRestaurantStream(restaurantId));
-    bc._productsController = BehaviorController.catchStream(source: bc._db.getProductListStream(restaurantId));
-    bc._foodsController = BehaviorController.catchStream(source: bc._db.getFoodListStream(restaurantId));
-    bc._drinksController = BehaviorController.catchStream(source: bc._db.getDrinkListStream(restaurantId));
-    bc._restaurantReviewController = BehaviorController.catchStream(source: bc._db.getReviewListStream(restaurantId));
+  factory SupplierBloc.init({@required String supplierId}) {
+    final bc = SupplierBloc.of();
+    bc._supplierController = BehaviorController.catchStream(source: bc._db.getSupplierStream(supplierId));
+    bc._productsController = BehaviorController.catchStream(source: bc._db.getProductListStream(supplierId));
+    bc._foodsController = BehaviorController.catchStream(source: bc._db.getFoodListStream(supplierId));
+    bc._drinksController = BehaviorController.catchStream(source: bc._db.getDrinkListStream(supplierId));
+    bc._supplierReviewController = BehaviorController.catchStream(source: bc._db.getReviewListStream(supplierId));
     return bc;
   }
 
-  static void close() => $Provider.dispose<RestaurantBloc>();
+  static void close() => $Provider.dispose<SupplierBloc>();
 }

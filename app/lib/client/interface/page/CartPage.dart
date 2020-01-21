@@ -6,19 +6,19 @@ import 'package:resmedia_taporty_flutter/client/interface/screen/CheckoutScreen.
 import 'package:resmedia_taporty_flutter/client/interface/view/BottonButtonBar.dart';
 import 'package:resmedia_taporty_flutter/client/interface/view/ProductViewCart.dart';
 import 'package:resmedia_taporty_flutter/client/logic/bloc/CartBloc.dart';
-import 'package:resmedia_taporty_flutter/common/logic/bloc/RestaurantBloc.dart';
+import 'package:resmedia_taporty_flutter/common/logic/bloc/SupplierBloc.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
 import 'package:resmedia_taporty_flutter/client/model/CartModel.dart';
 import 'package:resmedia_taporty_flutter/client/model/CartProductModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/ProductModel.dart';
-import 'package:resmedia_taporty_flutter/common/model/RestaurantModel.dart';
+import 'package:resmedia_taporty_flutter/common/model/SupplierModel.dart';
 import 'package:toast/toast.dart';
 
 class CartPage extends StatefulWidget {
-  final RestaurantModel restaurant;
+  final SupplierModel supplier;
   final TabController controller;
 
-  CartPage({Key key, @required this.restaurant, @required this.controller}) : super(key: key);
+  CartPage({Key key, @required this.supplier, @required this.controller}) : super(key: key);
 
   @override
   _CartState createState() => _CartState();
@@ -42,7 +42,7 @@ class _CartState extends State<CartPage> with AutomaticKeepAliveClientMixin {
   Widget build(BuildContext context) {
     super.build(context);
     final tt = Theme.of(context);
-    final restaurantBloc = RestaurantBloc.init(restaurantId: widget.restaurant.id);
+    final supplierBloc = SupplierBloc.init(supplierId: widget.supplier.id);
     final cartBloc = CartBloc.of();
     final user = UserBloc.of();
     List<CartProductModel> cartCounter = List<CartProductModel>();
@@ -58,7 +58,7 @@ class _CartState extends State<CartPage> with AutomaticKeepAliveClientMixin {
                 );
               return Scaffold(
                   body: StreamBuilder<List<ProductModel>>(
-                    stream: restaurantBloc.outProducts,
+                    stream: supplierBloc.outProducts,
                     builder: (context, AsyncSnapshot<List<ProductModel>> productSnapshot) {
                       if (!productSnapshot.hasData)
                         return Center(
@@ -67,7 +67,7 @@ class _CartState extends State<CartPage> with AutomaticKeepAliveClientMixin {
                       cartCounter.clear();
                       for (int i = 0; i < productSnapshot.data.length; i++) {
                         var temp = productSnapshot.data.elementAt(i);
-                        var find = cartSnapshot.data.getProduct(temp.id, temp.restaurantId, uid.data.uid);
+                        var find = cartSnapshot.data.getProduct(temp.id, temp.supplierId, uid.data.uid);
                         if (find != null && find.quantity > 0) {
                           cartCounter.add(find);
                         }
@@ -76,7 +76,7 @@ class _CartState extends State<CartPage> with AutomaticKeepAliveClientMixin {
                       state.productCount = cartSnapshot.data.getTotalItems(cartCounter);
                       return ProductsFoodDrinkBuilder(
                         products: productSnapshot.data,
-                        id: widget.restaurant.id,
+                        id: widget.supplier.id,
                       );
                     },
                   ),
@@ -129,7 +129,7 @@ class ProductsFoodDrinkBuilder extends StatelessWidget {
               prod.clear();
               for (int i = 0; i < products.length; i++) {
                 var temp = products.elementAt(i);
-                var find = cartSnapshot.data.getProduct(temp.id, temp.restaurantId, userSnapshot.data.uid);
+                var find = cartSnapshot.data.getProduct(temp.id, temp.supplierId, userSnapshot.data.uid);
                 if (find != null && find.quantity > 0) {
                   prod.add(find);
                   list.add(ProductViewCart(

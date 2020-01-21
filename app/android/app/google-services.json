@@ -166,7 +166,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:84538476825:android:ae9eab5de77d0f4939dd88",
         "android_client_info": {
-          "package_name": "it.resmedia.taporty.restaurant"
+          "package_name": "it.resmedia.taporty.supplier"
         }
       },
       "oauth_client": [
@@ -174,7 +174,7 @@
           "client_id": "84538476825-f1ct6ms57cq2anl2tjihuta083vjkp5s.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "it.resmedia.taporty.restaurant",
+            "package_name": "it.resmedia.taporty.supplier",
             "certificate_hash": "f59e3286bd86a2712f5cb9f21a325b0da84b2719"
           }
         },
@@ -182,7 +182,7 @@
           "client_id": "84538476825-nt1t85rbmd37tov2m9qi6k7ajlf0fpj3.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "it.resmedia.taporty.restaurant",
+            "package_name": "it.resmedia.taporty.supplier",
             "certificate_hash": "6b6ddc63b409361a3ee6c6a947c8d3d79bbad25d"
           }
         },

@@ -38,16 +38,16 @@ class CartController {
     _cartController.add(cart);
   }
 
-  Future<bool> inIncrement(String id, String restaurantId, String userId, double price, String category) async {
-    return _update(_cart.increment(id, restaurantId, userId, price, category));
+  Future<bool> inIncrement(String id, String supplierId, String userId, double price, String category) async {
+    return _update(_cart.increment(id, supplierId, userId, price, category));
   }
 
-  Future<bool> inDecrease(String id, String restaurantId, String userId) async {
-    return _update(_cart.decrease(id, restaurantId, userId));
+  Future<bool> inDecrease(String id, String supplierId, String userId) async {
+    return _update(_cart.decrease(id, supplierId, userId));
   }
 
-  Future<bool> inRemove(String id, String restaurantId, String userId) async {
-    return _update(_cart.remove(id, restaurantId, userId));
+  Future<bool> inRemove(String id, String supplierId, String userId) async {
+    return _update(_cart.remove(id, supplierId, userId));
   }
 
   bool _update(bool update) {

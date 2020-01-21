@@ -6,7 +6,7 @@ import 'package:meta/meta.dart';
 
 part 'ProductModel.g.dart';
 
-/// Represents a product that the restaurant sells
+/// Represents a product that the supplier sells
 
 @JsonSerializable(anyMap: true, explicitToJson: true)
 class ProductModel extends FirebaseModel {
@@ -16,7 +16,7 @@ class ProductModel extends FirebaseModel {
   final int maxQuantity;
   final String type;
   final ProductCategory category;
-  final String restaurantId;
+  final String supplierId;
 
   ProductModel({
     String path,
@@ -25,7 +25,7 @@ class ProductModel extends FirebaseModel {
     @required this.maxQuantity,
     @required this.type,
     @required this.category,
-    @required this.restaurantId,
+    @required this.supplierId,
     @required this.imageUrl,
   }) : super(path);
 

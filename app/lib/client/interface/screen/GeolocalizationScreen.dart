@@ -6,7 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:google_maps_webservice/places.dart';
-import 'package:resmedia_taporty_flutter/client/interface/screen/RestaurantListScreen.dart';
+import 'package:resmedia_taporty_flutter/client/interface/screen/SupplierListScreen.dart';
 import 'package:resmedia_taporty_flutter/common/interface/view/LogoView.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
 import 'package:toast/toast.dart';
@@ -110,7 +110,7 @@ class _GeoLocScreenState extends State<GeoLocScreen> {
                       onPressed: () async {
                         if (isValid) {
                           EasyRouter.pushAndRemoveAll(context,
-                              RestaurantListScreen(customerCoordinates: customerCoordinates, customerAddress: customerAddress, isAnonymous: false, user: (await UserBloc.of().outUser.first).model));
+                              SupplierListScreen(customerCoordinates: customerCoordinates, customerAddress: customerAddress, isAnonymous: false, user: (await UserBloc.of().outUser.first).model));
                         } else {
                           Toast.show('Inserire un indirizzo valido', context);
                         }

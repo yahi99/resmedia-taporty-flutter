@@ -2,21 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:resmedia_taporty_flutter/client/interface/view/ProductView.dart';
 import 'package:resmedia_taporty_flutter/client/logic/bloc/CartBloc.dart';
-import 'package:resmedia_taporty_flutter/common/logic/bloc/RestaurantBloc.dart';
+import 'package:resmedia_taporty_flutter/common/logic/bloc/SupplierBloc.dart';
 import 'package:resmedia_taporty_flutter/common/model/ProductModel.dart';
-import 'package:resmedia_taporty_flutter/common/model/RestaurantModel.dart';
+import 'package:resmedia_taporty_flutter/common/model/SupplierModel.dart';
 import 'package:resmedia_taporty_flutter/config/ColorTheme.dart';
 
 class FoodPage extends StatelessWidget {
-  final RestaurantModel model;
+  final SupplierModel model;
 
   FoodPage({Key key, @required this.model}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final restaurantBloc = RestaurantBloc.init(restaurantId: model.id);
+    final supplierBloc = SupplierBloc.init(supplierId: model.id);
     return StreamBuilder<Map<ProductCategory, List<ProductModel>>>(
-      stream: restaurantBloc.outFoodsByCategory,
+      stream: supplierBloc.outFoodsByCategory,
       builder: (context, snapshot) {
         if (!snapshot.hasData)
           return Center(
@@ -30,16 +30,16 @@ class FoodPage extends StatelessWidget {
 }
 
 class DrinkPage extends StatelessWidget {
-  final RestaurantModel model;
+  final SupplierModel model;
 
   DrinkPage({Key key, @required this.model}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final restaurantBloc = RestaurantBloc.init(restaurantId: model.id);
+    final supplierBloc = SupplierBloc.init(supplierId: model.id);
 
     return StreamBuilder<Map<ProductCategory, List<ProductModel>>>(
-      stream: restaurantBloc.outDrinksByCategory,
+      stream: supplierBloc.outDrinksByCategory,
       builder: (context, snapshot) {
         if (!snapshot.hasData)
           return Center(

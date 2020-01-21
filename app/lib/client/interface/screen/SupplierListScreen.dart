@@ -15,17 +15,17 @@ import 'package:resmedia_taporty_flutter/common/helper/LoginHelper.dart';
 import 'package:resmedia_taporty_flutter/client/interface/screen/AccountScreen.dart';
 import 'package:resmedia_taporty_flutter/client/interface/screen/GeolocalizationScreen.dart';
 import 'package:resmedia_taporty_flutter/client/interface/screen/LoginScreen.dart';
-import 'package:resmedia_taporty_flutter/client/interface/screen/RestaurantScreen.dart';
+import 'package:resmedia_taporty_flutter/client/interface/screen/SupplierScreen.dart';
 import 'package:resmedia_taporty_flutter/client/interface/widget/SearchBar.dart';
-import 'package:resmedia_taporty_flutter/common/logic/bloc/RestaurantsBloc.dart';
+import 'package:resmedia_taporty_flutter/common/logic/bloc/SuppliersBloc.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
 import 'package:resmedia_taporty_flutter/common/resources/Database.dart';
-import 'package:resmedia_taporty_flutter/common/model/RestaurantModel.dart';
+import 'package:resmedia_taporty_flutter/common/model/SupplierModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/UserModel.dart';
 import 'package:resmedia_taporty_flutter/config/ColorTheme.dart';
 
-class RestaurantListScreen extends StatefulWidget implements WidgetRoute {
-  static const ROUTE = 'RestaurantListScreen';
+class SupplierListScreen extends StatefulWidget implements WidgetRoute {
+  static const ROUTE = 'SupplierListScreen';
 
   String get route => ROUTE;
   final UserModel user;
@@ -33,13 +33,13 @@ class RestaurantListScreen extends StatefulWidget implements WidgetRoute {
   final String customerAddress;
   final bool isAnonymous;
 
-  RestaurantListScreen({Key key, @required this.user, @required this.customerCoordinates, @required this.customerAddress, @required this.isAnonymous}) : super(key: key);
+  SupplierListScreen({Key key, @required this.user, @required this.customerCoordinates, @required this.customerAddress, @required this.isAnonymous}) : super(key: key);
 
   @override
-  _RestaurantListScreenState createState() => _RestaurantListScreenState();
+  _SupplierListScreenState createState() => _SupplierListScreenState();
 }
 
-class _RestaurantListScreenState extends State<RestaurantListScreen> {
+class _SupplierListScreenState extends State<SupplierListScreen> {
   final double iconSize = 32;
 
   BuildContext dialog;
@@ -49,7 +49,7 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
   StreamController searchBarStream;
 
   final UserBloc userBloc = UserBloc.of();
-  final RestaurantsBloc _restaurantsBloc = RestaurantsBloc.instance();
+  final SuppliersBloc _suppliersBloc = SuppliersBloc.instance();
 
   void showNotification(BuildContext context, Map<String, dynamic> message) async {
     print('Build dialog');
@@ -95,7 +95,7 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
 
   @override
   void dispose() {
-    RestaurantsBloc.close();
+    SuppliersBloc.close();
     searchBarStream.close();
     super.dispose();
   }
@@ -134,13 +134,13 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
           searchBarStream: searchBarStream,
         ),
       ),
-      body: CacheStreamBuilder<List<RestaurantModel>>(
-          stream: _restaurantsBloc.outRestaurants,
-          builder: (context, AsyncSnapshot<List<RestaurantModel>> restaurantListSnapshot) {
+      body: CacheStreamBuilder<List<SupplierModel>>(
+          stream: _suppliersBloc.outSuppliers,
+          builder: (context, AsyncSnapshot<List<SupplierModel>> supplierListSnapshot) {
             return StreamBuilder<User>(
               stream: UserBloc.of().outUser,
               builder: (context, userSnapshot) {
-                if (!restaurantListSnapshot.hasData)
+                if (!supplierListSnapshot.hasData)
                   return Center(
                     child: CircularProgressIndicator(),
                   );
@@ -150,7 +150,7 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
                     return StreamBuilder(
                       stream: Database().getUser(userSnapshot.data.userFb),
                       builder: (context, userModelSnapshot) {
-                        if (restaurantListSnapshot.hasData && userSnapshot.hasData && userModelSnapshot.hasData) {
+                        if (supplierListSnapshot.hasData && userSnapshot.hasData && userModelSnapshot.hasData) {
                           if (userModelSnapshot.data.type != 'user' && userModelSnapshot.data.type != null) {
                             return RaisedButton(
                               child: Text('Sei stato disabilitato clicca per fare logout'),
@@ -165,7 +165,7 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
                           return SingleChildScrollView(
                             child: Padding(
                               padding: const EdgeInsets.all(16.0),
-                              child: _buildRestaurantListView(restaurantListSnapshot.data, searchBarSnapshot),
+                              child: _buildSupplierListView(supplierListSnapshot.data, searchBarSnapshot),
                             ),
                           );
                         }
@@ -182,17 +182,17 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
     );
   }
 
-  _buildRestaurantListView(var restaurantList, var searchBarSnapshot) {
+  _buildSupplierListView(var supplierList, var searchBarSnapshot) {
     return ListView.builder(
       shrinkWrap: true,
       physics: NeverScrollableScrollPhysics(),
-      itemCount: restaurantList.length,
+      itemCount: supplierList.length,
       itemBuilder: (context, int index) {
         //final distance=Distance();
-        if (searchBarSnapshot.hasData && !restaurantList[index].id.toLowerCase().contains(searchBarSnapshot.data.toLowerCase())) return Container();
+        if (searchBarSnapshot.hasData && !supplierList[index].id.toLowerCase().contains(searchBarSnapshot.data.toLowerCase())) return Container();
         var stream;
-        if (restaurantList[index].getPos() != null && widget.customerCoordinates != null) {
-          final LatLng start = restaurantList[index].getPos();
+        if (supplierList[index].getPos() != null && widget.customerCoordinates != null) {
+          final LatLng start = supplierList[index].getPos();
           final LatLng end = LatLng(widget.customerCoordinates.latitude, widget.customerCoordinates.longitude);
           stream = userBloc.getDistance(start, end).asStream();
           // TODO: Rimuovere l'else che permette un comportamento scorretto.
@@ -203,26 +203,26 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
             builder: (ctx, snap) {
               if (!snap.hasData) return Container();
               // TODO: Ripristinare a tempo debito.
-              // if(snap.data/1000<restaurantList[index].km) {
-              if (restaurantList[index].isDisabled != null && restaurantList[index].isDisabled) return Container();
+              // if(snap.data/1000<supplierList[index].km) {
+              if (supplierList[index].isDisabled != null && supplierList[index].isDisabled) return Container();
               return Padding(
                 padding: const EdgeInsets.symmetric(vertical: 4.0),
                 child: InkWell(
                   onTap: () async {
                     EasyRouter.push(
                       context,
-                      RestaurantScreen(
-                        restaurantAddress: (await Geocoder.local.findAddressesFromCoordinates(new Coordinates(restaurantList[index].coordinates.latitude, restaurantList[index].coordinates.longitude)))
+                      SupplierScreen(
+                        supplierAddress: (await Geocoder.local.findAddressesFromCoordinates(new Coordinates(supplierList[index].coordinates.latitude, supplierList[index].coordinates.longitude)))
                             .first
                             .addressLine,
                         customerCoordinates: widget.customerCoordinates,
                         customerAddress: widget.customerAddress,
-                        restaurantModel: restaurantList[index],
+                        supplierModel: supplierList[index],
                       ),
                     );
                   },
-                  child: RestaurantView(
-                    model: restaurantList[index],
+                  child: SupplierView(
+                    model: supplierList[index],
                   ),
                 ),
               );
@@ -232,10 +232,10 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
   }
 }
 
-class RestaurantView extends StatelessWidget {
-  final RestaurantModel model;
+class SupplierView extends StatelessWidget {
+  final SupplierModel model;
 
-  RestaurantView({
+  SupplierView({
     Key key,
     @required this.model,
   })  : assert(model != null),

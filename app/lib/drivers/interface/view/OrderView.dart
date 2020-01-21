@@ -50,7 +50,7 @@ class OrderView extends StatelessWidget {
                           ),
                         ),
                         AutoSizeText(
-                          order.restaurantName,
+                          order.supplierName,
                           group: nameGroup,
                           minFontSize: 14,
                           maxLines: 1,
@@ -58,7 +58,7 @@ class OrderView extends StatelessWidget {
                           style: textTheme.subhead.copyWith(fontWeight: FontWeight.bold),
                         ),
                         AutoSizeText(
-                          order.restaurantAddress,
+                          order.supplierAddress,
                           group: addressGroup,
                           minFontSize: 10,
                           maxLines: 3,

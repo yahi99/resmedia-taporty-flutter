@@ -153,8 +153,8 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/lib/interface/screen/RestaurantListScreen.dart" />
-        <option value="$PROJECT_DIR$/lib/restaurant/screen/TimetableScreen.dart" />
+        <option value="$PROJECT_DIR$/lib/interface/screen/SupplierListScreen.dart" />
+        <option value="$PROJECT_DIR$/lib/supplier/screen/TimetableScreen.dart" />
         <option value="$PROJECT_DIR$/../plugins/easy_blocs/lib/src/checker/widget/EmailField.dart" />
         <option value="$PROJECT_DIR$/../plugins/easy_blocs/lib/src/checker/widget/NominativeField.dart" />
         <option value="$PROJECT_DIR$/../plugins/easy_blocs/lib/src/checker/widget/AddressField.dart" />
@@ -170,12 +170,12 @@
         <option value="$PROJECT_DIR$/lib/interface/view/TypeOrderView.dart" />
         <option value="$PROJECT_DIR$/lib/model/OrderModel.dart" />
         <option value="$PROJECT_DIR$/lib/logic/database.dart" />
-        <option value="$PROJECT_DIR$/lib/restaurant/screen/EditRestTurns.dart" />
+        <option value="$PROJECT_DIR$/lib/supplier/screen/EditRestTurns.dart" />
         <option value="$PROJECT_DIR$/lib/logic/bloc/OrdersBloc.dart" />
         <option value="$PROJECT_DIR$/lib/control/interface/screen/TurnScreen.dart" />
         <option value="$PROJECT_DIR$/android/app/src/main/AndroidManifest.xml" />
-        <option value="$PROJECT_DIR$/lib/restaurant/view/ProductViewRestaurant.dart" />
-        <option value="$PROJECT_DIR$/lib/restaurant/page/MenuPage.dart" />
+        <option value="$PROJECT_DIR$/lib/supplier/view/ProductViewSupplier.dart" />
+        <option value="$PROJECT_DIR$/lib/supplier/page/MenuPage.dart" />
         <option value="$PROJECT_DIR$/lib/control/interface/screen/TotalIncomeScreen.dart" />
         <option value="$PROJECT_DIR$/lib/control/interface/screen/ManageOrders.dart" />
         <option value="$PROJECT_DIR$/lib/control/interface/screen/ManageUsers.dart" />
@@ -190,14 +190,14 @@
         <option value="$PROJECT_DIR$/lib/drivers/interface/page/OrdersPage.dart" />
         <option value="$PROJECT_DIR$/lib/drivers/interface/tab/TurnWorkTab.dart" />
         <option value="$PROJECT_DIR$/lib/drivers/interface/tab/CalendarTab.dart" />
-        <option value="$PROJECT_DIR$/lib/restaurant/screen/LoginScreen.dart" />
-        <option value="$PROJECT_DIR$/lib/restaurant/screen/HomeScreen.dart" />
+        <option value="$PROJECT_DIR$/lib/supplier/screen/LoginScreen.dart" />
+        <option value="$PROJECT_DIR$/lib/supplier/screen/HomeScreen.dart" />
         <option value="$PROJECT_DIR$/lib/interface/page/ShippingPage.dart" />
         <option value="$PROJECT_DIR$/lib/interface/page/ConfirmPage.dart" />
         <option value="$PROJECT_DIR$/lib/drivers/interface/view/TypeUserOrderView.dart" />
         <option value="$PROJECT_DIR$/lib/drivers/interface/screen/OrderScreen.dart" />
-        <option value="$PROJECT_DIR$/lib/restaurant/page/DetailOrderRestaurantPage.dart" />
-        <option value="$PROJECT_DIR$/lib/restaurant/page/OrdersPage.dart" />
+        <option value="$PROJECT_DIR$/lib/supplier/page/DetailOrderSupplierPage.dart" />
+        <option value="$PROJECT_DIR$/lib/supplier/page/OrdersPage.dart" />
         <option value="$PROJECT_DIR$/lib/drivers/interface/page/DetailOrderPage.dart" />
         <option value="$PROJECT_DIR$/lib/drivers/model/OrderModel.dart" />
         <option value="$PROJECT_DIR$/lib/drivers/interface/page/SubjectOrderPage.dart" />
@@ -484,20 +484,20 @@
               <item name="app" type="b2602c69:ProjectViewProjectNode" />
               <item name="app" type="462c0819:PsiDirectoryNode" />
               <item name="lib" type="462c0819:PsiDirectoryNode" />
-              <item name="restaurant" type="462c0819:PsiDirectoryNode" />
+              <item name="supplier" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="app" type="b2602c69:ProjectViewProjectNode" />
               <item name="app" type="462c0819:PsiDirectoryNode" />
               <item name="lib" type="462c0819:PsiDirectoryNode" />
-              <item name="restaurant" type="462c0819:PsiDirectoryNode" />
+              <item name="supplier" type="462c0819:PsiDirectoryNode" />
               <item name="logic" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="app" type="b2602c69:ProjectViewProjectNode" />
               <item name="app" type="462c0819:PsiDirectoryNode" />
               <item name="lib" type="462c0819:PsiDirectoryNode" />
-              <item name="restaurant" type="462c0819:PsiDirectoryNode" />
+              <item name="supplier" type="462c0819:PsiDirectoryNode" />
               <item name="logic" type="462c0819:PsiDirectoryNode" />
               <item name="bloc" type="462c0819:PsiDirectoryNode" />
             </path>
@@ -505,21 +505,21 @@
               <item name="app" type="b2602c69:ProjectViewProjectNode" />
               <item name="app" type="462c0819:PsiDirectoryNode" />
               <item name="lib" type="462c0819:PsiDirectoryNode" />
-              <item name="restaurant" type="462c0819:PsiDirectoryNode" />
+              <item name="supplier" type="462c0819:PsiDirectoryNode" />
               <item name="page" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="app" type="b2602c69:ProjectViewProjectNode" />
               <item name="app" type="462c0819:PsiDirectoryNode" />
               <item name="lib" type="462c0819:PsiDirectoryNode" />
-              <item name="restaurant" type="462c0819:PsiDirectoryNode" />
+              <item name="supplier" type="462c0819:PsiDirectoryNode" />
               <item name="screen" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="app" type="b2602c69:ProjectViewProjectNode" />
               <item name="app" type="462c0819:PsiDirectoryNode" />
               <item name="lib" type="462c0819:PsiDirectoryNode" />
-              <item name="restaurant" type="462c0819:PsiDirectoryNode" />
+              <item name="supplier" type="462c0819:PsiDirectoryNode" />
               <item name="view" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -556,7 +556,7 @@
     </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/android/app/src/control/res/values" />
-      <recent name="$PROJECT_DIR$/android/app/src/restaurant/res/values" />
+      <recent name="$PROJECT_DIR$/android/app/src/supplier/res/values" />
       <recent name="$PROJECT_DIR$/assets/img" />
     </key>
   </component>
@@ -577,9 +577,9 @@
       <option name="filePath" value="$PROJECT_DIR$/lib/mainDriver.dart" />
       <method v="2" />
     </configuration>
-    <configuration name="mainRestaurant.dart" type="FlutterRunConfigurationType" factoryName="Flutter" singleton="false" nameIsGenerated="true">
+    <configuration name="mainSupplier.dart" type="FlutterRunConfigurationType" factoryName="Flutter" singleton="false" nameIsGenerated="true">
       <option name="additionalArgs" value="--flavor client" />
-      <option name="filePath" value="$PROJECT_DIR$/lib/mainRestaurant.dart" />
+      <option name="filePath" value="$PROJECT_DIR$/lib/mainSupplier.dart" />
       <method v="2" />
     </configuration>
     <recent_temporary>
@@ -644,7 +644,7 @@
     </layout>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/lib/control/interface/screen/ManageSpecificRestaurant.dart">
+    <entry file="file://$PROJECT_DIR$/lib/control/interface/screen/ManageSpecificSupplier.dart">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1230">
           <caret line="109" column="40" selection-start-line="109" selection-start-column="40" selection-end-line="109" selection-end-column="40" />
@@ -654,7 +654,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/restaurant/page/IncomeScreen.dart">
+    <entry file="file://$PROJECT_DIR$/lib/supplier/page/IncomeScreen.dart">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="317">
           <caret line="56" column="53" selection-start-line="56" selection-start-column="53" selection-end-line="56" selection-end-column="53" />
@@ -722,7 +722,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/restaurant/page/MenuPage.dart">
+    <entry file="file://$PROJECT_DIR$/lib/supplier/page/MenuPage.dart">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="172">
           <caret line="361" column="55" selection-start-line="361" selection-start-column="55" selection-end-line="361" selection-end-column="55" />
@@ -821,7 +821,7 @@
       </provider>
     </entry>
     <entry file="file://$USER_HOME$/res_media/flutter/.pub-cache/hosted/pub.dartlang.org/shared_preferences-0.4.3/lib/shared_preferences.dart" />
-    <entry file="file://$PROJECT_DIR$/lib/restaurant/screen/LoginScreen.dart">
+    <entry file="file://$PROJECT_DIR$/lib/supplier/screen/LoginScreen.dart">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="268">
           <caret line="335" column="21" selection-start-line="335" selection-start-column="21" selection-end-line="335" selection-end-column="21" />
@@ -871,7 +871,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/restaurant/screen/HomeScreen.dart">
+    <entry file="file://$PROJECT_DIR$/lib/supplier/screen/HomeScreen.dart">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="121">
           <caret line="190" column="54" lean-forward="true" selection-start-line="190" selection-start-column="54" selection-end-line="190" selection-end-column="54" />
@@ -881,7 +881,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/restaurant/page/OrdersPage.dart">
+    <entry file="file://$PROJECT_DIR$/lib/supplier/page/OrdersPage.dart">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="108">
           <caret line="9" column="18" lean-forward="true" selection-start-line="9" selection-start-column="18" selection-end-line="9" selection-end-column="18" />
@@ -905,7 +905,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/restaurant/page/DetailOrderRestaurantPage.dart">
+    <entry file="file://$PROJECT_DIR$/lib/supplier/page/DetailOrderSupplierPage.dart">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="31">
           <caret line="85" column="32" selection-start-line="85" selection-start-column="32" selection-end-line="85" selection-end-column="32" />
@@ -932,7 +932,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/interface/screen/RestaurantListScreen.dart">
+    <entry file="file://$PROJECT_DIR$/lib/interface/screen/SupplierListScreen.dart">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="222">
           <caret line="204" column="57" lean-forward="true" selection-start-line="204" selection-start-column="57" selection-end-line="204" selection-end-column="57" />
@@ -946,7 +946,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/lib/interface/screen/RestaurantScreen.dart">
+    <entry file="file://$PROJECT_DIR$/lib/interface/screen/SupplierScreen.dart">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2160">
           <caret line="150" column="49" selection-start-line="150" selection-start-column="49" selection-end-line="150" selection-end-column="49" />

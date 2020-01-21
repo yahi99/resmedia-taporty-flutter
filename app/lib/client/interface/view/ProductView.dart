@@ -29,7 +29,7 @@ class ProductView extends StatelessWidget {
           icon: Icons.close,
           onTap: () async {
             final userId = (await UserBloc.of().outUser.first).model.id;
-            cartController.inRemove(model.id, model.restaurantId, userId);
+            cartController.inRemove(model.id, model.supplierId, userId);
           },
         ),
       ],
@@ -112,26 +112,26 @@ class CartStepperButton extends StatelessWidget {
                 child: CircularProgressIndicator(),
               );
             print(snap.data.uid);
-            final product = cart.getProduct(model.id, model.restaurantId, snap.data.uid);
+            final product = cart.getProduct(model.id, model.supplierId, snap.data.uid);
             if (product != null && product.delete) {
               print(product.id + '  ' + product.delete.toString() + '  menu');
-              cartController.inRemove(model.id, model.restaurantId, snap.data.uid);
+              cartController.inRemove(model.id, model.supplierId, snap.data.uid);
             }
             return StepperButton(
               direction: Axis.vertical,
-              child: Text('${cart.getProduct(model.id, model.restaurantId, snap.data.uid)?.quantity ?? 0}'),
+              child: Text('${cart.getProduct(model.id, model.supplierId, snap.data.uid)?.quantity ?? 0}'),
               onDecrease: () {
                 Vibration.vibrate(duration: 65);
-                cartController.inDecrease(model.id, model.restaurantId, snap.data.uid);
+                cartController.inDecrease(model.id, model.supplierId, snap.data.uid);
               },
               onIncrement: () {
-                final prod = cart.getProduct(model.id, model.restaurantId, snap.data.uid);
+                final prod = cart.getProduct(model.id, model.supplierId, snap.data.uid);
                 final count = (prod != null) ? prod.quantity : 0;
                 if (model.maxQuantity != 0 && model.maxQuantity <= count)
                   Toast.show('Limite massimo prodotti', context, duration: 3);
                 else {
                   Vibration.vibrate(duration: 65);
-                  cartController.inIncrement(model.id, model.restaurantId, snap.data.uid, model.price, model.type);
+                  cartController.inIncrement(model.id, model.supplierId, snap.data.uid, model.price, model.type);
                 }
               },
             );

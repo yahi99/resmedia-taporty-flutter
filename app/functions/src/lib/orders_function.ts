@@ -21,7 +21,7 @@ const onOrderCreate = functions.firestore.document('orders/{orderId}').onCreate(
             timestamp: order.creationTimestamp,
         });
 
-        let notificationRef = firestore.collection("restaurants").doc(order.restaurantId).collection("notifications").doc();
+        let notificationRef = firestore.collection("suppliers").doc(order.supplierId).collection("notifications").doc();
         await notificationRef.set({
             oldState: null,
             newState: OrderStates.NEW,
@@ -43,7 +43,7 @@ const onOrderUpdate = functions.firestore.document('orders/{orderId}').onUpdate(
     if (oldOrder.state === newOrder.state)
         return;
 
-    let notificationRef = firestore.collection("restaurants").doc(newOrder.restaurantId).collection("notifications").doc();
+    let notificationRef = firestore.collection("suppliers").doc(newOrder.supplierId).collection("notifications").doc();
 
     if (newOrder.state === OrderStates.ACCEPTED) {
         if (oldOrder.state === OrderStates.MODIFIED) {
@@ -163,7 +163,7 @@ const onOrderCancellationRefund = functions.firestore.document('orders/{orderId}
         newOrder.refund = true;
     }
     else {
-        // If the order had already been accepted, refund the customer only if the restaurant has decided so
+        // If the order had already been accepted, refund the customer only if the supplier has decided so
         if (oldOrder.replied === newOrder.replied || newOrder.replied === false)
             return;
     }

@@ -11,7 +11,7 @@ CartProductModel _$CartProductModelFromJson(Map json) {
     type: json['type'] as String,
     id: json['id'] as String,
     quantity: json['quantity'] as int,
-    restaurantId: json['restaurantId'] as String,
+    supplierId: json['supplierId'] as String,
     userId: json['userId'] as String,
     price: (json['price'] as num)?.toDouble(),
     delete: json['delete'] as bool,
@@ -22,7 +22,7 @@ Map<String, dynamic> _$CartProductModelToJson(CartProductModel instance) =>
     <String, dynamic>{
       'id': instance.id,
       'userId': instance.userId,
-      'restaurantId': instance.restaurantId,
+      'supplierId': instance.supplierId,
       'quantity': instance.quantity,
       'price': instance.price,
       'type': instance.type,

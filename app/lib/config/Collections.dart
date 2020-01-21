@@ -1,6 +1,6 @@
 class Collections {
   static const USERS = 'users';
-  static const RESTAURANTS = 'restaurants';
+  static const SUPPLIERS = 'suppliers';
   static const PRODUCTS = 'products';
   static const TURNS = 'turns';
   static const DAYS = 'days';

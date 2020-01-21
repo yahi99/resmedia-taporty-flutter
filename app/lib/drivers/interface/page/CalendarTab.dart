@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:resmedia_taporty_flutter/common/helper/DateTimeHelper.dart';
-import 'package:resmedia_taporty_flutter/common/logic/bloc/RestaurantsBloc.dart';
+import 'package:resmedia_taporty_flutter/common/logic/bloc/SuppliersBloc.dart';
 import 'package:resmedia_taporty_flutter/common/logic/bloc/UserBloc.dart';
 import 'package:resmedia_taporty_flutter/common/model/ShiftModel.dart';
 import 'package:resmedia_taporty_flutter/common/resources/Database.dart';
@@ -21,7 +21,7 @@ class CalendarTab extends StatefulWidget {
 
 class _CalendarTabState extends State<CalendarTab> with AutomaticKeepAliveClientMixin {
   DateTime _selectedDate;
-  var restaurantsBloc = RestaurantsBloc.of();
+  var suppliersBloc = SuppliersBloc.of();
   var driverBloc = DriverBloc.of();
   var _db = Database();
 
@@ -64,7 +64,7 @@ class _CalendarTabState extends State<CalendarTab> with AutomaticKeepAliveClient
           if (date.compareTo(DateTime.now().subtract(Duration(days: 1))) <= 0 || date.difference(DateTime.now()).inDays > 28) return;
           this.setState(() => _selectedDate = date);
           if (_driverId != null) {
-            restaurantsBloc.fetchAvailableStartTimes(_selectedDate, _driverId);
+            suppliersBloc.fetchAvailableStartTimes(_selectedDate, _driverId);
           }
         },
         height: 400,
@@ -141,7 +141,7 @@ class _CalendarTabState extends State<CalendarTab> with AutomaticKeepAliveClient
           builder: (___, firebaseUserSnapshot) {
             if (firebaseUserSnapshot.hasData) {
               return StreamBuilder<List<DateTime>>(
-                stream: restaurantsBloc.outAvailableStartTimes,
+                stream: suppliersBloc.outAvailableStartTimes,
                 builder: (_, availableShiftListSnapshot) {
                   if (availableShiftListSnapshot.connectionState == ConnectionState.active) {
                     if (availableShiftListSnapshot.hasData && availableShiftListSnapshot.data.length > 0) {
@@ -248,7 +248,7 @@ class _CalendarTabState extends State<CalendarTab> with AutomaticKeepAliveClient
 
                   if (_driverId == null) {
                     _driverId = firebaseUserSnapshot.data.uid;
-                    restaurantsBloc.fetchAvailableStartTimes(_selectedDate, _driverId);
+                    suppliersBloc.fetchAvailableStartTimes(_selectedDate, _driverId);
                   }
 
                   return Container(

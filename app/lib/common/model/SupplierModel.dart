@@ -8,10 +8,10 @@ import 'package:resmedia_taporty_flutter/common/helper/GeopointSerialization.dar
 import 'package:resmedia_taporty_flutter/common/model/HolidayModel.dart';
 import 'package:resmedia_taporty_flutter/common/model/TimetableModel.dart';
 
-part 'RestaurantModel.g.dart';
+part 'SupplierModel.g.dart';
 
 @JsonSerializable(anyMap: true, explicitToJson: true)
-class RestaurantModel extends FirebaseModel {
+class SupplierModel extends FirebaseModel {
   final String name;
   final String description;
   final String imageUrl;
@@ -99,7 +99,7 @@ class RestaurantModel extends FirebaseModel {
       return "Chiuso";
   }
 
-  RestaurantModel({
+  SupplierModel({
     @required String path,
     @required this.name,
     @required this.description,
@@ -119,9 +119,9 @@ class RestaurantModel extends FirebaseModel {
     return (coordinates != null) ? LatLng(coordinates.latitude, coordinates.longitude) : null;
   }
 
-  static RestaurantModel fromJson(Map json) => _$RestaurantModelFromJson(json);
+  static SupplierModel fromJson(Map json) => _$SupplierModelFromJson(json);
 
-  static RestaurantModel fromFirebase(DocumentSnapshot snap) => FirebaseModel.fromFirebase(fromJson, snap);
+  static SupplierModel fromFirebase(DocumentSnapshot snap) => FirebaseModel.fromFirebase(fromJson, snap);
 
-  Map<String, dynamic> toJson() => _$RestaurantModelToJson(this);
+  Map<String, dynamic> toJson() => _$SupplierModelToJson(this);
 }

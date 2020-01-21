@@ -5,13 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:rating_bar/rating_bar.dart';
 import 'package:resmedia_taporty_flutter/client/interface/screen/SeeReviewsScreen.dart';
-import 'package:resmedia_taporty_flutter/common/model/RestaurantModel.dart';
+import 'package:resmedia_taporty_flutter/common/model/SupplierModel.dart';
 
-class InfoRestaurantPage extends StatelessWidget {
-  final RestaurantModel model;
+class InfoSupplierPage extends StatelessWidget {
+  final SupplierModel model;
   final String address;
 
-  InfoRestaurantPage({Key key, @required this.model, @required this.address}) : super(key: key);
+  InfoSupplierPage({Key key, @required this.model, @required this.address}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

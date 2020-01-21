@@ -17,18 +17,18 @@ class CartStorage extends CartModel {
         super(products: products);
 
   @override
-  bool increment(String id, String restaurantId, String userId, double price, String category) {
-    return _store(super.increment(id, restaurantId, userId, price, category));
+  bool increment(String id, String supplierId, String userId, double price, String category) {
+    return _store(super.increment(id, supplierId, userId, price, category));
   }
 
   @override
-  bool decrease(String id, String restaurantId, String userId) {
-    return _store(super.decrease(id, restaurantId, userId));
+  bool decrease(String id, String supplierId, String userId) {
+    return _store(super.decrease(id, supplierId, userId));
   }
 
   @override
-  bool remove(String id, String restaurantId, String userId) {
-    return _store(super.remove(id, restaurantId, userId));
+  bool remove(String id, String supplierId, String userId) {
+    return _store(super.remove(id, supplierId, userId));
   }
 
   bool _store(bool save) {

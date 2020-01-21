@@ -2,7 +2,6 @@ library easy_widget;
 
 import 'package:flutter/cupertino.dart';
 
-
 export 'src/bar/DefaultTabBarBuilder.dart';
 export 'src/bar/ProgressTapBar.dart';
 export 'src/bar/WidgetTapBar.dart';
@@ -13,7 +12,6 @@ export 'src/decorator/ConnectLineTabIndicator.dart';
 
 export 'src/ext/DropDownField.dart';
 export 'src/ext/LinearLayout.dart';
-export 'src/ext/ListViewSeparated.dart';
 export 'src/ext/SafePage.dart';
 export 'src/ext/SliverListSeparatorDelegate.dart';
 

@@ -4,8 +4,9 @@ import 'package:resmedia_taporty_core/src/config/Assets.dart';
 class LogoView extends StatelessWidget {
   final Widget top;
   final List<Widget> children;
+  final double logoHeight;
 
-  const LogoView({Key key, this.top, @required this.children})
+  const LogoView({Key key, this.top, @required this.children, this.logoHeight = 128})
       : assert(children != null),
         super(key: key);
 
@@ -35,7 +36,10 @@ class LogoView extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 40.0),
-            child: Image.asset(Assets.logo),
+            child: Image.asset(
+              Assets.logo,
+              height: logoHeight,
+            ),
           ),
           SizedBox(
             height: 32,

@@ -34,7 +34,7 @@ class TranslatorController {
   }
 
   final BehaviorSubject<Locale> _localeControl;
-  Observable<Locale> get outLocale => _localeControl.stream;
+  Stream<Locale> get outLocale => _localeControl.stream;
 
   Future<void> inContext(BuildContext context) async {
     if (_loading == LoadingLanguage.FAILED_OR_NOT_START) await inLocale(Localizations.localeOf(context));
@@ -64,7 +64,7 @@ class TranslatorController {
 
 mixin MixinTranslatorController {
   TranslatorController get translatorController;
-  Observable<Locale> get outLocale => translatorController.outLocale;
+  Stream<Locale> get outLocale => translatorController.outLocale;
 
   Future<void> inContext(BuildContext context) {
     return translatorController.inContext(context);

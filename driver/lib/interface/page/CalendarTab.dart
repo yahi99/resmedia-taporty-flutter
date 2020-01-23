@@ -6,6 +6,9 @@ import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart' show C
 import 'package:resmedia_taporty_core/core.dart';
 import 'package:resmedia_taporty_driver/generated/provider.dart';
 import 'package:toast/toast.dart';
+import 'package:resmedia_taporty_driver/blocs/DriverBloc.dart';
+import 'package:resmedia_taporty_driver/blocs/SuppliersBloc.dart';
+import 'package:resmedia_taporty_driver/blocs/UserBloc.dart';
 
 class CalendarTab extends StatefulWidget {
   CalendarTab();

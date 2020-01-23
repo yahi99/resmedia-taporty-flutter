@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:resmedia_taporty_core/core.dart';
+import 'package:resmedia_taporty_driver/blocs/OrderBloc.dart';
 import 'package:resmedia_taporty_driver/generated/provider.dart';
 import 'package:resmedia_taporty_driver/interface/page/CustomerDetailPage.dart';
 import 'package:resmedia_taporty_driver/interface/page/SupplierDetailPage.dart';

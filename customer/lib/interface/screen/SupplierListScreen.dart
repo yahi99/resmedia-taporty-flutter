@@ -4,24 +4,23 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:easy_blocs/easy_blocs.dart';
-import 'package:easy_firebase/easy_firebase.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:meta/meta.dart';
 import 'package:resmedia_taporty_core/core.dart';
+import 'package:resmedia_taporty_customer/blocs/SuppliersBloc.dart';
+import 'package:resmedia_taporty_customer/blocs/UserBloc.dart';
 import 'package:resmedia_taporty_customer/generated/provider.dart';
 import 'package:resmedia_taporty_customer/interface/screen/SupplierScreen.dart';
 import 'package:resmedia_taporty_customer/interface/widget/SearchBar.dart';
 
 class SupplierListScreen extends StatefulWidget {
-  final UserModel user;
   final GeoPoint customerCoordinates;
   final String customerAddress;
-  final bool isAnonymous;
 
-  SupplierListScreen({Key key, @required this.user, @required this.customerCoordinates, @required this.customerAddress, @required this.isAnonymous}) : super(key: key);
+  SupplierListScreen({Key key, @required this.customerCoordinates, @required this.customerAddress}) : super(key: key);
 
   @override
   _SupplierListScreenState createState() => _SupplierListScreenState();
@@ -83,7 +82,6 @@ class _SupplierListScreenState extends State<SupplierListScreen> {
 
   @override
   void dispose() {
-    $Provider.dispose<SuppliersBloc>();
     searchBarStream.close();
     super.dispose();
   }
@@ -122,10 +120,10 @@ class _SupplierListScreenState extends State<SupplierListScreen> {
           searchBarStream: searchBarStream,
         ),
       ),
-      body: CacheStreamBuilder<List<SupplierModel>>(
+      body: StreamBuilder<List<SupplierModel>>(
           stream: _suppliersBloc.outSuppliers,
           builder: (context, AsyncSnapshot<List<SupplierModel>> supplierListSnapshot) {
-            return StreamBuilder<User>(
+            return StreamBuilder<UserModel>(
               stream: $Provider.of<UserBloc>().outUser,
               builder: (context, userSnapshot) {
                 if (!supplierListSnapshot.hasData)
@@ -135,32 +133,16 @@ class _SupplierListScreenState extends State<SupplierListScreen> {
                 return StreamBuilder<String>(
                   stream: searchBarStream.stream,
                   builder: (context, searchBarSnapshot) {
-                    return StreamBuilder(
-                      stream: Database().getUser(userSnapshot.data.userFb),
-                      builder: (context, userModelSnapshot) {
-                        if (supplierListSnapshot.hasData && userSnapshot.hasData && userModelSnapshot.hasData) {
-                          if (userModelSnapshot.data.type != 'user' && userModelSnapshot.data.type != null) {
-                            return RaisedButton(
-                              child: Text('Sei stato disabilitato clicca per fare logout'),
-                              onPressed: () {
-                                $Provider.of<UserBloc>().logout();
-                                LoginHelper().signOut();
-                                Navigator.pushNamedAndRemoveUntil(context, "/login", (Route<dynamic> route) => false);
-                              },
-                            );
-                          }
-
-                          return SingleChildScrollView(
-                            child: Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: _buildSupplierListView(supplierListSnapshot.data, searchBarSnapshot),
-                            ),
-                          );
-                        }
-                        return Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      },
+                    if (supplierListSnapshot.hasData && userSnapshot.hasData) {
+                      return SingleChildScrollView(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: _buildSupplierListView(supplierListSnapshot.data, searchBarSnapshot),
+                        ),
+                      );
+                    }
+                    return Center(
+                      child: CircularProgressIndicator(),
                     );
                   },
                 );

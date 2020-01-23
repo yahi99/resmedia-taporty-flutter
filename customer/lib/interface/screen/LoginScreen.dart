@@ -1,18 +1,13 @@
-import 'dart:async';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:easy_blocs/easy_blocs.dart';
-import 'package:easy_firebase/easy_firebase.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:geocoder/geocoder.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:resmedia_taporty_core/core.dart';
+import 'package:resmedia_taporty_customer/blocs/UserBloc.dart';
 import 'package:resmedia_taporty_customer/generated/provider.dart';
-import 'package:resmedia_taporty_customer/interface/screen/GeolocalizationScreen.dart';
-import 'package:resmedia_taporty_customer/interface/screen/SupplierListScreen.dart';
+import 'package:toast/toast.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -20,181 +15,26 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  bool isVerified;
-  var permission;
+  final userBloc = $Provider.of<UserBloc>();
 
-  final FirebaseSignInBloc _submitBloc = FirebaseSignInBloc.init(controller: $Provider.of<UserBloc>());
-  final _userBloc = $Provider.of<UserBloc>();
+  final TextEditingController _emailController = new TextEditingController();
+  final TextEditingController _passwordController = new TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
-  StreamSubscription registrationLevelSub;
+  static final RegExp emailRegExp = new RegExp(r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$");
 
-  // TODO: Utilizza
-  _showPositionDialog(BuildContext context, bool isAnon) {
-    showDialog(
-      context: context,
-      builder: (_context) {
-        final theme = Theme.of(context);
-        return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
-          content: Wrap(
-            alignment: WrapAlignment.center,
-            runSpacing: 12.0 * 2,
-            children: <Widget>[
-              Column(
-                children: <Widget>[
-                  Text(
-                    "Utilizza posizione corrente?",
-                    style: theme.textTheme.body2,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    //crossAxisAlignment:CrossAxisAlignment.stretch,
-                    children: <Widget>[
-                      RaisedButton(
-                        onPressed: () {
-                          Navigator.pushNamedAndRemoveUntil(context, "/geolocalization", (route) => false);
-                        },
-                        textColor: Colors.white,
-                        color: Colors.red,
-                        child: Text(
-                          "Nega",
-                        ),
-                      ),
-                      RaisedButton(
-                        onPressed: () async {
-                          try {
-                            var position = await Geolocator().getCurrentPosition();
-                            var customerCoordinates = GeoPoint(position.latitude, position.longitude);
-                            var user = (await _userBloc.outUser.first).model;
-                            var customerAddress = (await Geocoder.local.findAddressesFromCoordinates(Coordinates(position.latitude, position.longitude))).first.addressLine;
-                            await Navigator.pushAndRemoveUntil(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => SupplierListScreen(
-                                    isAnonymous: isAnon,
-                                    customerCoordinates: customerCoordinates,
-                                    customerAddress: customerAddress,
-                                    user: user,
-                                  ),
-                                ),
-                                (route) => false);
-                          } catch (e) {}
-                        },
-                        color: Colors.green,
-                        textColor: Colors.white,
-                        child: Text(
-                          "Consenti",
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  _showMailDialog(BuildContext context, FirebaseUser user) {
-    showDialog(
-      context: context,
-      builder: (_context) {
-        final theme = Theme.of(context);
-        return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
-          content: Wrap(
-            alignment: WrapAlignment.center,
-            runSpacing: 12.0 * 2,
-            children: <Widget>[
-              Column(
-                children: <Widget>[
-                  Text(
-                    "Account non confermato, clicca qui sotto per mandare la mail di conferma.",
-                    style: theme.textTheme.body2,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    //crossAxisAlignment:CrossAxisAlignment.stretch,
-                    children: <Widget>[
-                      RaisedButton(
-                        onPressed: () async {
-                          user.sendEmailVerification();
-                          $Provider.of<UserBloc>().logout();
-                          LoginHelper().signOut();
-                          Navigator.pop(context);
-                        },
-                        color: Colors.blue,
-                        textColor: Colors.white,
-                        child: Text(
-                          "Invia",
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  @override
-  void dispose() {
-    FirebaseSignInBloc.close();
-    registrationLevelSub?.cancel();
-    super.dispose();
-  }
-
-  getUser() async {
-    FirebaseUser currentUser = await FirebaseAuth.instance.currentUser();
-
-    if (currentUser == null)
-      return true;
-    else
-      return currentUser;
-  }
+  bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder(
-      stream: PermissionHandler().checkPermissionStatus(PermissionGroup.location).asStream(),
-      builder: (ctx, perm) {
-        return StreamBuilder<FirebaseUser>(
-          stream: FirebaseAuth.instance.onAuthStateChanged,
-          builder: (context, userSnapshot) {
-            print('here');
-            if (userSnapshot.hasData) {
-              if (userSnapshot.data == null) return _buildLoginForm();
-              return StreamBuilder<UserModel>(
-                stream: Database().getUser(userSnapshot.data),
-                builder: (ctx, userId) {
-                  if (userId.hasData && (userId.data.type == null || userId.data.type == 'user')) {
-                    if (userSnapshot.data.isEmailVerified) {
-                      return GeolocalizationScreen();
-                    }
-                    return _buildLoginForm(showConfirmEmail: true, user: userSnapshot.data);
-                  }
-                  return _buildLoginForm();
-                },
-              );
-            }
-
-            return _buildLoginForm();
-          },
-        );
-      },
-    );
+    return _buildLoginForm();
   }
 
-  _buildLoginForm({showConfirmEmail = false, user}) {
+  _buildLoginForm() {
     return Material(
       child: Theme(
         child: Form(
-          key: _submitBloc.formKey,
+          key: _formKey,
           child: LogoView(
             top: FittedBox(
               fit: BoxFit.contain,
@@ -204,38 +44,42 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
             ),
             children: [
-              EmailField(
-                checker: _submitBloc.emailChecker,
+              TextFormField(
+                decoration: InputDecoration(
+                  prefixIcon: const Icon(Icons.email),
+                  hintText: "Email",
+                ),
+                maxLines: 1,
+                keyboardType: TextInputType.emailAddress,
+                validator: (value) => value.isEmpty ? "Email vuota" : emailRegExp.hasMatch(value) ? null : "Email non valida",
+                controller: _emailController,
               ),
               SizedBox(
                 height: 12.0,
               ),
-              PasswordField(
-                checker: _submitBloc.passwordChecker,
+              TextFormField(
+                decoration: InputDecoration(
+                  hintText: "Password",
+                  prefixIcon: const Icon(Icons.lock),
+                ),
+                maxLines: 1,
+                keyboardType: TextInputType.text,
+                validator: (value) => value.isEmpty ? "Password vuota" : value.length < 6 ? "Password troppo corta" : null,
+                controller: _passwordController,
+                obscureText: true,
               ),
-              if (showConfirmEmail)
-                SizedBox(
-                  height: 12.0,
-                ),
-              if (showConfirmEmail)
-                RaisedButton.icon(
-                  onPressed: () {
-                    _showMailDialog(context, user);
-                  },
-                  icon: Icon(Icons.mail),
-                  label: Text('Conferma e-mail'),
-                ),
-              if (showConfirmEmail)
-                SizedBox(
-                  height: 12.0,
-                ),
+              SizedBox(
+                height: 12.0,
+              ),
               Row(
                 children: <Widget>[
                   Expanded(
                     child: RaisedButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, "/signup");
-                      },
+                      onPressed: _isLoading
+                          ? null
+                          : () {
+                              Navigator.pushNamed(context, "/signup");
+                            },
                       child: FittedText('Registrati'),
                     ),
                   ),
@@ -243,13 +87,72 @@ class _LoginScreenState extends State<LoginScreen> {
                     width: 12.0,
                   ),
                   Expanded(
-                    child: SubmitButton.raised(
-                      controller: _submitBloc.submitController,
+                    child: RaisedButton(
+                      onPressed: _isLoading
+                          ? null
+                          : () async {
+                              if (_formKey.currentState.validate()) {
+                                setState(() {
+                                  _isLoading = true;
+                                });
+                                try {
+                                  await userBloc.signInWithEmailAndPassword(_emailController.text, _passwordController.text);
+                                  Navigator.popAndPushNamed(context, "/geolocalization");
+                                } on NotACustomerException catch (err) {
+                                  print(err);
+                                  Toast.show("Non sei un cliente", context);
+                                } catch (err) {
+                                  if (err.code == "ERROR_INVALID_EMAIL")
+                                    Toast.show("Email invalida", context);
+                                  else if (err.code == "ERROR_WRONG_PASSWORD")
+                                    Toast.show("Password errata", context);
+                                  else if (err.code == "ERROR_USER_NOT_FOUND")
+                                    Toast.show("Account inesistente", context);
+                                  else
+                                    Toast.show("Si è verificato un errore inaspettato", context);
+                                }
+
+                                setState(() {
+                                  _isLoading = false;
+                                });
+                              }
+                            },
                       child: FittedText('Accedi'),
                     ),
                   ),
                 ],
               ),
+              SizedBox(
+                height: 36.0,
+              ),
+              RaisedButton.icon(
+                onPressed: _isLoading
+                    ? null
+                    : () async {
+                        setState(() {
+                          _isLoading = true;
+                        });
+                        try {
+                          var result = await userBloc.signInWithGoogle();
+                          if (result) Navigator.popAndPushNamed(context, "/geolocalization");
+                        } on NotACustomerException catch (err) {
+                          print(err);
+                          Toast.show("Non sei un cliente", context);
+                        } on NotRegisteredException catch (err) {
+                          print(err);
+                          Toast.show("Non sei registrato con questo account", context);
+                        } on PlatformException catch (err) {
+                          if (err.code != "sign_in_canceled") Toast.show("Si è verificato un errore inaspettato", context);
+                        }
+
+                        setState(() {
+                          _isLoading = false;
+                        });
+                      },
+                icon: Icon(FontAwesomeIcons.google),
+                label: Text('Accedi con Google'),
+              ),
+              // TODO: Aggiungere Facebook come metodo di autenticazione
             ],
           ),
         ),

@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:resmedia_taporty_customer/blocs/CartController.dart';
+import 'package:resmedia_taporty_customer/blocs/UserBloc.dart';
 import 'package:resmedia_taporty_customer/interface/widget/StepperButton.dart';
 import 'package:resmedia_taporty_core/core.dart';
 import 'package:resmedia_taporty_customer/generated/provider.dart';
@@ -26,7 +28,7 @@ class ProductView extends StatelessWidget {
           color: Colors.white10,
           icon: Icons.close,
           onTap: () async {
-            final userId = (await $Provider.of<UserBloc>().outUser.first).model.id;
+            final userId = (await $Provider.of<UserBloc>().outFirebaseUser.first).uid;
             cartController.inRemove(model.id, model.supplierId, userId);
           },
         ),

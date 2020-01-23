@@ -6,6 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:resmedia_taporty_core/core.dart';
 import 'package:resmedia_taporty_driver/interface/screen/AccountScreen.dart';
+import 'package:resmedia_taporty_driver/interface/screen/HomeScreen.dart';
 import 'package:resmedia_taporty_driver/interface/screen/LoginScreen.dart';
 
 void main() async {
@@ -115,6 +116,7 @@ class _TaportyState extends State<Taporty> {
       routes: {
         "/login": (context) => LoginScreen(),
         "/account": (context) => AccountScreen(),
+        "/home": (context) => HomeScreen(),
       },
       initialRoute: "/login",
     );

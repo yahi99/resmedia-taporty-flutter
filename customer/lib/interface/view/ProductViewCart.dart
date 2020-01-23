@@ -4,6 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:resmedia_taporty_customer/blocs/CartController.dart';
+import 'package:resmedia_taporty_customer/blocs/UserBloc.dart';
 import 'package:resmedia_taporty_customer/interface/widget/StepperButton.dart';
 import 'package:resmedia_taporty_core/core.dart';
 import 'package:resmedia_taporty_customer/generated/provider.dart';
@@ -24,20 +26,20 @@ class ProductViewCart extends StatelessWidget {
       builder: (_, snapshot) {
         if (!snapshot.hasData) return const SizedBox();
         final cart = snapshot.data;
-        return CacheStreamBuilder<FirebaseUser>(
+        return StreamBuilder<FirebaseUser>(
           stream: user.outFirebaseUser,
-          builder: (context, snap) {
-            if (!snap.hasData)
+          builder: (context, firebaseUserSnapshot) {
+            if (!firebaseUserSnapshot.hasData)
               return Center(
                 child: CircularProgressIndicator(),
               );
-            var temp = snapshot.data.getProduct(model.id, model.supplierId, snap.data.uid);
+            var temp = snapshot.data.getProduct(model.id, model.supplierId, firebaseUserSnapshot.data.uid);
             if (temp == null || temp.quantity == 0) return const SizedBox();
             final theme = Theme.of(context);
-            final product = cart.getProduct(model.id, model.supplierId, snap.data.uid);
+            final product = cart.getProduct(model.id, model.supplierId, firebaseUserSnapshot.data.uid);
             if (product != null && product.delete) {
               print(product.id + '  ' + product.delete.toString() + '  cart');
-              cartController.inRemove(model.id, model.supplierId, snap.data.uid);
+              cartController.inRemove(model.id, model.supplierId, firebaseUserSnapshot.data.uid);
             }
             return Slidable(
               actionPane: SlidableDrawerActionPane(),
@@ -47,7 +49,7 @@ class ProductViewCart extends StatelessWidget {
                   color: Colors.white10,
                   icon: Icons.close,
                   onTap: () async {
-                    final userId = (await $Provider.of<UserBloc>().outUser.first).model.id;
+                    final userId = firebaseUserSnapshot.data.uid;
                     cartController.inRemove(model.id, model.supplierId, userId);
                   },
                 ),
@@ -99,14 +101,14 @@ class ProductViewCart extends StatelessWidget {
                       ),
                       StepperButton(
                           direction: Axis.vertical,
-                          child: Text('${cart.getProduct(model.id, model.supplierId, snap.data.uid)?.quantity ?? 0}'),
-                          onDecrease: () => cartController.inDecrease(model.id, model.supplierId, snap.data.uid),
+                          child: Text('${cart.getProduct(model.id, model.supplierId, firebaseUserSnapshot.data.uid)?.quantity ?? 0}'),
+                          onDecrease: () => cartController.inDecrease(model.id, model.supplierId, firebaseUserSnapshot.data.uid),
                           onIncrement: () {
-                            if (model.maxQuantity != 0 && model.maxQuantity <= cart.getProduct(model.id, model.supplierId, snap.data.uid)?.quantity)
+                            if (model.maxQuantity != 0 && model.maxQuantity <= cart.getProduct(model.id, model.supplierId, firebaseUserSnapshot.data.uid)?.quantity)
                               Toast.show("Massima quantità ordinabile raggiunta", context, duration: 3);
                             else {
                               Vibration.vibrate(duration: 65);
-                              cartController.inIncrement(model.id, model.supplierId, snap.data.uid, model.price, model.type);
+                              cartController.inIncrement(model.id, model.supplierId, firebaseUserSnapshot.data.uid, model.price, model.type);
                             }
                           }),
                     ],

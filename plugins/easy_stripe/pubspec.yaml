@@ -15,7 +15,7 @@ dependencies:
   #Otherwise the Android dialog would've looked very nasty.
   stripe_payment: ^0.1.0
 
-  rxdart: any
+  rxdart: ^0.23.1
 
   easy_blocs:
     path: ../easy_blocs

@@ -16,17 +16,24 @@ mixin MixinUserProvider {
     });
   }
 
-  Future<void> updateUserImage(String path, String uid, String previous) async {
-    //TODO: Delete previous image
-    await userCollection.document(uid).updateData({'img': path});
-    if (previous != null) _deleteFile(previous.split('/').last.split('?').first);
+  Future<void> updateProfileImage(String uid, String path) async {
+    await userCollection.document(uid).updateData({'imageUrl': path});
   }
 
-  // TODO: Rivedere
-  String _deleteFile(String path) {
-    final StorageReference ref = FirebaseStorage.instance.ref();
-    ref.child(path).delete();
-    //_path = downloadUrl.toString();
-    return 'ok';
+  Future<void> updateEmail(String uid, String email) async {
+    await userCollection.document(uid).updateData({'email': email});
+  }
+
+  Future<void> updateNominative(String uid, String nominative) async {
+    await userCollection.document(uid).updateData({'nominative': nominative});
+  }
+
+  Future createUser(String uid, String nominative, String email) async {
+    await userCollection.document(uid).setData(
+          UserModel(
+            nominative: nominative,
+            email: email,
+          ).toJson(),
+        );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:resmedia_taporty_core/core.dart';
+import 'package:resmedia_taporty_customer/blocs/UserBloc.dart';
 import 'package:resmedia_taporty_customer/generated/provider.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -12,10 +13,10 @@ class _SettingsState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<User>(
+    return StreamBuilder<UserModel>(
       stream: user.outUser,
-      builder: (ctx, snap) {
-        if (!snap.hasData) return Center(child: CircularProgressIndicator());
+      builder: (ctx, userSnapshot) {
+        if (!userSnapshot.hasData) return Center(child: CircularProgressIndicator());
         return Scaffold(
           appBar: AppBar(
             title: Text("Impostazioni"),
@@ -36,7 +37,7 @@ class _SettingsState extends State<SettingsScreen> {
                       onChanged: (value) {
                         user.updateNotifyEmail(value);
                       },
-                      value: (snap.data.model.notifyEmail == null) ? false : snap.data.model.notifyEmail,
+                      value: (userSnapshot.data.notifyEmail == null) ? false : userSnapshot.data.notifyEmail,
                     ),
                   ],
                 ),
@@ -50,7 +51,7 @@ class _SettingsState extends State<SettingsScreen> {
                       onChanged: (value) {
                         user.updateNotifySms(value);
                       },
-                      value: (snap.data.model.notifyEmail == null) ? false : snap.data.model.notifySms,
+                      value: (userSnapshot.data.notifyEmail == null) ? false : userSnapshot.data.notifySms,
                     ),
                   ],
                 ),
@@ -61,7 +62,7 @@ class _SettingsState extends State<SettingsScreen> {
                       onChanged: (value) {
                         user.updateNotifyApp(value);
                       },
-                      value: (snap.data.model.notifyApp == null) ? false : snap.data.model.notifyApp,
+                      value: (userSnapshot.data.notifyApp == null) ? false : userSnapshot.data.notifyApp,
                     ),
                   ],
                 ),
@@ -77,7 +78,7 @@ class _SettingsState extends State<SettingsScreen> {
                       onChanged: (value) {
                         user.updateOffersEmail(value);
                       },
-                      value: (snap.data.model.offersEmail == null) ? false : snap.data.model.offersEmail,
+                      value: (userSnapshot.data.offersEmail == null) ? false : userSnapshot.data.offersEmail,
                     ),
                   ],
                 ),
@@ -91,7 +92,7 @@ class _SettingsState extends State<SettingsScreen> {
                       onChanged: (value) {
                         user.updateOffersSms(value);
                       },
-                      value: (snap.data.model.offersSms == null) ? false : snap.data.model.offersSms,
+                      value: (userSnapshot.data.offersSms == null) ? false : userSnapshot.data.offersSms,
                     ),
                   ],
                 ),
@@ -102,7 +103,7 @@ class _SettingsState extends State<SettingsScreen> {
                       onChanged: (value) {
                         user.updateOffersApp(value);
                       },
-                      value: (snap.data.model.offersApp == null) ? false : snap.data.model.offersApp,
+                      value: (userSnapshot.data.offersApp == null) ? false : userSnapshot.data.offersApp,
                     ),
                   ],
                 ),

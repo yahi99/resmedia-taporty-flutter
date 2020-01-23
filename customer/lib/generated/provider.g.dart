@@ -39,11 +39,6 @@ class $Provider extends Provider {
           return BlocCache.getBlocInstance(
               "OrderBloc", () => OrderBloc.instance());
         }
-      case DriverBloc:
-        {
-          return BlocCache.getBlocInstance(
-              "DriverBloc", () => DriverBloc.instance());
-        }
     }
     return null;
   }
@@ -78,11 +73,6 @@ class $Provider extends Provider {
       case OrderBloc:
         {
           BlocCache.dispose("OrderBloc");
-          break;
-        }
-      case DriverBloc:
-        {
-          BlocCache.dispose("DriverBloc");
           break;
         }
     }

@@ -6,6 +6,7 @@ import 'package:easy_firebase/easy_firebase.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:resmedia_taporty_core/core.dart';
+import 'package:resmedia_taporty_driver/blocs/UserBloc.dart';
 import 'package:resmedia_taporty_driver/generated/provider.dart';
 
 class AccountScreen extends StatelessWidget {

@@ -6,6 +6,7 @@ import 'package:resmedia_taporty_core/core.dart';
 import 'package:resmedia_taporty_driver/generated/provider.dart';
 import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:resmedia_taporty_driver/blocs/OrderBloc.dart';
 
 class CustomerDetailPage extends StatefulWidget {
   final String orderId;

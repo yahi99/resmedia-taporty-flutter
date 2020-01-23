@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:resmedia_taporty_core/core.dart';
+import 'package:resmedia_taporty_customer/blocs/SupplierBloc.dart';
 
 // TODO: Rendi più carino da vedere
 class SupplierReviewListScreen extends StatefulWidget {

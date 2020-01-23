@@ -13,7 +13,6 @@ UserModel _$UserModelFromJson(Map json) {
     imageUrl: json['imageUrl'] as String,
     numberOfReviews: json['numberOfReviews'] as int,
     averageReviews: (json['averageReviews'] as num)?.toDouble(),
-    type: json['type'] as String,
     nominative: json['nominative'] as String,
     email: json['email'] as String,
     phoneNumber: json['phoneNumber'] as String,
@@ -52,7 +51,6 @@ Map<String, dynamic> _$UserModelToJson(UserModel instance) {
   writeNotNull('offersEmail', instance.offersEmail);
   writeNotNull('offersSms', instance.offersSms);
   writeNotNull('offersApp', instance.offersApp);
-  writeNotNull('type', instance.type);
   writeNotNull('coordinates', geopointToJson(instance.coordinates));
   writeNotNull('address', instance.address);
   writeNotNull('deliveryRadius', instance.deliveryRadius);

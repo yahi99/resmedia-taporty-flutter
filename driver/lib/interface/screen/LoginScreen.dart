@@ -4,7 +4,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:resmedia_taporty_driver/interface/screen/HomeScreen.dart';
+import 'package:resmedia_taporty_driver/blocs/DriverBloc.dart';
+import 'package:resmedia_taporty_driver/blocs/OrderBloc.dart';
+import 'package:resmedia_taporty_driver/blocs/UserBloc.dart';
 import 'package:resmedia_taporty_core/core.dart';
 import 'package:resmedia_taporty_driver/generated/provider.dart';
 
@@ -14,42 +16,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  static const ROUTE = "LoginScreen";
-
-  String get route => ROUTE;
-
-  //static final FacebookLogin facebookSignIn = FacebookLogin();
-
-  //my code
-  //final FirebaseAuth _fAuth = FirebaseAuth.instance;
-  //end my code
-
   final FirebaseSignInBloc _submitBloc = FirebaseSignInBloc.init(controller: $Provider.of<UserBloc>());
-
-  //StreamSubscription registrationLevelSub;
-
-  /*void _signIn(BuildContext context) async {
-    var facebookLogin=FacebookLogin();
-    var result= await facebookLogin.logInWithReadPermissions(['email','public_profile']);
-    FirebaseUser firebaseUser;
-    switch(result.status){
-      case FacebookLoginStatus.loggedIn:
-        FacebookAccessToken myToken = result.accessToken;
-        AuthCredential credential =
-        FacebookAuthProvider.getCredential(accessToken: myToken.token);
-        firebaseUser =
-        await FirebaseAuth.instance.signInWithCredential(credential);
-        print('Done');
-        print(firebaseUser.toString());
-        break;
-      case FacebookLoginStatus.cancelledByUser:
-        print('Cancelled by user');
-        break;
-      case FacebookLoginStatus.error:
-        print('Error');
-        break;
-    }
-  }*/
 
   Future<void> setDriver(String uid) async {
     final userBloc = $Provider.of<UserBloc>();
@@ -113,7 +80,7 @@ class _LoginScreenState extends State<LoginScreen> {
             builder: (ctx, userId) {
               if (userId.hasData && userId.data.type == 'driver') {
                 setDriver(userId.data.id);
-                return HomeScreenDriver();
+                Navigator.popAndPushNamed(context, "/home");
               }
               return Material(
                 child: Form(
@@ -138,17 +105,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       Row(
                         children: <Widget>[
-                          /*Expanded(
-                  child: RaisedButton(
-                    onPressed: () {
-                      EasyRouter.push(context, SignUpScreen());
-                    },
-                    child: FittedText('Sign up'),
-                  ),
-                ),
-                SizedBox(
-                  width: SPACE,
-                ),*/
                           Expanded(
                             child: SubmitButton.raised(
                               controller: _submitBloc.submitController,
@@ -187,17 +143,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 Row(
                   children: <Widget>[
-                    /*Expanded(
-                  child: RaisedButton(
-                    onPressed: () {
-                      EasyRouter.push(context, SignUpScreen());
-                    },
-                    child: FittedText('Sign up'),
-                  ),
-                ),
-                SizedBox(
-                  width: SPACE,
-                ),*/
                     Expanded(
                       child: SubmitButton.raised(
                         controller: _submitBloc.submitController,

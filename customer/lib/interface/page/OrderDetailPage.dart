@@ -5,9 +5,9 @@ import 'package:intl/intl.dart';
 import 'package:rating_bar/rating_bar.dart';
 import 'package:resmedia_taporty_core/core.dart';
 import 'package:resmedia_taporty_customer/generated/provider.dart';
+import 'package:resmedia_taporty_customer/interface/page/OrderCartPage.dart';
 import 'package:toast/toast.dart';
-
-import 'OrderCartPage.dart';
+import 'package:resmedia_taporty_customer/blocs/OrderBloc.dart';
 
 class OrderDetailPage extends StatefulWidget {
   final String orderId;

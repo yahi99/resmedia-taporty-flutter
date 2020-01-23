@@ -1,14 +1,5 @@
 export 'src/app_localization.dart';
 
-// Blocs
-export 'src/blocs/OrderBloc.dart';
-export 'src/blocs/SupplierBloc.dart';
-export 'src/blocs/SuppliersBloc.dart';
-export 'src/blocs/UserBloc.dart';
-export 'src/blocs/CartBloc.dart';
-export 'src/blocs/CartController.dart';
-export 'src/blocs/DriverBloc.dart';
-
 // Configs
 export 'src/config/Assets.dart';
 export 'src/config/Collections.dart';
@@ -20,6 +11,7 @@ export 'src/helper/DateTimeHelper.dart';
 export 'src/helper/DateTimeSerialization.dart';
 export 'src/helper/DistanceHelper.dart';
 export 'src/helper/GeopointSerialization.dart';
+export 'src/helper/Categorized.dart';
 
 // Models
 export 'src/models/CartModel.dart';
@@ -39,6 +31,8 @@ export 'src/models/UserModel.dart';
 
 // Resources
 export 'src/resources/Database.dart';
+export 'src/resources/Storage.dart';
+export 'src/resources/Auth.dart';
 
 // Widgets
 export 'src/widgets/FittedText.dart';

@@ -3,6 +3,9 @@ import 'package:easy_firebase/easy_firebase.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:resmedia_taporty_core/core.dart';
+import 'package:resmedia_taporty_customer/blocs/CartBloc.dart';
+import 'package:resmedia_taporty_customer/blocs/SupplierBloc.dart';
+import 'package:resmedia_taporty_customer/blocs/UserBloc.dart';
 import 'package:resmedia_taporty_customer/generated/provider.dart';
 import 'package:resmedia_taporty_customer/interface/page/InfoSupplierPage.dart';
 import 'package:resmedia_taporty_customer/interface/page/MenuPages.dart';
@@ -21,13 +24,6 @@ class SupplierScreen extends StatefulWidget {
 
 class _SupplierScreenState extends State<SupplierScreen> {
   final double iconSize = 32;
-
-  @override
-  void dispose() {
-    $Provider.dispose<SupplierBloc>();
-    $Provider.dispose<CartBloc>();
-    super.dispose();
-  }
 
   @override
   void initState() {
@@ -51,7 +47,7 @@ class _SupplierScreenState extends State<SupplierScreen> {
             StreamBuilder<CartModel>(
               stream: $Provider.of<CartBloc>().outCart,
               builder: (context, AsyncSnapshot<CartModel> cartSnapshot) {
-                return StreamBuilder<User>(
+                return StreamBuilder<UserModel>(
                   stream: $Provider.of<UserBloc>().outUser,
                   builder: (context, userSnapshot) {
                     return StreamBuilder<List<ProductModel>>(
@@ -59,9 +55,10 @@ class _SupplierScreenState extends State<SupplierScreen> {
                         builder: (context, AsyncSnapshot<List<ProductModel>> productListSnapshot) {
                           if (cartSnapshot.hasData && userSnapshot.hasData && productListSnapshot.hasData) {
                             productCartList.clear();
+                            var user = userSnapshot.data;
                             for (int i = 0; i < productListSnapshot.data.length; i++) {
                               var temp = productListSnapshot.data.elementAt(i);
-                              var find = cartSnapshot.data.getProduct(temp.id, temp.supplierId, userSnapshot.data.model.id);
+                              var find = cartSnapshot.data.getProduct(temp.id, temp.supplierId, user.id);
                               if (find != null && find.quantity > 0) {
                                 productCartList.add(find);
                               }
@@ -127,7 +124,7 @@ class _SupplierScreenState extends State<SupplierScreen> {
             )
           ]),
         ),
-        body: StreamBuilder<User>(
+        body: StreamBuilder<UserModel>(
           stream: $Provider.of<UserBloc>().outUser,
           builder: (context, user) {
             if (!user.hasData)
@@ -136,39 +133,26 @@ class _SupplierScreenState extends State<SupplierScreen> {
               );
             return StreamBuilder<SupplierModel>(
               stream: SupplierBloc.init(supplierId: widget.supplier.id).outSupplier,
-              builder: (context, rest) {
-                return StreamBuilder(
-                    stream: Database().getUser(user.data.userFb),
-                    builder: (context, model) {
-                      if (user.hasData && rest.hasData && model.hasData) {
-                        if (model.data.type != 'user' && model.data.type != null) {
-                          return RaisedButton(
-                            child: Text('Sei stato disabilitato clicca per fare logout'),
-                            onPressed: () {
-                              $Provider.of<UserBloc>().logout();
-                              LoginHelper().signOut();
-                              Navigator.pushNamedAndRemoveUntil(context, "/login", (Route<dynamic> route) => false);
-                            },
-                          );
-                        }
-                        if (rest.data.isDisabled != null && rest.data.isDisabled) {
-                          return Padding(
-                            child: Text('Ristorante non abilitato scegline un\'altro'),
-                            padding: EdgeInsets.all(8.0),
-                          );
-                        }
-                        return TabBarView(
-                          children: <Widget>[
-                            InfoSupplierPage(model: widget.supplier, address: widget.supplier.address),
-                            FoodPage(model: widget.supplier),
-                            DrinkPage(model: widget.supplier),
-                          ],
-                        );
-                      }
-                      return Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    });
+              builder: (context, supplierSnapshot) {
+                if (user.hasData && supplierSnapshot.hasData) {
+                  // TODO: Rivedi la disabilitazione dei fornitori
+                  if (supplierSnapshot.data.isDisabled != null && supplierSnapshot.data.isDisabled) {
+                    return Padding(
+                      child: Text('Fornitore non abilitato scegline un\'altro'),
+                      padding: EdgeInsets.all(8.0),
+                    );
+                  }
+                  return TabBarView(
+                    children: <Widget>[
+                      InfoSupplierPage(model: widget.supplier, address: widget.supplier.address),
+                      FoodPage(model: widget.supplier),
+                      DrinkPage(model: widget.supplier),
+                    ],
+                  );
+                }
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
               },
             );
           },
@@ -206,7 +190,7 @@ class _SupplierScreenState extends State<SupplierScreen> {
         MaterialPageRoute(
           builder: (context) => CheckoutScreen(
             supplier: widget.supplier,
-            user: user.model,
+            user: user,
             customerCoordinates: widget.customerCoordinates,
             customerAddress: widget.customerAddress,
           ),

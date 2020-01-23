@@ -7,6 +7,7 @@ import 'package:resmedia_taporty_core/src/helper/GeopointSerialization.dart';
 
 part 'UserModel.g.dart';
 
+// TODO: Separa User dal Driver e elimina l'estensione a UserFirebaseModel
 @JsonSerializable(anyMap: true, explicitToJson: true, includeIfNull: false)
 class UserModel extends UserFirebaseModel {
   final String nominative;
@@ -21,8 +22,6 @@ class UserModel extends UserFirebaseModel {
   final bool offersEmail;
   final bool offersSms;
   final bool offersApp;
-  // TODO: Usare i custom claims per rappresentare il ruolo di un utente
-  final String type;
 
   // Driver specific values
   @JsonKey(fromJson: geopointFromJson, toJson: geopointToJson)
@@ -36,7 +35,6 @@ class UserModel extends UserFirebaseModel {
     this.imageUrl,
     this.numberOfReviews,
     this.averageReviews,
-    this.type,
     this.nominative,
     this.email,
     this.phoneNumber,

@@ -2,10 +2,11 @@ import 'package:easy_stripe/easy_stripe.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
-import 'package:resmedia_taporty_core/core.dart';
+import 'package:resmedia_taporty_customer/blocs/StripeBloc.dart';
 import 'package:resmedia_taporty_customer/generated/provider.dart';
 import 'package:resmedia_taporty_customer/interface/screen/CheckoutScreen.dart';
 import 'package:resmedia_taporty_customer/interface/view/BottonButtonBar.dart';
+import 'package:resmedia_taporty_customer/blocs/UserBloc.dart';
 
 class PaymentPage extends StatefulWidget {
   final TabController controller;
@@ -25,8 +26,9 @@ class _PaymentState extends State<PaymentPage> with AutomaticKeepAliveClientMixi
     final theme = Theme.of(context);
     final tt = theme.textTheme;
     var userBloc = $Provider.of<UserBloc>();
+    var stripeBloc = $Provider.of<StripeBloc>();
     return StreamBuilder<StripeSourceModel>(
-      stream: userBloc.stripeManager.outCard,
+      stream: stripeBloc.outSource,
       builder: (ctx, cardSnapshot) {
         if (cardSnapshot.hasData) {
           isValid = true;
@@ -49,7 +51,8 @@ class _PaymentState extends State<PaymentPage> with AutomaticKeepAliveClientMixi
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Text("METODO DI PAGAMENTO", style: tt.subtitle),
-                    Card(
+                    // TODO: Sistemare
+                    /*Card(
                       margin: const EdgeInsets.all(16.0),
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -57,7 +60,7 @@ class _PaymentState extends State<PaymentPage> with AutomaticKeepAliveClientMixi
                           manager: userBloc.stripeManager,
                         ),
                       ),
-                    ),
+                    ),*/
                   ],
                 ),
               ),

@@ -1,7 +1,7 @@
-import 'package:easy_firebase/easy_firebase.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:resmedia_taporty_core/core.dart';
+import 'package:resmedia_taporty_driver/blocs/DriverBloc.dart';
 import 'package:resmedia_taporty_driver/generated/provider.dart';
 import 'package:resmedia_taporty_driver/interface/view/ShiftView.dart';
 import 'package:sticky_headers/sticky_headers/widget.dart';

@@ -8,6 +8,8 @@ import 'package:resmedia_taporty_customer/interface/page/CartPage.dart';
 import 'package:resmedia_taporty_customer/interface/page/ConfirmPage.dart';
 import 'package:resmedia_taporty_customer/interface/page/PaymentPage.dart';
 import 'package:resmedia_taporty_customer/interface/page/ShippingPage.dart';
+import 'package:resmedia_taporty_customer/blocs/SupplierBloc.dart';
+import 'package:resmedia_taporty_customer/blocs/UserBloc.dart';
 
 class CheckoutScreen extends StatefulWidget {
   final SupplierModel supplier;
@@ -97,69 +99,53 @@ class _CheckoutScreenState extends State<CheckoutScreen> with TickerProviderStat
               ),
             ),
           ),
-          child: StreamBuilder<User>(
+          child: StreamBuilder<UserModel>(
             stream: $Provider.of<UserBloc>().outUser,
-            builder: (ctx, user) {
+            builder: (ctx, userSnapshot) {
               return StreamBuilder<SupplierModel>(
                 stream: SupplierBloc.init(supplierId: widget.supplier.id).outSupplier,
-                builder: (ctx, rest) {
-                  if (!user.hasData)
+                builder: (ctx, supplierSnapshot) {
+                  if (!userSnapshot.hasData)
                     return Center(
                       child: CircularProgressIndicator(),
                     );
-                  return StreamBuilder(
-                    stream: Database().getUser(user.data.userFb),
-                    builder: (ctx, model) {
-                      if (user.hasData && rest.hasData && model.hasData) {
-                        if (model.data.type != 'user' && model.data.type != null) {
-                          return RaisedButton(
-                            child: Text('Sei stato disabilitato clicca per fare logout'),
-                            onPressed: () {
-                              $Provider.of<UserBloc>().logout();
-                              LoginHelper().signOut();
-                              Navigator.pushNamedAndRemoveUntil(context, "/login", (Route<dynamic> route) => false);
-                            },
-                          );
-                          //Navigator.pushNamedAndRemoveUntil(context, "/login", (Route<dynamic> route) => false);
-                        }
-                        if (rest.data.isDisabled != null && rest.data.isDisabled) {
-                          return Padding(
-                            child: Text('Ristorante non abilitato scegline un\'altro'),
-                            padding: EdgeInsets.all(8.0),
-                          );
-                        }
-                        return CheckoutScreenInheritedWidget(
-                          child: TabBarView(
-                            controller: controller,
-                            physics: NeverScrollableScrollPhysics(),
-                            children: <Widget>[
-                              CartPage(
-                                supplier: widget.supplier,
-                                controller: controller,
-                              ),
-                              ShippingPage(
-                                user: widget.user,
-                                customerCoordinates: widget.customerCoordinates,
-                                supplier: widget.supplier,
-                                controller: controller,
-                              ),
-                              PaymentPage(
-                                controller,
-                              ),
-                              ConfirmPage(
-                                supplier: widget.supplier,
-                                customerCoordinates: widget.customerCoordinates,
-                                customerAddress: widget.customerAddress,
-                                controller: controller,
-                              ),
-                            ],
-                          ),
-                        );
-                      }
-                      return Center(
-                        child: CircularProgressIndicator(),
+                  if (userSnapshot.hasData && supplierSnapshot.hasData) {
+                    if (supplierSnapshot.data.isDisabled != null && supplierSnapshot.data.isDisabled) {
+                      return Padding(
+                        child: Text('Ristorante non abilitato scegline un\'altro'),
+                        padding: EdgeInsets.all(8.0),
                       );
-                    },
+                    }
+                    return CheckoutScreenInheritedWidget(
+                      child: TabBarView(
+                        controller: controller,
+                        physics: NeverScrollableScrollPhysics(),
+                        children: <Widget>[
+                          CartPage(
+                            supplier: widget.supplier,
+                            controller: controller,
+                          ),
+                          ShippingPage(
+                            user: widget.user,
+                            customerCoordinates: widget.customerCoordinates,
+                            supplier: widget.supplier,
+                            controller: controller,
+                          ),
+                          PaymentPage(
+                            controller,
+                          ),
+                          ConfirmPage(
+                            supplier: widget.supplier,
+                            customerCoordinates: widget.customerCoordinates,
+                            customerAddress: widget.customerAddress,
+                            controller: controller,
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+                  return Center(
+                    child: CircularProgressIndicator(),
                   );
                 },
               );

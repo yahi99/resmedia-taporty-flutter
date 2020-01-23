@@ -67,7 +67,7 @@ class TranslationButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CacheStreamBuilder<Locale>(
+    return StreamBuilder<Locale>(
       stream: translatorBloc.outLocale,
       builder: (context, snapshot) {
         if (!snapshot.hasData) return Container();

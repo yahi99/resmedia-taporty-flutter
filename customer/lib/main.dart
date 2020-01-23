@@ -15,12 +15,7 @@ import 'package:resmedia_taporty_customer/interface/screen/SettingsScreen.dart';
 import 'package:resmedia_taporty_customer/interface/screen/SignupScreen.dart';
 
 void main() {
-  runApp(RepositoryBuilder(
-    backgroundTask: (context, sharedPreferences) async {
-      await AssetHandler.init(context);
-    },
-    builder: (_) => Taporty(),
-  ));
+  runApp(Taporty());
 }
 
 class Taporty extends StatefulWidget {

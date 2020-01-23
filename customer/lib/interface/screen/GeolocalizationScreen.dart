@@ -9,6 +9,7 @@ import 'package:resmedia_taporty_core/core.dart';
 import 'package:resmedia_taporty_customer/generated/provider.dart';
 import 'package:resmedia_taporty_customer/interface/screen/SupplierListScreen.dart';
 import 'package:toast/toast.dart';
+import 'package:resmedia_taporty_customer/blocs/UserBloc.dart';
 
 class GeolocalizationScreen extends StatefulWidget {
   GeolocalizationScreen();
@@ -26,6 +27,7 @@ class _GeolocalizationScreenState extends State<GeolocalizationScreen> {
   TextEditingController _controller = TextEditingController();
 
   var isValid = false;
+  bool _isLoading = false;
   GeoPoint customerCoordinates;
   String customerAddress;
 
@@ -100,25 +102,30 @@ class _GeolocalizationScreenState extends State<GeolocalizationScreen> {
                     FlatButton(
                       child: Icon(Icons.check),
                       color: Colors.blue,
-                      onPressed: () async {
-                        if (isValid) {
-                          var user = (await $Provider.of<UserBloc>().outUser.first).model;
-                          Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => SupplierListScreen(
-                                customerCoordinates: customerCoordinates,
-                                customerAddress: customerAddress,
-                                isAnonymous: false,
-                                user: user,
-                              ),
-                            ),
-                            (Route<dynamic> route) => false,
-                          );
-                        } else {
-                          Toast.show('Inserire un indirizzo valido', context);
-                        }
-                      },
+                      onPressed: _isLoading
+                          ? null
+                          : () async {
+                              if (isValid) {
+                                setState(() {
+                                  _isLoading = true;
+                                });
+                                await Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => SupplierListScreen(
+                                      customerCoordinates: customerCoordinates,
+                                      customerAddress: customerAddress,
+                                    ),
+                                  ),
+                                  (Route<dynamic> route) => false,
+                                );
+                                setState(() {
+                                  _isLoading = false;
+                                });
+                              } else {
+                                Toast.show('Inserire un indirizzo valido', context);
+                              }
+                            },
                     ),
                   ],
                 ),

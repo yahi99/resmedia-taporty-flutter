@@ -1,9 +1,9 @@
 import 'package:easy_blocs/easy_blocs.dart';
-import 'package:easy_firebase/easy_firebase.dart';
+import 'package:resmedia_taporty_core/core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:resmedia_taporty_core/core.dart';
+import 'package:resmedia_taporty_customer/blocs/OrderBloc.dart';
 import 'package:resmedia_taporty_customer/generated/provider.dart';
 import 'package:resmedia_taporty_customer/interface/view/OrderView.dart';
 import 'package:resmedia_taporty_customer/interface/page/OrderDetailPage.dart';
@@ -25,8 +25,8 @@ class OrderListScreenState extends State<OrderListScreen> {
         centerTitle: true,
         actions: <Widget>[],
       ),
-      body: CacheStreamBuilder<List<OrderModel>>(
-        stream: _orderBloc.outUserOrders,
+      body: StreamBuilder<List<OrderModel>>(
+        stream: _orderBloc.outOrders,
         builder: (context, orderListSnapshot) {
           if (orderListSnapshot.connectionState == ConnectionState.active) {
             if (orderListSnapshot.hasData && orderListSnapshot.data.length > 0) {

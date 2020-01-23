@@ -82,7 +82,7 @@ class FirebaseDatabase {
     Iterable<String> documents,
     V fromFirebase(DocumentSnapshot snap),
   ) {
-    return Observable.combineLatestList(
+    return Rx.combineLatestList(
       documents.map((doc) => fs.document(doc).snapshots().map(fromFirebase)),
     );
   }
@@ -92,10 +92,10 @@ class FirebaseDatabase {
     Iterable<String> documents,
     V fromFirebase(DocumentSnapshot snap),
   ) {
-    if (documents.length == 0) return Observable.just([]);
+    if (documents.length == 0) return Stream.value([]);
     assert(collection != null && documents != null && fromFirebase != null);
     assert(documents.every((data) => data != null));
-    return Observable.combineLatestList(
+    return Rx.combineLatestList(
       documents.map((doc) {
         final ref = collection.document(doc);
         return ref.snapshots().map(fromFirebase);

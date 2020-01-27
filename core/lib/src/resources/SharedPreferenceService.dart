@@ -17,9 +17,9 @@ class SharedPreferenceService {
     }
     var cart;
     try {
-      await sp.remove("cart_$customerId$supplierId");
-      cart = CartModel.fromJson(jsonDecode(map));
+      cart = CartModel.fromJson(map);
     } catch (err) {
+      await sp.remove("cart_$customerId$supplierId");
       return CartModel.defaultValue();
     }
 

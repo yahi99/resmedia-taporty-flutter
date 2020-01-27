@@ -113,7 +113,7 @@ class _SupplierScreenState extends State<SupplierScreen> {
             if (supplierSnapshot.hasData) {
               var supplier = supplierSnapshot.data;
               // TODO: Rivedi la disabilitazione dei fornitori
-              if (!!supplier.isDisabled) {
+              if (supplier.isDisabled != null && supplier.isDisabled == true) {
                 return Padding(
                   child: Text('Fornitore non abilitato scegline un\'altro'),
                   padding: EdgeInsets.all(8.0),

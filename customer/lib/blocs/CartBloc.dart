@@ -79,15 +79,21 @@ class CartBloc extends Bloc {
     return true;
   }
 
-  Future increment(String id, double price, String category) async {
+  Future increment(String id) async {
     var cart = await outCart.first;
-    cart.increment(id, price, category);
+    cart.increment(id);
     await _update(cart);
   }
 
   Future decrease(String id) async {
     var cart = await outCart.first;
     cart.decrease(id);
+    await _update(cart);
+  }
+
+  Future add(ProductModel product) async {
+    var cart = await outCart.first;
+    cart.add(product);
     await _update(cart);
   }
 

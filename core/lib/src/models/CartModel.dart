@@ -14,18 +14,21 @@ class CartModel {
 
   CartModel.defaultValue() : this(products: List<CartProductModel>());
 
-  CartModel({this.products: const []}) : assert(products != null);
+  CartModel({this.products: const []}) : assert(products != null) {
+    supplierProducts = List<ProductModel>();
+  }
 
   void updateWithNewProductList(List<ProductModel> newSupplierProducts) {
     supplierProducts.clear();
     for (int i = 0; i < newSupplierProducts.length; i++) {
       var product = newSupplierProducts.elementAt(i);
       var cartProductFound = getProduct(product.id);
-      if (cartProductFound == null || cartProductFound.quantity <= 0) {
-        onRemove(cartProductFound);
-      } else {
-        supplierProducts.add(product);
-      }
+      if (cartProductFound != null && cartProductFound.quantity > 0) supplierProducts.add(product);
+    }
+
+    for (int i = 0; i < products.length; i++) {
+      var supplierProductFound = newSupplierProducts.firstWhere((p) => p.id == products[i].id, orElse: () => null);
+      if (supplierProductFound == null) _onRemove(products[i]);
     }
   }
 
@@ -42,32 +45,41 @@ class CartModel {
     if (product == null) return;
     product = product.decrease();
     if (product.quantity <= 0)
-      onRemove(product);
+      _onRemove(product);
     else
       _update(product);
   }
 
   void remove(String id) {
     var product = getProduct(id);
-    if (product != null) onRemove(product);
+    if (product != null) _onRemove(product);
   }
 
-  void increment(String id, double price, String type) {
+  void add(ProductModel product) {
+    var cartProduct = getProduct(product.id);
+    if (cartProduct == null) _onAdd(product);
+  }
+
+  void increment(String id) {
     final product = getProduct(id);
-    if (product == null)
-      _update(CartProductModel(id: id, quantity: 1, price: price, type: type));
-    else
-      _update(product.increment());
+    assert(product != null);
+
+    _update(product.increment());
   }
 
   void delete(String id) {
     final product = getProduct(id);
-    if (product != null) onRemove(product);
+    if (product != null) _onRemove(product);
   }
 
-  @protected
-  void onRemove(CartProductModel product) {
+  void _onAdd(ProductModel product) {
+    supplierProducts.add(product);
+    products.add(CartProductModel(id: product.id, price: product.price, quantity: 1, type: product.type));
+  }
+
+  void _onRemove(CartProductModel product) {
     products.remove(product);
+    supplierProducts.removeWhere((p) => p.id == product.id);
   }
 
   _update(CartProductModel product) {

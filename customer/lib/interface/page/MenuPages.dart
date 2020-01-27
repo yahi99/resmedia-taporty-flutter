@@ -5,6 +5,7 @@ import 'package:resmedia_taporty_customer/blocs/CartBloc.dart';
 import 'package:resmedia_taporty_customer/blocs/SupplierBloc.dart';
 import 'package:resmedia_taporty_customer/generated/provider.dart';
 import 'package:resmedia_taporty_customer/interface/view/ProductView.dart';
+import 'package:sticky_headers/sticky_headers/widget.dart';
 
 class FoodPage extends StatelessWidget {
   final SupplierModel supplier;
@@ -94,39 +95,34 @@ class GroupsVoid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return CustomScrollView(
-      slivers: children.keys.map<Widget>((group) {
-        final products = children[group];
-        return SliverStickyHeader(
-          overlapsContent: true,
-          header: Container(
-            color: ColorTheme.LIGHT_GREY,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-              child: DefaultTextStyle(
-                style: theme.textTheme.subtitle,
-                child: group,
+    return SingleChildScrollView(
+      child: Column(
+        children: children.keys.map<Widget>((group) {
+          final products = children[group];
+          return StickyHeader(
+            header: Container(
+              width: double.infinity,
+              color: ColorTheme.LIGHT_GREY,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                child: DefaultTextStyle(
+                  style: theme.textTheme.subtitle,
+                  child: group,
+                ),
               ),
             ),
-          ),
-          sliver: SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (context, index) {
-                if (index == 0)
-                  return Padding(
-                    padding: EdgeInsets.only(top: 42.0, bottom: 16.0, left: 16.0, right: 16.0),
-                    child: products[index],
-                  );
-                return Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: products[index],
-                );
-              },
-              childCount: products.length,
+            content: ListView.builder(
+              physics: NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: products.length,
+              itemBuilder: (_, index) => Padding(
+                padding: EdgeInsets.all(16.0),
+                child: products[index],
+              ),
             ),
-          ),
-        );
-      }).toList(),
+          );
+        }).toList(),
+      ),
     );
   }
 }

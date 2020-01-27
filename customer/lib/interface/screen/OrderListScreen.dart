@@ -1,4 +1,3 @@
-import 'package:easy_blocs/easy_blocs.dart';
 import 'package:resmedia_taporty_core/core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

@@ -7,10 +7,9 @@ import 'package:resmedia_taporty_core/core.dart';
 import 'package:resmedia_taporty_customer/interface/screen/SupplierReviewListScreen.dart';
 
 class InfoSupplierPage extends StatelessWidget {
-  final SupplierModel model;
-  final String address;
+  final SupplierModel supplier;
 
-  InfoSupplierPage({Key key, @required this.model, @required this.address}) : super(key: key);
+  InfoSupplierPage({Key key, @required this.supplier}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +22,7 @@ class InfoSupplierPage extends StatelessWidget {
               AspectRatio(
                 aspectRatio: 1.5,
                 child: CachedNetworkImage(
-                  imageUrl: model.imageUrl,
+                  imageUrl: supplier.imageUrl,
                   fit: BoxFit.fitHeight,
                   placeholder: (context, url) => SizedBox(
                     height: 30.0,
@@ -42,31 +41,31 @@ class InfoSupplierPage extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Text(
-                        model.id,
+                        supplier.name,
                         textAlign: TextAlign.center,
                         style: theme.textTheme.headline,
                       ),
                       Text(
-                        address,
+                        supplier.address,
                         textAlign: TextAlign.center,
                         style: theme.textTheme.body1.copyWith(fontSize: 14),
                       ),
-                      if (model.description != null)
+                      if (supplier.description != null)
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
                           child: Text(
-                            model.description,
+                            supplier.description,
                             style: theme.textTheme.subhead,
                           ),
                         ),
-                      if (model.averageReviews != null)
+                      if (supplier.averageReviews != null)
                         Padding(
                           padding: const EdgeInsets.only(left: 8.0),
                           child: InkWell(
                             child: Row(
                               children: <Widget>[
                                 RatingBar.readOnly(
-                                  initialRating: model.averageReviews,
+                                  initialRating: supplier.averageReviews,
                                   filledIcon: Icons.star,
                                   emptyIcon: Icons.star_border,
                                   halfFilledIcon: Icons.star_half,
@@ -76,7 +75,7 @@ class InfoSupplierPage extends StatelessWidget {
                                   halfFilledColor: Colors.yellow,
                                   size: 26,
                                 ),
-                                model.averageReviews != null ? Text(' ' + model.averageReviews.toString()) : Container(),
+                                supplier.averageReviews != null ? Text(' ' + supplier.averageReviews.toString()) : Container(),
                               ],
                             ),
                             onTap: () {
@@ -84,7 +83,7 @@ class InfoSupplierPage extends StatelessWidget {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => SupplierReviewListScreen(
-                                    model: model,
+                                    model: supplier,
                                   ),
                                 ),
                               );
@@ -110,7 +109,7 @@ class InfoSupplierPage extends StatelessWidget {
                     style: theme.textTheme.body1.copyWith(fontSize: 15),
                   ),
                   TextSpan(
-                    text: model.getTimetableString(),
+                    text: supplier.getTimetableString(),
                     style: theme.textTheme.body1.copyWith(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 ],

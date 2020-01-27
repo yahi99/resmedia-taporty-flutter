@@ -10,7 +10,7 @@ import 'package:resmedia_taporty_customer/blocs/UserBloc.dart';
 import 'package:resmedia_taporty_customer/blocs/OrderBloc.dart';
 
 class AccountScreen extends StatelessWidget {
-  final Auth _auth = Auth();
+  final AuthService _auth = AuthService();
 
   @override
   Widget build(BuildContext context) {

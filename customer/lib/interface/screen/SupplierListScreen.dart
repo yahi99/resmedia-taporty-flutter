@@ -3,13 +3,14 @@ import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:easy_blocs/easy_blocs.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:meta/meta.dart';
 import 'package:resmedia_taporty_core/core.dart';
+import 'package:resmedia_taporty_customer/blocs/CartBloc.dart';
+import 'package:resmedia_taporty_customer/blocs/SupplierBloc.dart';
 import 'package:resmedia_taporty_customer/blocs/SuppliersBloc.dart';
 import 'package:resmedia_taporty_customer/blocs/UserBloc.dart';
 import 'package:resmedia_taporty_customer/generated/provider.dart';
@@ -179,13 +180,18 @@ class _SupplierListScreenState extends State<SupplierListScreen> {
                 padding: const EdgeInsets.symmetric(vertical: 4.0),
                 child: InkWell(
                   onTap: () async {
+                    var supplierBloc = $Provider.of<SupplierBloc>();
+                    var cartBloc = $Provider.of<CartBloc>();
+                    var customerId = (await userBloc.outUser.first).id;
+                    supplierBloc.loadSupplierStreams(supplierList[index].id);
+                    await cartBloc.loadCart(customerId, supplierList[index].id);
+
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => SupplierScreen(
                           customerCoordinates: widget.customerCoordinates,
                           customerAddress: widget.customerAddress,
-                          supplier: supplierList[index],
                         ),
                       ),
                     );

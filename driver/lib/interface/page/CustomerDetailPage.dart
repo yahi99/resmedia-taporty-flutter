@@ -18,7 +18,7 @@ class CustomerDetailPage extends StatefulWidget {
 }
 
 class _CustomerDetailPageState extends State<CustomerDetailPage> {
-  final _db = Database();
+  final _db = DatabaseService();
   final _orderBloc = $Provider.of<OrderBloc>();
 
   void _askPermission() async {

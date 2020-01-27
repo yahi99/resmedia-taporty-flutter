@@ -1,81 +1,73 @@
 import 'package:flutter/cupertino.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:resmedia_taporty_core/core.dart';
 import 'package:resmedia_taporty_core/src/models/CartProductModel.dart';
 
 part 'CartModel.g.dart';
 
-// TODO: Rimuovi l'utilizzo dei metodi getTotalItems e getTotalPrice in quanto non è detto che i prodotti salvati nello storage siano ancora presenti nel database
 @JsonSerializable(anyMap: true, explicitToJson: true)
 class CartModel {
   final List<CartProductModel> products;
 
-  const CartModel({this.products: const []}) : assert(products != null);
+  @JsonKey(ignore: true)
+  List<ProductModel> supplierProducts;
 
-  CartProductModel getProduct(String id, String supplierId, String userId) {
-    return products.firstWhere((item) => item.id == id && item.supplierId == supplierId && item.userId == userId, orElse: () => null);
+  CartModel.defaultValue() : this(products: List<CartProductModel>());
+
+  CartModel({this.products: const []}) : assert(products != null);
+
+  void updateWithNewProductList(List<ProductModel> newSupplierProducts) {
+    supplierProducts.clear();
+    for (int i = 0; i < newSupplierProducts.length; i++) {
+      var product = newSupplierProducts.elementAt(i);
+      var cartProductFound = getProduct(product.id);
+      if (cartProductFound == null || cartProductFound.quantity <= 0) {
+        onRemove(cartProductFound);
+      } else {
+        supplierProducts.add(product);
+      }
+    }
   }
 
-  int getTotalItems(List<CartProductModel> products) {
-    return products.fold(0, (price, product) => price + product.quantity);
+  int get totalItems => products.fold(0, (_prev, p) => _prev + p.quantity);
+
+  double get totalPrice => products.fold(0, (_prev, p) => _prev + p.totalPrice);
+
+  CartProductModel getProduct(String id) {
+    return products.firstWhere((item) => item.id == id, orElse: () => null);
   }
 
-  double getPrice(String id, double price, String supplierId, String userId) => (price * getProduct(id, supplierId, userId).quantity.toDouble());
-
-  double getTotalPrice(List<CartProductModel> products, String uid, String supplierId) {
-    return products.fold(0, (price, product) => price + ((getProduct(product.id, supplierId, uid) == product) ? getPrice(product.id, product.price, product.supplierId, product.userId) : 0));
-  }
-
-  bool increment(String id, String supplierId, String userId, double price, String type) {
-    final product = getProduct(id, supplierId, userId);
-    return product == null ? onInsert(CartProductModel(id: id, quantity: 1, supplierId: supplierId, userId: userId, price: price, type: type)) : onIncrement(product.increment());
-  }
-
-  bool delete(String id, String restId, String uid) {
-    final product = getProduct(id, restId, uid);
-    return product == null ? false : onDelete(product.deleteItem(true));
-  }
-
-  @protected
-  bool onInsert(CartProductModel product) {
-    _update(product);
-    return true;
-  }
-
-  @protected
-  bool onIncrement(CartProductModel product) {
-    _update(product);
-    return true;
-  }
-
-  @protected
-  bool onDelete(CartProductModel product) {
-    _update(product);
-    return true;
-  }
-
-  bool decrease(String id, String supplierId, String userId) {
-    var product = getProduct(id, supplierId, userId);
-    if (product == null) return false;
+  void decrease(String id) {
+    var product = getProduct(id);
+    if (product == null) return;
     product = product.decrease();
-    return product.quantity <= 0 ? onRemove(product) : onDecrease(product);
+    if (product.quantity <= 0)
+      onRemove(product);
+    else
+      _update(product);
   }
 
-  bool remove(String id, String supplierId, String userId) {
-    var product = getProduct(id, supplierId, userId);
-    if (product == null) return false;
-    return onRemove(product);
+  void remove(String id) {
+    var product = getProduct(id);
+    if (product != null) onRemove(product);
+  }
+
+  void increment(String id, double price, String type) {
+    final product = getProduct(id);
+    if (product == null)
+      _update(CartProductModel(id: id, quantity: 1, price: price, type: type));
+    else
+      _update(product.increment());
+  }
+
+  void delete(String id) {
+    final product = getProduct(id);
+    if (product != null) onRemove(product);
   }
 
   @protected
-  bool onDecrease(CartProductModel product) {
-    _update(product);
-    return true;
-  }
-
-  @protected
-  bool onRemove(CartProductModel product) {
+  void onRemove(CartProductModel product) {
     products.remove(product);
-    return true;
   }
 
   _update(CartProductModel product) {
@@ -84,7 +76,6 @@ class CartModel {
     products.add(product);
   }
 
-  Iterable<String> get idProducts => products.map((prod) => prod.id);
   static CartModel fromJson(Map json) => _$CartModelFromJson(json);
   Map<String, dynamic> toJson() => _$CartModelToJson(this);
 }

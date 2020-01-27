@@ -6,10 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:resmedia_taporty_core/core.dart';
-import 'package:resmedia_taporty_customer/generated/provider.dart';
 import 'package:resmedia_taporty_customer/interface/screen/SupplierListScreen.dart';
 import 'package:toast/toast.dart';
-import 'package:resmedia_taporty_customer/blocs/UserBloc.dart';
 
 class GeolocalizationScreen extends StatefulWidget {
   GeolocalizationScreen();

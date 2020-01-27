@@ -1,14 +1,12 @@
-import 'package:easy_blocs/easy_blocs.dart';
-import 'package:easy_firebase/easy_firebase.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:resmedia_taporty_driver/blocs/DriverBloc.dart';
 import 'package:resmedia_taporty_driver/blocs/OrderBloc.dart';
-import 'package:resmedia_taporty_driver/blocs/UserBloc.dart';
 import 'package:resmedia_taporty_core/core.dart';
+import 'package:resmedia_taporty_driver/blocs/ShiftBloc.dart';
 import 'package:resmedia_taporty_driver/generated/provider.dart';
+import 'package:toast/toast.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -16,146 +14,114 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final FirebaseSignInBloc _submitBloc = FirebaseSignInBloc.init(controller: $Provider.of<UserBloc>());
+  final driverBloc = $Provider.of<DriverBloc>();
+
+  final TextEditingController _emailController = new TextEditingController();
+  final TextEditingController _passwordController = new TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+
+  static final RegExp emailRegExp = new RegExp(r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$");
+
+  bool _isLoading = false;
 
   Future<void> setDriver(String uid) async {
-    final userBloc = $Provider.of<UserBloc>();
+    final userBloc = $Provider.of<DriverBloc>();
     final orderBloc = $Provider.of<OrderBloc>();
     await orderBloc.setDriverStream((await userBloc.outFirebaseUser.first).uid);
-    final driverBloc = $Provider.of<DriverBloc>();
-    await driverBloc.setDriverStream((await userBloc.outFirebaseUser.first).uid);
-  }
-
-  @override
-  void dispose() {
-    FirebaseSignInBloc.close();
-    //registrationLevelSub?.cancel();
-    super.dispose();
+    final shiftBloc = $Provider.of<ShiftBloc>();
+    await shiftBloc.setDriverStream((await userBloc.outFirebaseUser.first).uid);
   }
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<FirebaseUser>(
-      stream: FirebaseAuth.instance.onAuthStateChanged,
-      builder: (ctx, userSnapshot) {
-        if (userSnapshot.hasData) {
-          if (userSnapshot.data == null)
-            return Material(
-              child: Form(
-                key: _submitBloc.formKey,
-                child: LogoView(
-                  top: FittedBox(
-                    fit: BoxFit.contain,
-                    child: Icon(
-                      Icons.lock_outline,
-                      color: Colors.white,
-                    ),
-                  ),
-                  children: [
-                    EmailField(
-                      checker: _submitBloc.emailChecker,
-                    ),
-                    SizedBox(
-                      height: 12.0,
-                    ),
-                    PasswordField(
-                      checker: _submitBloc.passwordChecker,
-                    ),
-                    Row(
-                      children: <Widget>[
-                        Expanded(
-                          child: SubmitButton.raised(
-                            controller: _submitBloc.submitController,
-                            child: FittedText('Accedi'),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+    return _buildLoginForm();
+  }
+
+  _buildLoginForm() {
+    return Material(
+      child: Theme(
+        child: Form(
+          key: _formKey,
+          child: LogoView(
+            top: FittedBox(
+              fit: BoxFit.contain,
+              child: Icon(
+                Icons.lock_outline,
+                color: Colors.white,
               ),
-            );
-          return StreamBuilder<UserModel>(
-            stream: Database().getUser(userSnapshot.data),
-            builder: (ctx, userId) {
-              if (userId.hasData && userId.data.type == 'driver') {
-                setDriver(userId.data.id);
-                Navigator.popAndPushNamed(context, "/home");
-              }
-              return Material(
-                child: Form(
-                  key: _submitBloc.formKey,
-                  child: LogoView(
-                    top: FittedBox(
-                      fit: BoxFit.contain,
-                      child: Icon(
-                        Icons.lock_outline,
-                        color: Colors.white,
-                      ),
-                    ),
-                    children: [
-                      EmailField(
-                        checker: _submitBloc.emailChecker,
-                      ),
-                      SizedBox(
-                        height: 12.0,
-                      ),
-                      PasswordField(
-                        checker: _submitBloc.passwordChecker,
-                      ),
-                      Row(
-                        children: <Widget>[
-                          Expanded(
-                            child: SubmitButton.raised(
-                              controller: _submitBloc.submitController,
-                              child: FittedText('Accedi'),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            },
-          );
-        }
-        return Material(
-          child: Form(
-            key: _submitBloc.formKey,
-            child: LogoView(
-              top: FittedBox(
-                fit: BoxFit.contain,
-                child: Icon(
-                  Icons.lock_outline,
-                  color: Colors.white,
-                ),
-              ),
-              children: [
-                EmailField(
-                  checker: _submitBloc.emailChecker,
-                ),
-                SizedBox(
-                  height: 12.0,
-                ),
-                PasswordField(
-                  checker: _submitBloc.passwordChecker,
-                ),
-                Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: SubmitButton.raised(
-                        controller: _submitBloc.submitController,
-                        child: FittedText('Accedi'),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
             ),
+            children: [
+              TextFormField(
+                decoration: InputDecoration(
+                  prefixIcon: const Icon(Icons.email),
+                  hintText: "Email",
+                ),
+                maxLines: 1,
+                keyboardType: TextInputType.emailAddress,
+                validator: (value) => value.isEmpty ? "Email vuota" : emailRegExp.hasMatch(value) ? null : "Email non valida",
+                controller: _emailController,
+              ),
+              SizedBox(
+                height: 12.0,
+              ),
+              TextFormField(
+                decoration: InputDecoration(
+                  hintText: "Password",
+                  prefixIcon: const Icon(Icons.lock),
+                ),
+                maxLines: 1,
+                keyboardType: TextInputType.text,
+                validator: (value) => value.isEmpty ? "Password vuota" : value.length < 6 ? "Password troppo corta" : null,
+                controller: _passwordController,
+                obscureText: true,
+              ),
+              SizedBox(
+                height: 12.0,
+              ),
+              Row(
+                children: <Widget>[
+                  Expanded(
+                    child: RaisedButton(
+                      onPressed: _isLoading
+                          ? null
+                          : () async {
+                              if (_formKey.currentState.validate()) {
+                                setState(() {
+                                  _isLoading = true;
+                                });
+                                try {
+                                  var authResult = await driverBloc.signInWithEmailAndPassword(_emailController.text, _passwordController.text);
+                                  await setDriver(authResult.user.uid);
+                                  Navigator.popAndPushNamed(context, "/home");
+                                } on NotADriverException catch (err) {
+                                  print(err);
+                                  Toast.show("Non sei un fattorino", context);
+                                } catch (err) {
+                                  if (err.code == "ERROR_INVALID_EMAIL")
+                                    Toast.show("Email invalida", context);
+                                  else if (err.code == "ERROR_WRONG_PASSWORD")
+                                    Toast.show("Password errata", context);
+                                  else if (err.code == "ERROR_USER_NOT_FOUND")
+                                    Toast.show("Account inesistente", context);
+                                  else
+                                    Toast.show("Si è verificato un errore inaspettato", context);
+                                }
+
+                                setState(() {
+                                  _isLoading = false;
+                                });
+                              }
+                            },
+                      child: FittedText('Accedi'),
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
-        );
-      },
+        ),
+        data: Theme.of(context).copyWith(unselectedWidgetColor: Colors.white),
+      ),
     );
   }
 }

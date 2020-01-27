@@ -6,7 +6,7 @@ import 'package:toast/toast.dart';
 
 class ShiftView extends StatelessWidget {
   final ShiftModel shift;
-  final Database _db = Database();
+  final DatabaseService _db = DatabaseService();
 
   ShiftView({Key key, @required this.shift}) : super(key: key);
 

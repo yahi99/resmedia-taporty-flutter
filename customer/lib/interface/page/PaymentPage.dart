@@ -25,7 +25,6 @@ class _PaymentState extends State<PaymentPage> with AutomaticKeepAliveClientMixi
     var cardId;
     final theme = Theme.of(context);
     final tt = theme.textTheme;
-    var userBloc = $Provider.of<UserBloc>();
     var stripeBloc = $Provider.of<StripeBloc>();
     return StreamBuilder<StripeSourceModel>(
       stream: stripeBloc.outSource,

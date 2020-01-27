@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:resmedia_taporty_core/core.dart';
 import 'package:resmedia_taporty_driver/blocs/DriverBloc.dart';
+import 'package:resmedia_taporty_driver/blocs/ShiftBloc.dart';
 import 'package:resmedia_taporty_driver/generated/provider.dart';
 import 'package:resmedia_taporty_driver/interface/view/ShiftView.dart';
 import 'package:sticky_headers/sticky_headers/widget.dart';
@@ -15,6 +16,8 @@ class ReservedShiftTab extends StatefulWidget {
 
 class _ReservedShiftTabState extends State<ReservedShiftTab> with AutomaticKeepAliveClientMixin {
   var driverBloc = $Provider.of<DriverBloc>();
+  var shiftBloc = $Provider.of<ShiftBloc>();
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -22,7 +25,7 @@ class _ReservedShiftTabState extends State<ReservedShiftTab> with AutomaticKeepA
     return Scaffold(
       body: SingleChildScrollView(
         child: StreamBuilder<List<ShiftModel>>(
-          stream: driverBloc.outReservedShifts,
+          stream: shiftBloc.outReservedShifts,
           builder: (_, reservedShiftListSnapshot) {
             if (reservedShiftListSnapshot.connectionState == ConnectionState.active) {
               if (reservedShiftListSnapshot.hasData && reservedShiftListSnapshot.data.length > 0) {

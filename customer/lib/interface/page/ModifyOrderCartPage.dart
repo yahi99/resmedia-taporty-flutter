@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:resmedia_taporty_core/core.dart';
+import 'package:resmedia_taporty_customer/generated/provider.dart';
 import 'package:resmedia_taporty_customer/interface/widget/StepperButton.dart';
 import 'package:toast/toast.dart';
 import 'package:vibration/vibration.dart';
@@ -19,7 +20,7 @@ class ModifyOrderCartPage extends StatefulWidget {
 }
 
 class _ModifyOrderCartPageState extends State<ModifyOrderCartPage> {
-  SupplierBloc _restBloc;
+  SupplierBloc supplierBloc = $Provider.of<SupplierBloc>();
   List<OrderProductModel> orderProducts;
 
   @override
@@ -34,12 +35,6 @@ class _ModifyOrderCartPageState extends State<ModifyOrderCartPage> {
             ))
         .toList();
     super.initState();
-  }
-
-  @override
-  void didChangeDependencies() {
-    _restBloc = SupplierBloc.init(supplierId: widget.order.supplierId);
-    super.didChangeDependencies();
   }
 
   @override
@@ -59,7 +54,7 @@ class _ModifyOrderCartPageState extends State<ModifyOrderCartPage> {
         ),
       ),
       body: StreamBuilder<List<ProductModel>>(
-        stream: _restBloc.outProducts,
+        stream: supplierBloc.outProducts,
         builder: (_, productListSnapshot) {
           if (productListSnapshot.connectionState == ConnectionState.active && productListSnapshot.hasData) {
             var products = productListSnapshot.data;
@@ -181,7 +176,7 @@ class _ModifyOrderCartPageState extends State<ModifyOrderCartPage> {
                           color: ColorTheme.ACCENT_BLUE,
                           onPressed: () async {
                             try {
-                              await Database().modifyOrder(widget.order.id, widget.order.state, orderProducts);
+                              await DatabaseService().modifyOrder(widget.order.id, widget.order.state, orderProducts);
                               Navigator.pop(context);
                               Toast.show("Modifica inviata", context);
                             } catch (err) {

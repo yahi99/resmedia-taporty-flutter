@@ -1,33 +1,26 @@
 import 'package:dash/dash.dart';
-import 'package:easy_blocs/easy_blocs.dart';
 import 'package:meta/meta.dart';
 import 'package:resmedia_taporty_core/core.dart';
 import 'package:rxdart/rxdart.dart';
 
 class SuppliersBloc implements Bloc {
-  final _db = Database();
+  final _db = DatabaseService();
 
   @protected
   dispose() {
-    _suppliersControl.close();
     _availableStartTimesFetcher.close();
   }
-
-  PublishSubject<List<SupplierModel>> _suppliersControl;
-
-  Stream<List<SupplierModel>> get outSuppliers => _suppliersControl.stream;
 
   PublishSubject<List<DateTime>> _availableStartTimesFetcher;
 
   Stream<List<DateTime>> get outAvailableStartTimes => _availableStartTimesFetcher.stream;
 
   SuppliersBloc.instance() {
-    _suppliersControl = PublishController.catchStream(source: _db.getSupplierListStream());
     _availableStartTimesFetcher = PublishSubject();
   }
 
   fetchAvailableStartTimes(DateTime date, String driverId) async {
-    var driver = await _db.getUserById(driverId);
+    var driver = await _db.getDriverById(driverId);
     var suppliers = await _db.getSupplierList();
     var filteredSuppliers = List<SupplierModel>();
     for (var supplier in suppliers) {

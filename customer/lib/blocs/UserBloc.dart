@@ -20,11 +20,10 @@ class NotRegisteredException implements Exception {
   const NotRegisteredException(this.message);
 }
 
-// TODO: Separa l'AuthBloc (per FirebaseUser) dall'UserBloc (per UserModel) quando implementi provider
 class UserBloc implements Bloc {
-  final Database _db = Database();
-  final Storage _storage = Storage();
-  final Auth _auth = Auth();
+  final DatabaseService _db = DatabaseService();
+  final StorageService _storage = StorageService();
+  final AuthService _auth = AuthService();
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
   @protected
@@ -53,7 +52,7 @@ class UserBloc implements Bloc {
         } else {
           _firebaseUserController.add(_firebaseUser);
           await _userControllerSub?.cancel();
-          _userControllerSub = _db.getUser(_firebaseUser).listen((user) => _userController.add(user));
+          _userControllerSub = _db.getUserStream(_firebaseUser).listen((user) => _userController.add(user));
         }
       }
     });

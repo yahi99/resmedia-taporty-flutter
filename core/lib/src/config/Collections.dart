@@ -1,5 +1,6 @@
 class Collections {
   static const USERS = 'users';
+  static const DRIVERS = 'drivers';
   static const SUPPLIERS = 'suppliers';
   static const PRODUCTS = 'products';
   static const TURNS = 'turns';

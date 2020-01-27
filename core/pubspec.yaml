@@ -20,6 +20,7 @@ dependencies:
   dash: ^0.5.5
   rxdart: ^0.23.1
   google_maps_flutter: ^0.5.21+15
+  shared_preferences: ^0.5.6+1
 
   flutter_localizations:
     sdk: flutter

@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:easy_firebase/easy_firebase.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:resmedia_taporty_core/core.dart';
@@ -12,12 +11,10 @@ import 'package:resmedia_taporty_customer/blocs/SupplierBloc.dart';
 import 'package:resmedia_taporty_customer/blocs/UserBloc.dart';
 
 class CheckoutScreen extends StatefulWidget {
-  final SupplierModel supplier;
-  final UserModel user;
   final GeoPoint customerCoordinates;
   final String customerAddress;
 
-  CheckoutScreen({Key key, @required this.supplier, @required this.user, @required this.customerCoordinates, @required this.customerAddress}) : super(key: key);
+  CheckoutScreen({Key key, @required this.customerCoordinates, @required this.customerAddress}) : super(key: key);
 
   @override
   _CheckoutScreenState createState() => _CheckoutScreenState();
@@ -30,6 +27,9 @@ class Continue {
 class _CheckoutScreenState extends State<CheckoutScreen> with TickerProviderStateMixin {
   static TabController controller;
   int indexUser;
+
+  var supplierBloc = $Provider.of<SupplierBloc>();
+  var userBloc = $Provider.of<UserBloc>();
 
   @override
   void initState() {
@@ -100,16 +100,14 @@ class _CheckoutScreenState extends State<CheckoutScreen> with TickerProviderStat
             ),
           ),
           child: StreamBuilder<UserModel>(
-            stream: $Provider.of<UserBloc>().outUser,
+            stream: userBloc.outUser,
             builder: (ctx, userSnapshot) {
               return StreamBuilder<SupplierModel>(
-                stream: SupplierBloc.init(supplierId: widget.supplier.id).outSupplier,
-                builder: (ctx, supplierSnapshot) {
-                  if (!userSnapshot.hasData)
-                    return Center(
-                      child: CircularProgressIndicator(),
-                    );
+                stream: supplierBloc.outSupplier,
+                builder: (_, supplierSnapshot) {
                   if (userSnapshot.hasData && supplierSnapshot.hasData) {
+                    var user = userSnapshot.data;
+                    var supplier = supplierSnapshot.data;
                     if (supplierSnapshot.data.isDisabled != null && supplierSnapshot.data.isDisabled) {
                       return Padding(
                         child: Text('Ristorante non abilitato scegline un\'altro'),
@@ -122,20 +120,20 @@ class _CheckoutScreenState extends State<CheckoutScreen> with TickerProviderStat
                         physics: NeverScrollableScrollPhysics(),
                         children: <Widget>[
                           CartPage(
-                            supplier: widget.supplier,
+                            supplier: supplier,
                             controller: controller,
                           ),
                           ShippingPage(
-                            user: widget.user,
+                            user: user,
                             customerCoordinates: widget.customerCoordinates,
-                            supplier: widget.supplier,
+                            supplier: supplier,
                             controller: controller,
                           ),
                           PaymentPage(
                             controller,
                           ),
                           ConfirmPage(
-                            supplier: widget.supplier,
+                            supplier: supplier,
                             customerCoordinates: widget.customerCoordinates,
                             customerAddress: widget.customerAddress,
                             controller: controller,

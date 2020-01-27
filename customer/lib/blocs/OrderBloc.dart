@@ -3,10 +3,9 @@ import 'dart:async';
 import 'package:dash/dash.dart';
 import 'package:meta/meta.dart';
 import 'package:resmedia_taporty_core/core.dart';
-import 'package:rxdart/rxdart.dart';
 
 class OrderBloc implements Bloc {
-  final _db = Database();
+  final _db = DatabaseService();
 
   @protected
   dispose() {

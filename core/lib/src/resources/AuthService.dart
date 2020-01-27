@@ -1,14 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-class Auth {
-  static Auth _instance;
+class AuthService {
+  static AuthService _instance;
 
-  Auth.internal(this.firebaseAuth, this.googleSignIn);
+  AuthService.internal(this.firebaseAuth, this.googleSignIn);
 
-  factory Auth() {
+  factory AuthService() {
     if (_instance == null) {
-      _instance = Auth.internal(FirebaseAuth.instance, GoogleSignIn());
+      _instance = AuthService.internal(FirebaseAuth.instance, GoogleSignIn());
     }
     return _instance;
   }

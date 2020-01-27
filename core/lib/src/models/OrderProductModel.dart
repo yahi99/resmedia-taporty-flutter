@@ -6,7 +6,7 @@ import 'package:meta/meta.dart';
 
 part 'OrderProductModel.g.dart';
 
-/// Represents a product in an order already done
+/// Rappresenta un prodotto di un ordine già eseguito
 
 @JsonSerializable(anyMap: true, explicitToJson: true)
 class OrderProductModel {

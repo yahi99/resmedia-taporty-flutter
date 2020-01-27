@@ -18,7 +18,7 @@ class SupplierDetailPage extends StatefulWidget {
 }
 
 class _SupplierDetailPageState extends State<SupplierDetailPage> {
-  final _db = Database();
+  final _db = DatabaseService();
   final _orderBloc = $Provider.of<OrderBloc>();
 
   @override

@@ -4,11 +4,11 @@ import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart' show CalendarCarousel, WeekdayFormat;
 import 'package:resmedia_taporty_core/core.dart';
+import 'package:resmedia_taporty_driver/blocs/ShiftBloc.dart';
 import 'package:resmedia_taporty_driver/generated/provider.dart';
 import 'package:toast/toast.dart';
 import 'package:resmedia_taporty_driver/blocs/DriverBloc.dart';
 import 'package:resmedia_taporty_driver/blocs/SuppliersBloc.dart';
-import 'package:resmedia_taporty_driver/blocs/UserBloc.dart';
 
 class CalendarTab extends StatefulWidget {
   CalendarTab();
@@ -21,7 +21,8 @@ class _CalendarTabState extends State<CalendarTab> with AutomaticKeepAliveClient
   DateTime _selectedDate;
   var suppliersBloc = $Provider.of<SuppliersBloc>();
   var driverBloc = $Provider.of<DriverBloc>();
-  var _db = Database();
+  var shiftBloc = $Provider.of<ShiftBloc>();
+  var _db = DatabaseService();
 
   @override
   void dispose() {
@@ -126,7 +127,7 @@ class _CalendarTabState extends State<CalendarTab> with AutomaticKeepAliveClient
   }
 
   _buildShifts() {
-    var userBloc = $Provider.of<UserBloc>();
+    var userBloc = $Provider.of<DriverBloc>();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -144,7 +145,7 @@ class _CalendarTabState extends State<CalendarTab> with AutomaticKeepAliveClient
                   if (availableShiftListSnapshot.connectionState == ConnectionState.active) {
                     if (availableShiftListSnapshot.hasData && availableShiftListSnapshot.data.length > 0) {
                       return StreamBuilder<List<ShiftModel>>(
-                        stream: driverBloc.outReservedShifts,
+                        stream: shiftBloc.outReservedShifts,
                         builder: (__, driverReservedShiftListSnapshot) {
                           if (driverReservedShiftListSnapshot.connectionState == ConnectionState.active) {
                             var availableShifts = availableShiftListSnapshot.data;

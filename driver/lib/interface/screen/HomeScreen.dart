@@ -1,14 +1,11 @@
 import 'dart:io';
-import 'package:easy_firebase/easy_firebase.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:resmedia_taporty_driver/blocs/DriverBloc.dart';
-import 'package:resmedia_taporty_driver/blocs/UserBloc.dart';
+import 'package:resmedia_taporty_core/core.dart';
 import 'package:resmedia_taporty_driver/interface/page/OrderTab.dart';
 import 'package:resmedia_taporty_driver/interface/page/ReservedShiftTab.dart';
 import 'package:resmedia_taporty_driver/interface/page/CalendarTab.dart';
-import 'package:resmedia_taporty_driver/generated/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -16,6 +13,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  AuthService _auth = AuthService();
   DateTime date = DateTime.now();
 
   BuildContext dialog;
@@ -67,8 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void dispose() {
-    $Provider.of<UserBloc>().logout();
-    LoginHelper().signOut();
+    _auth.signOut();
     super.dispose();
   }
 

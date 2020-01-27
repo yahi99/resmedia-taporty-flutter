@@ -3,21 +3,24 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'CartProductModel.g.dart';
 
-/// Represents an instance of a product in the cart
+/// Rappresenta una istanza di un prodotto in un carrello
 
 @JsonSerializable(anyMap: true, explicitToJson: true)
 class CartProductModel {
   final String id;
-  final String userId;
-  final String supplierId;
   final int quantity;
   final double price;
   final String type;
-  final bool delete;
 
-  CartProductModel({@required this.type, @required this.id, this.quantity: 0, @required this.supplierId, @required this.userId, @required this.price, this.delete = false})
-      : assert(quantity != null),
+  CartProductModel({
+    @required this.type,
+    @required this.id,
+    this.quantity: 0,
+    @required this.price,
+  })  : assert(quantity != null),
         assert(id != null);
+
+  double get totalPrice => price * quantity.toDouble();
 
   CartProductModel decrease() {
     return copyWith(countProducts: quantity - 1);
@@ -31,16 +34,10 @@ class CartProductModel {
   int get hashCode => super.hashCode;
 
   @override
-  bool operator ==(o) => o is CartProductModel && o.id == id && o.supplierId == supplierId && o.userId == userId;
-
-  String toString() => "ProductCart(id: $id, numItemsOrdered: $quantity, supplierId: $supplierId, userId: $userId)";
-
-  CartProductModel deleteItem(bool delete) {
-    return CartProductModel(id: id, supplierId: supplierId, quantity: quantity, userId: userId, price: price, type: type, delete: delete);
-  }
+  bool operator ==(o) => o is CartProductModel && o.id == id;
 
   CartProductModel copyWith({int countProducts}) {
-    return CartProductModel(id: id, quantity: countProducts, supplierId: supplierId, userId: userId, price: price, type: type, delete: delete);
+    return CartProductModel(id: id, quantity: countProducts, price: price, type: type);
   }
 
   static CartProductModel fromJson(Map json) => _$CartProductModelFromJson(json);

@@ -7,13 +7,13 @@ import 'package:resmedia_taporty_customer/generated/provider.dart';
 import 'package:resmedia_taporty_customer/interface/view/ProductView.dart';
 
 class FoodPage extends StatelessWidget {
-  final SupplierModel model;
+  final SupplierModel supplier;
 
-  FoodPage({Key key, @required this.model}) : super(key: key);
+  FoodPage({Key key, @required this.supplier}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final supplierBloc = SupplierBloc.init(supplierId: model.id);
+    final supplierBloc = $Provider.of<SupplierBloc>();
     return StreamBuilder<Map<ProductCategory, List<ProductModel>>>(
       stream: supplierBloc.outFoodsByCategory,
       builder: (context, snapshot) {
@@ -29,13 +29,13 @@ class FoodPage extends StatelessWidget {
 }
 
 class DrinkPage extends StatelessWidget {
-  final SupplierModel model;
+  final SupplierModel supplier;
 
-  DrinkPage({Key key, @required this.model}) : super(key: key);
+  DrinkPage({Key key, @required this.supplier}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final supplierBloc = SupplierBloc.init(supplierId: model.id);
+    final supplierBloc = $Provider.of<SupplierBloc>();
 
     return StreamBuilder<Map<ProductCategory, List<ProductModel>>>(
       stream: supplierBloc.outDrinksByCategory,
@@ -67,8 +67,7 @@ class ProductsBuilder extends StatelessWidget {
                 Text(translateProductCategory(nameGroup)),
                 products
                     .map((product) => ProductView(
-                          model: product,
-                          cartController: cartBloc.cartController,
+                          product: product,
                         ))
                     .toList(),
               );

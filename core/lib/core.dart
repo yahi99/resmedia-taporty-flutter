@@ -16,7 +16,6 @@ export 'src/helper/Categorized.dart';
 // Models
 export 'src/models/CartModel.dart';
 export 'src/models/CartProductModel.dart';
-export 'src/models/CartStorage.dart';
 export 'src/models/CheckoutDataModel.dart';
 export 'src/models/HolidayModel.dart';
 export 'src/models/OrderModel.dart';
@@ -28,11 +27,13 @@ export 'src/models/SupplierModel.dart';
 export 'src/models/TimeslotModel.dart';
 export 'src/models/TimetableModel.dart';
 export 'src/models/UserModel.dart';
+export 'src/models/DriverModel.dart';
 
 // Resources
-export 'src/resources/Database.dart';
-export 'src/resources/Storage.dart';
-export 'src/resources/Auth.dart';
+export 'src/resources/DatabaseService.dart';
+export 'src/resources/StorageService.dart';
+export 'src/resources/AuthService.dart';
+export 'src/resources/SharedPreferenceService.dart';
 
 // Widgets
 export 'src/widgets/FittedText.dart';

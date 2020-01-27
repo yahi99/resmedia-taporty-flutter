@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:resmedia_taporty_core/core.dart';
 import 'package:resmedia_taporty_customer/blocs/SupplierBloc.dart';
+import 'package:resmedia_taporty_customer/generated/provider.dart';
 
 // TODO: Rendi più carino da vedere
 class SupplierReviewListScreen extends StatefulWidget {
@@ -17,6 +18,7 @@ class SupplierReviewListScreen extends StatefulWidget {
 }
 
 class _SupplierReviewListScreenState extends State<SupplierReviewListScreen> {
+  var supplierBloc = $Provider.of<SupplierBloc>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,7 +29,7 @@ class _SupplierReviewListScreenState extends State<SupplierReviewListScreen> {
         actions: <Widget>[],
       ),
       body: StreamBuilder<List<ReviewModel>>(
-        stream: SupplierBloc.init(supplierId: widget.model.id).outSupplierReview,
+        stream: supplierBloc.outSupplierReview,
         builder: (ctx, snap) {
           if (!snap.hasData)
             return Center(

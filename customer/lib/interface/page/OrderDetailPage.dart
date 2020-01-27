@@ -23,7 +23,7 @@ class OrderDetailPage extends StatefulWidget {
 
 class _OrderDetailPageState extends State<OrderDetailPage> {
   final _orderBloc = $Provider.of<OrderBloc>();
-  final _db = Database();
+  final _db = DatabaseService();
 
   @override
   void didChangeDependencies() {

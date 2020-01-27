@@ -1,10 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:resmedia_taporty_core/src/models/UserModel.dart';
 import 'package:resmedia_taporty_core/src/config/Collections.dart';
 
 mixin MixinUserProvider {
   final userCollection = Firestore.instance.collection(Collections.USERS);
+
+  Stream<UserModel> getUserStream(FirebaseUser user) {
+    return userCollection.document(user.uid).snapshots().map((snap) {
+      return UserModel.fromFirebase(snap);
+    });
+  }
 
   Future<UserModel> getUserById(String uid) async {
     return UserModel.fromFirebase(await userCollection.document(uid).get());

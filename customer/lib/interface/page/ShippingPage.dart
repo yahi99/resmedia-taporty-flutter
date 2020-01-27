@@ -150,7 +150,7 @@ class _ShippingState extends State<ShippingPage> with AutomaticKeepAliveClientMi
                                   this.setState(() {
                                     _dateController.value = TextEditingValue(text: toDate(day));
                                     _selectedShift = null;
-                                    _availableShiftsFuture = Database().getAvailableShifts(day, widget.supplier.id, widget.customerCoordinates);
+                                    _availableShiftsFuture = DatabaseService().getAvailableShifts(day, widget.supplier.id, widget.customerCoordinates);
                                   });
                                 }
                               });

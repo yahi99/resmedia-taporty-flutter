@@ -13,4 +13,6 @@ class StripeBloc implements Bloc {
   StreamController<StripeSourceModel> _sourceController;
 
   Stream<StripeSourceModel> get outSource => _sourceController.stream;
+
+  StripeBloc.instance();
 }

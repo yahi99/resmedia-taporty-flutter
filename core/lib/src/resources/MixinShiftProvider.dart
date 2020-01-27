@@ -5,11 +5,12 @@ import 'package:resmedia_taporty_core/src/helper/DateTimeSerialization.dart';
 import 'package:resmedia_taporty_core/src/helper/DistanceHelper.dart';
 import 'package:resmedia_taporty_core/src/models/SupplierModel.dart';
 import 'package:resmedia_taporty_core/src/models/ShiftModel.dart';
+import 'package:resmedia_taporty_core/src/resources/MixinDriverProvider.dart';
 import 'package:resmedia_taporty_core/src/resources/MixinSupplierProvider.dart';
 import 'package:resmedia_taporty_core/src/resources/MixinUserProvider.dart';
 import 'package:resmedia_taporty_core/src/config/Collections.dart';
 
-mixin MixinShiftProvider on MixinSupplierProvider, MixinUserProvider {
+mixin MixinShiftProvider on MixinSupplierProvider, MixinUserProvider, MixinDriverProvider {
   final shiftCollection = Firestore.instance.collection(Collections.SHIFTS);
 
   Future<List<ShiftModel>> getAvailableShifts(DateTime day, String supplierId, GeoPoint customerCoordinates) async {
@@ -79,7 +80,7 @@ mixin MixinShiftProvider on MixinSupplierProvider, MixinUserProvider {
   }
 
   Future addShift(String driverId, DateTime startTime) async {
-    var driver = await getUserById(driverId);
+    var driver = await getDriverById(driverId);
     var shift = ShiftModel(
       startTime: startTime,
       endTime: startTime.add(Duration(minutes: 15)),

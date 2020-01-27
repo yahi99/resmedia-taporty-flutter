@@ -9,10 +9,10 @@ part of 'provider.dart';
 class $Provider extends Provider {
   static T of<T extends Bloc>() {
     switch (T) {
-      case UserBloc:
+      case DriverBloc:
         {
           return BlocCache.getBlocInstance(
-              "UserBloc", () => UserBloc.instance());
+              "DriverBloc", () => DriverBloc.instance());
         }
       case SuppliersBloc:
         {
@@ -40,9 +40,9 @@ class $Provider extends Provider {
 
   static void dispose<T extends Bloc>() {
     switch (T) {
-      case UserBloc:
+      case DriverBloc:
         {
-          BlocCache.dispose("UserBloc");
+          BlocCache.dispose("DriverBloc");
           break;
         }
       case SuppliersBloc:

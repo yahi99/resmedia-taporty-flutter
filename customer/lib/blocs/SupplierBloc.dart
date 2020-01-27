@@ -7,7 +7,7 @@ import 'package:resmedia_taporty_core/core.dart';
 import 'package:rxdart/rxdart.dart';
 
 class SupplierBloc implements Bloc {
-  final _db = Database();
+  final _db = DatabaseService();
 
   @protected
   dispose() {
@@ -54,14 +54,12 @@ class SupplierBloc implements Bloc {
 
   SupplierBloc.instance();
 
-  // TODO: Refactor
-  factory SupplierBloc.init({@required String supplierId}) {
-    final bc = SupplierBloc.instance();
-    bc._supplierController = BehaviorController.catchStream(source: bc._db.getSupplierStream(supplierId));
-    bc._productsController = BehaviorController.catchStream(source: bc._db.getProductListStream(supplierId));
-    bc._foodsController = BehaviorController.catchStream(source: bc._db.getFoodListStream(supplierId));
-    bc._drinksController = BehaviorController.catchStream(source: bc._db.getDrinkListStream(supplierId));
-    bc._supplierReviewController = BehaviorController.catchStream(source: bc._db.getReviewListStream(supplierId));
-    return bc;
+  // TODO: Rimuovere questi load e usare provider per i bloc i cui stream dipendono da id
+  void loadSupplierStreams(String supplierId) {
+    _supplierController = BehaviorController.catchStream(source: _db.getSupplierStream(supplierId));
+    _productsController = BehaviorController.catchStream(source: _db.getProductListStream(supplierId));
+    _foodsController = BehaviorController.catchStream(source: _db.getFoodListStream(supplierId));
+    _drinksController = BehaviorController.catchStream(source: _db.getDrinkListStream(supplierId));
+    _supplierReviewController = BehaviorController.catchStream(source: _db.getReviewListStream(supplierId));
   }
 }

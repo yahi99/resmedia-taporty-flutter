@@ -41,7 +41,7 @@ mixin MixinOrderProvider on MixinUserProvider, MixinSupplierProvider {
     var orderProducts = List<OrderProductModel>();
     for (var cartProduct in cartProducts) {
       if (cartProduct.quantity <= 0) continue;
-      var product = products.firstWhere((p) => p.id == cartProduct.id && customerId == cartProduct.userId, orElse: () => null);
+      var product = products.firstWhere((p) => p.id == cartProduct.id, orElse: () => null);
       if (product != null) {
         orderProducts.add(OrderProductModel(id: product.id, imageUrl: product.imageUrl, quantity: cartProduct.quantity, name: product.name, price: product.price));
       }

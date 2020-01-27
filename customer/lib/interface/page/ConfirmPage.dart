@@ -8,9 +8,9 @@ import 'package:resmedia_taporty_customer/blocs/CartBloc.dart';
 import 'package:resmedia_taporty_customer/blocs/SupplierBloc.dart';
 import 'package:resmedia_taporty_customer/blocs/UserBloc.dart';
 import 'package:resmedia_taporty_customer/generated/provider.dart';
-import 'package:resmedia_taporty_customer/interface/page/CartPage.dart';
 import 'package:resmedia_taporty_customer/interface/screen/CheckoutScreen.dart';
 import 'package:resmedia_taporty_customer/interface/view/BottonButtonBar.dart';
+import 'package:resmedia_taporty_customer/interface/view/CartProductListView.dart';
 import 'package:toast/toast.dart';
 
 class ConfirmPage extends StatefulWidget {
@@ -88,7 +88,7 @@ class _ConfirmState extends State<ConfirmPage> with AutomaticKeepAliveClientMixi
   Widget build(BuildContext context) {
     super.build(context);
     final tt = Theme.of(context);
-    final supplierBloc = SupplierBloc.init(supplierId: widget.supplier.id);
+    final supplierBloc = $Provider.of<SupplierBloc>();
     final cartBloc = $Provider.of<CartBloc>();
     final user = $Provider.of<UserBloc>();
     return StreamBuilder<FirebaseUser>(
@@ -103,16 +103,15 @@ class _ConfirmState extends State<ConfirmPage> with AutomaticKeepAliveClientMixi
               },
             ),
           ),
-          body: StreamBuilder<List<ProductModel>>(
-            stream: supplierBloc.outProducts,
-            builder: (context, AsyncSnapshot<List<ProductModel>> productListSnapshot) {
-              if (!productListSnapshot.hasData)
+          body: StreamBuilder<CartModel>(
+            stream: cartBloc.outCart,
+            builder: (context, cartSnapshot) {
+              if (!cartSnapshot.hasData)
                 return Center(
                   child: CircularProgressIndicator(),
                 );
-              return ProductsFoodDrinkBuilder(
-                products: productListSnapshot.data,
-                id: widget.supplier.id,
+              return CartProductListView(
+                cart: cartSnapshot.data,
               );
             },
           ),

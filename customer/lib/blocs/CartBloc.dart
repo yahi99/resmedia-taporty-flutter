@@ -3,50 +3,65 @@ import 'dart:core';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dash/dash.dart';
-import 'package:easy_blocs/easy_blocs.dart';
-import 'package:easy_firebase/easy_firebase.dart';
 import 'package:resmedia_taporty_core/core.dart';
-import 'package:resmedia_taporty_customer/blocs/CartController.dart';
 import 'package:rxdart/rxdart.dart';
 
 class CartBloc extends Bloc {
-  List<FirebaseModel> _resolver(CartModel cart) {
-    return null;
+  final DatabaseService _db = DatabaseService();
+  final SharedPreferenceService _sharedPreferences = SharedPreferenceService();
 
-    /// Risolve gli id dei prodotti
-  }
+  final BehaviorSubject<CartModel> _cartController = BehaviorSubject();
+  Stream<CartModel> get outCart => _cartController.stream;
 
-  final Database _db = Database();
+  final BehaviorSubject<String> _customerIdController = BehaviorSubject();
+  Stream<String> get outCustomerId => _customerIdController.stream;
 
-  CartController _cartController;
-
-  CartController get cartController => _cartController;
-
-  Stream<CartModel> get outCart => _cartController.outCart;
-
-  final BehaviorSubject<List<ProductModel>> _productController = BehaviorSubject();
-
-  Stream<List<ProductModel>> get outProducts => _productController.stream;
+  final BehaviorSubject<String> _supplierIdController = BehaviorSubject();
+  Stream<String> get outSupplierId => _supplierIdController.stream;
 
   @override
   void dispose() {
     _cartController.close();
-    _productController.close();
+    _customerIdController.close();
+    _supplierIdController.close();
   }
 
-  Future<List<CartProductModel>> inDeleteCart(String customerId, String supplierId) async {
+  CartBloc.instance();
+
+  StreamSubscription productSubscription;
+  Future loadCart(String customerId, String supplierId) async {
+    var cart = await _sharedPreferences.getCart(customerId, supplierId);
+    _customerIdController.add(customerId);
+    _supplierIdController.add(supplierId);
+
+    var productStream = _db.getProductListStream(supplierId);
+    var products = await productStream.first;
+
+    cart.updateWithNewProductList(products);
+    _update(cart);
+
+    productSubscription?.cancel();
+    productSubscription = productStream.listen((products) async {
+      var cart = await outCart.first;
+      cart.updateWithNewProductList(products);
+      _update(cart);
+    });
+  }
+
+  Future<List<CartProductModel>> clearCart() async {
     final cart = await outCart.first;
     var cartProducts = cart.products;
     List<CartProductModel> products = List<CartProductModel>();
     for (int i = 0; i < cartProducts.length; i++) {
-      if (cartProducts.elementAt(i).userId == customerId && cartProducts.elementAt(i).supplierId == supplierId) {
-        products.add(cartProducts.elementAt(i));
-      }
+      products.add(cartProducts.elementAt(i));
     }
 
     for (int i = 0; i < products.length; i++) {
-      _cartController.inRemove(products.elementAt(i).id, supplierId, customerId);
+      cart.remove(products.elementAt(i).id);
     }
+
+    await _update(cart);
+
     return products;
   }
 
@@ -55,21 +70,35 @@ class CartBloc extends Bloc {
   }
 
   Future<bool> signer(String customerId, String supplierId, String driverId, GeoPoint customerCoordinates, String customerAddress, CheckoutDataModel data) async {
-    var products = await inDeleteCart(customerId, supplierId);
+    assert(customerId == await outCustomerId.first);
+    assert(supplierId == await outSupplierId.first);
+    var products = await clearCart();
 
     await _db.createOrder(products, customerId, customerCoordinates, customerAddress, data.name, data.phone, supplierId, driverId, data.selectedShift, data.cardId);
 
     return true;
   }
 
-  CartBloc.instance() {
-    _cartController = CartController.storage(
-      storage: InternalStorage.manager(versionManager: VersionManager("Products")),
-    );
-    _productController.onListen = () {
-      _cartController.outCart.listen((cart) {
-        _productController.add(_resolver(cart));
-      });
-    };
+  Future increment(String id, double price, String category) async {
+    var cart = await outCart.first;
+    cart.increment(id, price, category);
+    await _update(cart);
+  }
+
+  Future decrease(String id) async {
+    var cart = await outCart.first;
+    cart.decrease(id);
+    await _update(cart);
+  }
+
+  Future remove(String id) async {
+    var cart = await outCart.first;
+    cart.remove(id);
+    await _update(cart);
+  }
+
+  Future _update(CartModel cart) async {
+    _cartController.add(cart);
+    _sharedPreferences.updateCart(await outCustomerId.first, await outSupplierId.first, cart);
   }
 }

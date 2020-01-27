@@ -1,5 +1,3 @@
-import 'package:easy_blocs/easy_blocs.dart';
-import 'package:easy_widget/easy_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -10,12 +8,7 @@ import 'package:resmedia_taporty_driver/interface/screen/HomeScreen.dart';
 import 'package:resmedia_taporty_driver/interface/screen/LoginScreen.dart';
 
 void main() async {
-  runApp(RepositoryBuilder(
-    backgroundTask: (context, sharedPreferences) async {
-      await AssetHandler.init(context);
-    },
-    builder: (_) => Taporty(),
-  ));
+  runApp(Taporty());
 }
 
 class Taporty extends StatefulWidget {
@@ -43,8 +36,6 @@ class _TaportyState extends State<Taporty> {
         indicatorColor: Colors.white,
         dividerColor: Colors.grey,
         buttonTheme: ButtonThemeData(
-          // Rimossa questa indicazione di padding che non prevedeva un padding ai pulsanti.
-          // padding: const EdgeInsets.only(),
           buttonColor: cls.secondary,
           colorScheme: cls,
           textTheme: ButtonTextTheme.primary,

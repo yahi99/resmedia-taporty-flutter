@@ -12,7 +12,8 @@ SupplierModel _$SupplierModelFromJson(Map json) {
     name: json['name'] as String,
     description: json['description'] as String,
     coordinates: geopointFromJson(json['coordinates']),
-    deliveryRadius: (json['deliveryRadius'] as num)?.toDouble(),
+    category: json['category'] as String,
+    tags: (json['tags'] as List)?.map((e) => e as String)?.toList(),
     holidays: (json['holidays'] as List)
         ?.map((e) => e == null ? null : HolidayModel.fromJson(e as Map))
         ?.toList(),
@@ -43,9 +44,10 @@ Map<String, dynamic> _$SupplierModelToJson(SupplierModel instance) {
   val['description'] = instance.description;
   val['imageUrl'] = instance.imageUrl;
   val['phoneNumber'] = instance.phoneNumber;
+  val['category'] = instance.category;
+  val['tags'] = instance.tags;
   val['coordinates'] = geopointToJson(instance.coordinates);
   val['address'] = instance.address;
-  val['deliveryRadius'] = instance.deliveryRadius;
   val['holidays'] = instance.holidays?.map((e) => e?.toJson())?.toList();
   val['weekdayTimetable'] = instance.weekdayTimetable
       ?.map((k, e) => MapEntry(k.toString(), e?.toJson()));

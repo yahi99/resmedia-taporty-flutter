@@ -1,37 +1,39 @@
 import 'dart:async';
 
 import 'package:dash/dash.dart';
+import 'package:easy_blocs/easy_blocs.dart';
 import 'package:meta/meta.dart';
 import 'package:resmedia_taporty_core/core.dart';
+import 'package:rxdart/rxdart.dart';
 
 class OrderBloc implements Bloc {
   final _db = DatabaseService();
 
   @protected
   dispose() {
-    if (_orderListController != null) _orderListController.close();
-    if (_orderListController != null) _orderController.close();
+    _orderIdController.close();
+    _orderController.close();
   }
 
-  StreamController<List<OrderModel>> _orderListController;
+  BehaviorSubject<String> _orderIdController;
 
-  Stream<List<OrderModel>> get outOrders => _orderListController?.stream;
-
-  StreamController<OrderModel> _orderController;
+  BehaviorSubject<OrderModel> _orderController;
 
   Stream<OrderModel> get outOrder => _orderController?.stream;
 
   setOrderStream(String orderId) {
-    _orderController.close();
-    _orderController = StreamController.broadcast();
-    _orderController.addStream(_db.getOrderStream(orderId));
+    _orderIdController.value = orderId;
   }
 
-  Future setUserStream(String userId) async {
-    _orderListController.close();
-    _orderListController = StreamController.broadcast();
-    _orderListController.addStream(_db.getUserOrdersStream(userId));
+  void clear() {
+    _orderIdController.value = null;
   }
 
-  OrderBloc.instance();
+  OrderBloc.instance() {
+    _orderIdController = BehaviorSubject.seeded(null);
+    _orderController = BehaviorController.catchStream<OrderModel>(source: _orderIdController.switchMap((orderId) {
+      if (orderId == null) return Stream.value(null);
+      return _db.getOrderStream(orderId);
+    }));
+  }
 }

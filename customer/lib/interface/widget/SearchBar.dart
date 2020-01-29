@@ -3,26 +3,68 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class SearchBar extends StatelessWidget implements PreferredSizeWidget {
+class SearchBar extends StatefulWidget implements PreferredSizeWidget {
   final Widget trailing;
   final StreamController searchBarStream;
 
-  const SearchBar({Key key, this.trailing,this.searchBarStream}) : super(key: key);
+  const SearchBar({Key key, this.trailing, this.searchBarStream}) : super(key: key);
+
+  @override
+  _SearchBarState createState() => _SearchBarState();
+
+  @override
+  Size get preferredSize => const Size(
+        64,
+        64,
+      );
+}
+
+class _SearchBarState extends State<SearchBar> {
+  TextEditingController _textController;
+  StreamSubscription _subscription;
+
+  @override
+  void dispose() {
+    _subscription.cancel();
+    super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(SearchBar oldWidget) {
+    if (oldWidget.searchBarStream != widget.searchBarStream) {
+      _subscription.cancel();
+      _subscription = widget.searchBarStream.stream.listen((text) {
+        if (text != _textController.value) _textController.value = text;
+      });
+    }
+
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _textController = TextEditingController();
+    _subscription = widget.searchBarStream.stream.listen((text) {
+      if (text != _textController.text) _textController.text = text;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final List<Widget> children = [
       Expanded(
         child: TextField(
-          onChanged: (value){
-            searchBarStream.add(value);
+          onChanged: (value) {
+            widget.searchBarStream.add(value);
           },
+          controller: _textController,
           scrollPadding: EdgeInsets.all(2.0),
           decoration: InputDecoration(
             contentPadding: EdgeInsets.zero,
             filled: true,
             fillColor: Colors.white,
-            hintText: 'Search',
+            hintText: 'Cerca',
             prefixIcon: const Icon(Icons.search),
             border: OutlineInputBorder(
               gapPadding: 0.0,
@@ -32,10 +74,10 @@ class SearchBar extends StatelessWidget implements PreferredSizeWidget {
         ),
       ),
     ];
-    if (trailing != null) children.add(trailing);
+    if (widget.trailing != null) children.add(widget.trailing);
 
     return SizedBox(
-      height: preferredSize.height,
+      height: widget.preferredSize.height,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
         child: Row(
@@ -44,10 +86,4 @@ class SearchBar extends StatelessWidget implements PreferredSizeWidget {
       ),
     );
   }
-
-  @override
-  Size get preferredSize => const Size(
-        64,
-        64,
-      );
 }

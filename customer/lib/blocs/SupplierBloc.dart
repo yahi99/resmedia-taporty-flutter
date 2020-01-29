@@ -11,12 +11,18 @@ class SupplierBloc implements Bloc {
 
   @protected
   dispose() {
+    _supplierIdController.close();
     _supplierController?.close();
     _productsController?.close();
     _foodsController?.close();
     _drinksController?.close();
     _supplierReviewController.close();
   }
+
+  BehaviorSubject<String> _supplierIdController;
+
+  Stream<String> get outSupplierId => _supplierIdController.stream;
+  String get supplierId => _supplierIdController.value;
 
   BehaviorSubject<SupplierModel> _supplierController;
 
@@ -52,14 +58,35 @@ class SupplierBloc implements Bloc {
 
   bool isInit = false;
 
-  SupplierBloc.instance();
+  SupplierBloc.instance() {
+    _supplierIdController = BehaviorSubject.seeded(null);
+    _supplierController = BehaviorController.catchStream<SupplierModel>(source: _supplierIdController.switchMap((supplierId) {
+      if (supplierId == null) return Stream.value(null);
+      return _db.getSupplierStream(supplierId);
+    }));
+    _productsController = BehaviorController.catchStream<List<ProductModel>>(source: _supplierIdController.switchMap((supplierId) {
+      if (supplierId == null) return Stream.value(null);
+      return _db.getProductListStream(supplierId);
+    }));
+    _foodsController = BehaviorController.catchStream<List<ProductModel>>(source: _supplierIdController.switchMap((supplierId) {
+      if (supplierId == null) return Stream.value(null);
+      return _db.getFoodListStream(supplierId);
+    }));
+    _drinksController = BehaviorController.catchStream<List<ProductModel>>(source: _supplierIdController.switchMap((supplierId) {
+      if (supplierId == null) return Stream.value(null);
+      return _db.getDrinkListStream(supplierId);
+    }));
+    _supplierReviewController = BehaviorController.catchStream<List<ReviewModel>>(source: _supplierIdController.switchMap((supplierId) {
+      if (supplierId == null) return Stream.value(null);
+      return _db.getReviewListStream(supplierId);
+    }));
+  }
 
-  // TODO: Rimuovere questi load e usare provider per i bloc i cui stream dipendono da id
-  void loadSupplierStreams(String supplierId) {
-    _supplierController = BehaviorController.catchStream(source: _db.getSupplierStream(supplierId));
-    _productsController = BehaviorController.catchStream(source: _db.getProductListStream(supplierId));
-    _foodsController = BehaviorController.catchStream(source: _db.getFoodListStream(supplierId));
-    _drinksController = BehaviorController.catchStream(source: _db.getDrinkListStream(supplierId));
-    _supplierReviewController = BehaviorController.catchStream(source: _db.getReviewListStream(supplierId));
+  void setSupplier(String supplierId) {
+    _supplierIdController.add(supplierId);
+  }
+
+  void clear() {
+    _supplierIdController.value = null;
   }
 }

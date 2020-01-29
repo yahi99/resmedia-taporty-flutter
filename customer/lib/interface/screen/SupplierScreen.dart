@@ -8,25 +8,28 @@ import 'package:resmedia_taporty_customer/blocs/UserBloc.dart';
 import 'package:resmedia_taporty_customer/generated/provider.dart';
 import 'package:resmedia_taporty_customer/interface/page/InfoSupplierPage.dart';
 import 'package:resmedia_taporty_customer/interface/page/MenuPages.dart';
-import 'package:resmedia_taporty_customer/interface/screen/CheckoutScreen.dart';
 
 class SupplierScreen extends StatefulWidget {
-  final GeoPoint customerCoordinates;
-  final String customerAddress;
-
-  SupplierScreen({Key key, @required this.customerCoordinates, @required this.customerAddress}) : super(key: key);
+  SupplierScreen({Key key}) : super(key: key);
 
   @override
   _SupplierScreenState createState() => _SupplierScreenState();
 }
 
 class _SupplierScreenState extends State<SupplierScreen> {
+  final supplierBloc = $Provider.of<SupplierBloc>();
+  final cartBloc = $Provider.of<CartBloc>();
+
+  @override
+  void dispose() {
+    supplierBloc.clear();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final supplierBloc = $Provider.of<SupplierBloc>();
-    final cartBloc = $Provider.of<CartBloc>();
     return DefaultTabController(
       length: 3,
       child: Scaffold(
@@ -160,14 +163,9 @@ class _SupplierScreenState extends State<SupplierScreen> {
 
   _pushCheckoutScreen() {
     $Provider.of<UserBloc>().outUser.first.then((user) {
-      Navigator.push(
+      Navigator.pushNamed(
         context,
-        MaterialPageRoute(
-          builder: (context) => CheckoutScreen(
-            customerCoordinates: widget.customerCoordinates,
-            customerAddress: widget.customerAddress,
-          ),
-        ),
+        "/checkout",
       );
     });
   }

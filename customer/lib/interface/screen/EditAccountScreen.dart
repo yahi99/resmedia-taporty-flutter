@@ -4,12 +4,12 @@ import 'package:resmedia_taporty_core/core.dart';
 import 'package:resmedia_taporty_customer/generated/provider.dart';
 import 'package:resmedia_taporty_customer/blocs/UserBloc.dart';
 
-class EditScreen extends StatefulWidget {
+class EditAccountScreen extends StatefulWidget {
   @override
   _EditState createState() => _EditState();
 }
 
-class _EditState extends State<EditScreen> {
+class _EditState extends State<EditAccountScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

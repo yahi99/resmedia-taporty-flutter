@@ -7,19 +7,19 @@ import 'package:toast/toast.dart';
 import 'package:vibration/vibration.dart';
 import 'package:resmedia_taporty_customer/blocs/SupplierBloc.dart';
 
-class ModifyOrderCartPage extends StatefulWidget {
+class ModifyOrderCartScreen extends StatefulWidget {
   final OrderModel order;
 
-  ModifyOrderCartPage({
+  ModifyOrderCartScreen({
     Key key,
     @required this.order,
   }) : super(key: key);
 
   @override
-  _ModifyOrderCartPageState createState() => _ModifyOrderCartPageState();
+  _ModifyOrderCartScreenState createState() => _ModifyOrderCartScreenState();
 }
 
-class _ModifyOrderCartPageState extends State<ModifyOrderCartPage> {
+class _ModifyOrderCartScreenState extends State<ModifyOrderCartScreen> {
   SupplierBloc supplierBloc = $Provider.of<SupplierBloc>();
   List<OrderProductModel> orderProducts;
 

@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:resmedia_taporty_core/core.dart';
+import 'package:resmedia_taporty_customer/blocs/LocationBloc.dart';
+import 'package:resmedia_taporty_customer/generated/provider.dart';
 import 'package:resmedia_taporty_customer/interface/screen/SupplierListScreen.dart';
 import 'package:toast/toast.dart';
 
@@ -17,10 +19,7 @@ class GeolocalizationScreen extends StatefulWidget {
 }
 
 class _GeolocalizationScreenState extends State<GeolocalizationScreen> {
-  // TODO: Capire a cosa serve e spostarla nelle variabili globali
-  static final String _key = 'AIzaSyAmJyflDR6W10z738vMkLz9Oham51HR790';
-
-  GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: _key);
+  GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: MapsConfig.GOOGLE_PUBLIC_KEY);
 
   TextEditingController _controller = TextEditingController();
 
@@ -37,7 +36,7 @@ class _GeolocalizationScreenState extends State<GeolocalizationScreen> {
     // then get the Prediction selected
     Prediction p = await PlacesAutocomplete.show(
       context: context,
-      apiKey: _key,
+      apiKey: MapsConfig.GOOGLE_PUBLIC_KEY,
       language: "it",
       hint: "Cerca",
     );
@@ -70,64 +69,62 @@ class _GeolocalizationScreenState extends State<GeolocalizationScreen> {
         builder: (ctx, snap) {
           if (snap.hasData) _controller.value = TextEditingValue(text: snap.data);
           return LogoView(
-              top: FittedBox(
-                fit: BoxFit.contain,
-                child: Icon(
-                  Icons.lock_open,
-                  color: Colors.white,
+            top: FittedBox(
+              fit: BoxFit.contain,
+              child: Icon(
+                Icons.lock_open,
+                color: Colors.white,
+              ),
+            ),
+            children: <Widget>[
+              TextField(
+                controller: _controller,
+                onTap: _focusNodePlaces,
+                decoration: const InputDecoration(
+                  filled: true,
+                  fillColor: Colors.white70,
+                  hintStyle: TextStyle(color: Colors.grey),
+                  border: OutlineInputBorder(
+                    borderRadius: const BorderRadius.all(const Radius.circular(15.0)),
+                  ),
+                  suffixIcon: Icon(
+                    Icons.location_on,
+                  ),
+                  hintText: 'Via Mario Rossi',
                 ),
               ),
-              children: <Widget>[
-                TextField(
-                  controller: _controller,
-                  onTap: _focusNodePlaces,
-                  decoration: const InputDecoration(
-                    filled: true,
-                    fillColor: Colors.white70,
-                    hintStyle: TextStyle(color: Colors.grey),
-                    border: OutlineInputBorder(
-                      borderRadius: const BorderRadius.all(const Radius.circular(15.0)),
-                    ),
-                    suffixIcon: Icon(
-                      Icons.location_on,
-                    ),
-                    hintText: 'Via Mario Rossi',
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  FlatButton(
+                    child: Icon(Icons.check),
+                    color: Colors.blue,
+                    onPressed: _isLoading
+                        ? null
+                        : () async {
+                            if (isValid) {
+                              setState(() {
+                                _isLoading = true;
+                              });
+                              var locationBloc = $Provider.of<LocationBloc>();
+                              locationBloc.setLocation(customerAddress, customerCoordinates);
+                              await Navigator.pushNamedAndRemoveUntil(
+                                context,
+                                "/supplierList",
+                                (Route<dynamic> route) => false,
+                              );
+                              setState(() {
+                                _isLoading = false;
+                              });
+                            } else {
+                              Toast.show('Inserire un indirizzo valido', context);
+                            }
+                          },
                   ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    FlatButton(
-                      child: Icon(Icons.check),
-                      color: Colors.blue,
-                      onPressed: _isLoading
-                          ? null
-                          : () async {
-                              if (isValid) {
-                                setState(() {
-                                  _isLoading = true;
-                                });
-                                await Navigator.pushAndRemoveUntil(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => SupplierListScreen(
-                                      customerCoordinates: customerCoordinates,
-                                      customerAddress: customerAddress,
-                                    ),
-                                  ),
-                                  (Route<dynamic> route) => false,
-                                );
-                                setState(() {
-                                  _isLoading = false;
-                                });
-                              } else {
-                                Toast.show('Inserire un indirizzo valido', context);
-                              }
-                            },
-                    ),
-                  ],
-                ),
-              ]);
+                ],
+              ),
+            ],
+          );
         },
       ),
     );

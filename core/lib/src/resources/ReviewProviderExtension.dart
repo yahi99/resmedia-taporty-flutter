@@ -1,9 +1,7 @@
+import 'package:resmedia_taporty_core/core.dart';
 import 'package:resmedia_taporty_core/src/helper/DateTimeSerialization.dart';
-import 'package:resmedia_taporty_core/src/resources/MixinOrderProvider.dart';
-import 'package:resmedia_taporty_core/src/resources/MixinSupplierProvider.dart';
-import 'package:resmedia_taporty_core/src/resources/MixinUserProvider.dart';
 
-mixin MixinReviewProvider on MixinSupplierProvider, MixinUserProvider, MixinOrderProvider {
+extension ReviewProviderExtension on DatabaseService {
   Future addSupplierReview(String restId, String userId, String customerName, String orderId, double rating, String description) async {
     await supplierCollection.document(restId).collection('reviews').document(orderId).setData({
       'rating': rating,

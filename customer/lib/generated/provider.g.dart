@@ -14,15 +14,20 @@ class $Provider extends Provider {
           return BlocCache.getBlocInstance(
               "UserBloc", () => UserBloc.instance());
         }
+      case LocationBloc:
+        {
+          return BlocCache.getBlocInstance(
+              "LocationBloc", () => LocationBloc.instance());
+        }
       case SupplierBloc:
         {
           return BlocCache.getBlocInstance(
               "SupplierBloc", () => SupplierBloc.instance());
         }
-      case SuppliersBloc:
+      case SupplierListBloc:
         {
           return BlocCache.getBlocInstance(
-              "SuppliersBloc", () => SuppliersBloc.instance());
+              "SupplierListBloc", () => SupplierListBloc.instance());
         }
       case RepositoryBloc:
         {
@@ -39,6 +44,11 @@ class $Provider extends Provider {
           return BlocCache.getBlocInstance(
               "OrderBloc", () => OrderBloc.instance());
         }
+      case OrderListBloc:
+        {
+          return BlocCache.getBlocInstance(
+              "OrderListBloc", () => OrderListBloc.instance());
+        }
     }
     return null;
   }
@@ -50,14 +60,19 @@ class $Provider extends Provider {
           BlocCache.dispose("UserBloc");
           break;
         }
+      case LocationBloc:
+        {
+          BlocCache.dispose("LocationBloc");
+          break;
+        }
       case SupplierBloc:
         {
           BlocCache.dispose("SupplierBloc");
           break;
         }
-      case SuppliersBloc:
+      case SupplierListBloc:
         {
-          BlocCache.dispose("SuppliersBloc");
+          BlocCache.dispose("SupplierListBloc");
           break;
         }
       case RepositoryBloc:
@@ -73,6 +88,11 @@ class $Provider extends Provider {
       case OrderBloc:
         {
           BlocCache.dispose("OrderBloc");
+          break;
+        }
+      case OrderListBloc:
+        {
+          BlocCache.dispose("OrderListBloc");
           break;
         }
     }

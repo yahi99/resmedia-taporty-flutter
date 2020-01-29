@@ -2,8 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:resmedia_taporty_core/core.dart';
+import 'package:resmedia_taporty_customer/blocs/OrderListBloc.dart';
 import 'package:resmedia_taporty_customer/generated/provider.dart';
-import 'package:resmedia_taporty_customer/interface/screen/EditScreen.dart';
 import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:resmedia_taporty_customer/blocs/UserBloc.dart';
@@ -20,12 +20,7 @@ class AccountScreen extends StatelessWidget {
       appBar: AppBar(
         actions: <Widget>[
           IconButton(
-            onPressed: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => EditScreen(),
-              ),
-            ),
+            onPressed: () => Navigator.pushNamed(context, "/editAccount"),
             icon: Icon(Icons.mode_edit),
           )
         ],
@@ -146,9 +141,7 @@ class AccountScreen extends StatelessWidget {
                         Icon(Icons.shopping_cart),
                         FlatButton(
                           child: Text('Lista ordini', style: theme.textTheme.subhead),
-                          onPressed: () async {
-                            // TODO: Sistemare
-                            await $Provider.of<OrderBloc>().setUserStream(user.id);
+                          onPressed: () {
                             Navigator.pushNamed(context, "/orderList");
                           },
                         ),

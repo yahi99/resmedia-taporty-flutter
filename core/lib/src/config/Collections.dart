@@ -2,6 +2,7 @@ class Collections {
   static const USERS = 'users';
   static const DRIVERS = 'drivers';
   static const SUPPLIERS = 'suppliers';
+  static const SUPPLIER_CATEGORIES = 'supplier_categories';
   static const PRODUCTS = 'products';
   static const TURNS = 'turns';
   static const DAYS = 'days';

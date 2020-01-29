@@ -75,7 +75,7 @@ class DriverBloc implements Bloc {
     var user = await outDriver.first;
     if (user.imageUrl != null && user.imageUrl != "") await _storage.deleteFile(user.imageUrl);
     var imageUrl = await _storage.uploadFile("users/${user.id}", image);
-    await _db.updateProfileImage(user.id, imageUrl);
+    await _db.updateDriverProfileImage(user.id, imageUrl);
   }
 
   Future updatePassword(String oldPassword, String password) async {
@@ -88,7 +88,7 @@ class DriverBloc implements Bloc {
     var firebaseUser = await outFirebaseUser.first;
     await _auth.reauthenticate(firebaseUser, oldPassword);
     await firebaseUser.updateEmail(email);
-    await _db.updateNominative(firebaseUser.uid, nominative);
-    await _db.updateEmail(firebaseUser.uid, email);
+    await _db.updateDriverNominative(firebaseUser.uid, nominative);
+    await _db.updateDriverEmail(firebaseUser.uid, email);
   }
 }

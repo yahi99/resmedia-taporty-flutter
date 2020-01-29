@@ -6,11 +6,8 @@ import 'package:resmedia_taporty_customer/generated/provider.dart';
 
 // TODO: Rendi più carino da vedere
 class SupplierReviewListScreen extends StatefulWidget {
-  final SupplierModel model;
-
   SupplierReviewListScreen({
     Key key,
-    @required this.model,
   }) : super(key: key);
 
   @override
@@ -23,7 +20,7 @@ class _SupplierReviewListScreenState extends State<SupplierReviewListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Recensioni ' + widget.model.id),
+        title: Text('Recensioni'),
         backgroundColor: ColorTheme.RED,
         centerTitle: true,
         actions: <Widget>[],
@@ -38,7 +35,7 @@ class _SupplierReviewListScreenState extends State<SupplierReviewListScreen> {
           if (snap.data.length == 0)
             return Padding(
               child: Text(
-                'Non ci sono recensioni per questo ristorante',
+                'Non ci sono recensioni per questo fornitore',
                 style: Theme.of(context).textTheme.subtitle,
               ),
               padding: EdgeInsets.all(8.0),

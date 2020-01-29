@@ -39,6 +39,7 @@ class UserBloc implements Bloc {
   BehaviorSubject<UserModel> _userController = BehaviorSubject();
 
   Stream<UserModel> get outUser => _userController.stream;
+  UserModel get user => _userController.value;
 
   StreamSubscription<UserModel> _userControllerSub;
 

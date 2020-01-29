@@ -5,16 +5,13 @@ import 'package:resmedia_taporty_core/src/helper/DateTimeSerialization.dart';
 import 'package:resmedia_taporty_core/src/helper/DistanceHelper.dart';
 import 'package:resmedia_taporty_core/src/models/SupplierModel.dart';
 import 'package:resmedia_taporty_core/src/models/ShiftModel.dart';
-import 'package:resmedia_taporty_core/src/resources/MixinDriverProvider.dart';
-import 'package:resmedia_taporty_core/src/resources/MixinSupplierProvider.dart';
-import 'package:resmedia_taporty_core/src/resources/MixinUserProvider.dart';
-import 'package:resmedia_taporty_core/src/config/Collections.dart';
+import 'package:resmedia_taporty_core/src/resources/DatabaseService.dart';
+import 'package:resmedia_taporty_core/src/resources/SupplierProviderExtension.dart';
+import 'package:resmedia_taporty_core/src/resources/DriverProviderExtension.dart';
 
-mixin MixinShiftProvider on MixinSupplierProvider, MixinUserProvider, MixinDriverProvider {
-  final shiftCollection = Firestore.instance.collection(Collections.SHIFTS);
-
+extension ShiftProvider on DatabaseService {
   Future<List<ShiftModel>> getAvailableShifts(DateTime day, String supplierId, GeoPoint customerCoordinates) async {
-    SupplierModel supplier = await getSupplier(supplierId);
+    SupplierModel supplier = await getSupplierStream(supplierId).first;
     var startTimes = supplier.getStartTimes(day);
     var filteredShifts = List<ShiftModel>();
 
@@ -42,7 +39,7 @@ mixin MixinShiftProvider on MixinSupplierProvider, MixinUserProvider, MixinDrive
   }
 
   Future<String> findDriver(ShiftModel shiftModel, String supplierId, GeoPoint customerCoordinates) async {
-    SupplierModel supplier = await getSupplier(supplierId);
+    SupplierModel supplier = await getSupplierStream(supplierId).first;
     if (!supplier.isOpen(datetime: shiftModel.endTime)) return null;
 
     var shiftDocuments = (await shiftCollection.where("startTime", isEqualTo: datetimeToJson(shiftModel.startTime)).orderBy("reservationTimestamp").getDocuments(source: Source.server)).documents;

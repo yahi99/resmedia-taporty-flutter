@@ -3,9 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:resmedia_taporty_customer/blocs/OrderBloc.dart';
+import 'package:resmedia_taporty_customer/blocs/OrderListBloc.dart';
 import 'package:resmedia_taporty_customer/generated/provider.dart';
 import 'package:resmedia_taporty_customer/interface/view/OrderView.dart';
-import 'package:resmedia_taporty_customer/interface/page/OrderDetailPage.dart';
 import 'package:sticky_headers/sticky_headers.dart';
 
 class OrderListScreen extends StatefulWidget {
@@ -14,7 +14,7 @@ class OrderListScreen extends StatefulWidget {
 }
 
 class OrderListScreenState extends State<OrderListScreen> {
-  final _orderBloc = $Provider.of<OrderBloc>();
+  final _orderListBloc = $Provider.of<OrderListBloc>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,7 +25,7 @@ class OrderListScreenState extends State<OrderListScreen> {
         actions: <Widget>[],
       ),
       body: StreamBuilder<List<OrderModel>>(
-        stream: _orderBloc.outOrders,
+        stream: _orderListBloc.outOrders,
         builder: (context, orderListSnapshot) {
           if (orderListSnapshot.connectionState == ConnectionState.active) {
             if (orderListSnapshot.hasData && orderListSnapshot.data.length > 0) {
@@ -67,14 +67,13 @@ class OrderListScreenState extends State<OrderListScreen> {
                           itemCount: orders.length,
                           itemBuilder: (context, index) {
                             return InkWell(
-                              onTap: () => Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => OrderDetailPage(
-                                    orderId: orders[index].id,
-                                  ),
-                                ),
-                              ),
+                              onTap: () {
+                                $Provider.of<OrderBloc>().setOrderStream(orders[index].id);
+                                Navigator.pushNamed(
+                                  context,
+                                  "/orderDetail",
+                                );
+                              },
                               child: OrderView(
                                 order: orders[index],
                               ),

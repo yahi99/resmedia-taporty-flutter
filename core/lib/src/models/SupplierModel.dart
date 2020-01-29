@@ -17,10 +17,12 @@ class SupplierModel extends FirebaseModel {
   final String imageUrl;
   final String phoneNumber;
 
+  final String category;
+  final List<String> tags;
+
   @JsonKey(fromJson: geopointFromJson, toJson: geopointToJson)
   final GeoPoint coordinates;
   final String address;
-  final double deliveryRadius;
 
   final List<HolidayModel> holidays;
   final Map<int, TimetableModel> weekdayTimetable;
@@ -104,7 +106,8 @@ class SupplierModel extends FirebaseModel {
     @required this.name,
     @required this.description,
     @required this.coordinates,
-    @required this.deliveryRadius,
+    @required this.category,
+    @required this.tags,
     @required this.holidays,
     @required this.weekdayTimetable,
     this.address,

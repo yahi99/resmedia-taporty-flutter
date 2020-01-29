@@ -3,14 +3,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:resmedia_taporty_core/core.dart';
+import 'package:resmedia_taporty_customer/interface/screen/OrderCartScreen.dart';
+import 'package:resmedia_taporty_customer/interface/screen/OrderDetailScreen.dart';
 import 'package:resmedia_taporty_customer/interface/screen/AccountScreen.dart';
 import 'package:resmedia_taporty_customer/interface/screen/ChangePasswordScreeen.dart';
+import 'package:resmedia_taporty_customer/interface/screen/CheckoutScreen.dart';
+import 'package:resmedia_taporty_customer/interface/screen/EditAccountScreen.dart';
 import 'package:resmedia_taporty_customer/interface/screen/GeolocalizationScreen.dart';
 import 'package:resmedia_taporty_customer/interface/screen/LegalNotesScreen.dart';
 import 'package:resmedia_taporty_customer/interface/screen/LoginScreen.dart';
 import 'package:resmedia_taporty_customer/interface/screen/OrderListScreen.dart';
 import 'package:resmedia_taporty_customer/interface/screen/SettingsScreen.dart';
 import 'package:resmedia_taporty_customer/interface/screen/SignupScreen.dart';
+import 'package:resmedia_taporty_customer/interface/screen/SupplierListScreen.dart';
+import 'package:resmedia_taporty_customer/interface/screen/SupplierReviewListScreen.dart';
+import 'package:resmedia_taporty_customer/interface/screen/SupplierScreen.dart';
 
 void main() {
   runApp(Taporty());
@@ -115,13 +122,20 @@ class _TaportyState extends State<Taporty> {
         "/login": (context) => LoginScreen(),
         "/signup": (context) => SignupScreen(),
         "/account": (context) => AccountScreen(),
+        "/editAccount": (context) => EditAccountScreen(),
         "/orderList": (context) => OrderListScreen(),
+        "/orderDetail": (context) => OrderDetailScreen(),
+        "/orderCart": (context) => OrderCartScreen(),
         "/legalNotes": (context) => LegalNotesScreen(),
         "/changePassword": (context) => ChangePasswordScreen(),
         "/settings": (context) => SettingsScreen(),
         "/geolocalization": (context) => GeolocalizationScreen(),
+        "/supplier": (context) => SupplierScreen(),
+        "/supplierReviewList": (context) => SupplierReviewListScreen(),
+        "/supplierList": (context) => SupplierListScreen(),
+        "/checkout": (context) => CheckoutScreen(),
       },
-      // TODO: Aggiungere SplashScreen (vedi SalentoSmart)
+      // TODO: Aggiungere controllo sull'utente per caricare la prima schermata (vedi SalentoSmart)
       initialRoute: "/login",
     );
   }

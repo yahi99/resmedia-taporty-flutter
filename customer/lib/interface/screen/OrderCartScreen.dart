@@ -2,29 +2,20 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:resmedia_taporty_core/core.dart';
 import 'package:resmedia_taporty_customer/generated/provider.dart';
-import 'package:resmedia_taporty_customer/interface/page/ModifyOrderCartPage.dart';
 import 'package:resmedia_taporty_customer/blocs/OrderBloc.dart';
+import 'package:resmedia_taporty_customer/interface/screen/ModifyOrderCartScreen.dart';
 
-class OrderCartPage extends StatefulWidget {
-  final String orderId;
-
-  OrderCartPage({
+class OrderCartScreen extends StatefulWidget {
+  OrderCartScreen({
     Key key,
-    @required this.orderId,
   }) : super(key: key);
 
   @override
-  _OrderCartPageState createState() => _OrderCartPageState();
+  _OrderCartScreenState createState() => _OrderCartScreenState();
 }
 
-class _OrderCartPageState extends State<OrderCartPage> {
+class _OrderCartScreenState extends State<OrderCartScreen> {
   final _orderBloc = $Provider.of<OrderBloc>();
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _orderBloc.setOrderStream(widget.orderId);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -140,7 +131,7 @@ class _OrderCartPageState extends State<OrderCartPage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => ModifyOrderCartPage(
+                    builder: (context) => ModifyOrderCartScreen(
                       order: order,
                     ),
                   ),

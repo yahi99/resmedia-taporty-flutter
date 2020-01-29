@@ -7,13 +7,11 @@ import 'package:resmedia_taporty_core/src/models/OrderProductModel.dart';
 import 'package:resmedia_taporty_core/src/models/SupplierModel.dart';
 import 'package:resmedia_taporty_core/src/models/ShiftModel.dart';
 import 'package:resmedia_taporty_core/src/models/UserModel.dart';
-import 'package:resmedia_taporty_core/src/resources/MixinSupplierProvider.dart';
-import 'package:resmedia_taporty_core/src/resources/MixinUserProvider.dart';
-import 'package:resmedia_taporty_core/src/config/Collections.dart';
+import 'package:resmedia_taporty_core/src/resources/DatabaseService.dart';
+import 'package:resmedia_taporty_core/src/resources/UserProviderExtension.dart';
+import 'package:resmedia_taporty_core/src/resources/SupplierProviderExtension.dart';
 
-mixin MixinOrderProvider on MixinUserProvider, MixinSupplierProvider {
-  final orderCollection = Firestore.instance.collection(Collections.ORDERS);
-
+extension OrderProviderExtension on DatabaseService {
   Stream<OrderModel> getOrderStream(String orderId) {
     return orderCollection.document(orderId).snapshots().map((snap) => OrderModel.fromFirebase(snap));
   }
@@ -53,8 +51,8 @@ mixin MixinOrderProvider on MixinUserProvider, MixinSupplierProvider {
       String driverId, ShiftModel selectedShift, String cardId) async {
     UserModel customer = await getUserById(customerId);
     UserModel driver = await getUserById(driverId);
-    SupplierModel supplier = await getSupplier(supplierId);
-    List<ProductModel> products = await getProductList(supplierId);
+    SupplierModel supplier = await getSupplierStream(supplierId).first;
+    List<ProductModel> products = await getProductListStream(supplierId).first;
 
     var orderProducts = _getOrderProducts(products, cartProducts, customerId);
 

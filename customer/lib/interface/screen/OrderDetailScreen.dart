@@ -5,36 +5,32 @@ import 'package:intl/intl.dart';
 import 'package:rating_bar/rating_bar.dart';
 import 'package:resmedia_taporty_core/core.dart';
 import 'package:resmedia_taporty_customer/generated/provider.dart';
-import 'package:resmedia_taporty_customer/interface/page/OrderCartPage.dart';
 import 'package:toast/toast.dart';
 import 'package:resmedia_taporty_customer/blocs/OrderBloc.dart';
 
-class OrderDetailPage extends StatefulWidget {
-  final String orderId;
-
-  OrderDetailPage({
+class OrderDetailScreen extends StatefulWidget {
+  OrderDetailScreen({
     Key key,
-    @required this.orderId,
   }) : super(key: key);
 
   @override
-  _OrderDetailPageState createState() => _OrderDetailPageState();
+  _OrderDetailScreenState createState() => _OrderDetailScreenState();
 }
 
-class _OrderDetailPageState extends State<OrderDetailPage> {
+class _OrderDetailScreenState extends State<OrderDetailScreen> {
   final _orderBloc = $Provider.of<OrderBloc>();
   final _db = DatabaseService();
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _orderBloc.setOrderStream(widget.orderId);
-  }
 
   final _restReviewBodyKey = new GlobalKey<FormFieldState>();
   final _driverReviewBodyKey = new GlobalKey<FormFieldState>();
   double _restRating = 5;
   double _driverRating = 5;
+
+  @override
+  void dispose() {
+    _orderBloc.clear();
+    super.dispose();
+  }
 
   // TODO: Metti in un widget a sè stante e definisci il ReviewModel
   void _addSupplierReview(OrderModel order) {
@@ -204,7 +200,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
     );
   }
 
-  void _askCancelConfirmation() async {
+  void _askCancelConfirmation(OrderModel order) async {
     showDialog(
       context: context,
       builder: (_context) {
@@ -231,7 +227,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                         onPressed: () async {
                           Navigator.pop(context);
                           try {
-                            await _db.updateOrderState(widget.orderId, OrderState.CANCELLED);
+                            await _db.updateOrderState(order.id, OrderState.CANCELLED);
                             Toast.show("Ordine cancellato", context);
                           } catch (e) {
                             print(e);
@@ -301,12 +297,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                   ),
                   Divider(color: Colors.grey, height: 0),
                   InkWell(
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => OrderCartPage(orderId: order.id),
-                      ),
-                    ),
+                    onTap: () => Navigator.pushNamed(context, "/orderCart"),
                     child: Row(
                       children: <Widget>[
                         Expanded(
@@ -402,7 +393,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                       ],
                     ),
                   if (order.hasDriverReview == true || order.state != OrderState.DELIVERED) _buildSubjectDetails(order.driverImageUrl, order.driverName, order.driverPhoneNumber),
-                  _buildCancelWidgets(order.state),
+                  _buildCancelWidgets(order),
                 ],
               ),
             );
@@ -546,8 +537,8 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
     );
   }
 
-  _buildCancelWidgets(OrderState state) {
-    if (state == OrderState.NEW || state == OrderState.ACCEPTED || state == OrderState.READY || state == OrderState.MODIFIED) {
+  _buildCancelWidgets(OrderModel order) {
+    if (order.state == OrderState.NEW || order.state == OrderState.ACCEPTED || order.state == OrderState.READY || order.state == OrderState.MODIFIED) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -557,7 +548,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
             child: RaisedButton(
               color: ColorTheme.ACCENT_BLUE,
               onPressed: () {
-                _askCancelConfirmation();
+                _askCancelConfirmation(order);
               },
               child: Text(
                 "Annulla ordine",
@@ -567,7 +558,7 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
         ],
       );
     }
-    if (state == OrderState.PICKED_UP) {
+    if (order.state == OrderState.PICKED_UP) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[

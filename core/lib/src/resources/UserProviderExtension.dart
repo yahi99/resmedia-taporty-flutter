@@ -1,11 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:resmedia_taporty_core/src/models/UserModel.dart';
-import 'package:resmedia_taporty_core/src/config/Collections.dart';
+import 'package:resmedia_taporty_core/src/resources/DatabaseService.dart';
 
-mixin MixinUserProvider {
-  final userCollection = Firestore.instance.collection(Collections.USERS);
-
+extension UserProviderExtension on DatabaseService {
   Stream<UserModel> getUserStream(FirebaseUser user) {
     return userCollection.document(user.uid).snapshots().map((snap) {
       return UserModel.fromFirebase(snap);

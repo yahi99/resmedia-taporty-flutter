@@ -4,7 +4,7 @@ description: Common shared code for Taporty mobile apps
 version: 0.0.1
 
 environment:
-  sdk: ">=2.2.2 <3.0.0"
+  sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
   json_annotation: ^3.0.0
@@ -14,6 +14,7 @@ dependencies:
   geolocator: ^5.1.5
   cloud_functions: ^0.4.1+6
   cloud_firestore: ^0.13.0+1
+  geoflutterfire: ^2.0.3+8
   firebase_storage: ^3.1.1
   firebase_auth: ^0.15.3+1
   firebase_messaging: ^6.0.9

@@ -21,7 +21,7 @@ class SuppliersBloc implements Bloc {
 
   fetchAvailableStartTimes(DateTime date, String driverId) async {
     var driver = await _db.getDriverById(driverId);
-    var suppliers = await _db.getSupplierList();
+    var suppliers = await _db.getSupplierListStream().first;
     var filteredSuppliers = List<SupplierModel>();
     for (var supplier in suppliers) {
       if ((await DistanceHelper.fetchAproximateDistance(supplier.coordinates, driver.coordinates)) <= driver.deliveryRadius * 1000) filteredSuppliers.add(supplier);

@@ -13,8 +13,6 @@ class SupplierListBloc implements Bloc {
 
   @protected
   dispose() {
-    _filteredCategoryListController.close();
-    _filteredSupplierListController.close();
     _supplierListController.close();
     _categoryController.close();
     _categoryIdController.close();
@@ -29,9 +27,6 @@ class SupplierListBloc implements Bloc {
   // Controller per le categorie ottenute dal database
   BehaviorSubject<List<SupplierCategoryModel>> _categoryListController;
 
-  // Controller per le categorie filtrate in base ai fornitori presenti nella zona intorno all'utente e alla SearchBar
-  BehaviorSubject<List<SupplierCategoryModel>> _filteredCategoryListController;
-
   // Controller per l'id della categoria selezionata
   BehaviorSubject<String> _categoryIdController;
 
@@ -40,9 +35,6 @@ class SupplierListBloc implements Bloc {
 
   // Controller per i fornitori ottenuti dal database
   BehaviorSubject<List<SupplierModel>> _supplierListController;
-
-  // Controller per i fornitori filtrati in base a categoria e tag selezionati e alla SearchBar
-  BehaviorSubject<List<SupplierModel>> _filteredSupplierListController;
 
   // Controller per i tag selezionati dall'utente
   BehaviorSubject<List<String>> _tagListController;
@@ -53,9 +45,20 @@ class SupplierListBloc implements Bloc {
 
   Stream<SupplierCategoryModel> get outCategory => _categoryController.stream;
 
-  Stream<List<SupplierModel>> get outSuppliers => _filteredSupplierListController.stream;
+  Stream<List<SupplierModel>> get outSuppliers => CombineLatestStream.combine4(
+        searchBarController,
+        _categoryIdController,
+        _tagListController,
+        _supplierListController,
+        filteredSuppliers,
+      );
 
-  Stream<List<SupplierCategoryModel>> get outCategories => _filteredCategoryListController.stream;
+  Stream<List<SupplierCategoryModel>> get outCategories => CombineLatestStream.combine3(
+        searchBarController,
+        _categoryListController,
+        _supplierListController,
+        filteredCategories,
+      );
 
   SupplierListBloc.instance() {
     var locationBloc = $Provider.of<LocationBloc>();
@@ -73,45 +76,18 @@ class SupplierListBloc implements Bloc {
       if (location?.coordinates == null) return Stream.value(null);
       return _db.getSupplierListByLocationStream(location.coordinates);
     }));
-
-    _filteredCategoryListController = BehaviorSubject();
-    _filteredSupplierListController = BehaviorSubject();
-
-    searchBarController.listen((searchBarValue) => updateFilteredStreams(searchBarValue: searchBarValue));
-    _categoryListController.listen((categories) => updateFilteredStreams(categories: categories));
-    _categoryIdController.listen((categoryId) => updateFilteredStreams(categoryId: categoryId));
-    _tagListController.listen((tags) => updateFilteredStreams(tags: tags));
-    _supplierListController.listen((suppliers) => updateFilteredStreams(suppliers: suppliers));
   }
 
-  String get _searchBarValue => searchBarController.value;
-  List<SupplierCategoryModel> get _categories => _categoryListController.value;
-  String get _categoryId => _categoryIdController.value;
-  List<String> get _tags => _tagListController.value;
-  List<SupplierModel> get _suppliers => _supplierListController.value;
-
-  void updateFilteredStreams({String searchBarValue, List<SupplierCategoryModel> categories, String categoryId, List<String> tags, List<SupplierModel> suppliers}) {
-    searchBarValue = searchBarValue ?? _searchBarValue;
-    categories = categories ?? _categories;
-    categoryId = categoryId ?? _categoryId;
-    tags = tags ?? _tags;
-    suppliers = suppliers ?? _suppliers;
-
-    if (categoryId == null && suppliers != null && categories != null)
-      updateFilteredCategories(searchBarValue, categories, suppliers);
-    else if (categoryId != null && suppliers != null) updateFilteredSuppliers(searchBarValue, categoryId, tags, suppliers);
-  }
-
-  void updateFilteredCategories(String searchBarValue, List<SupplierCategoryModel> categories, List<SupplierModel> suppliers) {
-    _filteredCategoryListController.add(categories?.where((category) {
+  List<SupplierCategoryModel> filteredCategories(String searchBarValue, List<SupplierCategoryModel> categories, List<SupplierModel> suppliers) {
+    return categories?.where((category) {
       if (!category.name.toLowerCase().contains(searchBarValue.toLowerCase())) return false;
       if (!suppliers.any((s) => s.category == category.id)) return false;
       return true;
-    })?.toList());
+    })?.toList();
   }
 
-  void updateFilteredSuppliers(String searchBarValue, String categoryId, List<String> tags, List<SupplierModel> suppliers) {
-    _filteredSupplierListController.add(suppliers?.where((supplier) {
+  List<SupplierModel> filteredSuppliers(String searchBarValue, String categoryId, List<String> tags, List<SupplierModel> suppliers) {
+    return suppliers?.where((supplier) {
       if (supplier.category != categoryId) return false;
       if (!supplier.name.toLowerCase().contains(searchBarValue.toLowerCase())) return false;
       if (tags == null || tags.length == 0) return true;
@@ -121,7 +97,7 @@ class SupplierListBloc implements Bloc {
         }
       }
       return false;
-    })?.toList());
+    })?.toList();
   }
 
   void clear() {
@@ -135,6 +111,7 @@ class SupplierListBloc implements Bloc {
     _categoryIdController.value = categoryId;
   }
 
+  List<String> get _tags => _tagListController.value;
   void toggleTag(String tag) {
     if (_tags.contains(tag))
       _tags.remove(tag);

@@ -9,25 +9,29 @@ class OrderBloc implements Bloc {
 
   @protected
   dispose() {
-    if (_orderListController != null) _orderListController.close();
-    if (_orderController != null) _orderController.close();
+    _orderIdController.close();
+    _orderController.close();
   }
 
-  BehaviorSubject<List<OrderModel>> _orderListController;
-
-  Stream<List<OrderModel>> get outDriverOrders => _orderListController?.stream;
+  BehaviorSubject<String> _orderIdController;
 
   BehaviorSubject<OrderModel> _orderController;
 
   Stream<OrderModel> get outOrder => _orderController?.stream;
 
   setOrderStream(String orderId) {
-    _orderController = BehaviorController.catchStream(source: _db.getOrderStream(orderId));
+    _orderIdController.value = orderId;
   }
 
-  Future setDriverStream(String driverId) async {
-    _orderListController = BehaviorController.catchStream(source: _db.getDriverOrdersStream(driverId));
+  void clear() {
+    _orderIdController.value = null;
   }
 
-  OrderBloc.instance();
+  OrderBloc.instance() {
+    _orderIdController = BehaviorSubject.seeded(null);
+    _orderController = BehaviorController.catchStream<OrderModel>(source: _orderIdController.switchMap((orderId) {
+      if (orderId == null) return Stream.value(null);
+      return _db.getOrderStream(orderId);
+    }));
+  }
 }

@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:dash/dash.dart';
+import 'package:easy_blocs/easy_blocs.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -41,22 +42,20 @@ class UserBloc implements Bloc {
   Stream<UserModel> get outUser => _userController.stream;
   UserModel get user => _userController.value;
 
-  StreamSubscription<UserModel> _userControllerSub;
-
   UserBloc.instance() {
-    _firebaseAuth.onAuthStateChanged.listen((_firebaseUser) async {
-      if (_firebaseUser == null)
-        _firebaseUserController.add(null);
-      else {
-        if (!(await _isCustomer(_firebaseUser))) {
-          _firebaseUserController.add(null);
-        } else {
-          _firebaseUserController.add(_firebaseUser);
-          await _userControllerSub?.cancel();
-          _userControllerSub = _db.getUserStream(_firebaseUser).listen((user) => _userController.add(user));
-        }
+    _firebaseUserController = BehaviorController.catchStream(source: _firebaseAuth.onAuthStateChanged.asyncMap((_firebaseUser) async {
+      if (_firebaseUser == null) return null;
+      if (!(await _isCustomer(_firebaseUser))) {
+        return null;
+      } else {
+        return _firebaseUser;
       }
-    });
+    }));
+
+    _userController = BehaviorController.catchStream(source: _firebaseUserController.switchMap((_firebaseUser) {
+      if (_firebaseUser == null) return Stream.value(null);
+      return _db.getUserStream(_firebaseUser);
+    }));
   }
 
   Future<bool> _isCustomer(FirebaseUser user) async {

@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:resmedia_taporty_driver/blocs/DriverBloc.dart';
 import 'package:resmedia_taporty_driver/blocs/OrderBloc.dart';
 import 'package:resmedia_taporty_core/core.dart';
+import 'package:resmedia_taporty_driver/blocs/OrderListBloc.dart';
 import 'package:resmedia_taporty_driver/blocs/ShiftBloc.dart';
 import 'package:resmedia_taporty_driver/generated/provider.dart';
 import 'package:toast/toast.dart';
@@ -23,14 +24,6 @@ class _LoginScreenState extends State<LoginScreen> {
   static final RegExp emailRegExp = new RegExp(r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$");
 
   bool _isLoading = false;
-
-  Future<void> setDriver(String uid) async {
-    final userBloc = $Provider.of<DriverBloc>();
-    final orderBloc = $Provider.of<OrderBloc>();
-    await orderBloc.setDriverStream((await userBloc.outFirebaseUser.first).uid);
-    final shiftBloc = $Provider.of<ShiftBloc>();
-    await shiftBloc.setDriverStream((await userBloc.outFirebaseUser.first).uid);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -90,8 +83,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   _isLoading = true;
                                 });
                                 try {
-                                  var authResult = await driverBloc.signInWithEmailAndPassword(_emailController.text, _passwordController.text);
-                                  await setDriver(authResult.user.uid);
+                                  await driverBloc.signInWithEmailAndPassword(_emailController.text, _passwordController.text);
                                   Navigator.popAndPushNamed(context, "/home");
                                 } on NotADriverException catch (err) {
                                   print(err);

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:dash/dash.dart';
+import 'package:easy_blocs/easy_blocs.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meta/meta.dart';
 import 'package:resmedia_taporty_core/core.dart';
@@ -29,30 +30,28 @@ class DriverBloc implements Bloc {
     _driverController?.close();
   }
 
-  BehaviorSubject<FirebaseUser> _firebaseUserController = BehaviorSubject();
+  BehaviorSubject<FirebaseUser> _firebaseUserController;
 
   Stream<FirebaseUser> get outFirebaseUser => _firebaseUserController.stream;
 
-  BehaviorSubject<DriverModel> _driverController = BehaviorSubject();
+  BehaviorSubject<DriverModel> _driverController;
 
   Stream<DriverModel> get outDriver => _driverController.stream;
 
-  StreamSubscription<DriverModel> _driverControllerSub;
-
   DriverBloc.instance() {
-    _firebaseAuth.onAuthStateChanged.listen((_firebaseUser) async {
-      if (_firebaseUser == null)
-        _firebaseUserController.add(null);
-      else {
-        if (!(await _isDriver(_firebaseUser))) {
-          _firebaseUserController.add(null);
-        } else {
-          _firebaseUserController.add(_firebaseUser);
-          await _driverControllerSub?.cancel();
-          _driverControllerSub = _db.getDriverStream(_firebaseUser).listen((user) => _driverController.add(user));
-        }
+    _firebaseUserController = BehaviorController.catchStream(source: _firebaseAuth.onAuthStateChanged.asyncMap((_firebaseUser) async {
+      if (_firebaseUser == null) return null;
+      if (!(await _isDriver(_firebaseUser))) {
+        return null;
+      } else {
+        return _firebaseUser;
       }
-    });
+    }));
+
+    _driverController = BehaviorController.catchStream(source: _firebaseUserController.switchMap((_firebaseUser) {
+      if (_firebaseUser == null) return Stream.value(null);
+      return _db.getDriverStream(_firebaseUser);
+    }));
   }
 
   Future<bool> _isDriver(FirebaseUser user) async {

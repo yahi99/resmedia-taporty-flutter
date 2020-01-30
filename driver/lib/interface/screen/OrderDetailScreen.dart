@@ -7,25 +7,22 @@ import 'package:resmedia_taporty_driver/generated/provider.dart';
 import 'package:resmedia_taporty_driver/interface/page/CustomerDetailPage.dart';
 import 'package:resmedia_taporty_driver/interface/page/SupplierDetailPage.dart';
 
-class OrderDetailPage extends StatefulWidget {
-  final String orderId;
-
-  OrderDetailPage({
+class OrderDetailScreen extends StatefulWidget {
+  OrderDetailScreen({
     Key key,
-    @required this.orderId,
   }) : super(key: key);
 
   @override
-  _OrderDetailPageState createState() => _OrderDetailPageState();
+  _OrderDetailScreenState createState() => _OrderDetailScreenState();
 }
 
-class _OrderDetailPageState extends State<OrderDetailPage> {
+class _OrderDetailScreenState extends State<OrderDetailScreen> {
   final _orderBloc = $Provider.of<OrderBloc>();
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _orderBloc.setOrderStream(widget.orderId);
+  void dispose() {
+    _orderBloc.clear();
+    super.dispose();
   }
 
   @override
@@ -88,26 +85,12 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
                   ),
                   HeaderWidget("FORNITORE"),
                   InkWell(
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => SupplierDetailPage(
-                          orderId: widget.orderId,
-                        ),
-                      ),
-                    ),
+                    onTap: () => Navigator.pushNamed(context, "/supplierDetail"),
                     child: _buildSubjectDetails(order.supplierImageUrl, order.supplierName, order.supplierAddress),
                   ),
                   HeaderWidget("CLIENTE"),
                   InkWell(
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => CustomerDetailPage(
-                          orderId: widget.orderId,
-                        ),
-                      ),
-                    ),
+                    onTap: () => Navigator.pushNamed(context, "/clientDetail"),
                     child: _buildSubjectDetails(order.customerImageUrl, order.customerName, order.customerAddress),
                   ),
                 ],
@@ -169,9 +152,12 @@ class _OrderDetailPageState extends State<OrderDetailPage> {
         children: <Widget>[
           Container(
             width: 80,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(6.0),
-              child: imageWidget,
+            child: Hero(
+              tag: "image",
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(6.0),
+                child: imageWidget,
+              ),
             ),
           ),
           Expanded(

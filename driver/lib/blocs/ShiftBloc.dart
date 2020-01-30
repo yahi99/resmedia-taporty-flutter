@@ -1,6 +1,8 @@
 import 'package:dash/dash.dart';
 import 'package:easy_blocs/easy_blocs.dart';
 import 'package:resmedia_taporty_core/core.dart';
+import 'package:resmedia_taporty_driver/blocs/DriverBloc.dart';
+import 'package:resmedia_taporty_driver/generated/provider.dart';
 import 'package:rxdart/rxdart.dart';
 
 class ShiftBloc extends Bloc {
@@ -15,7 +17,11 @@ class ShiftBloc extends Bloc {
     _reservedShiftsController.close();
   }
 
-  Future setDriverStream(String driverId) async {
-    _reservedShiftsController = BehaviorController.catchStream(source: _db.getReservedShiftsStream(driverId));
+  ShiftBloc.instance() {
+    var driverBloc = $Provider.of<DriverBloc>();
+    _reservedShiftsController = BehaviorController.catchStream<List<ShiftModel>>(source: driverBloc.outDriver.switchMap((driver) {
+      if (driver?.id == null) return Stream.value(null);
+      return _db.getReservedShiftsStream(driver.id);
+    }));
   }
 }

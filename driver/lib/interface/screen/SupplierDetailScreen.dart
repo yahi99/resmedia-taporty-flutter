@@ -3,25 +3,23 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:resmedia_taporty_core/core.dart';
+import 'package:resmedia_taporty_driver/blocs/OrderBloc.dart';
 import 'package:resmedia_taporty_driver/generated/provider.dart';
 import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:resmedia_taporty_driver/blocs/OrderBloc.dart';
 
-class CustomerDetailPage extends StatefulWidget {
-  final String orderId;
-
-  CustomerDetailPage({Key key, this.orderId}) : super(key: key);
+class SupplierDetailScreen extends StatefulWidget {
+  SupplierDetailScreen({Key key}) : super(key: key);
 
   @override
-  _CustomerDetailPageState createState() => _CustomerDetailPageState();
+  _SupplierDetailScreenState createState() => _SupplierDetailScreenState();
 }
 
-class _CustomerDetailPageState extends State<CustomerDetailPage> {
+class _SupplierDetailScreenState extends State<SupplierDetailScreen> {
   final _db = DatabaseService();
   final _orderBloc = $Provider.of<OrderBloc>();
 
-  void _askPermission() async {
+  void _askPermission(String orderId) async {
     showDialog(
       context: context,
       builder: (_context) {
@@ -33,7 +31,7 @@ class _CustomerDetailPageState extends State<CustomerDetailPage> {
             children: <Widget>[
               Column(
                 children: <Widget>[
-                  Text('Sicuro di avere consegnato il pacco?'),
+                  Text('Sicuro di avere ritirato il pacco?'),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
@@ -48,10 +46,9 @@ class _CustomerDetailPageState extends State<CustomerDetailPage> {
                         onPressed: () async {
                           Navigator.pop(context);
                           try {
-                            await _db.updateOrderState(widget.orderId, OrderState.DELIVERED);
-                            Toast.show("Ordine consegnato", context);
+                            await _db.updateOrderState(orderId, OrderState.PICKED_UP);
+                            Toast.show("Ordine ritirato", context);
                           } catch (e) {
-                            print(e);
                             Toast.show("Errore inaspettato", context);
                           }
                         },
@@ -71,7 +68,7 @@ class _CustomerDetailPageState extends State<CustomerDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Cliente"),
+        title: Text("Fornitore"),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {
@@ -88,7 +85,7 @@ class _CustomerDetailPageState extends State<CustomerDetailPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  HeaderWidget("POSIZIONE CLIENTE"),
+                  HeaderWidget("POSIZIONE FORNITORE"),
                   _buildMap(order),
                   HeaderWidget("INFORMAZIONI"),
                   _buildInfo(order),
@@ -117,20 +114,20 @@ class _CustomerDetailPageState extends State<CustomerDetailPage> {
           mapType: MapType.normal,
           myLocationButtonEnabled: false,
           initialCameraPosition: CameraPosition(
-            target: LatLng(order.customerCoordinates.latitude, order.customerCoordinates.longitude),
+            target: LatLng(order.supplierCoordinates.latitude, order.supplierCoordinates.longitude),
             zoom: 13,
           ),
           markers: Set.from(
             <Marker>[
               Marker(
-                markerId: MarkerId("customerCoordinates"),
-                position: LatLng(order.customerCoordinates.latitude, order.customerCoordinates.longitude),
+                markerId: MarkerId("supplierCoordinates"),
+                position: LatLng(order.supplierCoordinates.latitude, order.supplierCoordinates.longitude),
                 icon: BitmapDescriptor.defaultMarker,
               ),
             ],
           ),
           onTap: (latLng) async {
-            String googleUrl = 'https://www.google.com/maps/search/?api=1&query=${order.customerCoordinates.latitude},${order.customerCoordinates.longitude}';
+            String googleUrl = 'https://www.google.com/maps/search/?api=1&query=${order.supplierCoordinates.latitude},${order.supplierCoordinates.longitude}';
             if (await canLaunch(googleUrl)) {
               await launch(googleUrl);
             }
@@ -142,24 +139,6 @@ class _CustomerDetailPageState extends State<CustomerDetailPage> {
 
   _buildInfo(OrderModel order) {
     final textTheme = Theme.of(context).textTheme;
-    Widget imageWidget = Image(
-      fit: BoxFit.cover,
-      image: AssetImage("assets/img/default_profile_photo.jpg"),
-    );
-    if (order.customerImageUrl != null && order.customerImageUrl != "") {
-      imageWidget = CachedNetworkImage(
-        imageUrl: order.customerImageUrl,
-        fit: BoxFit.cover,
-        placeholder: (context, url) => Center(
-          child: SizedBox(
-            child: CircularProgressIndicator(),
-            height: 50.0,
-            width: 50.0,
-          ),
-        ),
-        errorWidget: (context, url, error) => Center(child: Icon(Icons.error, color: Colors.grey)),
-      );
-    }
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
@@ -169,9 +148,23 @@ class _CustomerDetailPageState extends State<CustomerDetailPage> {
             children: <Widget>[
               Container(
                 constraints: BoxConstraints(maxWidth: 130, maxHeight: 130),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(6.0),
-                  child: imageWidget,
+                child: Hero(
+                  tag: "image",
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(6.0),
+                    child: CachedNetworkImage(
+                      imageUrl: order.supplierImageUrl,
+                      fit: BoxFit.cover,
+                      placeholder: (context, url) => Center(
+                        child: SizedBox(
+                          child: CircularProgressIndicator(),
+                          height: 50.0,
+                          width: 50.0,
+                        ),
+                      ),
+                      errorWidget: (context, url, error) => Center(child: Icon(Icons.error, color: Colors.grey)),
+                    ),
+                  ),
                 ),
               ),
               Expanded(
@@ -182,13 +175,13 @@ class _CustomerDetailPageState extends State<CustomerDetailPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        order.customerName,
+                        order.supplierName,
                         style: textTheme.subhead.copyWith(fontWeight: FontWeight.bold),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(top: 8.0),
                         child: Text(
-                          order.customerAddress,
+                          order.supplierAddress,
                           style: TextStyle(fontSize: 14),
                         ),
                       ),
@@ -197,8 +190,8 @@ class _CustomerDetailPageState extends State<CustomerDetailPage> {
                         child: RaisedButton(
                           color: ColorTheme.ACCENT_BLUE,
                           onPressed: () async {
-                            if (await canLaunch("tel:${order.customerPhoneNumber}")) {
-                              await launch("tel:${order.customerPhoneNumber}");
+                            if (await canLaunch("tel:${order.supplierPhoneNumber}")) {
+                              await launch("tel:${order.supplierPhoneNumber}");
                             }
                           },
                           child: Text(
@@ -226,11 +219,11 @@ class _CustomerDetailPageState extends State<CustomerDetailPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
-              if (order.state == OrderState.PICKED_UP)
+              if (order.state == OrderState.ACCEPTED || order.state == OrderState.READY)
                 RaisedButton(
                   color: ColorTheme.ACCENT_BLUE,
                   onPressed: () async {
-                    String googleUrl = 'https://www.google.com/maps/search/?api=1&query=${order.customerCoordinates.latitude},${order.customerCoordinates.longitude}';
+                    String googleUrl = 'https://www.google.com/maps/search/?api=1&query=${order.supplierCoordinates.latitude},${order.supplierCoordinates.longitude}';
                     if (await canLaunch(googleUrl)) {
                       await launch(googleUrl);
                     }
@@ -239,14 +232,14 @@ class _CustomerDetailPageState extends State<CustomerDetailPage> {
                     "Start",
                   ),
                 ),
-              if (order.state == OrderState.PICKED_UP)
+              if (order.state == OrderState.READY)
                 RaisedButton(
                   color: ColorTheme.ACCENT_BLUE,
                   onPressed: () {
-                    _askPermission();
+                    _askPermission(order.id);
                   },
                   child: Text(
-                    "Consegnato",
+                    "Ritirato",
                   ),
                 ),
             ],
@@ -265,12 +258,9 @@ class _CustomerDetailPageState extends State<CustomerDetailPage> {
     } else if (order.state == OrderState.READY) {
       date = DateTimeHelper.getCompleteDateTimeString(order.readyTimestamp);
       string = "L'ordine è pronto per essere ritirato presso il fornitore.";
-    } else if (order.state == OrderState.PICKED_UP) {
+    } else if (order.state == OrderState.PICKED_UP || order.state == OrderState.DELIVERED) {
       date = DateTimeHelper.getCompleteDateTimeString(order.pickupTimestamp);
       string = "Hai ritirato l'ordine dal fornitore.";
-    } else if (order.state == OrderState.DELIVERED) {
-      date = DateTimeHelper.getCompleteDateTimeString(order.deliveryTimestamp);
-      string = "Hai consegnato l'ordine al cliente.";
     } else
       return Container();
     return Padding(

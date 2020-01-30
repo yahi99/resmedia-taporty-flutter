@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:resmedia_taporty_driver/blocs/OrderBloc.dart';
-import 'package:resmedia_taporty_driver/interface/page/OrderDetailPage.dart';
+import 'package:resmedia_taporty_driver/blocs/OrderListBloc.dart';
 import 'package:resmedia_taporty_driver/interface/view/OrderView.dart';
 import 'package:resmedia_taporty_core/core.dart';
 import 'package:resmedia_taporty_driver/generated/provider.dart';
@@ -11,7 +11,7 @@ class OrderTab extends StatefulWidget {
 }
 
 class _OrderTabState extends State<OrderTab> {
-  final orderBloc = $Provider.of<OrderBloc>();
+  final orderListBloc = $Provider.of<OrderListBloc>();
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +19,7 @@ class _OrderTabState extends State<OrderTab> {
     return Scaffold(
       body: SingleChildScrollView(
         child: StreamBuilder<List<OrderModel>>(
-          stream: orderBloc.outDriverOrders,
+          stream: orderListBloc.outOrders,
           builder: (_, orderListSnapshot) {
             if (orderListSnapshot.connectionState == ConnectionState.active) {
               if (orderListSnapshot.hasData && orderListSnapshot.data.length > 0) {
@@ -47,14 +47,13 @@ class _OrderTabState extends State<OrderTab> {
                               itemCount: orders.length,
                               itemBuilder: (_context, index) {
                                 return InkWell(
-                                  onTap: () => Navigator.push(
-                                    _context,
-                                    MaterialPageRoute(
-                                      builder: (context) => OrderDetailPage(
-                                        orderId: orders[index].id,
-                                      ),
-                                    ),
-                                  ),
+                                  onTap: () {
+                                    $Provider.of<OrderBloc>().setOrderStream(orders[index].id);
+                                    Navigator.pushNamed(
+                                      _context,
+                                      "/orderDetail",
+                                    );
+                                  },
                                   child: OrderView(
                                     order: orders[index],
                                   ),

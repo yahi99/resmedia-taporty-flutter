@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:rating_bar/rating_bar.dart';
 import 'package:resmedia_taporty_core/core.dart';
-import 'package:resmedia_taporty_customer/interface/screen/SupplierReviewListScreen.dart';
 
 class InfoSupplierPage extends StatelessWidget {
   final SupplierModel supplier;

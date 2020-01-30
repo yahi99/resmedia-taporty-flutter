@@ -8,7 +8,6 @@ import 'package:google_maps_webservice/places.dart';
 import 'package:resmedia_taporty_core/core.dart';
 import 'package:resmedia_taporty_customer/blocs/LocationBloc.dart';
 import 'package:resmedia_taporty_customer/generated/provider.dart';
-import 'package:resmedia_taporty_customer/interface/screen/SupplierListScreen.dart';
 import 'package:toast/toast.dart';
 
 class GeolocalizationScreen extends StatefulWidget {

@@ -39,9 +39,10 @@ class CartBloc extends Bloc {
 
   StreamSubscription productSubscription;
   Future loadCart() async {
-    var customerId = userBloc.user.id;
+    var customerId = userBloc.user?.id;
     var supplierId = supplierBloc.supplierId;
 
+    if (customerId == null || supplierId == null) return;
     _customerIdController.add(customerId);
     _supplierIdController.add(supplierId);
 

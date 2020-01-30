@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:resmedia_taporty_core/core.dart';
 import 'package:resmedia_taporty_core/src/models/CartProductModel.dart';

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:resmedia_taporty_core/core.dart';
 import 'package:resmedia_taporty_customer/blocs/CartBloc.dart';
 import 'package:resmedia_taporty_customer/blocs/SupplierBloc.dart';
@@ -61,68 +60,54 @@ class ProductsBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return (products.isNotEmpty)
-        ? GroupsVoid(
-            children: products.map<Widget, List<Widget>>((nameGroup, products) {
-              return MapEntry(
-                Text(translateProductCategory(nameGroup)),
-                products
-                    .map((product) => ProductView(
-                          product: product,
-                        ))
-                    .toList(),
-              );
-            }),
-          )
-        : Padding(
-            child: Text(
-              'Non ci sono prodotti',
-              style: Theme.of(context).textTheme.subtitle,
-            ),
-            padding: EdgeInsets.all(16.0),
-          );
-  }
-}
-
-class GroupsVoid extends StatelessWidget {
-  final Map<Widget, List<Widget>> children;
-
-  GroupsVoid({
-    Key key,
-    @required this.children,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return SingleChildScrollView(
-      child: Column(
-        children: children.keys.map<Widget>((group) {
-          final products = children[group];
-          return StickyHeader(
-            header: Container(
-              width: double.infinity,
-              color: ColorTheme.LIGHT_GREY,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                child: DefaultTextStyle(
-                  style: theme.textTheme.subtitle,
-                  child: group,
+    if (products.isNotEmpty) {
+      var widgetMap = products.map<Widget, List<Widget>>((nameGroup, products) {
+        return MapEntry(
+          Text(translateProductCategory(nameGroup)),
+          products
+              .map((product) => ProductView(
+                    product: product,
+                  ))
+              .toList(),
+        );
+      });
+      return SingleChildScrollView(
+        child: Column(
+          children: widgetMap.keys.map<Widget>((group) {
+            final productWidgets = widgetMap[group];
+            return StickyHeader(
+              header: Container(
+                width: double.infinity,
+                color: ColorTheme.LIGHT_GREY,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                  child: DefaultTextStyle(
+                    style: theme.textTheme.subtitle,
+                    child: group,
+                  ),
                 ),
               ),
-            ),
-            content: ListView.builder(
-              physics: NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemCount: products.length,
-              itemBuilder: (_, index) => Padding(
-                padding: EdgeInsets.all(16.0),
-                child: products[index],
+              content: ListView.builder(
+                physics: NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: productWidgets.length,
+                itemBuilder: (_, index) => Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: productWidgets[index],
+                ),
               ),
-            ),
-          );
-        }).toList(),
+            );
+          }).toList(),
+        ),
+      );
+    }
+    return Padding(
+      child: Text(
+        'Non ci sono prodotti',
+        style: Theme.of(context).textTheme.subtitle,
       ),
+      padding: EdgeInsets.all(16.0),
     );
   }
 }

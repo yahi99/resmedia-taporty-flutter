@@ -2,10 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:resmedia_taporty_driver/blocs/DriverBloc.dart';
-import 'package:resmedia_taporty_driver/blocs/OrderBloc.dart';
 import 'package:resmedia_taporty_core/core.dart';
-import 'package:resmedia_taporty_driver/blocs/OrderListBloc.dart';
-import 'package:resmedia_taporty_driver/blocs/ShiftBloc.dart';
 import 'package:resmedia_taporty_driver/generated/provider.dart';
 import 'package:toast/toast.dart';
 

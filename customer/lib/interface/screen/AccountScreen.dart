@@ -2,12 +2,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:resmedia_taporty_core/core.dart';
-import 'package:resmedia_taporty_customer/blocs/OrderListBloc.dart';
 import 'package:resmedia_taporty_customer/generated/provider.dart';
 import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:resmedia_taporty_customer/blocs/UserBloc.dart';
-import 'package:resmedia_taporty_customer/blocs/OrderBloc.dart';
 
 class AccountScreen extends StatelessWidget {
   final AuthService _auth = AuthService();

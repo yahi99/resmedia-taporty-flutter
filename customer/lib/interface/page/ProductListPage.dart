@@ -7,7 +7,6 @@ import 'package:resmedia_taporty_customer/interface/view/ProductView.dart';
 import 'package:sticky_headers/sticky_headers/widget.dart';
 import 'package:tuple/tuple.dart';
 
-// TODO: Controlla il caso ci sia una sola categoria, in tal caso non dare la possibilità di filtrare
 class ProductListPage extends StatelessWidget {
   ProductListPage({Key key}) : super(key: key);
 
@@ -68,15 +67,16 @@ class ProductListPage extends StatelessWidget {
                     }).toList(),
                   ),
                 ),
-                Positioned(
-                  left: 20,
-                  bottom: 20,
-                  child: FloatingActionButton(
-                    child: Center(child: Icon(FontAwesomeIcons.slidersH)),
-                    backgroundColor: ColorTheme.BLUE,
-                    onPressed: () => supplierBloc.toggleCategorySelection(),
+                if (selectedCategories.length > 1)
+                  Positioned(
+                    left: 20,
+                    bottom: 20,
+                    child: FloatingActionButton(
+                      child: Center(child: Icon(FontAwesomeIcons.slidersH)),
+                      backgroundColor: ColorTheme.BLUE,
+                      onPressed: () => supplierBloc.toggleCategorySelection(),
+                    ),
                   ),
-                ),
               ],
             );
           },

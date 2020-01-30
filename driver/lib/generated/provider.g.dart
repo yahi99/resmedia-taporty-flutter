@@ -19,15 +19,15 @@ class $Provider extends Provider {
           return BlocCache.getBlocInstance(
               "SuppliersBloc", () => SuppliersBloc.instance());
         }
-      case RepositoryBloc:
-        {
-          return BlocCache.getBlocInstance(
-              "RepositoryBloc", () => RepositoryBloc.instance());
-        }
       case OrderBloc:
         {
           return BlocCache.getBlocInstance(
               "OrderBloc", () => OrderBloc.instance());
+        }
+      case OrderListBloc:
+        {
+          return BlocCache.getBlocInstance(
+              "OrderListBloc", () => OrderListBloc.instance());
         }
       case DriverBloc:
         {
@@ -50,14 +50,14 @@ class $Provider extends Provider {
           BlocCache.dispose("SuppliersBloc");
           break;
         }
-      case RepositoryBloc:
-        {
-          BlocCache.dispose("RepositoryBloc");
-          break;
-        }
       case OrderBloc:
         {
           BlocCache.dispose("OrderBloc");
+          break;
+        }
+      case OrderListBloc:
+        {
+          BlocCache.dispose("OrderListBloc");
           break;
         }
       case DriverBloc:

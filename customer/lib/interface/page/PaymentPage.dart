@@ -1,7 +1,7 @@
-import 'package:easy_stripe/easy_stripe.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
+import 'package:resmedia_taporty_core/core.dart';
 import 'package:resmedia_taporty_customer/blocs/StripeBloc.dart';
 import 'package:resmedia_taporty_customer/generated/provider.dart';
 import 'package:resmedia_taporty_customer/interface/screen/CheckoutScreen.dart';

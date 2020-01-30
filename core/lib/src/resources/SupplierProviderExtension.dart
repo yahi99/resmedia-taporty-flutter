@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:easy_firebase/easy_firebase.dart';
 import 'package:resmedia_taporty_core/core.dart';
 import 'package:resmedia_taporty_core/src/models/ProductModel.dart';
 import 'package:resmedia_taporty_core/src/models/SupplierModel.dart';
 import 'package:resmedia_taporty_core/src/models/ReviewModel.dart';
 import 'package:resmedia_taporty_core/src/config/Collections.dart';
+import 'package:resmedia_taporty_core/src/models/base/FirebaseModel.dart';
 
 extension SupplierProviderExtension on DatabaseService {
   Stream<List<SupplierCategoryModel>> getSupplierCategoryListStream() {
@@ -42,7 +42,7 @@ extension SupplierProviderExtension on DatabaseService {
         .collection(Collections.PRODUCTS)
         .where('state', isEqualTo: "ACCEPTED")
         .snapshots()
-        .map((querySnap) => FirebaseDatabase.fromQuerySnaps(querySnap, ProductModel.fromFirebase));
+        .map((querySnap) => fromQuerySnaps(querySnap, ProductModel.fromFirebase));
   }
 
   Stream<List<ProductModel>> getFoodListStream(String supplierId) {
@@ -52,7 +52,7 @@ extension SupplierProviderExtension on DatabaseService {
         .where('state', isEqualTo: "ACCEPTED") // ACCEPTED
         .where('type', isEqualTo: "food")
         .snapshots()
-        .map((querySnap) => FirebaseDatabase.fromQuerySnaps(querySnap, ProductModel.fromFirebase));
+        .map((querySnap) => fromQuerySnaps(querySnap, ProductModel.fromFirebase));
   }
 
   Stream<List<ProductModel>> getDrinkListStream(String supplierId) {
@@ -62,10 +62,10 @@ extension SupplierProviderExtension on DatabaseService {
         .where('state', isEqualTo: "ACCEPTED") // ACCEPTED
         .where('type', isEqualTo: "drink")
         .snapshots()
-        .map((querySnap) => FirebaseDatabase.fromQuerySnaps(querySnap, ProductModel.fromFirebase));
+        .map((querySnap) => fromQuerySnaps(querySnap, ProductModel.fromFirebase));
   }
 
   Stream<List<ReviewModel>> getReviewListStream(String supplierId) {
-    return supplierCollection.document(supplierId).collection('reviews').snapshots().map((querySnap) => FirebaseDatabase.fromQuerySnaps(querySnap, ReviewModel.fromFirebase));
+    return supplierCollection.document(supplierId).collection('reviews').snapshots().map((querySnap) => fromQuerySnaps(querySnap, ReviewModel.fromFirebase));
   }
 }

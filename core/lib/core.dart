@@ -13,6 +13,7 @@ export 'src/helper/DateTimeSerialization.dart';
 export 'src/helper/DistanceHelper.dart';
 export 'src/helper/GeopointSerialization.dart';
 export 'src/helper/Categorized.dart';
+export 'src/helper/Controller.dart';
 
 // Models
 export 'src/models/CartModel.dart';
@@ -32,6 +33,7 @@ export 'src/models/TimetableModel.dart';
 export 'src/models/UserModel.dart';
 export 'src/models/DriverModel.dart';
 export 'src/models/LocationModel.dart';
+export 'src/models/StripeSourceModel.dart';
 
 // Resources
 export 'src/resources/DatabaseService.dart';

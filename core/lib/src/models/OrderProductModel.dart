@@ -1,5 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:easy_firebase/easy_firebase.dart';
 import 'package:flutter/widgets.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
@@ -25,8 +23,6 @@ class OrderProductModel {
   });
 
   static OrderProductModel fromJson(Map json) => _$OrderProductModelFromJson(json);
-
-  static OrderProductModel fromFirebase(DocumentSnapshot snap) => FirebaseModel.fromFirebase(fromJson, snap);
 
   Map<String, dynamic> toJson() => _$OrderProductModelToJson(this);
 

@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:dash/dash.dart';
-import 'package:easy_blocs/easy_blocs.dart';
 import 'package:meta/meta.dart';
 import 'package:resmedia_taporty_core/core.dart';
 import 'package:rxdart/rxdart.dart';

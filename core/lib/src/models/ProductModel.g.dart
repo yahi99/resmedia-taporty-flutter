@@ -10,6 +10,7 @@ ProductModel _$ProductModelFromJson(Map json) {
   return ProductModel(
     path: json['path'] as String,
     name: json['name'] as String,
+    description: json['description'] as String,
     price: (json['price'] as num)?.toDouble(),
     maxQuantity: json['maxQuantity'] as int,
     type: json['type'] as String,
@@ -30,6 +31,7 @@ Map<String, dynamic> _$ProductModelToJson(ProductModel instance) {
 
   writeNotNull('path', instance.path);
   val['name'] = instance.name;
+  val['description'] = instance.description;
   val['price'] = instance.price;
   val['imageUrl'] = instance.imageUrl;
   val['maxQuantity'] = instance.maxQuantity;

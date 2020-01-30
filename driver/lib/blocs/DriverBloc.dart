@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:dash/dash.dart';
-import 'package:easy_blocs/easy_blocs.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meta/meta.dart';
 import 'package:resmedia_taporty_core/core.dart';

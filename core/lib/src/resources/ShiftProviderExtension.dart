@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:easy_firebase/easy_firebase.dart';
 import 'package:resmedia_taporty_core/src/helper/DateTimeHelper.dart';
 import 'package:resmedia_taporty_core/src/helper/DateTimeSerialization.dart';
 import 'package:resmedia_taporty_core/src/helper/DistanceHelper.dart';
 import 'package:resmedia_taporty_core/src/models/SupplierModel.dart';
 import 'package:resmedia_taporty_core/src/models/ShiftModel.dart';
+import 'package:resmedia_taporty_core/src/models/base/FirebaseModel.dart';
 import 'package:resmedia_taporty_core/src/resources/DatabaseService.dart';
 import 'package:resmedia_taporty_core/src/resources/SupplierProviderExtension.dart';
 import 'package:resmedia_taporty_core/src/resources/DriverProviderExtension.dart';
@@ -73,7 +73,7 @@ extension ShiftProvider on DatabaseService {
         .where("startTime", isGreaterThanOrEqualTo: datetimeToJson(DateTimeHelper.getDay(DateTime.now())))
         .orderBy("startTime")
         .snapshots(includeMetadataChanges: true)
-        .map((querySnap) => FirebaseDatabase.fromQuerySnaps(querySnap, ShiftModel.fromFirebase));
+        .map((querySnap) => fromQuerySnaps(querySnap, ShiftModel.fromFirebase));
   }
 
   Future addShift(String driverId, DateTime startTime) async {

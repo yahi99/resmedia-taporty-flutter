@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:easy_firebase/easy_firebase.dart';
+import 'package:resmedia_taporty_core/src/models/base/FirebaseModel.dart';
 import 'package:flutter/widgets.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
@@ -11,6 +11,7 @@ part 'ProductModel.g.dart';
 @JsonSerializable(anyMap: true, explicitToJson: true)
 class ProductModel extends FirebaseModel {
   final String name;
+  final String description;
   final double price;
   final String imageUrl;
   final int maxQuantity;
@@ -21,12 +22,13 @@ class ProductModel extends FirebaseModel {
   ProductModel({
     String path,
     @required this.name,
+    @required this.description,
     @required this.price,
     @required this.maxQuantity,
     @required this.type,
     @required this.category,
     @required this.supplierId,
-    @required this.imageUrl,
+    this.imageUrl,
   }) : super(path);
 
   static ProductModel fromJson(Map json) => _$ProductModelFromJson(json);

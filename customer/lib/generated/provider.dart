@@ -1,5 +1,4 @@
 import 'package:dash/dash.dart';
-import 'package:easy_blocs/easy_blocs.dart';
 import 'package:resmedia_taporty_customer/blocs/LocationBloc.dart';
 import 'package:resmedia_taporty_customer/blocs/OrderListBloc.dart';
 import 'package:resmedia_taporty_customer/blocs/UserBloc.dart';
@@ -14,7 +13,6 @@ part 'provider.g.dart';
 @BlocProvider.register(LocationBloc)
 @BlocProvider.register(SupplierBloc)
 @BlocProvider.register(SupplierListBloc)
-@BlocProvider.register(RepositoryBloc)
 @BlocProvider.register(CartBloc)
 @BlocProvider.register(OrderBloc)
 @BlocProvider.register(OrderListBloc)

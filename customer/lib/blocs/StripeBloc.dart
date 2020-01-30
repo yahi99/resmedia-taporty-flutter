@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:dash/dash.dart';
-import 'package:easy_stripe/easy_stripe.dart';
 import 'package:flutter/foundation.dart';
+import 'package:resmedia_taporty_core/core.dart';
 
 class StripeBloc implements Bloc {
   @protected

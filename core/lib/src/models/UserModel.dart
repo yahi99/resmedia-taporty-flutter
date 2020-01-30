@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:easy_firebase/easy_firebase.dart';
+import 'package:resmedia_taporty_core/src/models/base/UserFirebaseModel.dart';
+import 'package:resmedia_taporty_core/src/models/base/FirebaseModel.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'UserModel.g.dart';

@@ -22,10 +22,7 @@ abstract class Controller {
         (_value) => controller.add(value = _value),
         onError: (error) => print("....$error"),
       );
-      if (onListen != null)
-        onListen(value);
-      else
-        controller.add(value);
+      if (onListen != null) onListen(value);
     };
     controller.onCancel = () {
       subscription.cancel();
@@ -54,10 +51,7 @@ abstract class PublishController {
           },
           onError: (error) => print("....$error"),
         );
-        if (onListen != null)
-          onListen(value);
-        else
-          controller.add(value);
+        if (onListen != null) onListen(value);
       },
       onCancel: () {
         subscription.cancel();
@@ -97,10 +91,7 @@ abstract class BehaviorController {
           },
           onError: (error) => print("....$error"),
         );
-        if (onListen != null)
-          onListen(value);
-        else
-          controller.add(value);
+        if (onListen != null) onListen(value);
       },
       onCancel: () {
         if (subscription != null) subscription.cancel();
@@ -112,6 +103,46 @@ abstract class BehaviorController {
   }
 
   static BehaviorSubject<V> catchStream<V>({
+    @required Stream<V> source,
+    void onListen(V value),
+    void onCancel(),
+    bool sync = false,
+  }) {
+    return asyncCatchStream<V>(source: () async => source, onListen: onListen, onCancel: onCancel, sync: sync);
+  }
+}
+
+abstract class ReplayController {
+  static ReplaySubject<V> asyncCatchStream<V>({
+    @required Future<Stream<V>> source(),
+    void onListen(V value),
+    void onCancel(),
+    bool sync = false,
+  }) {
+    ReplaySubject<V> controller;
+    StreamSubscription<V> subscription;
+    V value;
+
+    controller = ReplaySubject<V>(
+      onListen: () async {
+        subscription = (await source()).listen(
+          (_value) {
+            controller.add(value = _value);
+          },
+          onError: (error) => print("....$error"),
+        );
+        if (onListen != null) onListen(value);
+      },
+      onCancel: () {
+        if (subscription != null) subscription.cancel();
+        if (onCancel != null) onCancel();
+      },
+      sync: sync,
+    );
+    return controller;
+  }
+
+  static ReplaySubject<V> catchStream<V>({
     @required Stream<V> source,
     void onListen(V value),
     void onCancel(),

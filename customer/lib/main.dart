@@ -15,6 +15,7 @@ import 'package:resmedia_taporty_customer/interface/screen/LoginScreen.dart';
 import 'package:resmedia_taporty_customer/interface/screen/OrderListScreen.dart';
 import 'package:resmedia_taporty_customer/interface/screen/SettingsScreen.dart';
 import 'package:resmedia_taporty_customer/interface/screen/SignupScreen.dart';
+import 'package:resmedia_taporty_customer/interface/screen/SplashScreen.dart';
 import 'package:resmedia_taporty_customer/interface/screen/SupplierListScreen.dart';
 import 'package:resmedia_taporty_customer/interface/screen/SupplierReviewListScreen.dart';
 import 'package:resmedia_taporty_customer/interface/screen/SupplierScreen.dart';
@@ -135,8 +136,7 @@ class _TaportyState extends State<Taporty> {
         "/supplierList": (context) => SupplierListScreen(),
         "/checkout": (context) => CheckoutScreen(),
       },
-      // TODO: Aggiungere controllo sull'utente per caricare la prima schermata (vedi SalentoSmart)
-      initialRoute: "/login",
+      home: SplashScreen(),
     );
   }
 }

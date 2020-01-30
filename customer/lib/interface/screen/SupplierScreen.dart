@@ -6,7 +6,8 @@ import 'package:resmedia_taporty_customer/blocs/SupplierBloc.dart';
 import 'package:resmedia_taporty_customer/blocs/UserBloc.dart';
 import 'package:resmedia_taporty_customer/generated/provider.dart';
 import 'package:resmedia_taporty_customer/interface/page/InfoSupplierPage.dart';
-import 'package:resmedia_taporty_customer/interface/page/MenuPages.dart';
+import 'package:resmedia_taporty_customer/interface/page/ProductCategoryListPage.dart';
+import 'package:resmedia_taporty_customer/interface/page/ProductListPage.dart';
 
 class SupplierScreen extends StatefulWidget {
   SupplierScreen({Key key}) : super(key: key);
@@ -30,7 +31,7 @@ class _SupplierScreenState extends State<SupplierScreen> {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     return DefaultTabController(
-      length: 3,
+      length: 2,
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: colorScheme.primary,
@@ -95,17 +96,14 @@ class _SupplierScreenState extends State<SupplierScreen> {
             )
           ],
           bottom: TabBar(
-            labelStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            labelStyle: theme.textTheme.body1.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
             tabs: [
               Tab(
                 text: 'Chi siamo',
               ),
               Tab(
-                text: 'Menù',
+                text: 'Prodotti',
               ),
-              Tab(
-                text: 'Bibite',
-              )
             ],
           ),
         ),
@@ -114,18 +112,16 @@ class _SupplierScreenState extends State<SupplierScreen> {
           builder: (context, supplierSnapshot) {
             if (supplierSnapshot.hasData) {
               var supplier = supplierSnapshot.data;
-              // TODO: Rivedi la disabilitazione dei fornitori
-              if (supplier.isDisabled != null && supplier.isDisabled == true) {
-                return Padding(
-                  child: Text('Fornitore non abilitato scegline un\'altro'),
-                  padding: EdgeInsets.all(8.0),
-                );
-              }
               return TabBarView(
                 children: <Widget>[
                   InfoSupplierPage(supplier: supplier),
-                  FoodPage(supplier: supplier),
-                  DrinkPage(supplier: supplier),
+                  StreamBuilder<bool>(
+                      stream: supplierBloc.outIsSelectingCategories,
+                      builder: (context, isSelectingCategories) {
+                        var isSelecting = isSelectingCategories.data ?? false;
+                        if (isSelecting) return ProductCategoryListPage();
+                        return ProductListPage();
+                      }),
                 ],
               );
             }

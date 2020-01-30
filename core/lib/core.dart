@@ -23,6 +23,7 @@ export 'src/models/HolidayModel.dart';
 export 'src/models/OrderModel.dart';
 export 'src/models/OrderProductModel.dart';
 export 'src/models/ProductModel.dart';
+export 'src/models/ProductCategoryModel.dart';
 export 'src/models/ReviewModel.dart';
 export 'src/models/ShiftModel.dart';
 export 'src/models/SupplierModel.dart';

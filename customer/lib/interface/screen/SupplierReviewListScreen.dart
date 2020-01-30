@@ -26,7 +26,7 @@ class _SupplierReviewListScreenState extends State<SupplierReviewListScreen> {
         actions: <Widget>[],
       ),
       body: StreamBuilder<List<ReviewModel>>(
-        stream: supplierBloc.outSupplierReview,
+        stream: supplierBloc.outSupplierReviews,
         builder: (ctx, snap) {
           if (!snap.hasData)
             return Center(

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:resmedia_taporty_core/src/models/ProductCategoryModel.dart';
 import 'package:resmedia_taporty_core/src/models/base/FirebaseModel.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
@@ -31,6 +32,8 @@ class SupplierModel extends FirebaseModel {
   final double averageReviews;
 
   final bool isDisabled;
+
+  final List<ProductCategoryModel> categories;
 
   bool isHoliday({DateTime datetime}) {
     if (datetime == null) datetime = DateTime.now();
@@ -110,6 +113,7 @@ class SupplierModel extends FirebaseModel {
     @required this.tags,
     @required this.holidays,
     @required this.weekdayTimetable,
+    @required this.categories,
     this.address,
     this.phoneNumber,
     this.averageReviews,

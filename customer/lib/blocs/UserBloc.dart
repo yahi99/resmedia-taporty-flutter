@@ -32,23 +32,22 @@ class UserBloc implements Bloc {
     _userController?.close();
   }
 
-  BehaviorSubject<FirebaseUser> _firebaseUserController = BehaviorSubject();
+  BehaviorSubject<FirebaseUser> _firebaseUserController;
 
   Stream<FirebaseUser> get outFirebaseUser => _firebaseUserController.stream;
 
-  BehaviorSubject<UserModel> _userController = BehaviorSubject();
+  BehaviorSubject<UserModel> _userController;
 
   Stream<UserModel> get outUser => _userController.stream;
   UserModel get user => _userController.value;
 
   UserBloc.instance() {
-    _firebaseUserController = BehaviorController.catchStream(source: _firebaseAuth.onAuthStateChanged.asyncMap((_firebaseUser) async {
+    _firebaseUserController = BehaviorController.catchStream(source: _firebaseAuth.onAuthStateChanged.asyncMap((_firebaseUser) {
       if (_firebaseUser == null) return null;
-      if (!(await _isCustomer(_firebaseUser))) {
+      return _isCustomer(_firebaseUser).then((isCustomer) {
+        if (isCustomer) return _firebaseUser;
         return null;
-      } else {
-        return _firebaseUser;
-      }
+      });
     }));
 
     _userController = BehaviorController.catchStream(source: _firebaseUserController.switchMap((_firebaseUser) {

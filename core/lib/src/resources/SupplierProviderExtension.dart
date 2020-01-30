@@ -45,26 +45,6 @@ extension SupplierProviderExtension on DatabaseService {
         .map((querySnap) => fromQuerySnaps(querySnap, ProductModel.fromFirebase));
   }
 
-  Stream<List<ProductModel>> getFoodListStream(String supplierId) {
-    return supplierCollection
-        .document(supplierId)
-        .collection(Collections.PRODUCTS)
-        .where('state', isEqualTo: "ACCEPTED") // ACCEPTED
-        .where('type', isEqualTo: "food")
-        .snapshots()
-        .map((querySnap) => fromQuerySnaps(querySnap, ProductModel.fromFirebase));
-  }
-
-  Stream<List<ProductModel>> getDrinkListStream(String supplierId) {
-    return supplierCollection
-        .document(supplierId)
-        .collection(Collections.PRODUCTS)
-        .where('state', isEqualTo: "ACCEPTED") // ACCEPTED
-        .where('type', isEqualTo: "drink")
-        .snapshots()
-        .map((querySnap) => fromQuerySnaps(querySnap, ProductModel.fromFirebase));
-  }
-
   Stream<List<ReviewModel>> getReviewListStream(String supplierId) {
     return supplierCollection.document(supplierId).collection('reviews').snapshots().map((querySnap) => fromQuerySnaps(querySnap, ReviewModel.fromFirebase));
   }

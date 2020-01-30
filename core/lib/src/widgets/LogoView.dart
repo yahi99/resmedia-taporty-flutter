@@ -19,32 +19,39 @@ class LogoView extends StatelessWidget {
           image: AssetImage(Assets.loginBackground),
         ),
       ),
-      child: ListView(
+      child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 56),
-        children: <Widget>[
-          SafeArea(
-            right: false,
-            left: false,
-            bottom: false,
-            child: Padding(
-              padding: const EdgeInsets.only(top: 16.0, bottom: 48.0),
-              child: SizedBox(
-                height: 64,
-                child: top,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            if (top != null)
+              SafeArea(
+                right: false,
+                left: false,
+                bottom: false,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 16.0, bottom: 48.0),
+                  child: SizedBox(
+                    height: 64,
+                    child: top,
+                  ),
+                ),
+              ),
+            if (top == null)
+              Container(
+                height: 100,
+              ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 40.0),
+              child: Center(
+                child: Image.asset(Assets.logo, height: logoHeight, fit: BoxFit.contain),
               ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 40.0),
-            child: Image.asset(
-              Assets.logo,
-              height: logoHeight,
+            SizedBox(
+              height: 32,
             ),
-          ),
-          SizedBox(
-            height: 32,
-          ),
-        ]..addAll(children),
+          ]..addAll(children),
+        ),
       ),
     );
   }

@@ -14,7 +14,7 @@ class CartProductListView extends StatelessWidget {
     List<Widget> widgets = List<Widget>();
 
     for (int i = 0; i < cart.supplierProducts.length; i++) {
-      widgets.add(ProductView(product: cart.supplierProducts[i]));
+      widgets.add(ProductView(cart.supplierProducts[i]));
     }
     widgets.add(
       Container(

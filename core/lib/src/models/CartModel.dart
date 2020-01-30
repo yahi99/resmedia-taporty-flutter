@@ -73,7 +73,7 @@ class CartModel {
 
   void _onAdd(ProductModel product) {
     supplierProducts.add(product);
-    products.add(CartProductModel(id: product.id, price: product.price, quantity: 1, type: product.type));
+    products.add(CartProductModel(id: product.id, price: product.price, quantity: 1, type: product.category));
   }
 
   void _onRemove(CartProductModel product) {

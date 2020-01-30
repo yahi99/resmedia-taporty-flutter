@@ -21,6 +21,9 @@ SupplierModel _$SupplierModelFromJson(Map json) {
       (k, e) => MapEntry(int.parse(k as String),
           e == null ? null : TimetableModel.fromJson(e as Map)),
     ),
+    categories: (json['categories'] as List)
+        ?.map((e) => e == null ? null : ProductCategoryModel.fromJson(e as Map))
+        ?.toList(),
     address: json['address'] as String,
     phoneNumber: json['phoneNumber'] as String,
     averageReviews: (json['averageReviews'] as num)?.toDouble(),
@@ -54,5 +57,6 @@ Map<String, dynamic> _$SupplierModelToJson(SupplierModel instance) {
   val['numberOfReviews'] = instance.numberOfReviews;
   val['averageReviews'] = instance.averageReviews;
   val['isDisabled'] = instance.isDisabled;
+  val['categories'] = instance.categories?.map((e) => e?.toJson())?.toList();
   return val;
 }

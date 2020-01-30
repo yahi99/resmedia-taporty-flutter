@@ -14,7 +14,7 @@ class ProductView extends StatelessWidget {
 
   final CartBloc cartBloc = $Provider.of<CartBloc>();
 
-  ProductView({Key key, @required this.product}) : super(key: key);
+  ProductView(this.product, {Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -92,6 +92,7 @@ class ProductView extends StatelessWidget {
                 var cart = cartSnapshot.data;
                 var cartProduct = cart.getProduct(product.id);
                 return StepperButton(
+                  backgroundColor: ColorTheme.ACCENT_BLUE,
                   direction: Axis.vertical,
                   padding: EdgeInsets.all(3),
                   child: AutoSizeText(

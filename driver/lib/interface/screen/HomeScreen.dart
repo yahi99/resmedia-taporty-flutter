@@ -16,53 +16,6 @@ class _HomeScreenState extends State<HomeScreen> {
   AuthService _auth = AuthService();
   DateTime date = DateTime.now();
 
-  BuildContext dialog;
-
-  FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
-
-  void showNotification(BuildContext context, Map<String, dynamic> message) async {
-    print('Build dialog');
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        content: ListTile(
-          title: Text(message['notification']['title']),
-          subtitle: Text(message['notification']['body']),
-        ),
-        actions: <Widget>[
-          FlatButton(
-            child: Text('Ok'),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void firebaseCloudMessagingListeners() {
-    if (Platform.isIOS) iOSPermission();
-    print('ok');
-    _firebaseMessaging.configure(
-      onMessage: (Map<String, dynamic> message) async {
-        print('on message $message');
-        if (dialog != null) showNotification(dialog, message);
-      },
-      onResume: (Map<String, dynamic> message) async {
-        print('on resume $message');
-      },
-      onLaunch: (Map<String, dynamic> message) async {
-        print('on launch $message');
-      },
-    );
-  }
-
-  void iOSPermission() {
-    _firebaseMessaging.requestNotificationPermissions(IosNotificationSettings(sound: true, badge: true, alert: true));
-    _firebaseMessaging.onIosSettingsRegistered.listen((IosNotificationSettings settings) {
-      print("Settings registered: $settings");
-    });
-  }
-
   @override
   void dispose() {
     _auth.signOut();
@@ -70,14 +23,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    firebaseCloudMessagingListeners();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    dialog = context;
+    var theme = Theme.of(context);
     return DefaultTabController(
       length: 3,
       child: Scaffold(
@@ -90,6 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
             )
           ],
           bottom: TabBar(
+            labelStyle: theme.textTheme.body1.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
             tabs: [
               Tab(
                 text: 'Ordini',

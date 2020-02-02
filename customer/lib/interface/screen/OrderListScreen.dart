@@ -17,11 +17,15 @@ class OrderListScreenState extends State<OrderListScreen> {
   final _orderListBloc = $Provider.of<OrderListBloc>();
   @override
   Widget build(BuildContext context) {
+    var theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Lista Ordini'),
+        title: Text(
+          'Lista Ordini',
+          style: theme.textTheme.body2.copyWith(color: Colors.white, fontSize: 18),
+        ),
         backgroundColor: ColorTheme.RED,
-        centerTitle: true,
+        centerTitle: false,
         actions: <Widget>[],
       ),
       body: StreamBuilder<List<OrderModel>>(

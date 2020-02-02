@@ -1,16 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-// TODO: Rendi più bella e personalizza in base al motivo per cui non ci sono fornitori (searchbar, filtri o altro)
 class NoSupplierView extends StatelessWidget {
-  const NoSupplierView({Key key}) : super(key: key);
+  final String message;
+  const NoSupplierView({Key key, this.message = "Non sono disponibili fornitori corrispondenti ai criteri di ricerca."}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Text("Non sono disponibili fornitori corrispondenti ai criteri di ricerca."),
-      ),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        Container(
+          child: Padding(
+            padding: const EdgeInsets.all(22.0),
+            child: Text(message, textAlign: TextAlign.center, style: TextStyle(fontSize: 20)),
+          ),
+        ),
+        Icon(FontAwesomeIcons.exclamationTriangle, size: 100, color: Colors.grey),
+      ],
     );
   }
 }

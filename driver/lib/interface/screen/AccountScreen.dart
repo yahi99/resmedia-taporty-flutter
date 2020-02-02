@@ -13,7 +13,10 @@ class AccountScreen extends StatelessWidget {
     final driverBloc = $Provider.of<DriverBloc>();
     return Scaffold(
       appBar: AppBar(
-        title: Text("Account"),
+        title: Text(
+          "Account",
+          style: theme.textTheme.body2.copyWith(color: Colors.white, fontSize: 18),
+        ),
       ),
       body: StreamBuilder<DriverModel>(
         stream: driverBloc.outDriver,

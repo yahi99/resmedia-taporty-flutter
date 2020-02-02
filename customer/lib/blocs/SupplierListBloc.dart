@@ -42,6 +42,8 @@ class SupplierListBloc implements Bloc {
 
   Stream<List<String>> get outSelectedTags => _tagListController.stream;
 
+  Stream<String> get outCategoryId => _categoryIdController.stream;
+
   Stream<SupplierCategoryModel> get outCategory => _categoryController.stream;
 
   Stream<List<SupplierModel>> get outSuppliers => CombineLatestStream.combine4(

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:resmedia_taporty_core/core.dart';
 import 'package:resmedia_taporty_customer/blocs/CartBloc.dart';
+import 'package:resmedia_taporty_customer/blocs/CheckoutBloc.dart';
 import 'package:resmedia_taporty_customer/blocs/SupplierBloc.dart';
 import 'package:resmedia_taporty_customer/blocs/UserBloc.dart';
 import 'package:resmedia_taporty_customer/generated/provider.dart';
@@ -35,10 +36,12 @@ class _SupplierScreenState extends State<SupplierScreen> {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: colorScheme.primary,
-          centerTitle: true,
           title: StreamBuilder<SupplierModel>(
             stream: supplierBloc.outSupplier,
-            builder: (_, supplierSnap) => Text(supplierSnap.data?.name ?? "Caricamento..."),
+            builder: (_, supplierSnap) => Text(
+              supplierSnap.data?.name ?? "Caricamento...",
+              style: theme.textTheme.body2.copyWith(color: Colors.white, fontSize: 18),
+            ),
           ),
           actions: <Widget>[
             StreamBuilder<CartModel>(
@@ -157,11 +160,10 @@ class _SupplierScreenState extends State<SupplierScreen> {
   }
 
   _pushCheckoutScreen() {
-    $Provider.of<UserBloc>().outUser.first.then((user) {
-      Navigator.pushNamed(
-        context,
-        "/checkout",
-      );
-    });
+    $Provider.of<CheckoutBloc>().setDefaultValues();
+    Navigator.pushNamed(
+      context,
+      "/checkout",
+    );
   }
 }

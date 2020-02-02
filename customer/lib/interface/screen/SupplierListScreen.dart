@@ -6,6 +6,7 @@ import 'package:resmedia_taporty_customer/blocs/UserBloc.dart';
 import 'package:resmedia_taporty_customer/generated/provider.dart';
 import 'package:resmedia_taporty_customer/interface/page/SupplierCategoryListPage.dart';
 import 'package:resmedia_taporty_customer/interface/page/SupplierListPage.dart';
+import 'package:resmedia_taporty_customer/interface/widget/ArrowBack.dart';
 import 'package:resmedia_taporty_customer/interface/widget/SearchBar.dart';
 
 class SupplierListScreen extends StatefulWidget {
@@ -21,6 +22,7 @@ class _SupplierListScreenState extends State<SupplierListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var theme = Theme.of(context);
     return WillPopScope(
       onWillPop: () async {
         if (_supplierListBloc.category != null) {
@@ -29,38 +31,49 @@ class _SupplierListScreenState extends State<SupplierListScreen> {
         }
         return true;
       },
-      child: Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          leading: IconButton(
-            icon: Icon(Icons.public),
-            onPressed: () {
-              Navigator.pushNamed(context, "/geolocalization");
-            },
-          ),
-          title: Text('Fornitori nella tua zona'),
-          backgroundColor: ColorTheme.RED,
-          centerTitle: true,
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(Icons.account_circle),
-              onPressed: () {
-                Navigator.pushNamed(context, "/account");
-              },
-            ),
-          ],
-          bottom: SearchBar(
-            searchBarStream: _supplierListBloc.searchBarController,
-          ),
-        ),
-        body: StreamBuilder<SupplierCategoryModel>(
-          stream: _supplierListBloc.outCategory,
-          builder: (context, AsyncSnapshot<SupplierCategoryModel> categorySnapshot) {
-            if (categorySnapshot.data == null) return SupplierCategoryListPage();
-            return SupplierListPage(categorySnapshot.data);
-          },
-        ),
-      ),
+      child: StreamBuilder<String>(
+          stream: _supplierListBloc.outCategoryId,
+          builder: (context, snapshot) {
+            return Scaffold(
+              appBar: AppBar(
+                automaticallyImplyLeading: false,
+                leading: IconButton(
+                  icon: Icon(Icons.public),
+                  onPressed: () {
+                    Navigator.pushNamed(context, "/geolocalization");
+                  },
+                ),
+                title: Text(
+                  'Fornitori nella tua zona',
+                  style: theme.textTheme.body2.copyWith(color: Colors.white, fontSize: 18),
+                ),
+                backgroundColor: ColorTheme.RED,
+                centerTitle: true,
+                actions: <Widget>[
+                  IconButton(
+                    icon: Icon(Icons.account_circle),
+                    onPressed: () {
+                      Navigator.pushNamed(context, "/account");
+                    },
+                  ),
+                ],
+                bottom: SearchBar(
+                  leading: ArrowBack(
+                    onArrowBackPressed: () => _supplierListBloc.clear(),
+                    showArrowBack: snapshot.hasData,
+                  ),
+                  searchBarStream: _supplierListBloc.searchBarController,
+                ),
+              ),
+              body: StreamBuilder<SupplierCategoryModel>(
+                stream: _supplierListBloc.outCategory,
+                builder: (context, AsyncSnapshot<SupplierCategoryModel> categorySnapshot) {
+                  if (categorySnapshot.data == null) return SupplierCategoryListPage();
+                  return SupplierListPage(categorySnapshot.data);
+                },
+              ),
+            );
+          }),
     );
   }
 }

@@ -25,6 +25,7 @@ class _OrderCartScreenState extends State<OrderCartScreen> {
         automaticallyImplyLeading: true,
         title: Text(
           "Prodotti ordinati",
+          style: theme.textTheme.body2.copyWith(color: Colors.white, fontSize: 18),
         ),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),

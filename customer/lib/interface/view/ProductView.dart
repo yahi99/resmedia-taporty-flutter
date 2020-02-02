@@ -11,10 +11,11 @@ import 'package:vibration/vibration.dart';
 
 class ProductView extends StatelessWidget {
   final ProductModel product;
+  final bool modifiable;
 
   final CartBloc cartBloc = $Provider.of<CartBloc>();
 
-  ProductView(this.product, {Key key}) : super(key: key);
+  ProductView(this.product, {this.modifiable = true, key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -85,41 +86,42 @@ class ProductView extends StatelessWidget {
                 ],
               ),
             ),
-            StreamBuilder<CartModel>(
-              stream: cartBloc.outCart,
-              builder: (context, cartSnapshot) {
-                if (!cartSnapshot.hasData) return Container();
-                var cart = cartSnapshot.data;
-                var cartProduct = cart.getProduct(product.id);
-                return StepperButton(
-                  backgroundColor: ColorTheme.ACCENT_BLUE,
-                  direction: Axis.vertical,
-                  padding: EdgeInsets.all(3),
-                  child: AutoSizeText(
-                    cartProduct?.quantity?.toString() ?? "0",
-                    maxLines: 1,
-                    minFontSize: 10,
-                  ),
-                  onDecrease: () {
-                    cartBloc.decrease(product.id);
-                    Vibration.vibrate(duration: 65);
-                  },
-                  onIncrement: () {
-                    if (cartProduct != null) {
-                      if (product.maxQuantity != 0 && product.maxQuantity <= cartProduct.quantity) {
-                        Toast.show("Massima quantità ordinabile raggiunta", context, duration: 3);
-                        return;
+            if (modifiable)
+              StreamBuilder<CartModel>(
+                stream: cartBloc.outCart,
+                builder: (context, cartSnapshot) {
+                  if (!cartSnapshot.hasData) return Container();
+                  var cart = cartSnapshot.data;
+                  var cartProduct = cart.getProduct(product.id);
+                  return StepperButton(
+                    backgroundColor: ColorTheme.ACCENT_BLUE,
+                    direction: Axis.vertical,
+                    padding: EdgeInsets.all(3),
+                    child: AutoSizeText(
+                      cartProduct?.quantity?.toString() ?? "0",
+                      maxLines: 1,
+                      minFontSize: 10,
+                    ),
+                    onDecrease: () {
+                      cartBloc.decrease(product.id);
+                      Vibration.vibrate(duration: 65);
+                    },
+                    onIncrement: () {
+                      if (cartProduct != null) {
+                        if (product.maxQuantity != 0 && product.maxQuantity <= cartProduct.quantity) {
+                          Toast.show("Massima quantità ordinabile raggiunta", context, duration: 3);
+                          return;
+                        }
+                        Vibration.vibrate(duration: 65);
+                        cartBloc.increment(cartProduct.id);
+                      } else {
+                        Vibration.vibrate(duration: 65);
+                        cartBloc.add(product);
                       }
-                      Vibration.vibrate(duration: 65);
-                      cartBloc.increment(cartProduct.id);
-                    } else {
-                      Vibration.vibrate(duration: 65);
-                      cartBloc.add(product);
-                    }
-                  },
-                );
-              },
-            ),
+                    },
+                  );
+                },
+              ),
           ],
         ),
       ),

@@ -25,11 +25,13 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: true,
         title: Text(
           "Dettaglio ordine",
+          style: theme.textTheme.body2.copyWith(color: Colors.white, fontSize: 18),
         ),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),

@@ -1,24 +1,11 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:cloud_functions/cloud_functions.dart';
 import 'package:dash/dash.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:meta/meta.dart';
 import 'package:resmedia_taporty_core/core.dart';
 import 'package:rxdart/rxdart.dart';
-
-class NotACustomerException implements Exception {
-  final String message;
-  const NotACustomerException(this.message);
-}
-
-class NotRegisteredException implements Exception {
-  final String message;
-  const NotRegisteredException(this.message);
-}
 
 class UserBloc implements Bloc {
   final DatabaseService _db = DatabaseService();
@@ -114,15 +101,16 @@ class UserBloc implements Bloc {
     await firebaseUser.updatePassword(password);
   }
 
-  Future updateNominativeAndEmail(String oldPassword, String nominative, String email) async {
+  Future updateUserInfo(String oldPassword, String nominative, String email, String phoneNumber) async {
     var firebaseUser = await outFirebaseUser.first;
     await _auth.reauthenticate(firebaseUser, oldPassword);
     await firebaseUser.updateEmail(email);
-    await _db.updateNominative(firebaseUser.uid, nominative);
-    await _db.updateEmail(firebaseUser.uid, email);
+    await _db.updateUserNominative(firebaseUser.uid, nominative);
+    await _db.updateUserEmail(firebaseUser.uid, email);
+    await _db.updateUserPhoneNumber(firebaseUser.uid, phoneNumber);
   }
 
-  void updateNotifyEmail(bool value) async {
+  /*void updateNotifyEmail(bool value) async {
     final restUser = await outFirebaseUser.first;
     CloudFunctions.instance.getHttpsCallable(functionName: 'updateNotifyEmail').call({'uid': restUser.uid, 'notifyEmail': value});
   }
@@ -135,14 +123,13 @@ class UserBloc implements Bloc {
   void updateNotifySms(bool value) async {
     final restUser = await outFirebaseUser.first;
     CloudFunctions.instance.getHttpsCallable(functionName: 'updateNotifySms').call({'uid': restUser.uid, 'notifySms': value});
-  }
+  }*/
 
   void updateNotifyApp(bool value) async {
-    final restUser = await outFirebaseUser.first;
-    CloudFunctions.instance.getHttpsCallable(functionName: 'updateNotifyApp').call({'uid': restUser.uid, 'notifyApp': value});
+    await _db.updateNotifyApp(user.id, value);
   }
 
-  void updateOffersEmail(bool value) async {
+  /*void updateOffersEmail(bool value) async {
     final restUser = await outFirebaseUser.first;
     CloudFunctions.instance.getHttpsCallable(functionName: 'updateOffersEmail').call({'uid': restUser.uid, 'offersEmail': value});
   }
@@ -150,15 +137,5 @@ class UserBloc implements Bloc {
   void updateOffersApp(bool value) async {
     final restUser = await outFirebaseUser.first;
     CloudFunctions.instance.getHttpsCallable(functionName: 'updateOffersApp').call({'uid': restUser.uid, 'offersApp': value});
-  }
-
-  // TODO: Elimina
-  Future<double> getDistance(LatLng start, LatLng end) async {
-    return (await Geolocator().distanceBetween(start.latitude, start.longitude, end.latitude, end.longitude));
-  }
-
-  // TODO: Elimina
-  Future<double> getMockDistance() async {
-    return 3.0;
-  }
+  }*/
 }

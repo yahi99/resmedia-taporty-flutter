@@ -18,9 +18,13 @@ class _ChangePasswordState extends State<ChangePasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text("Account"),
+        title: Text(
+          "Account",
+          style: theme.textTheme.body2.copyWith(color: Colors.white, fontSize: 18),
+        ),
       ),
       body: StreamBuilder<UserModel>(
         stream: userBloc.outUser,

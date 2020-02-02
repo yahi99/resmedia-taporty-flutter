@@ -1,5 +1,3 @@
-import 'dart:io';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:resmedia_taporty_core/core.dart';
@@ -29,7 +27,10 @@ class _HomeScreenState extends State<HomeScreen> {
       length: 3,
       child: Scaffold(
         appBar: AppBar(
-          title: Text("Home"),
+          title: Text(
+            "Home",
+            style: theme.textTheme.body2.copyWith(color: Colors.white, fontSize: 18),
+          ),
           actions: <Widget>[
             IconButton(
               onPressed: () => Navigator.pushNamed(context, "/account"),

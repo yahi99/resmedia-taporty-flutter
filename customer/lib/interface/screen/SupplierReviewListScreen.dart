@@ -4,7 +4,6 @@ import 'package:resmedia_taporty_core/core.dart';
 import 'package:resmedia_taporty_customer/blocs/SupplierBloc.dart';
 import 'package:resmedia_taporty_customer/generated/provider.dart';
 
-// TODO: Rendi più carino da vedere
 class SupplierReviewListScreen extends StatefulWidget {
   SupplierReviewListScreen({
     Key key,
@@ -18,12 +17,15 @@ class _SupplierReviewListScreenState extends State<SupplierReviewListScreen> {
   var supplierBloc = $Provider.of<SupplierBloc>();
   @override
   Widget build(BuildContext context) {
+    var theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Recensioni'),
+        title: Text(
+          'Recensioni',
+          style: theme.textTheme.body2.copyWith(color: Colors.white, fontSize: 18),
+        ),
         backgroundColor: ColorTheme.RED,
-        centerTitle: true,
-        actions: <Widget>[],
+        centerTitle: false,
       ),
       body: StreamBuilder<List<ReviewModel>>(
         stream: supplierBloc.outSupplierReviews,
@@ -48,7 +50,11 @@ class _SupplierReviewListScreenState extends State<SupplierReviewListScreen> {
               final model = snap.data.elementAt(index);
               return Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Card(child: Review(model: model)),
+                child: Card(
+                    child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 4),
+                  child: ReviewView(review: model),
+                )),
               );
             },
             separatorBuilder: (ctx, index) {
@@ -63,10 +69,10 @@ class _SupplierReviewListScreenState extends State<SupplierReviewListScreen> {
   }
 }
 
-class Review extends StatelessWidget {
-  final ReviewModel model;
+class ReviewView extends StatelessWidget {
+  final ReviewModel review;
 
-  Review({@required this.model});
+  ReviewView({@required this.review});
 
   @override
   Widget build(BuildContext context) {
@@ -75,29 +81,29 @@ class Review extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Padding(
-          child: Text(
-            model.customerName,
-            style: tt.subtitle,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Text(
+                review.customerName,
+                style: tt.subtitle,
+              ),
+              Row(
+                children: <Widget>[
+                  Text(review.rating.toString()),
+                  Icon(
+                    Icons.star,
+                    color: Colors.yellow,
+                  ),
+                ],
+              ),
+            ],
           ),
           padding: EdgeInsets.all(8.0),
         ),
         Padding(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Text(model.description),
-              Padding(
-                padding: const EdgeInsets.only(left: 16.0),
-                child: Row(
-                  children: <Widget>[
-                    Text(model.rating.toString()),
-                    Icon(Icons.star),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          padding: EdgeInsets.only(left: 8.0),
+          child: Text(review.description),
+          padding: EdgeInsets.only(left: 8.0, bottom: 8.0),
         ),
       ],
     );

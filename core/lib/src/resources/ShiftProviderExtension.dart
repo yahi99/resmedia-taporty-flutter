@@ -10,24 +10,22 @@ import 'package:resmedia_taporty_core/src/resources/SupplierProviderExtension.da
 import 'package:resmedia_taporty_core/src/resources/DriverProviderExtension.dart';
 
 extension ShiftProvider on DatabaseService {
+  // TODO: Sposta la logica in un Bloc
   Future<List<ShiftModel>> getAvailableShifts(DateTime day, String supplierId, GeoPoint customerCoordinates) async {
-    SupplierModel supplier = await getSupplierStream(supplierId).first;
+    /*SupplierModel supplier = await getSupplierStream(supplierId).first;
     var startTimes = supplier.getStartTimes(day);
     var filteredShifts = List<ShiftModel>();
 
     for (var startTime in startTimes) {
-      // Don't show shifts from the past and more than 48 hours in the future
-      if (startTime.compareTo(DateTime.now()) < 0 || startTime.difference(DateTime.now()).inMilliseconds > 48 * 60 * 60 * 1000) continue;
+      // Non mostrare turni nel passato o più di 48 ore nel futuro
+      if (startTime.compareTo(DateTime.now()) < 30 * 60 * 1000 || startTime.difference(DateTime.now()).inMilliseconds > 48 * 60 * 60 * 1000) continue;
 
       var reservedShifts = (await shiftCollection.where("startTime", isEqualTo: datetimeToJson(startTime)).orderBy("reservationTimestamp").getDocuments(source: Source.server))
           .documents
           .map(ShiftModel.fromFirebase)
           .toList();
+
       for (var reservedShift in reservedShifts) {
-        var distanceSupplierDriver = await DistanceHelper.fetchAproximateDistance(reservedShift.driverCoordinates, supplier.coordinates);
-        if (distanceSupplierDriver > reservedShift.deliveryRadius * 1000) continue;
-        var distanceCustomerDriver = await DistanceHelper.fetchAproximateDistance(reservedShift.driverCoordinates, customerCoordinates);
-        if (distanceCustomerDriver > reservedShift.deliveryRadius * 1000) continue;
         if (reservedShift.occupied != true) {
           filteredShifts.add(reservedShift);
           break;
@@ -35,9 +33,14 @@ extension ShiftProvider on DatabaseService {
       }
     }
 
-    return filteredShifts;
+    return filteredShifts;*/
+    await Future.delayed(Duration(seconds: 1));
+    return [
+      ShiftModel.fromFirebase(await shiftCollection.document("ZdDsMjleDwgacI8idqNFfeD6qDw21579171500000").get()),
+    ];
   }
 
+  // TODO: Sposta la logica in un Bloc
   Future<String> findDriver(ShiftModel shiftModel, String supplierId, GeoPoint customerCoordinates) async {
     SupplierModel supplier = await getSupplierStream(supplierId).first;
     if (!supplier.isOpen(datetime: shiftModel.endTime)) return null;

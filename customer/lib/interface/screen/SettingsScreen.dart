@@ -9,17 +9,21 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsState extends State<SettingsScreen> {
-  final user = $Provider.of<UserBloc>();
+  final userBloc = $Provider.of<UserBloc>();
 
   @override
   Widget build(BuildContext context) {
+    var theme = Theme.of(context);
     return StreamBuilder<UserModel>(
-      stream: user.outUser,
+      stream: userBloc.outUser,
       builder: (ctx, userSnapshot) {
         if (!userSnapshot.hasData) return Center(child: CircularProgressIndicator());
         return Scaffold(
           appBar: AppBar(
-            title: Text("Impostazioni"),
+            title: Text(
+              "Impostazioni",
+              style: theme.textTheme.body2.copyWith(color: Colors.white, fontSize: 18),
+            ),
           ),
           body: Padding(
             padding: const EdgeInsets.only(top: 12.0 * 2),
@@ -30,7 +34,7 @@ class _SettingsState extends State<SettingsScreen> {
                     Text('RICEVI AGGIORNAMENTI TRAMITE'),
                   ],
                 ),
-                Row(
+                /*Row(
                   children: <Widget>[
                     Expanded(child: Text('Invia dati ordine per E-mail')),
                     Switch(
@@ -54,19 +58,19 @@ class _SettingsState extends State<SettingsScreen> {
                       value: (userSnapshot.data.notifyEmail == null) ? false : userSnapshot.data.notifySms,
                     ),
                   ],
-                ),
+                ),*/
                 Row(
                   children: <Widget>[
                     Expanded(child: Text('Notifiche App')),
                     Switch(
                       onChanged: (value) {
-                        user.updateNotifyApp(value);
+                        userBloc.updateNotifyApp(value);
                       },
                       value: (userSnapshot.data.notifyApp == null) ? false : userSnapshot.data.notifyApp,
                     ),
                   ],
                 ),
-                Row(
+                /*Row(
                   children: <Widget>[
                     Text('RICEVI OFFERTE E NEWS TRAMITE'),
                   ],
@@ -106,7 +110,7 @@ class _SettingsState extends State<SettingsScreen> {
                       value: (userSnapshot.data.offersApp == null) ? false : userSnapshot.data.offersApp,
                     ),
                   ],
-                ),
+                ),*/
               ].map((child) {
                 return Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12.0 * 2),

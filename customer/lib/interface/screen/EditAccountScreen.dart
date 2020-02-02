@@ -6,32 +6,28 @@ import 'package:resmedia_taporty_customer/blocs/UserBloc.dart';
 
 class EditAccountScreen extends StatefulWidget {
   @override
-  _EditState createState() => _EditState();
+  _EditAccountState createState() => _EditAccountState();
 }
 
-class _EditState extends State<EditAccountScreen> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Account"),
-      ),
-      body: SnackBarPage(),
-    );
-  }
-}
+class _EditAccountState extends State<EditAccountScreen> {
+  final userBloc = $Provider.of<UserBloc>();
 
-class SnackBarPage extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
+  final _phoneKey = GlobalKey<FormFieldState>();
   final _emailKey = GlobalKey<FormFieldState>();
   final _nameKey = GlobalKey<FormFieldState>();
   final _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final userBloc = $Provider.of<UserBloc>();
+    var theme = Theme.of(context);
     return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          "Modifica dell'account",
+          style: theme.textTheme.body2.copyWith(color: Colors.white, fontSize: 18),
+        ),
+      ),
       body: StreamBuilder<UserModel>(
         stream: userBloc.outUser,
         builder: (ctx, userSnapshot) {
@@ -81,79 +77,109 @@ class SnackBarPage extends StatelessWidget {
               Form(
                 key: _formKey,
                 child: Expanded(
-                  child: ListViewSeparated(
-                    separator: const Divider(
-                      color: Colors.grey,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: <Widget>[
+                        ...[
+                          TextFormField(
+                            key: _nameKey,
+                            decoration: InputDecoration(
+                              labelText: 'Nome',
+                            ),
+                            initialValue: user.nominative,
+                            style: theme.textTheme.subhead,
+                            validator: (value) {
+                              if (value.isEmpty) {
+                                return 'Campo invalido';
+                              }
+                              return null;
+                            },
+                          ),
+                          TextFormField(
+                            key: _emailKey,
+                            decoration: InputDecoration(
+                              labelText: 'Email',
+                            ),
+                            keyboardType: TextInputType.emailAddress,
+                            initialValue: user.email,
+                            validator: (value) {
+                              if (value.isEmpty) {
+                                return 'Campo invalido';
+                              }
+                              return null;
+                            },
+                          ),
+                          TextFormField(
+                            key: _phoneKey,
+                            decoration: InputDecoration(
+                              labelText: 'Numero di telefono',
+                            ),
+                            keyboardType: TextInputType.phone,
+                            initialValue: user.phoneNumber,
+                            validator: (value) {
+                              if (value.isEmpty) {
+                                return 'Campo invalido';
+                              }
+                              return null;
+                            },
+                          ),
+                        ].map((child) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                            child: child,
+                          );
+                        }).toList(),
+                        Divider(),
+                        ...[
+                          Text("Per aggiornare i dati è necessario reinserire la password dell'account."),
+                          TextFormField(
+                            controller: _passwordController,
+                            decoration: InputDecoration(
+                              labelText: 'Password corrente',
+                            ),
+                            validator: (value) {
+                              if (value.isEmpty) {
+                                return 'Inserire la password corrente';
+                              }
+                              return null;
+                            },
+                          ),
+                          RaisedButton(
+                            onPressed: () async {
+                              if (_formKey.currentState.validate()) {
+                                try {
+                                  await userBloc.updateUserInfo(
+                                      _passwordController.text, _nameKey.currentState.value.toString(), _emailKey.currentState.value.toString(), _phoneKey.currentState.value.toString());
+                                  Scaffold.of(context).showSnackBar(SnackBar(
+                                    content: Text('Cambiamenti eseguiti!'),
+                                  ));
+                                } catch (error) {
+                                  print(error);
+                                  if (error.code == 'ERROR_INVALID_EMAIL') {
+                                    Scaffold.of(context).showSnackBar(SnackBar(
+                                      content: Text('E-mail non valida'),
+                                    ));
+                                  } else if (error.code == 'ERROR_WRONG_PASSWORD') {
+                                    Scaffold.of(context).showSnackBar(SnackBar(
+                                      content: Text('Password fornita non corretta'),
+                                    ));
+                                  } else
+                                    Scaffold.of(context).showSnackBar(SnackBar(
+                                      content: Text('Ci sono stati degli errori'),
+                                    ));
+                                }
+                              }
+                            },
+                            child: FittedText('Aggiorna dati'),
+                          ),
+                        ].map((child) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                            child: child,
+                          );
+                        }).toList(),
+                      ],
                     ),
-                    children: <Widget>[
-                      TextFormField(
-                        key: _nameKey,
-                        initialValue: user.nominative,
-                        style: theme.textTheme.subhead,
-                        validator: (value) {
-                          if (value.isEmpty) {
-                            return 'Campo invalido';
-                          }
-                          return null;
-                        },
-                      ),
-                      TextFormField(
-                        key: _emailKey,
-                        initialValue: user.email,
-                        style: theme.textTheme.subhead,
-                        validator: (value) {
-                          if (value.isEmpty) {
-                            return 'Campo invalido';
-                          }
-                          return null;
-                        },
-                      ),
-                      TextFormField(
-                        controller: _passwordController,
-                        decoration: InputDecoration(
-                          hintText: 'Password corrente',
-                        ),
-                        style: theme.textTheme.subhead,
-                        validator: (value) {
-                          if (value.isEmpty) {
-                            return 'Inserire la password corrente';
-                          }
-                          return null;
-                        },
-                      ),
-                      RaisedButton(
-                        onPressed: () async {
-                          if (_formKey.currentState.validate()) {
-                            try {
-                              await userBloc.updateNominativeAndEmail(_passwordController.text, _nameKey.currentState.value.toString(), _nameKey.currentState.value.toString());
-                              Scaffold.of(context).showSnackBar(SnackBar(
-                                content: Text('Cambiamenti eseguiti!'),
-                              ));
-                            } catch (error) {
-                              print(error);
-                              if (error.code == 'ERROR_INVALID_EMAIL') {
-                                Scaffold.of(context).showSnackBar(SnackBar(
-                                  content: Text('E-mail non valida'),
-                                ));
-                              } else if (error.code == 'ERROR_WRONG_PASSWORD') {
-                                Scaffold.of(context).showSnackBar(SnackBar(
-                                  content: Text('Password fornita non corretta'),
-                                ));
-                              } else
-                                Scaffold.of(context).showSnackBar(SnackBar(
-                                  content: Text('Ci sono stati degli errori'),
-                                ));
-                            }
-                          }
-                        },
-                        child: FittedText('Aggiorna dati'),
-                      ),
-                    ].map((child) {
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 12.0 * 2),
-                        child: child,
-                      );
-                    }).toList(),
                   ),
                 ),
               ),

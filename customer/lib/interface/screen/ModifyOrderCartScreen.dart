@@ -45,6 +45,7 @@ class _ModifyOrderCartScreenState extends State<ModifyOrderCartScreen> {
         automaticallyImplyLeading: true,
         title: Text(
           "Modifica prodotti",
+          style: theme.textTheme.body2.copyWith(color: Colors.white, fontSize: 18),
         ),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
@@ -176,9 +177,13 @@ class _ModifyOrderCartScreenState extends State<ModifyOrderCartScreen> {
                           color: ColorTheme.ACCENT_BLUE,
                           onPressed: () async {
                             try {
-                              await DatabaseService().modifyOrder(widget.order.id, widget.order.state, orderProducts);
+                              await DatabaseService().modifyOrder(widget.order.id, orderProducts);
                               Navigator.pop(context);
                               Toast.show("Modifica inviata", context);
+                            } on InvalidOrderStateException catch (err) {
+                              print(err);
+                              Toast.show("L'ordine ha cambiato stato e non può più essere modificato.", context);
+                              Navigator.pop(context);
                             } catch (err) {
                               print(err);
                               Toast.show("Errore inaspettato!", context);

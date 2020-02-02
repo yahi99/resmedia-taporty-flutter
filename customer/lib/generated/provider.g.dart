@@ -44,6 +44,16 @@ class $Provider extends Provider {
           return BlocCache.getBlocInstance(
               "OrderListBloc", () => OrderListBloc.instance());
         }
+      case CheckoutBloc:
+        {
+          return BlocCache.getBlocInstance(
+              "CheckoutBloc", () => CheckoutBloc.instance());
+        }
+      case ReviewBloc:
+        {
+          return BlocCache.getBlocInstance(
+              "ReviewBloc", () => ReviewBloc.instance());
+        }
     }
     return null;
   }
@@ -83,6 +93,16 @@ class $Provider extends Provider {
       case OrderListBloc:
         {
           BlocCache.dispose("OrderListBloc");
+          break;
+        }
+      case CheckoutBloc:
+        {
+          BlocCache.dispose("CheckoutBloc");
+          break;
+        }
+      case ReviewBloc:
+        {
+          BlocCache.dispose("ReviewBloc");
           break;
         }
     }

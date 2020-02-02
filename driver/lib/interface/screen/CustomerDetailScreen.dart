@@ -67,9 +67,13 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text("Cliente"),
+        title: Text(
+          "Cliente",
+          style: theme.textTheme.body2.copyWith(color: Colors.white, fontSize: 18),
+        ),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {

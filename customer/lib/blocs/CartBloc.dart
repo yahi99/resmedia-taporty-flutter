@@ -1,7 +1,5 @@
 import 'dart:async';
 import 'dart:core';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dash/dash.dart';
 import 'package:resmedia_taporty_core/core.dart';
 import 'package:resmedia_taporty_customer/blocs/SupplierBloc.dart';
@@ -19,16 +17,12 @@ class CartBloc extends Bloc {
   CartModel get _cart => _cartController.value;
   Stream<CartModel> get outCart => _cartController.stream;
 
-  final BehaviorSubject<String> _customerIdController = BehaviorSubject();
-  String get _customerId => _customerIdController.value;
-
   final BehaviorSubject<String> _supplierIdController = BehaviorSubject();
-  String get _supplierId => _supplierIdController.value;
+  String get supplierId => _supplierIdController.value;
 
   @override
   void dispose() {
     _cartController.close();
-    _customerIdController.close();
     _supplierIdController.close();
   }
 
@@ -43,7 +37,6 @@ class CartBloc extends Bloc {
     var supplierId = supplierBloc.supplierId;
 
     if (customerId == null || supplierId == null) return;
-    _customerIdController.add(customerId);
     _supplierIdController.add(supplierId);
 
     productSubscription?.cancel();
@@ -80,20 +73,6 @@ class CartBloc extends Bloc {
     return products;
   }
 
-  Future<String> findDriver(ShiftModel selectedShift, String supplierId, GeoPoint customerCoordinates) async {
-    return _db.findDriver(selectedShift, supplierId, customerCoordinates);
-  }
-
-  Future<bool> signer(String customerId, String supplierId, String driverId, GeoPoint customerCoordinates, String customerAddress, CheckoutDataModel data) async {
-    assert(customerId == _customerId);
-    assert(supplierId == _supplierId);
-    var products = clearCart();
-
-    await _db.createOrder(products, customerId, customerCoordinates, customerAddress, data.name, data.phone, supplierId, driverId, data.selectedShift, data.cardId);
-
-    return true;
-  }
-
   void increment(String id) async {
     _cart.increment(id);
     _update(_cart);
@@ -116,6 +95,7 @@ class CartBloc extends Bloc {
 
   void _update(CartModel cart) {
     _cartController.add(cart);
-    _sharedPreferences.updateCart(_customerId, _supplierId, cart);
+    var customerId = userBloc.user.id;
+    _sharedPreferences.updateCart(customerId, supplierId, cart);
   }
 }

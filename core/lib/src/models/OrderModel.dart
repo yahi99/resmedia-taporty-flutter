@@ -71,9 +71,12 @@ class OrderModel extends FirebaseModel {
   final double totalPrice;
   final int newProductCount;
   final double newTotalPrice;
+  final String notes;
 
   final OrderState state;
+  @JsonKey(defaultValue: false)
   final bool hasSupplierReview;
+  @JsonKey(defaultValue: false)
   final bool hasDriverReview;
 
   // Timestamps
@@ -126,6 +129,7 @@ class OrderModel extends FirebaseModel {
   OrderModel({
     String path,
     this.productCount,
+    this.notes,
     this.totalPrice,
     this.newProductCount,
     this.newTotalPrice,

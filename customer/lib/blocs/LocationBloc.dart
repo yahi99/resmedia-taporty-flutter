@@ -15,6 +15,7 @@ class LocationBloc implements Bloc {
   BehaviorSubject<LocationModel> _locationController = BehaviorSubject.seeded(null);
 
   Stream<LocationModel> get outCustomerLocation => _locationController.stream;
+  LocationModel get customerLocation => _locationController.value;
 
   LocationBloc.instance();
 

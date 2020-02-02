@@ -12,9 +12,13 @@ class _LegalNotesState extends State<LegalNotesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text("Account"),
+        title: Text(
+          "Note legali",
+          style: theme.textTheme.body2.copyWith(color: Colors.white, fontSize: 18),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.only(top: 12.0 * 2),

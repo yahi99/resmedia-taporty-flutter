@@ -10,6 +10,7 @@ OrderModel _$OrderModelFromJson(Map json) {
   return OrderModel(
     path: json['path'] as String,
     productCount: json['productCount'] as int,
+    notes: json['notes'] as String,
     totalPrice: (json['totalPrice'] as num)?.toDouble(),
     newProductCount: json['newProductCount'] as int,
     newTotalPrice: (json['newTotalPrice'] as num)?.toDouble(),
@@ -71,6 +72,7 @@ Map<String, dynamic> _$OrderModelToJson(OrderModel instance) {
   writeNotNull('totalPrice', instance.totalPrice);
   writeNotNull('newProductCount', instance.newProductCount);
   writeNotNull('newTotalPrice', instance.newTotalPrice);
+  writeNotNull('notes', instance.notes);
   writeNotNull('state', _$OrderStateEnumMap[instance.state]);
   writeNotNull('hasSupplierReview', instance.hasSupplierReview);
   writeNotNull('hasDriverReview', instance.hasDriverReview);

@@ -36,7 +36,7 @@ class _SupplierCategoryListPageState extends State<SupplierCategoryListPage> {
             ),
           );
         }
-        return NoSupplierView();
+        return NoSupplierView(message: "Non sono stati trovati fornitori nelle tue vicinanze.");
       },
     );
   }

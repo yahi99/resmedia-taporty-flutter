@@ -2,25 +2,37 @@ import 'package:resmedia_taporty_core/core.dart';
 import 'package:resmedia_taporty_core/src/helper/DateTimeSerialization.dart';
 
 extension ReviewProviderExtension on DatabaseService {
-  Future addSupplierReview(String restId, String userId, String customerName, String orderId, double rating, String description) async {
-    await supplierCollection.document(restId).collection('reviews').document(orderId).setData({
-      'rating': rating,
-      'userId': userId,
-      'orderId': orderId,
-      'description': description,
-      'customerName': customerName,
+  Stream<ReviewModel> getSupplierReviewStream(String supplierId, String orderId) {
+    return supplierCollection.document(supplierId).collection("reviews").document(orderId).snapshots().map((snap) => ReviewModel.fromFirebase(snap));
+  }
+
+  Stream<ReviewModel> getDriverReviewStream(String driverId, String orderId) {
+    return driverCollection.document(driverId).collection("reviews").document(orderId).snapshots().map((snap) => ReviewModel.fromFirebase(snap));
+  }
+
+  Future setSupplierReview(String supplierId, String userId, String customerName, String orderId, double rating, String description) async {
+    await supplierCollection.document(supplierId).collection('reviews').document(orderId).setData({
+      ...ReviewModel(
+        rating: rating,
+        userId: userId,
+        orderId: orderId,
+        description: description,
+        customerName: customerName,
+      ).toJson(),
       'timestamp': datetimeToJson(DateTime.now()),
     });
     await orderCollection.document(orderId).updateData({'hasSupplierReview': true});
   }
 
-  Future addDriverReview(String driverId, String userId, String customerName, String orderId, double rating, String description) async {
-    await userCollection.document(driverId).collection('reviews').document(orderId).setData({
-      'rating': rating,
-      'userId': userId,
-      'orderId': orderId,
-      'description': description,
-      'customerName': customerName,
+  Future setDriverReview(String driverId, String userId, String customerName, String orderId, double rating, String description) async {
+    await driverCollection.document(driverId).collection('reviews').document(orderId).setData({
+      ...ReviewModel(
+        rating: rating,
+        userId: userId,
+        orderId: orderId,
+        description: description,
+        customerName: customerName,
+      ).toJson(),
       'timestamp': datetimeToJson(DateTime.now()),
     });
     await orderCollection.document(orderId).updateData({'hasDriverReview': true});

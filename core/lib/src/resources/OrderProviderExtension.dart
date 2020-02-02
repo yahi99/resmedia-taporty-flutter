@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:resmedia_taporty_core/core.dart';
 import 'package:resmedia_taporty_core/src/models/CartProductModel.dart';
 import 'package:resmedia_taporty_core/src/helper/DateTimeSerialization.dart';
 import 'package:resmedia_taporty_core/src/models/OrderModel.dart';
@@ -82,64 +83,75 @@ extension OrderProviderExtension on DatabaseService {
       products: orderProducts,
     );
 
-    // TODO: Genera l'id dell'ordine da te
     var documentReference = orderCollection.document();
 
     await documentReference.setData({...order.toJson(), 'reference': documentReference});
   }
 
-  // TODO: Da mettere dentro una Transaction
-  Future<void> modifyOrder(String orderId, OrderState prevState, List<OrderProductModel> orderProducts) async {
+  Future<void> modifyOrder(String orderId, List<OrderProductModel> orderProducts) async {
     orderProducts = orderProducts.where((o) => o.quantity > 0).toList();
 
-    if (prevState == OrderState.NEW) {
-      var order = await getOrderStream(orderId).first;
+    var orderDocument = orderCollection.document(orderId);
+    var error = false;
+    await Firestore.instance.runTransaction((Transaction tx) async {
+      var order = OrderModel.fromFirebase(await tx.get(orderDocument));
 
-      var newOrder = OrderModel(
-        productCount: orderProducts.fold(0, (count, product) => count + product.quantity),
-        totalPrice: orderProducts.fold(0, (price, product) => price + product.quantity * product.price),
-        products: orderProducts,
-        preferredDeliveryTimestamp: order.preferredDeliveryTimestamp,
-        creationTimestamp: DateTime.now(),
-        customerName: order.customerName,
-        customerCoordinates: order.customerCoordinates,
-        customerAddress: order.customerAddress,
-        customerPhoneNumber: order.customerPhoneNumber,
-        customerImageUrl: order.customerImageUrl,
-        supplierName: order.supplierName,
-        supplierCoordinates: order.supplierCoordinates,
-        supplierAddress: order.supplierAddress,
-        supplierPhoneNumber: order.supplierPhoneNumber,
-        supplierImageUrl: order.supplierImageUrl,
-        driverName: order.driverName,
-        driverPhoneNumber: order.driverPhoneNumber,
-        driverImageUrl: order.driverImageUrl,
-        supplierId: order.supplierId,
-        driverId: order.driverId,
-        customerId: order.customerId,
-        state: OrderState.NEW,
-        cardId: order.cardId,
-      );
+      if (order.state == OrderState.NEW) {
+        var newOrder = OrderModel(
+          productCount: orderProducts.fold(0, (count, product) => count + product.quantity),
+          totalPrice: orderProducts.fold(0, (price, product) => price + product.quantity * product.price),
+          products: orderProducts,
+          preferredDeliveryTimestamp: order.preferredDeliveryTimestamp,
+          creationTimestamp: DateTime.now(),
+          customerName: order.customerName,
+          customerCoordinates: order.customerCoordinates,
+          customerAddress: order.customerAddress,
+          customerPhoneNumber: order.customerPhoneNumber,
+          customerImageUrl: order.customerImageUrl,
+          supplierName: order.supplierName,
+          supplierCoordinates: order.supplierCoordinates,
+          supplierAddress: order.supplierAddress,
+          supplierPhoneNumber: order.supplierPhoneNumber,
+          supplierImageUrl: order.supplierImageUrl,
+          driverName: order.driverName,
+          driverPhoneNumber: order.driverPhoneNumber,
+          driverImageUrl: order.driverImageUrl,
+          supplierId: order.supplierId,
+          driverId: order.driverId,
+          customerId: order.customerId,
+          state: OrderState.NEW,
+          cardId: order.cardId,
+        );
 
-      var documentReference = orderCollection.document();
+        var newOrderDocRef = orderCollection.document();
 
-      await documentReference.setData({...newOrder.toJson(), 'reference': documentReference, 'oldOrderId': order.id});
+        tx.update(orderDocument, {
+          'state': orderStateEncode(OrderState.ARCHIVED),
+          'archiviationTimestamp': datetimeToJson(DateTime.now()),
+          'newOrderId': newOrderDocRef.documentID,
+        });
 
-      await orderCollection.document(orderId).updateData({
-        'state': orderStateEncode(OrderState.ARCHIVED),
-        'archiviationTimestamp': datetimeToJson(DateTime.now()),
-        'newOrderId': documentReference.documentID,
-      });
-    } else if (prevState == OrderState.ACCEPTED || prevState == OrderState.READY) {
-      await orderCollection.document(orderId).updateData({
-        'state': orderStateEncode(OrderState.MODIFIED),
-        'prevState': orderStateEncode(prevState),
-        'modificationTimestamp': datetimeToJson(DateTime.now()),
-        'newProductCount': orderProducts.fold(0, (count, product) => count + product.quantity),
-        'newTotalPrice': orderProducts.fold(0, (price, product) => price + product.quantity * product.price),
-        'newProducts': orderProducts.map((o) => o.toJson()).toList(),
-      });
-    }
+        tx.set(newOrderDocRef, {
+          ...newOrder.toJson(),
+          'reference': newOrderDocRef,
+          'oldOrderId': order.id,
+        });
+      } else if (order.state == OrderState.ACCEPTED || order.state == OrderState.READY) {
+        tx.update(orderDocument, {
+          'state': orderStateEncode(OrderState.MODIFIED),
+          'prevState': orderStateEncode(order.state),
+          'modificationTimestamp': datetimeToJson(DateTime.now()),
+          'newProductCount': orderProducts.fold(0, (count, product) => count + product.quantity),
+          'newTotalPrice': orderProducts.fold(0, (price, product) => price + product.quantity * product.price),
+          'newProducts': orderProducts.map((o) => o.toJson()).toList(),
+        });
+      } else {
+        error = true;
+        return;
+      }
+    });
+
+    if (error) throw new InvalidOrderStateException("Invalid order state!");
   }
 
   Future updateOrderState(String orderId, OrderState state) async {
@@ -181,6 +193,6 @@ extension OrderProviderExtension on DatabaseService {
         timestampField: datetimeToJson(DateTime.now()),
       });
     });
-    if (error) throw new Exception(); // TODO: Definire meglio l'eccezione
+    if (error) throw new InvalidOrderStateException("Invalid order state!");
   }
 }

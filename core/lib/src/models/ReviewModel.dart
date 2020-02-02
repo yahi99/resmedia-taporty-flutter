@@ -11,7 +11,7 @@ class ReviewModel extends FirebaseModel {
   final String description, orderId, userId, customerName;
 
   ReviewModel({
-    @required String path,
+    String path,
     @required this.customerName,
     @required this.description,
     @required this.userId,

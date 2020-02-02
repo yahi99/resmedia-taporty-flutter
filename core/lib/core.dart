@@ -15,10 +15,15 @@ export 'src/helper/GeopointSerialization.dart';
 export 'src/helper/Categorized.dart';
 export 'src/helper/Controller.dart';
 
+// Exceptions
+export 'src/exceptions/InvalidOrderStateException.dart';
+export 'src/exceptions/NotACustomerException.dart';
+export 'src/exceptions/NotRegisteredException.dart';
+export 'src/exceptions/NotADriverException.dart';
+
 // Models
 export 'src/models/CartModel.dart';
 export 'src/models/CartProductModel.dart';
-export 'src/models/CheckoutDataModel.dart';
 export 'src/models/HolidayModel.dart';
 export 'src/models/OrderModel.dart';
 export 'src/models/OrderProductModel.dart';

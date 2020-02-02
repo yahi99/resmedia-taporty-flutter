@@ -1,14 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:resmedia_taporty_core/core.dart';
 import 'package:resmedia_taporty_customer/blocs/CartBloc.dart';
+import 'package:resmedia_taporty_customer/blocs/CheckoutBloc.dart';
 import 'package:resmedia_taporty_customer/blocs/SupplierBloc.dart';
-import 'package:resmedia_taporty_customer/blocs/UserBloc.dart';
 import 'package:resmedia_taporty_customer/generated/provider.dart';
-import 'package:resmedia_taporty_customer/interface/screen/CheckoutScreen.dart';
 import 'package:resmedia_taporty_customer/interface/view/BottonButtonBar.dart';
 import 'package:resmedia_taporty_customer/interface/view/CartProductListView.dart';
 import 'package:toast/toast.dart';
@@ -21,10 +19,10 @@ class ConfirmPage extends StatefulWidget {
 
   ConfirmPage({
     Key key,
+    @required this.controller,
     @required this.supplier,
     @required this.customerAddress,
     @required this.customerCoordinates,
-    @required this.controller,
   }) : super(key: key);
 
   @override
@@ -32,6 +30,10 @@ class ConfirmPage extends StatefulWidget {
 }
 
 class _ConfirmState extends State<ConfirmPage> with AutomaticKeepAliveClientMixin {
+  final supplierBloc = $Provider.of<SupplierBloc>();
+  final cartBloc = $Provider.of<CartBloc>();
+  final checkoutBloc = $Provider.of<CheckoutBloc>();
+
   _showPaymentDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -64,8 +66,7 @@ class _ConfirmState extends State<ConfirmPage> with AutomaticKeepAliveClientMixi
           actions: <Widget>[
             FlatButton(
               onPressed: () {
-                // TODO: Rimuovere fino alla home
-                Navigator.pushNamedAndRemoveUntil(context, "/geolocalization", (route) => false);
+                Navigator.pushNamedAndRemoveUntil(context, "/supplierList", (route) => false);
               },
               textColor: cls.secondary,
               child: Text(
@@ -78,74 +79,64 @@ class _ConfirmState extends State<ConfirmPage> with AutomaticKeepAliveClientMixi
     );
   }
 
-  bool valid(BuildContext context) {
-    final state = CheckoutScreenInheritedWidget.of(context);
-    if (state.name == null || state.email == null || state.phone == null || state.selectedShift == null || state.customerId == null || state.cardId == null) return false;
-    return true;
-  }
-
+  // TODO: Metti un riassunto di tutte le informazioni
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final tt = Theme.of(context);
-    final supplierBloc = $Provider.of<SupplierBloc>();
-    final cartBloc = $Provider.of<CartBloc>();
-    final user = $Provider.of<UserBloc>();
-    return StreamBuilder<FirebaseUser>(
-      stream: user.outFirebaseUser,
-      builder: (ctx, uid) {
-        return Scaffold(
-          appBar: AppBar(
-            leading: IconButton(
-              icon: Icon(Icons.arrow_back),
-              onPressed: () {
-                widget.controller.animateTo(widget.controller.index - 1);
-              },
+    final theme = Theme.of(context);
+    return Scaffold(
+      body: StreamBuilder<CartModel>(
+        stream: cartBloc.outCart,
+        builder: (context, cartSnapshot) {
+          if (!cartSnapshot.hasData)
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          return Scaffold(
+            body: CartProductListView(
+              cart: cartSnapshot.data,
+              modifiable: false,
             ),
-          ),
-          body: StreamBuilder<CartModel>(
-            stream: cartBloc.outCart,
-            builder: (context, cartSnapshot) {
-              if (!cartSnapshot.hasData)
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
-              return CartProductListView(
-                cart: cartSnapshot.data,
-              );
-            },
-          ),
-          bottomNavigationBar: BottomButtonBar(
-            color: Colors.white10,
-            child: Container(
-              color: tt.primaryColor,
-              child: FlatButton(
-                child: Text(
-                  "Continua",
-                  style: TextStyle(color: Colors.white),
+            bottomNavigationBar: BottomButtonBar(
+              color: Colors.white10,
+              child: Container(
+                color: theme.primaryColor,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    FlatButton(
+                      color: theme.primaryColor,
+                      child: Text(
+                        "Indietro",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      onPressed: () {
+                        widget.controller.animateTo(widget.controller.index - 1);
+                      },
+                    ),
+                    FlatButton(
+                      child: Text(
+                        "Conferma",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      color: theme.primaryColor,
+                      onPressed: () async {
+                        var driverId = await checkoutBloc.findDriver();
+                        if (driverId != null) {
+                          await checkoutBloc.confirmOrder(driverId);
+                          _showPaymentDialog(context);
+                        } else {
+                          Toast.show('Fattorino non più disponibile nell\'orario selezionato!\nCambia l\'orario e riprova.', context);
+                        }
+                      },
+                    ),
+                  ],
                 ),
-                color: tt.primaryColor,
-                onPressed: () async {
-                  if (valid(context)) {
-                    final state = CheckoutScreenInheritedWidget.of(context);
-                    var userBloc = $Provider.of<UserBloc>();
-                    var customerId = (await userBloc.outFirebaseUser.first).uid;
-                    var driverId = await cartBloc.findDriver(state.selectedShift, widget.supplier.id, widget.customerCoordinates);
-                    if (driverId != null) {
-                      await cartBloc.signer(customerId, widget.supplier.id, driverId, widget.customerCoordinates, widget.customerAddress, state);
-                      _showPaymentDialog(context);
-                    } else {
-                      Toast.show('Fattorino non più disponibile nell\'orario selezionato!\nCambia l\'orario e riprova.', context);
-                    }
-                  } else {
-                    Toast.show('Mancano dei dati.', context);
-                  }
-                },
               ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 

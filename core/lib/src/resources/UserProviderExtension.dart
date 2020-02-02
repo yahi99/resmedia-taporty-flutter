@@ -23,12 +23,20 @@ extension UserProviderExtension on DatabaseService {
     await userCollection.document(uid).updateData({'imageUrl': path});
   }
 
-  Future<void> updateEmail(String uid, String email) async {
+  Future<void> updateUserEmail(String uid, String email) async {
     await userCollection.document(uid).updateData({'email': email});
   }
 
-  Future<void> updateNominative(String uid, String nominative) async {
+  Future<void> updateUserNominative(String uid, String nominative) async {
     await userCollection.document(uid).updateData({'nominative': nominative});
+  }
+
+  Future<void> updateUserPhoneNumber(String uid, String phoneNumber) async {
+    await userCollection.document(uid).updateData({'phoneNumber': phoneNumber});
+  }
+
+  Future<void> updateNotifyApp(String uid, bool value) async {
+    await userCollection.document(uid).updateData({'notifyApp': value});
   }
 
   Future createUser(String uid, String nominative, String email) async {

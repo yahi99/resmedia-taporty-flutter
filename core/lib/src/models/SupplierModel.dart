@@ -68,7 +68,6 @@ class SupplierModel extends FirebaseModel {
     return false;
   }
 
-  // TODO: Calcola nel costruttore e genera una mappa Map<DateTime, bool> che indichi se è aperto in un determinato orario
   List<DateTime> getStartTimes(DateTime day) {
     List<DateTime> startTimes = new List<DateTime>();
     if (isHoliday(datetime: day) || !weekdayTimetable[day.weekday].open) return startTimes;

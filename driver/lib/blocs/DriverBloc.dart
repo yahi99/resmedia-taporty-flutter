@@ -7,16 +7,6 @@ import 'package:meta/meta.dart';
 import 'package:resmedia_taporty_core/core.dart';
 import 'package:rxdart/rxdart.dart';
 
-class NotADriverException implements Exception {
-  final String message;
-  const NotADriverException(this.message);
-}
-
-class NotRegisteredException implements Exception {
-  final String message;
-  const NotRegisteredException(this.message);
-}
-
 class DriverBloc implements Bloc {
   final DatabaseService _db = DatabaseService();
   final StorageService _storage = StorageService();

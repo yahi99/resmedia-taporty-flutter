@@ -4,10 +4,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class SearchBar extends StatefulWidget implements PreferredSizeWidget {
+  final Widget leading;
   final Widget trailing;
   final StreamController searchBarStream;
 
-  const SearchBar({Key key, this.trailing, this.searchBarStream}) : super(key: key);
+  const SearchBar({Key key, this.leading, this.trailing, @required this.searchBarStream}) : super(key: key);
 
   @override
   _SearchBarState createState() => _SearchBarState();
@@ -53,6 +54,7 @@ class _SearchBarState extends State<SearchBar> {
   @override
   Widget build(BuildContext context) {
     final List<Widget> children = [
+      if (widget.leading != null) widget.leading,
       Expanded(
         child: TextField(
           onChanged: (value) {
@@ -73,8 +75,8 @@ class _SearchBarState extends State<SearchBar> {
           ),
         ),
       ),
+      if (widget.trailing != null) widget.trailing,
     ];
-    if (widget.trailing != null) children.add(widget.trailing);
 
     return SizedBox(
       height: widget.preferredSize.height,

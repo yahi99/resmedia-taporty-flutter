@@ -66,9 +66,13 @@ class _SupplierDetailScreenState extends State<SupplierDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text("Fornitore"),
+        title: Text(
+          "Fornitore",
+          style: theme.textTheme.body2.copyWith(color: Colors.white, fontSize: 18),
+        ),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
           onPressed: () {

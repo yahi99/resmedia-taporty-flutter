@@ -100,39 +100,9 @@ class AccountScreen extends StatelessWidget {
                     color: Colors.grey,
                   ),
                   children: <Widget>[
-                    (user.email != null)
-                        ? Text(
-                            user.email,
-                            style: theme.textTheme.subhead,
-                          )
-                        : Container(),
-                    Row(
-                      children: <Widget>[
-                        Icon(Icons.directions_car),
-                        FlatButton(
-                          child: Text('Diventa un Fattorino', style: theme.textTheme.subhead),
-                          onPressed: () async {
-                            var url = "https://taporty-requests.firebaseapp.com/?type=driver";
-                            if (await canLaunch(url)) {
-                              await launch(url);
-                            }
-                          },
-                        ),
-                      ],
-                    ),
-                    Row(
-                      children: <Widget>[
-                        Icon(Icons.directions_car),
-                        FlatButton(
-                          child: Text('Diventa un ristoratore', style: theme.textTheme.subhead),
-                          onPressed: () async {
-                            var url = "https://taporty-requests.firebaseapp.com/?type=supplier";
-                            if (await canLaunch(url)) {
-                              await launch(url);
-                            }
-                          },
-                        ),
-                      ],
+                    Text(
+                      user.email,
+                      style: theme.textTheme.subhead,
                     ),
                     Row(
                       children: <Widget>[
@@ -183,6 +153,21 @@ class AccountScreen extends StatelessWidget {
                           },
                         ),
                       ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 12.0),
+                      child: InkWell(
+                        child: Text(
+                          "Lavora con noi",
+                          style: TextStyle(color: ColorTheme.BLUE),
+                        ),
+                        onTap: () async {
+                          var url = "https://taporty-requests.firebaseapp.com/?type=supplier";
+                          if (await canLaunch(url)) {
+                            await launch(url);
+                          }
+                        },
+                      ),
                     ),
                   ].map((child) {
                     return Padding(

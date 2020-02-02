@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:resmedia_taporty_core/core.dart';
+import 'package:resmedia_taporty_customer/blocs/CheckoutBloc.dart';
 import 'package:resmedia_taporty_customer/blocs/StripeBloc.dart';
 import 'package:resmedia_taporty_customer/generated/provider.dart';
-import 'package:resmedia_taporty_customer/interface/screen/CheckoutScreen.dart';
 import 'package:resmedia_taporty_customer/interface/view/BottonButtonBar.dart';
-import 'package:resmedia_taporty_customer/blocs/UserBloc.dart';
 
 class PaymentPage extends StatefulWidget {
   final TabController controller;
@@ -18,40 +17,36 @@ class PaymentPage extends StatefulWidget {
 }
 
 class _PaymentState extends State<PaymentPage> with AutomaticKeepAliveClientMixin {
+  final checkoutBloc = $Provider.of<CheckoutBloc>();
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    var isValid = false;
-    var cardId;
     final theme = Theme.of(context);
     final tt = theme.textTheme;
     var stripeBloc = $Provider.of<StripeBloc>();
     return StreamBuilder<StripeSourceModel>(
       stream: stripeBloc.outSource,
       builder: (ctx, cardSnapshot) {
-        if (cardSnapshot.hasData) {
-          isValid = true;
-          cardId = cardSnapshot.data.token;
-        }
         return Scaffold(
-            appBar: AppBar(
-              leading: IconButton(
-                icon: Icon(Icons.arrow_back),
-                onPressed: () {
-                  widget.controller.animateTo(widget.controller.index - 1);
-                },
-              ),
+          appBar: AppBar(
+            leading: IconButton(
+              icon: Icon(Icons.arrow_back),
+              onPressed: () {
+                widget.controller.animateTo(widget.controller.index - 1);
+              },
             ),
-            body: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text("METODO DI PAGAMENTO", style: tt.subtitle),
-                    // TODO: Sistemare
-                    /*Card(
+          ),
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text("METODO DI PAGAMENTO", style: tt.subtitle),
+                  // TODO: Sistemare
+                  /*Card(
                       margin: const EdgeInsets.all(16.0),
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -60,28 +55,42 @@ class _PaymentState extends State<PaymentPage> with AutomaticKeepAliveClientMixi
                         ),
                       ),
                     ),*/
-                  ],
-                ),
+                ],
               ),
             ),
-            bottomNavigationBar: BottomButtonBar(
-              color: theme.primaryColor,
-              child: FlatButton(
-                color: theme.primaryColor,
-                child: Text(
-                  "Continua",
-                  style: TextStyle(color: Colors.white),
+          ),
+          bottomNavigationBar: BottomButtonBar(
+            color: theme.primaryColor,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                FlatButton(
+                  color: theme.primaryColor,
+                  child: Text(
+                    "Indietro",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  onPressed: () {
+                    widget.controller.animateTo(widget.controller.index - 1);
+                  },
                 ),
-                onPressed: () async {
-                  if (isValid && cardId != null) {
-                    final state = CheckoutScreenInheritedWidget.of(context);
-                    state.cardId = cardId;
-                    state.customerId = (await $Provider.of<UserBloc>().outFirebaseUser.first).uid;
-                    widget.controller.animateTo(widget.controller.index + 1);
-                  }
-                },
-              ),
-            ));
+                FlatButton(
+                  color: theme.primaryColor,
+                  child: Text(
+                    "Continua",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  onPressed: () async {
+                    if (true) {
+                      var index = widget.controller.index;
+                      widget.controller.animateTo(index + 1);
+                    }
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
       },
     );
   }

@@ -1,10 +1,11 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:rating_bar/rating_bar.dart';
 import 'package:resmedia_taporty_core/core.dart';
+import 'package:resmedia_taporty_customer/blocs/ReviewBloc.dart';
 import 'package:resmedia_taporty_customer/generated/provider.dart';
+import 'package:resmedia_taporty_customer/interface/widget/ReviewAlertDialog.dart';
 import 'package:toast/toast.dart';
 import 'package:resmedia_taporty_customer/blocs/OrderBloc.dart';
 
@@ -19,12 +20,8 @@ class OrderDetailScreen extends StatefulWidget {
 
 class _OrderDetailScreenState extends State<OrderDetailScreen> {
   final _orderBloc = $Provider.of<OrderBloc>();
+  final _reviewBloc = $Provider.of<ReviewBloc>();
   final _db = DatabaseService();
-
-  final _restReviewBodyKey = new GlobalKey<FormFieldState>();
-  final _driverReviewBodyKey = new GlobalKey<FormFieldState>();
-  double _restRating = 5;
-  double _driverRating = 5;
 
   @override
   void dispose() {
@@ -32,170 +29,22 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
     super.dispose();
   }
 
-  // TODO: Metti in un widget a sè stante e definisci il ReviewModel
-  void _addSupplierReview(OrderModel order) {
+  void _addSupplierReview(ReviewModel review) {
+    _reviewBloc.setReviewType(true);
     showDialog(
       context: context,
       builder: (_context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Row(
-                children: <Widget>[
-                  Padding(
-                    child: AutoSizeText('Recensione fornitore'),
-                    padding: EdgeInsets.only(bottom: 12.0, right: 12.0),
-                  ),
-                ],
-              ),
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  RatingBar(
-                    initialRating: 5,
-                    onRatingChanged: (val) {
-                      _restRating = val;
-                    },
-                    filledIcon: Icons.star,
-                    emptyIcon: Icons.star_border,
-                    halfFilledIcon: Icons.star_half,
-                    isHalfAllowed: true,
-                    emptyColor: Colors.yellow,
-                    filledColor: Colors.yellow,
-                    halfFilledColor: Colors.yellow,
-                    size: 25.0,
-                  ),
-                ],
-              ),
-              Padding(
-                child: TextFormField(
-                  key: _restReviewBodyKey,
-                  textInputAction: TextInputAction.done,
-                  validator: (value) {
-                    if (value.length == 0) {
-                      return 'Inserisci valutazione';
-                    }
-                    return null;
-                  },
-                  decoration: InputDecoration(
-                    hintText: "Inserisci una recensione...",
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey, width: 0.0),
-                    ),
-                  ),
-                  maxLines: 10,
-                  minLines: 5,
-                  keyboardType: TextInputType.text,
-                ),
-                padding: EdgeInsets.only(top: 8.0, bottom: 8.0),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  RaisedButton(
-                    child: Text('Invia'),
-                    onPressed: () async {
-                      try {
-                        await _db.addSupplierReview(order.supplierId, order.customerId, order.customerName, order.id, _restRating, _restReviewBodyKey.currentState.value);
-                        Toast.show("Recensione aggiunta con successo!", context);
-                        Navigator.pop(context);
-                      } catch (err) {
-                        Toast.show("Errore inaspettato!", context);
-                      }
-                    },
-                  ),
-                ],
-              )
-            ],
-          ),
-        );
+        return ReviewAlertDialog(review, true);
       },
     );
   }
 
-  // TODO: Refactor
-  void _addDriverReview(OrderModel order) {
+  void _addDriverReview(ReviewModel review) {
+    _reviewBloc.setReviewType(false);
     showDialog(
       context: context,
       builder: (_context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Row(
-                children: <Widget>[
-                  Padding(
-                    child: AutoSizeText('Recensione fattorino'),
-                    padding: EdgeInsets.only(bottom: 12.0, right: 12.0),
-                  ),
-                ],
-              ),
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  RatingBar(
-                    initialRating: 5,
-                    onRatingChanged: (val) {
-                      _driverRating = val;
-                    },
-                    filledIcon: Icons.star,
-                    emptyIcon: Icons.star_border,
-                    halfFilledIcon: Icons.star_half,
-                    isHalfAllowed: true,
-                    emptyColor: Colors.yellow,
-                    filledColor: Colors.yellow,
-                    halfFilledColor: Colors.yellow,
-                    size: 25.0,
-                  ),
-                ],
-              ),
-              Padding(
-                child: TextFormField(
-                  key: _driverReviewBodyKey,
-                  textInputAction: TextInputAction.done,
-                  validator: (value) {
-                    if (value.length == 0) {
-                      return 'Inserisci valutazione';
-                    }
-                    return null;
-                  },
-                  decoration: InputDecoration(
-                    hintText: "Inserisci una recensione...",
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey, width: 0.0),
-                    ),
-                  ),
-                  maxLines: 10,
-                  minLines: 5,
-                  keyboardType: TextInputType.text,
-                ),
-                padding: EdgeInsets.only(top: 8.0, bottom: 8.0),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  RaisedButton(
-                    child: Text('Invia'),
-                    onPressed: () async {
-                      try {
-                        await _db.addDriverReview(order.driverId, order.customerId, order.customerName, order.id, _driverRating, _driverReviewBodyKey.currentState.value);
-                        Toast.show("Recensione aggiunta con successo!", context);
-                        Navigator.pop(context);
-                      } catch (err) {
-                        Toast.show("Errore inaspettato!", context);
-                      }
-                    },
-                  ),
-                ],
-              )
-            ],
-          ),
-        );
+        return ReviewAlertDialog(review, false);
       },
     );
   }
@@ -229,6 +78,10 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                           try {
                             await _db.updateOrderState(order.id, OrderState.CANCELLED);
                             Toast.show("Ordine cancellato", context);
+                          } on InvalidOrderStateException catch (err) {
+                            print(err);
+                            Toast.show("L'ordine ha cambiato stato e non può più essere annullato.", context);
+                            Navigator.pop(context);
                           } catch (e) {
                             print(e);
                             Toast.show("Errore inaspettato", context);
@@ -254,6 +107,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
         automaticallyImplyLeading: true,
         title: Text(
           "Dettaglio ordine",
+          style: theme.textTheme.body2.copyWith(color: Colors.white, fontSize: 18),
         ),
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
@@ -350,49 +204,135 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                     ),
                   ),
                   HeaderWidget("FORNITORE"),
-                  if (order.hasSupplierReview != true && order.state == OrderState.DELIVERED)
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        _buildSubjectDetails(order.supplierImageUrl, order.supplierName, order.supplierPhoneNumber),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
-                          child: InkWell(
-                            onTap: () => _addSupplierReview(order),
-                            child: Text(
-                              "Lascia una recensione",
-                              style: TextStyle(
-                                decoration: TextDecoration.underline,
-                                color: ColorTheme.BLUE,
-                              ),
-                            ),
-                          ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      _buildSubjectDetails(order.supplierImageUrl, order.supplierName, order.supplierPhoneNumber),
+                      if (order.state == OrderState.DELIVERED)
+                        StreamBuilder<ReviewModel>(
+                          stream: _reviewBloc.outSupplierReview,
+                          builder: (context, reviewSnap) {
+                            if (reviewSnap.hasData && order.hasSupplierReview)
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 8.0),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: <Widget>[
+                                        RatingBar.readOnly(
+                                          initialRating: reviewSnap.data.rating,
+                                          filledIcon: Icons.star,
+                                          emptyIcon: Icons.star_border,
+                                          halfFilledIcon: Icons.star_half,
+                                          isHalfAllowed: true,
+                                          emptyColor: Colors.yellow,
+                                          filledColor: Colors.yellow,
+                                          halfFilledColor: Colors.yellow,
+                                          size: 26,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
+                                    child: InkWell(
+                                      onTap: () => _addSupplierReview(reviewSnap.data),
+                                      child: Text(
+                                        "Modifica la recensione",
+                                        style: TextStyle(
+                                          decoration: TextDecoration.underline,
+                                          color: ColorTheme.BLUE,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            else
+                              return Padding(
+                                padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
+                                child: InkWell(
+                                  onTap: () => _addSupplierReview(null),
+                                  child: Text(
+                                    "Lascia una recensione",
+                                    style: TextStyle(
+                                      decoration: TextDecoration.underline,
+                                      color: ColorTheme.BLUE,
+                                    ),
+                                  ),
+                                ),
+                              );
+                          },
                         ),
-                      ],
-                    ),
-                  if (order.hasSupplierReview == true || order.state != OrderState.DELIVERED) _buildSubjectDetails(order.supplierImageUrl, order.supplierName, order.supplierPhoneNumber),
+                    ],
+                  ),
                   HeaderWidget("FATTORINO"),
-                  if (order.hasDriverReview != true && order.state == OrderState.DELIVERED)
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        _buildSubjectDetails(order.driverImageUrl, order.driverName, order.driverPhoneNumber),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
-                          child: InkWell(
-                            onTap: () => _addDriverReview(order),
-                            child: Text(
-                              "Lascia una recensione",
-                              style: TextStyle(
-                                decoration: TextDecoration.underline,
-                                color: ColorTheme.BLUE,
-                              ),
-                            ),
-                          ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      _buildSubjectDetails(order.driverImageUrl, order.driverName, order.driverPhoneNumber),
+                      if (order.state == OrderState.DELIVERED)
+                        StreamBuilder<ReviewModel>(
+                          stream: _reviewBloc.outDriverReview,
+                          builder: (context, reviewSnap) {
+                            if (reviewSnap.hasData && order.hasDriverReview)
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 8.0),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: <Widget>[
+                                        RatingBar.readOnly(
+                                          initialRating: reviewSnap.data.rating,
+                                          filledIcon: Icons.star,
+                                          emptyIcon: Icons.star_border,
+                                          halfFilledIcon: Icons.star_half,
+                                          isHalfAllowed: true,
+                                          emptyColor: Colors.yellow,
+                                          filledColor: Colors.yellow,
+                                          halfFilledColor: Colors.yellow,
+                                          size: 26,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
+                                    child: InkWell(
+                                      onTap: () => _addDriverReview(reviewSnap.data),
+                                      child: Text(
+                                        "Modifica la recensione",
+                                        style: TextStyle(
+                                          decoration: TextDecoration.underline,
+                                          color: ColorTheme.BLUE,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            else
+                              return Padding(
+                                padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
+                                child: InkWell(
+                                  onTap: () => _addDriverReview(null),
+                                  child: Text(
+                                    "Lascia una recensione",
+                                    style: TextStyle(
+                                      decoration: TextDecoration.underline,
+                                      color: ColorTheme.BLUE,
+                                    ),
+                                  ),
+                                ),
+                              );
+                          },
                         ),
-                      ],
-                    ),
-                  if (order.hasDriverReview == true || order.state != OrderState.DELIVERED) _buildSubjectDetails(order.driverImageUrl, order.driverName, order.driverPhoneNumber),
+                    ],
+                  ),
                   _buildCancelWidgets(order),
                 ],
               ),

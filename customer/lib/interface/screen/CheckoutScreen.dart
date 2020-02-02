@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:resmedia_taporty_core/core.dart';
+import 'package:resmedia_taporty_customer/blocs/CheckoutBloc.dart';
 import 'package:resmedia_taporty_customer/blocs/LocationBloc.dart';
 import 'package:resmedia_taporty_customer/generated/provider.dart';
 import 'package:resmedia_taporty_customer/interface/page/CartPage.dart';
@@ -17,23 +18,16 @@ class CheckoutScreen extends StatefulWidget {
   _CheckoutScreenState createState() => _CheckoutScreenState();
 }
 
-class Continue {
-  static bool isContinued;
-}
-
 class _CheckoutScreenState extends State<CheckoutScreen> with TickerProviderStateMixin {
   static TabController controller;
-  int indexUser;
-
   var supplierBloc = $Provider.of<SupplierBloc>();
   var userBloc = $Provider.of<UserBloc>();
   var locationBloc = $Provider.of<LocationBloc>();
+  var checkoutBloc = $Provider.of<CheckoutBloc>();
 
   @override
   void initState() {
-    Continue.isContinued = false;
-    controller = TabController(vsync: this, length: 4)..addListener(() {});
-    indexUser = 0;
+    controller = TabController(vsync: this, length: 4);
     super.initState();
   }
 
@@ -45,13 +39,29 @@ class _CheckoutScreenState extends State<CheckoutScreen> with TickerProviderStat
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 4,
+    var theme = Theme.of(context);
+    return WillPopScope(
+      onWillPop: () async {
+        if (controller.index > 0) {
+          controller.animateTo(controller.index - 1);
+          return false;
+        }
+        return true;
+      },
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Paga'),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          title: Text(
+            'Checkout',
+            style: theme.textTheme.body2.copyWith(color: Colors.white, fontSize: 18),
+          ),
           backgroundColor: ColorTheme.RED,
-          centerTitle: true,
+          centerTitle: false,
           actions: <Widget>[
             IconButton(
               icon: Icon(Icons.account_circle),
@@ -60,7 +70,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> with TickerProviderStat
               },
             )
           ],
-          bottom: MyTabBar(
+          bottom: IgnorePointerTabBarWrapper(
             child: TabBar(
               controller: controller,
               tabs: [
@@ -71,7 +81,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> with TickerProviderStat
                 ),
                 Tab(
                   icon: Icon(
-                    Icons.location_on,
+                    Icons.account_circle,
                   ),
                 ),
                 Tab(
@@ -104,50 +114,49 @@ class _CheckoutScreenState extends State<CheckoutScreen> with TickerProviderStat
                 stream: supplierBloc.outSupplier,
                 builder: (_, supplierSnapshot) {
                   return StreamBuilder<LocationModel>(
-                      stream: locationBloc.outCustomerLocation,
-                      builder: (_, locationSnapshot) {
-                        if (userSnapshot.hasData && supplierSnapshot.hasData && locationSnapshot.hasData) {
-                          var user = userSnapshot.data;
-                          var supplier = supplierSnapshot.data;
-                          var location = locationSnapshot.data;
-                          if (supplierSnapshot.data.isDisabled != null && supplierSnapshot.data.isDisabled) {
-                            return Padding(
-                              child: Text('Fornitore non abilitato scegline un\'altro'),
-                              padding: EdgeInsets.all(8.0),
-                            );
-                          }
-                          return CheckoutScreenInheritedWidget(
-                            child: TabBarView(
-                              controller: controller,
-                              physics: NeverScrollableScrollPhysics(),
-                              children: <Widget>[
-                                CartPage(
-                                  supplier: supplier,
-                                  controller: controller,
-                                ),
-                                ShippingPage(
-                                  user: user,
-                                  customerCoordinates: location.coordinates,
-                                  supplier: supplier,
-                                  controller: controller,
-                                ),
-                                PaymentPage(
-                                  controller,
-                                ),
-                                ConfirmPage(
-                                  supplier: supplier,
-                                  customerCoordinates: location.coordinates,
-                                  customerAddress: location.address,
-                                  controller: controller,
-                                ),
-                              ],
-                            ),
+                    stream: locationBloc.outCustomerLocation,
+                    builder: (_, locationSnapshot) {
+                      if (userSnapshot.hasData && supplierSnapshot.hasData && locationSnapshot.hasData) {
+                        var user = userSnapshot.data;
+                        var supplier = supplierSnapshot.data;
+                        var location = locationSnapshot.data;
+                        if (supplierSnapshot.data.isDisabled != null && supplierSnapshot.data.isDisabled) {
+                          return Padding(
+                            child: Text('Fornitore non abilitato scegline un\'altro'),
+                            padding: EdgeInsets.all(8.0),
                           );
                         }
-                        return Center(
-                          child: CircularProgressIndicator(),
+                        return TabBarView(
+                          controller: controller,
+                          physics: NeverScrollableScrollPhysics(),
+                          children: <Widget>[
+                            CartPage(
+                              controller: controller,
+                              supplier: supplier,
+                            ),
+                            ShippingPage(
+                              controller: controller,
+                              user: user,
+                              customerCoordinates: location.coordinates,
+                              supplier: supplier,
+                            ),
+                            PaymentPage(
+                              controller,
+                            ),
+                            ConfirmPage(
+                              controller: controller,
+                              supplier: supplier,
+                              customerCoordinates: location.coordinates,
+                              customerAddress: location.address,
+                            ),
+                          ],
                         );
-                      });
+                      }
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    },
+                  );
                 },
               );
             },
@@ -158,26 +167,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> with TickerProviderStat
   }
 }
 
-class CheckoutScreenInheritedWidget extends InheritedWidget {
-  final CheckoutDataModel data;
-
-  CheckoutScreenInheritedWidget({Key key, @required Widget child})
-      : assert(child != null),
-        data = CheckoutDataModel(),
-        super(key: key, child: child);
-
-  static CheckoutDataModel of(BuildContext context) => (context.dependOnInheritedWidgetOfExactType<CheckoutScreenInheritedWidget>()).data;
-
-  @override
-  bool updateShouldNotify(InheritedWidget oldWidget) {
-    return false;
-  }
-}
-
-class MyTabBar extends StatelessWidget implements PreferredSizeWidget {
+class IgnorePointerTabBarWrapper extends StatelessWidget implements PreferredSizeWidget {
   final TabBar child;
 
-  MyTabBar({this.child});
+  IgnorePointerTabBarWrapper({this.child});
 
   @override
   Widget build(BuildContext context) {

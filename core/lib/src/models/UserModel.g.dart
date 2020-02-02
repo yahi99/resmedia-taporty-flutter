@@ -15,11 +15,6 @@ UserModel _$UserModelFromJson(Map json) {
     email: json['email'] as String,
     phoneNumber: json['phoneNumber'] as String,
     notifyApp: json['notifyApp'] as bool,
-    notifyEmail: json['notifyEmail'] as bool,
-    notifySms: json['notifySms'] as bool,
-    offersApp: json['offersApp'] as bool,
-    offersEmail: json['offersEmail'] as bool,
-    offersSms: json['offersSms'] as bool,
   );
 }
 
@@ -38,11 +33,6 @@ Map<String, dynamic> _$UserModelToJson(UserModel instance) {
   writeNotNull('email', instance.email);
   writeNotNull('phoneNumber', instance.phoneNumber);
   writeNotNull('imageUrl', instance.imageUrl);
-  writeNotNull('notifyEmail', instance.notifyEmail);
-  writeNotNull('notifySms', instance.notifySms);
   writeNotNull('notifyApp', instance.notifyApp);
-  writeNotNull('offersEmail', instance.offersEmail);
-  writeNotNull('offersSms', instance.offersSms);
-  writeNotNull('offersApp', instance.offersApp);
   return val;
 }

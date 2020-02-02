@@ -17,7 +17,7 @@ class OrderBloc implements Bloc {
   BehaviorSubject<String> _orderIdController;
 
   BehaviorSubject<OrderModel> _orderController;
-
+  OrderModel get order => _orderController.value;
   Stream<OrderModel> get outOrder => _orderController?.stream;
 
   setOrderStream(String orderId) {

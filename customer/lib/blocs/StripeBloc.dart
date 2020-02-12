@@ -1,20 +1,25 @@
 import 'dart:async';
 
 import 'package:dash/dash.dart';
-import 'package:flutter/foundation.dart';
-import 'package:resmedia_taporty_core/core.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:stripe_payment/stripe_payment.dart';
 
 class StripeBloc implements Bloc {
-  @protected
+  @override
   dispose() {
-    _sourceController.close();
+    _paymentMethodController.close();
   }
 
-  BehaviorSubject<StripeSourceModel> _sourceController;
+  BehaviorSubject<PaymentMethod> _paymentMethodController;
 
-  Stream<StripeSourceModel> get outSource => _sourceController.stream;
-  StripeSourceModel get source => _sourceController.value;
+  Stream<PaymentMethod> get outPaymentMethod => _paymentMethodController.stream;
+  PaymentMethod get paymentMethod => _paymentMethodController.value;
 
-  StripeBloc.instance();
+  void setPaymentMethod(PaymentMethod method) {
+    _paymentMethodController.value = method;
+  }
+
+  StripeBloc.instance() {
+    _paymentMethodController = BehaviorSubject();
+  }
 }

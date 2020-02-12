@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:resmedia_taporty_core/core.dart';
 import 'package:resmedia_taporty_customer/generated/provider.dart';
 import 'package:resmedia_taporty_customer/blocs/UserBloc.dart';
+import 'package:toast/toast.dart';
 
 class EditAccountScreen extends StatefulWidget {
   @override
@@ -131,12 +132,14 @@ class _EditAccountState extends State<EditAccountScreen> {
                         }).toList(),
                         Divider(),
                         ...[
+                          // TODO: Mettere un controllo sul Provider di autenticazione: se non è email e password serve la reautenticazioni con quel provider (provider nell'UserBloc)
                           Text("Per aggiornare i dati è necessario reinserire la password dell'account."),
                           TextFormField(
                             controller: _passwordController,
                             decoration: InputDecoration(
                               labelText: 'Password corrente',
                             ),
+                            obscureText: true,
                             validator: (value) {
                               if (value.isEmpty) {
                                 return 'Inserire la password corrente';
@@ -150,23 +153,15 @@ class _EditAccountState extends State<EditAccountScreen> {
                                 try {
                                   await userBloc.updateUserInfo(
                                       _passwordController.text, _nameKey.currentState.value.toString(), _emailKey.currentState.value.toString(), _phoneKey.currentState.value.toString());
-                                  Scaffold.of(context).showSnackBar(SnackBar(
-                                    content: Text('Cambiamenti eseguiti!'),
-                                  ));
+                                  Toast.show('Cambiamenti eseguiti!', context);
                                 } catch (error) {
                                   print(error);
                                   if (error.code == 'ERROR_INVALID_EMAIL') {
-                                    Scaffold.of(context).showSnackBar(SnackBar(
-                                      content: Text('E-mail non valida'),
-                                    ));
+                                    Toast.show('E-mail non valida', context);
                                   } else if (error.code == 'ERROR_WRONG_PASSWORD') {
-                                    Scaffold.of(context).showSnackBar(SnackBar(
-                                      content: Text('Password fornita non corretta'),
-                                    ));
+                                    Toast.show('Password fornita non corretta', context);
                                   } else
-                                    Scaffold.of(context).showSnackBar(SnackBar(
-                                      content: Text('Ci sono stati degli errori'),
-                                    ));
+                                    Toast.show('Ci sono stati degli errori', context);
                                 }
                               }
                             },

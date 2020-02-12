@@ -3,6 +3,7 @@ import 'package:resmedia_taporty_customer/blocs/CheckoutBloc.dart';
 import 'package:resmedia_taporty_customer/blocs/LocationBloc.dart';
 import 'package:resmedia_taporty_customer/blocs/OrderListBloc.dart';
 import 'package:resmedia_taporty_customer/blocs/ReviewBloc.dart';
+import 'package:resmedia_taporty_customer/blocs/StripeBloc.dart';
 import 'package:resmedia_taporty_customer/blocs/UserBloc.dart';
 import 'package:resmedia_taporty_customer/blocs/SupplierBloc.dart';
 import 'package:resmedia_taporty_customer/blocs/SupplierListBloc.dart';
@@ -20,4 +21,5 @@ part 'provider.g.dart';
 @BlocProvider.register(OrderListBloc)
 @BlocProvider.register(CheckoutBloc)
 @BlocProvider.register(ReviewBloc)
+@BlocProvider.register(StripeBloc)
 abstract class Provider {}

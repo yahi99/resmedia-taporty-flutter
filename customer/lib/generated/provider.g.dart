@@ -54,6 +54,11 @@ class $Provider extends Provider {
           return BlocCache.getBlocInstance(
               "ReviewBloc", () => ReviewBloc.instance());
         }
+      case StripeBloc:
+        {
+          return BlocCache.getBlocInstance(
+              "StripeBloc", () => StripeBloc.instance());
+        }
     }
     return null;
   }
@@ -103,6 +108,11 @@ class $Provider extends Provider {
       case ReviewBloc:
         {
           BlocCache.dispose("ReviewBloc");
+          break;
+        }
+      case StripeBloc:
+        {
+          BlocCache.dispose("StripeBloc");
           break;
         }
     }

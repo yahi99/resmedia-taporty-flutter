@@ -109,7 +109,7 @@ class OrderModel extends FirebaseModel {
   final String customerAddress;
   final String customerPhoneNumber;
   final String customerImageUrl;
-  final String cardId;
+  final String paymentIntentId;
 
   // Supplier info
   final String supplierId;
@@ -164,7 +164,7 @@ class OrderModel extends FirebaseModel {
     this.refusalTimestamp,
     this.archiviationTimestamp,
     this.state,
-    this.cardId,
+    this.paymentIntentId,
   }) : super(path);
 
   List<LatLng> get positions => [LatLng(customerCoordinates.latitude, customerCoordinates.longitude)];

@@ -49,7 +49,7 @@ extension OrderProviderExtension on DatabaseService {
   }
 
   Future<void> createOrder(List<CartProductModel> cartProducts, String customerId, GeoPoint customerCoordinates, String customerAddress, String customerName, String customerPhone, String supplierId,
-      String driverId, ShiftModel selectedShift, String cardId) async {
+      String driverId, ShiftModel selectedShift, String paymentIntentId, String notes) async {
     UserModel customer = await getUserById(customerId);
     UserModel driver = await getUserById(driverId);
     SupplierModel supplier = await getSupplierStream(supplierId).first;
@@ -61,6 +61,7 @@ extension OrderProviderExtension on DatabaseService {
       customerId: customerId,
       driverId: driverId,
       supplierId: supplierId,
+      notes: notes,
       preferredDeliveryTimestamp: selectedShift.endTime,
       productCount: orderProducts.fold(0, (count, product) => count + product.quantity),
       totalPrice: orderProducts.fold(0, (price, product) => price + product.quantity * product.price),
@@ -78,7 +79,7 @@ extension OrderProviderExtension on DatabaseService {
       supplierCoordinates: supplier.coordinates,
       supplierAddress: supplier.address,
       supplierPhoneNumber: supplier.phoneNumber,
-      cardId: cardId,
+      paymentIntentId: paymentIntentId,
       creationTimestamp: DateTime.now(),
       products: orderProducts,
     );
@@ -120,7 +121,7 @@ extension OrderProviderExtension on DatabaseService {
           driverId: order.driverId,
           customerId: order.customerId,
           state: OrderState.NEW,
-          cardId: order.cardId,
+          paymentIntentId: order.paymentIntentId,
         );
 
         var newOrderDocRef = orderCollection.document();

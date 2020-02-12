@@ -24,6 +24,7 @@ dependencies:
   google_sign_in: ^4.1.1
   url_launcher: ^5.4.1
   json_annotation: ^3.0.0
+  stripe_payment: ^1.0.6
   flutter_google_places: 
     git: git://github.com/FedeZara/flutter_google_places.git
   image_picker: ^0.6.2
@@ -46,7 +47,7 @@ dependencies:
   firebase_auth: ^0.15.2
   firebase_messaging: ^6.0.8
   flutter_local_notifications: ^0.8.4
-  dash: ^0.5.5
+  dash: ^0.5.7
   rxdart: ^0.23.1
   sticky_headers: ^0.1.8+1
   rating_bar: ^0.2.0
@@ -78,6 +79,7 @@ flutter:
   assets:
     - assets/img/
     - assets/img/home/
+    - assets/payment_card/
 
 
   # The following line ensures that the Material Icons font is

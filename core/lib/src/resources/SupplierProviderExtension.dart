@@ -25,7 +25,7 @@ extension SupplierProviderExtension on DatabaseService {
     });
   }
 
-  // TODO: Implementa il controllo sulla location
+  // TODO: Implementa il controllo sulla location e se hanno l'account Stripe attivato
   Stream<List<SupplierModel>> getSupplierListByLocationStream(GeoPoint coordinates) {
     return supplierCollection.snapshots().map((query) {
       return query.documents.map((snap) => SupplierModel.fromFirebase(snap)).toList();

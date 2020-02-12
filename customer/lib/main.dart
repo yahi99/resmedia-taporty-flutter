@@ -19,8 +19,16 @@ import 'package:resmedia_taporty_customer/interface/screen/SplashScreen.dart';
 import 'package:resmedia_taporty_customer/interface/screen/SupplierListScreen.dart';
 import 'package:resmedia_taporty_customer/interface/screen/SupplierReviewListScreen.dart';
 import 'package:resmedia_taporty_customer/interface/screen/SupplierScreen.dart';
+import 'package:stripe_payment/stripe_payment.dart';
 
+// TODO: Imposta l'orientamento solo in Portrait
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  StripePayment.setOptions(StripeOptions(
+    publishableKey: StripeConfig.STRIPE_PUBLIC_KEY,
+    merchantId: StripeConfig.STRIPE_MERCHANT_ID,
+    androidPayMode: StripeConfig.STRIPE_ANDROID_PAY_MODE,
+  ));
   runApp(Taporty());
 }
 

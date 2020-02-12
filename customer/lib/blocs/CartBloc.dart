@@ -14,7 +14,7 @@ class CartBloc extends Bloc {
   final SharedPreferenceService _sharedPreferences = SharedPreferenceService();
 
   final BehaviorSubject<CartModel> _cartController = BehaviorSubject();
-  CartModel get _cart => _cartController.value;
+  CartModel get cart => _cartController.value;
   Stream<CartModel> get outCart => _cartController.stream;
 
   final BehaviorSubject<String> _supplierIdController = BehaviorSubject();
@@ -43,59 +43,59 @@ class CartBloc extends Bloc {
 
     if (customerId == null || supplierId == null) return;
 
-    var cart = await _sharedPreferences.getCart(customerId, supplierId);
+    var storedCart = await _sharedPreferences.getCart(customerId, supplierId);
 
     var productStream = _db.getProductListStream(supplierId);
     var products = await productStream.first;
 
-    cart.updateWithNewProductList(products);
-    _update(cart);
+    storedCart.updateWithNewProductList(products);
+    _update(storedCart);
 
     productSubscription = productStream.listen((products) {
-      _cart.updateWithNewProductList(products);
-      _update(_cart);
+      cart.updateWithNewProductList(products);
+      _update(cart);
     });
   }
 
   List<CartProductModel> clearCart() {
-    var cartProducts = _cart.products;
+    var cartProducts = cart.products;
     List<CartProductModel> products = List<CartProductModel>();
     for (int i = 0; i < cartProducts.length; i++) {
       products.add(cartProducts.elementAt(i));
     }
 
     for (int i = 0; i < products.length; i++) {
-      _cart.remove(products.elementAt(i).id);
+      cart.remove(products.elementAt(i).id);
     }
 
-    _update(_cart);
+    _update(cart);
 
     return products;
   }
 
   void increment(String id) async {
-    _cart.increment(id);
-    _update(_cart);
+    cart.increment(id);
+    _update(cart);
   }
 
   void decrease(String id) async {
-    _cart.decrease(id);
-    _update(_cart);
+    cart.decrease(id);
+    _update(cart);
   }
 
   void add(ProductModel product) async {
-    _cart.add(product);
-    _update(_cart);
+    cart.add(product);
+    _update(cart);
   }
 
   void remove(String id) async {
-    _cart.remove(id);
-    _update(_cart);
+    cart.remove(id);
+    _update(cart);
   }
 
-  void _update(CartModel cart) {
-    _cartController.add(cart);
+  void _update(CartModel updatedCart) {
+    _cartController.add(updatedCart);
     var customerId = userBloc.user.id;
-    _sharedPreferences.updateCart(customerId, supplierId, cart);
+    _sharedPreferences.updateCart(customerId, supplierId, updatedCart);
   }
 }

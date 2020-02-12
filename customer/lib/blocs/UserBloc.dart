@@ -110,32 +110,7 @@ class UserBloc implements Bloc {
     await _db.updateUserPhoneNumber(firebaseUser.uid, phoneNumber);
   }
 
-  /*void updateNotifyEmail(bool value) async {
-    final restUser = await outFirebaseUser.first;
-    CloudFunctions.instance.getHttpsCallable(functionName: 'updateNotifyEmail').call({'uid': restUser.uid, 'notifyEmail': value});
-  }
-
-  void updateOffersSms(bool value) async {
-    final restUser = await outFirebaseUser.first;
-    CloudFunctions.instance.getHttpsCallable(functionName: 'updateOffersSms').call({'uid': restUser.uid, 'offersSms': value});
-  }
-
-  void updateNotifySms(bool value) async {
-    final restUser = await outFirebaseUser.first;
-    CloudFunctions.instance.getHttpsCallable(functionName: 'updateNotifySms').call({'uid': restUser.uid, 'notifySms': value});
-  }*/
-
   void updateNotifyApp(bool value) async {
     await _db.updateNotifyApp(user.id, value);
   }
-
-  /*void updateOffersEmail(bool value) async {
-    final restUser = await outFirebaseUser.first;
-    CloudFunctions.instance.getHttpsCallable(functionName: 'updateOffersEmail').call({'uid': restUser.uid, 'offersEmail': value});
-  }
-
-  void updateOffersApp(bool value) async {
-    final restUser = await outFirebaseUser.first;
-    CloudFunctions.instance.getHttpsCallable(functionName: 'updateOffersApp').call({'uid': restUser.uid, 'offersApp': value});
-  }*/
 }

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:core';
 
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:dash/dash.dart';
 import 'package:flutter/material.dart';
 import 'package:resmedia_taporty_core/core.dart';
@@ -11,10 +12,12 @@ import 'package:resmedia_taporty_customer/blocs/SupplierBloc.dart';
 import 'package:resmedia_taporty_customer/blocs/UserBloc.dart';
 import 'package:resmedia_taporty_customer/generated/provider.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:stripe_payment/stripe_payment.dart';
 import 'package:tuple/tuple.dart';
 
 class CheckoutBloc extends Bloc {
   final DatabaseService _db = DatabaseService();
+  final FunctionService _functions = FunctionService();
   final userBloc = $Provider.of<UserBloc>();
   final cartBloc = $Provider.of<CartBloc>();
   final supplierBloc = $Provider.of<SupplierBloc>();
@@ -36,6 +39,9 @@ class CheckoutBloc extends Bloc {
   ShiftModel get selectedShift => _selectedShiftController.value;
   Stream<ShiftModel> get outSelectedShift => _selectedShiftController.stream;
 
+  BehaviorSubject<bool> _confirmLoadingController;
+  Stream<bool> get outConfirmLoading => _confirmLoadingController.stream;
+
   TextEditingController nameController;
   TextEditingController phoneController;
 
@@ -48,12 +54,14 @@ class CheckoutBloc extends Bloc {
     _selectedDateController.close();
     _availableShiftListController.close();
     _availableShiftSub.cancel();
+    _confirmLoadingController.close();
   }
 
   CheckoutBloc.instance() {
     noteController = TextEditingController();
     nameController = TextEditingController();
     phoneController = TextEditingController();
+    _confirmLoadingController = BehaviorSubject.seeded(false);
     _selectedDateController = BehaviorSubject.seeded(DateTimeHelper.getDay(DateTime.now()));
     _selectedShiftController = BehaviorSubject.seeded(null);
     _availableShiftListController = BehaviorController.catchStream(
@@ -87,15 +95,41 @@ class CheckoutBloc extends Bloc {
     _selectedShiftController.value = shift;
   }
 
-  Future<String> findDriver() async {
-    var supplierId = cartBloc.supplierId;
-    var customerCoordinates = locationBloc.customerLocation.coordinates;
-    return _db.findDriver(selectedShift, supplierId, customerCoordinates);
+  Future<bool> processOrder() async {
+    _confirmLoadingController.value = true;
+    try {
+      var paymentIntentId = await _processPayment();
+      var driverId = await _findDriver();
+      await _confirmOrder(driverId, paymentIntentId);
+    } catch (err) {
+      _confirmLoadingController.value = false;
+      throw err;
+    }
+
+    return true;
   }
 
-  Future<bool> confirmOrder(String driverId) async {
+  Future<String> _processPayment() async {
+    var result = await _functions.createPaymentIntent(stripeBloc.paymentMethod.id, cartBloc.cart.totalPrice);
+    var confirmPaymentResult = await StripePayment.confirmPaymentIntent(PaymentIntent(
+      clientSecret: result.clientSecret,
+      paymentMethodId: stripeBloc.paymentMethod.id,
+    ));
+    if (confirmPaymentResult.status != 'requires_capture') throw new PaymentIntentException("C'è stato un errore durante il pagamento.");
+    return confirmPaymentResult.paymentIntentId;
+  }
+
+  Future<String> _findDriver() async {
+    var supplierId = cartBloc.supplierId;
+    var customerCoordinates = locationBloc.customerLocation.coordinates;
+    var driverId = await _db.findDriver(selectedShift, supplierId, customerCoordinates);
+    if (driverId == null) throw new NoAvailableDriverException("No available drivers found.");
+    return driverId;
+  }
+
+  Future<bool> _confirmOrder(String driverId, String paymentIntentId) async {
     assert(selectedShift != null);
-    assert(stripeBloc.source != null);
+    assert(stripeBloc.paymentMethod != null);
 
     var products = cartBloc.clearCart();
     var customerId = userBloc.user.id;
@@ -112,7 +146,8 @@ class CheckoutBloc extends Bloc {
       supplierId,
       driverId,
       selectedShift,
-      stripeBloc.source.token,
+      paymentIntentId,
+      noteController.text,
     );
 
     reset();

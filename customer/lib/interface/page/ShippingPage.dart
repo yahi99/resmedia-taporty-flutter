@@ -196,7 +196,7 @@ class _ShippingState extends State<ShippingPage> with AutomaticKeepAliveClientMi
                       minLines: 4,
                       decoration: InputDecoration(
                         hintMaxLines: 4,
-                        hintText: "Inserisci ciò che vuoi far sapere al ristorante o al fattorino...", // TODO: Inserire le note sia nel ristorante che nel fattorino
+                        hintText: "Inserisci ciò che vuoi far sapere al ristorante...",
                         border: OutlineInputBorder(
                           borderSide: BorderSide(color: Colors.grey, width: 0.0),
                         ),

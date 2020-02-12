@@ -84,59 +84,77 @@ class _ConfirmState extends State<ConfirmPage> with AutomaticKeepAliveClientMixi
   Widget build(BuildContext context) {
     super.build(context);
     final theme = Theme.of(context);
-    return Scaffold(
-      body: StreamBuilder<CartModel>(
-        stream: cartBloc.outCart,
-        builder: (context, cartSnapshot) {
-          if (!cartSnapshot.hasData)
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          return Scaffold(
-            body: CartProductListView(
-              cart: cartSnapshot.data,
-              modifiable: false,
-            ),
-            bottomNavigationBar: BottomButtonBar(
-              color: Colors.white10,
-              child: Container(
-                color: theme.primaryColor,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    FlatButton(
-                      color: theme.primaryColor,
-                      child: Text(
-                        "Indietro",
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      onPressed: () {
-                        widget.controller.animateTo(widget.controller.index - 1);
-                      },
+    return StreamBuilder<bool>(
+      stream: checkoutBloc.outConfirmLoading,
+      builder: (context, loadingSnap) {
+        bool isLoading = loadingSnap.data ?? false;
+        return StreamBuilder<CartModel>(
+          stream: cartBloc.outCart,
+          builder: (context, cartSnapshot) {
+            if (!cartSnapshot.hasData)
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            return Scaffold(
+              body: isLoading
+                  ? Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  : CartProductListView(
+                      cart: cartSnapshot.data,
+                      modifiable: false,
                     ),
-                    FlatButton(
-                      child: Text(
-                        "Conferma",
-                        style: TextStyle(color: Colors.white),
+              bottomNavigationBar: BottomButtonBar(
+                color: Colors.white10,
+                child: Container(
+                  color: theme.primaryColor,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      FlatButton(
+                        color: theme.primaryColor,
+                        child: Text(
+                          "Indietro",
+                        ),
+                        textColor: Colors.white,
+                        disabledTextColor: Colors.white54,
+                        onPressed: isLoading
+                            ? null
+                            : () {
+                                widget.controller.animateTo(widget.controller.index - 1);
+                              },
                       ),
-                      color: theme.primaryColor,
-                      onPressed: () async {
-                        var driverId = await checkoutBloc.findDriver();
-                        if (driverId != null) {
-                          await checkoutBloc.confirmOrder(driverId);
-                          _showPaymentDialog(context);
-                        } else {
-                          Toast.show('Fattorino non più disponibile nell\'orario selezionato!\nCambia l\'orario e riprova.', context);
-                        }
-                      },
-                    ),
-                  ],
+                      FlatButton(
+                        child: Text(
+                          "Conferma",
+                        ),
+                        textColor: Colors.white,
+                        disabledTextColor: Colors.white54,
+                        color: theme.primaryColor,
+                        onPressed: isLoading
+                            ? null
+                            : () async {
+                                try {
+                                  await checkoutBloc.processOrder();
+                                  _showPaymentDialog(context);
+                                } on NoAvailableDriverException {
+                                  Toast.show('Fattorino non più disponibile nell\'orario selezionato!\nCambia l\'orario e riprova.', context);
+                                } on PaymentIntentException catch (err) {
+                                  Toast.show(err.message, context);
+                                } catch (err) {
+                                  print(err);
+                                  Toast.show('Errore sconosciuto!', context);
+                                }
+                              },
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          );
-        },
-      ),
+            );
+          },
+        );
+      },
     );
   }
 

@@ -44,11 +44,11 @@ class _SupplierListScreenState extends State<SupplierListScreen> {
                   },
                 ),
                 title: Text(
-                  'Fornitori nella tua zona',
+                  'Nella tua zona',
                   style: theme.textTheme.body2.copyWith(color: Colors.white, fontSize: 18),
                 ),
                 backgroundColor: ColorTheme.RED,
-                centerTitle: true,
+                centerTitle: false,
                 actions: <Widget>[
                   IconButton(
                     icon: Icon(Icons.account_circle),

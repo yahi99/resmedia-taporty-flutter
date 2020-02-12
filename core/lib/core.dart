@@ -20,6 +20,8 @@ export 'src/exceptions/InvalidOrderStateException.dart';
 export 'src/exceptions/NotACustomerException.dart';
 export 'src/exceptions/NotRegisteredException.dart';
 export 'src/exceptions/NotADriverException.dart';
+export 'src/exceptions/NoAvailableDriverException.dart';
+export 'src/exceptions/PaymentIntentException.dart';
 
 // Models
 export 'src/models/CartModel.dart';
@@ -39,7 +41,7 @@ export 'src/models/TimetableModel.dart';
 export 'src/models/UserModel.dart';
 export 'src/models/DriverModel.dart';
 export 'src/models/LocationModel.dart';
-export 'src/models/StripeSourceModel.dart';
+export 'src/models/PaymentMethodModel.dart';
 
 // Resources
 export 'src/resources/DatabaseService.dart';
@@ -49,6 +51,7 @@ export 'src/resources/ReviewProviderExtension.dart';
 export 'src/resources/ShiftProviderExtension.dart';
 export 'src/resources/SupplierProviderExtension.dart';
 export 'src/resources/UserProviderExtension.dart';
+export 'src/resources/FunctionService.dart';
 export 'src/resources/StorageService.dart';
 export 'src/resources/AuthService.dart';
 export 'src/resources/SharedPreferenceService.dart';

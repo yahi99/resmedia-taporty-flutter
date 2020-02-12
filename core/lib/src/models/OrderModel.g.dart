@@ -36,8 +36,8 @@ OrderModel _$OrderModelFromJson(Map json) {
     driverImageUrl: json['driverImageUrl'] as String,
     supplierId: json['supplierId'] as String,
     driverId: json['driverId'] as String,
-    hasSupplierReview: json['hasSupplierReview'] as bool,
-    hasDriverReview: json['hasDriverReview'] as bool,
+    hasSupplierReview: json['hasSupplierReview'] as bool ?? false,
+    hasDriverReview: json['hasDriverReview'] as bool ?? false,
     customerId: json['customerId'] as String,
     products: (json['products'] as List)
         ?.map((e) => e == null ? null : OrderProductModel.fromJson(e as Map))
@@ -50,7 +50,7 @@ OrderModel _$OrderModelFromJson(Map json) {
     refusalTimestamp: datetimeFromJson(json['refusalTimestamp']),
     archiviationTimestamp: datetimeFromJson(json['archiviationTimestamp']),
     state: _$enumDecodeNullable(_$OrderStateEnumMap, json['state']),
-    cardId: json['cardId'] as String,
+    paymentIntentId: json['paymentIntentId'] as String,
   );
 }
 
@@ -98,7 +98,7 @@ Map<String, dynamic> _$OrderModelToJson(OrderModel instance) {
   writeNotNull('customerAddress', instance.customerAddress);
   writeNotNull('customerPhoneNumber', instance.customerPhoneNumber);
   writeNotNull('customerImageUrl', instance.customerImageUrl);
-  writeNotNull('cardId', instance.cardId);
+  writeNotNull('paymentIntentId', instance.paymentIntentId);
   writeNotNull('supplierId', instance.supplierId);
   writeNotNull('supplierName', instance.supplierName);
   writeNotNull(

@@ -5,8 +5,6 @@ import 'package:resmedia_taporty_driver/blocs/DriverBloc.dart';
 import 'package:resmedia_taporty_driver/generated/provider.dart';
 
 class AccountScreen extends StatelessWidget {
-  final AuthService _auth = AuthService();
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -88,7 +86,7 @@ class AccountScreen extends StatelessWidget {
                         FlatButton(
                           child: Text('Log Out', style: theme.textTheme.subhead),
                           onPressed: () async {
-                            await _auth.signOut();
+                            await driverBloc.signOut();
                             Navigator.pushNamedAndRemoveUntil(context, "/login", (Route<dynamic> route) => false);
                           },
                         ),

@@ -170,8 +170,7 @@ class UserBloc implements Bloc {
 
   Future signOut() async {
     await _auth.signOut();
-    await _sharedPreferenceService.setAuthProvider("");
-    _authProviderIdController.value = null;
+    await _setProviderId(null);
     _firebaseUserController.value = null;
   }
 }

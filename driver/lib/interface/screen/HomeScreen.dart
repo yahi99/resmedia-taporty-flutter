@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:resmedia_taporty_core/core.dart';
 import 'package:resmedia_taporty_driver/interface/page/OrderTab.dart';
 import 'package:resmedia_taporty_driver/interface/page/ReservedShiftTab.dart';
 import 'package:resmedia_taporty_driver/interface/page/CalendarTab.dart';
@@ -11,15 +10,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  AuthService _auth = AuthService();
-  DateTime date = DateTime.now();
-
-  @override
-  void dispose() {
-    _auth.signOut();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);

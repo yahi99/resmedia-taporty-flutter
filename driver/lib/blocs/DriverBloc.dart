@@ -11,7 +11,6 @@ class DriverBloc implements Bloc {
   final DatabaseService _db = DatabaseService();
   final StorageService _storage = StorageService();
   final AuthService _auth = AuthService();
-  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
   @protected
   dispose() {
@@ -28,19 +27,18 @@ class DriverBloc implements Bloc {
   Stream<DriverModel> get outDriver => _driverController.stream;
 
   DriverBloc.instance() {
-    _firebaseUserController = BehaviorController.catchStream(source: _firebaseAuth.onAuthStateChanged.asyncMap((_firebaseUser) async {
-      if (_firebaseUser == null) return null;
-      if (!(await _isDriver(_firebaseUser))) {
-        return null;
-      } else {
-        return _firebaseUser;
-      }
-    }));
+    _clearFirebaseUser();
+    _firebaseUserController = BehaviorSubject();
 
     _driverController = BehaviorController.catchStream(source: _firebaseUserController.switchMap((_firebaseUser) {
       if (_firebaseUser == null) return Stream.value(null);
       return _db.getDriverStream(_firebaseUser);
     }));
+  }
+
+  // Se un utente era rimasto loggato da una precedente esecuzione dell'app, sloggalo
+  Future _clearFirebaseUser() async {
+    await signOut();
   }
 
   Future<bool> _isDriver(FirebaseUser user) async {
@@ -49,14 +47,14 @@ class DriverBloc implements Bloc {
     return !!idToken.claims['driver'];
   }
 
-  Future<AuthResult> signInWithEmailAndPassword(String email, String password) async {
+  Future signInWithEmailAndPassword(String email, String password) async {
     var authResult = await _auth.signInWithEmailAndPassword(email, password);
     if (!(await _isDriver(authResult.user))) {
-      await _auth.signOut();
+      await signOut();
       throw NotADriverException("user is not a driver");
     }
 
-    return authResult;
+    _firebaseUserController.value = authResult.user;
   }
 
   Future updateProfileImage(File image) async {
@@ -78,5 +76,10 @@ class DriverBloc implements Bloc {
     await firebaseUser.updateEmail(email);
     await _db.updateDriverNominative(firebaseUser.uid, nominative);
     await _db.updateDriverEmail(firebaseUser.uid, email);
+  }
+
+  Future signOut() async {
+    await _auth.signOut();
+    _firebaseUserController.value = null;
   }
 }

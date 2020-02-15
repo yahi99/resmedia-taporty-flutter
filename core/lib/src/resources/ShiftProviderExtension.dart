@@ -1,79 +1,52 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:resmedia_taporty_core/src/helper/DateTimeHelper.dart';
-import 'package:resmedia_taporty_core/src/helper/DateTimeSerialization.dart';
-import 'package:resmedia_taporty_core/src/helper/DistanceHelper.dart';
-import 'package:resmedia_taporty_core/src/models/SupplierModel.dart';
+import 'package:geoflutterfire/geoflutterfire.dart';
+import 'package:resmedia_taporty_core/core.dart';
 import 'package:resmedia_taporty_core/src/models/ShiftModel.dart';
 import 'package:resmedia_taporty_core/src/models/base/FirebaseModel.dart';
 import 'package:resmedia_taporty_core/src/resources/DatabaseService.dart';
-import 'package:resmedia_taporty_core/src/resources/SupplierProviderExtension.dart';
 import 'package:resmedia_taporty_core/src/resources/DriverProviderExtension.dart';
 
 extension ShiftProvider on DatabaseService {
-  // TODO: Sposta la logica in un Bloc
-  Future<List<ShiftModel>> getAvailableShifts(DateTime day, String supplierId, GeoPoint customerCoordinates) async {
-    /*SupplierModel supplier = await getSupplierStream(supplierId).first;
-    var startTimes = supplier.getStartTimes(day);
-    var filteredShifts = List<ShiftModel>();
-
-    for (var startTime in startTimes) {
-      // Non mostrare turni nel passato o più di 48 ore nel futuro
-      if (startTime.compareTo(DateTime.now()) < 30 * 60 * 1000 || startTime.difference(DateTime.now()).inMilliseconds > 48 * 60 * 60 * 1000) continue;
-
-      var reservedShifts = (await shiftCollection.where("startTime", isEqualTo: datetimeToJson(startTime)).orderBy("reservationTimestamp").getDocuments(source: Source.server))
-          .documents
-          .map(ShiftModel.fromFirebase)
-          .toList();
-
-      for (var reservedShift in reservedShifts) {
-        if (reservedShift.occupied != true) {
-          filteredShifts.add(reservedShift);
-          break;
-        }
-      }
-    }
-
-    return filteredShifts;*/
-    await Future.delayed(Duration(seconds: 1));
-    return [
-      ShiftModel.fromFirebase(await shiftCollection.document("ZdDsMjleDwgacI8idqNFfeD6qDw21579171500000").get()),
-    ];
+  Future<List<DocumentSnapshot>> _getAvailableShiftDocuments(Timestamp startTime, GeoPoint supplierCoordinates) async {
+    var query = shiftCollection.where("startTime", isEqualTo: startTime).where("occupied", isEqualTo: false).orderBy("rating", descending: true);
+    var geoFirePoint = GeoFirePoint(supplierCoordinates.latitude, supplierCoordinates.longitude);
+    return await geoFirestore
+        .collection(collectionRef: query)
+        .within(
+          center: geoFirePoint,
+          radius: MapsConfig.DRIVER_RADIUS,
+          field: "geohashPoint",
+        )
+        .first;
   }
 
-  // TODO: Sposta la logica in un Bloc
-  Future<String> findDriver(ShiftModel shiftModel, String supplierId, GeoPoint customerCoordinates) async {
-    SupplierModel supplier = await getSupplierStream(supplierId).first;
-    if (!supplier.isOpen(datetime: shiftModel.endTime)) return null;
+  Future<List<ShiftModel>> getAvailableShifts(Timestamp startTime, GeoPoint supplierCoordinates) async {
+    return (await _getAvailableShiftDocuments(startTime, supplierCoordinates)).map(ShiftModel.fromFirebase);
+  }
 
-    var shiftDocuments = (await shiftCollection.where("startTime", isEqualTo: datetimeToJson(shiftModel.startTime)).orderBy("reservationTimestamp").getDocuments(source: Source.server)).documents;
+  Future<String> chooseDriver(Timestamp startTime, String supplierId, GeoPoint supplierCoordinates) async {
+    var shiftDocuments = await _getAvailableShiftDocuments(startTime, supplierCoordinates);
 
     String driverId;
-    bool found;
     for (var document in shiftDocuments) {
       await Firestore.instance.runTransaction((Transaction tx) async {
         var reservation = ShiftModel.fromFirebase(await tx.get(document.reference));
-        var distanceSupplierDriver = await DistanceHelper.fetchAproximateDistance(reservation.driverCoordinates, supplier.coordinates);
-        if (distanceSupplierDriver > reservation.deliveryRadius * 1000) return;
-        var distanceCustomerDriver = await DistanceHelper.fetchAproximateDistance(reservation.driverCoordinates, customerCoordinates);
-        if (distanceCustomerDriver > reservation.deliveryRadius * 1000) return;
         if (reservation.occupied != true) {
           tx.update(document.reference, {
             'occupied': true,
           });
-          found = true;
           driverId = reservation.driverId;
         }
       });
-      if (found) break;
+      if (driverId != null) break;
     }
-    if (!found) return null;
     return driverId;
   }
 
-  Stream<List<ShiftModel>> getReservedShiftsStream(String driverId) {
+  Stream<List<ShiftModel>> getReservedShiftsStream(String driverId, Timestamp startTime) {
     return shiftCollection
         .where('driverId', isEqualTo: driverId)
-        .where("startTime", isGreaterThanOrEqualTo: datetimeToJson(DateTimeHelper.getDay(DateTime.now())))
+        .where("startTime", isGreaterThanOrEqualTo: startTime)
         .orderBy("startTime")
         .snapshots(includeMetadataChanges: true)
         .map((querySnap) => fromQuerySnaps(querySnap, ShiftModel.fromFirebase));
@@ -84,14 +57,13 @@ extension ShiftProvider on DatabaseService {
     var shift = ShiftModel(
       startTime: startTime,
       endTime: startTime.add(Duration(minutes: 15)),
-      driverCoordinates: driver.coordinates,
+      geohashPoint: driver.geohashPoint,
       driverId: driverId,
-      deliveryRadius: driver.deliveryRadius,
+      rating: driver.rating,
       occupied: false,
     );
     await shiftCollection.document(driverId + startTime.millisecondsSinceEpoch.toString()).setData({
       ...shift.toJson(),
-      "reservationTimestamp": datetimeToJson(DateTime.now()),
     });
   }
 

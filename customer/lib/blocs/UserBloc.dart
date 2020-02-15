@@ -11,12 +11,14 @@ class UserBloc implements Bloc {
   final DatabaseService _db = DatabaseService();
   final StorageService _storage = StorageService();
   final AuthService _auth = AuthService();
-  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  final SharedPreferenceService _sharedPreferenceService = SharedPreferenceService();
 
   @protected
   dispose() {
     _firebaseUserController.close();
     _userController?.close();
+    _authProviderIdController.close();
+    _checkProviderIdExists.cancel();
   }
 
   BehaviorSubject<FirebaseUser> _firebaseUserController;
@@ -28,19 +30,49 @@ class UserBloc implements Bloc {
   Stream<UserModel> get outUser => _userController.stream;
   UserModel get user => _userController.value;
 
-  UserBloc.instance() {
-    _firebaseUserController = BehaviorController.catchStream(source: _firebaseAuth.onAuthStateChanged.asyncMap((_firebaseUser) {
-      if (_firebaseUser == null) return null;
-      return _isCustomer(_firebaseUser).then((isCustomer) {
-        if (isCustomer) return _firebaseUser;
-        return null;
-      });
-    }));
+  BehaviorSubject<String> _authProviderIdController;
+  String get authProviderId => _authProviderIdController.value;
+  Stream<String> get outAuthProviderId => _authProviderIdController.stream;
 
+  StreamSubscription _checkProviderIdExists;
+
+  UserBloc.instance() {
+    _firebaseUserController = BehaviorSubject();
+    _authProviderIdController = BehaviorSubject();
     _userController = BehaviorController.catchStream(source: _firebaseUserController.switchMap((_firebaseUser) {
       if (_firebaseUser == null) return Stream.value(null);
       return _db.getUserStream(_firebaseUser);
     }));
+
+    _initFirebaseUser();
+  }
+
+  /* 
+    Inserisce come primo valore l'ultimo utente che ha eseguito l'accesso, se esiste.
+    Si assicura inoltre che sia presente un provider id.
+    Se nessun provider id è salvato nelle SharedPreferences, ne sceglie uno di default tra quelli disponibili
+  */
+  Future _initFirebaseUser() async {
+    var firebaseUser = await _auth.getCurrentUser();
+
+    if (!(await _isCustomer(firebaseUser))) {
+      await signOut();
+      return;
+    }
+
+    _firebaseUserController.value = firebaseUser;
+
+    var providerId = await _sharedPreferenceService.getAuthProvider();
+    if (providerId == "") {
+      if (firebaseUser.providerData.any((provider) => provider.providerId == GoogleAuthProvider.providerId))
+        providerId = GoogleAuthProvider.providerId;
+      else if (firebaseUser.providerData.any((provider) => provider.providerId == FacebookAuthProvider.providerId))
+        providerId = FacebookAuthProvider.providerId;
+      else
+        providerId = EmailAuthProvider.providerId;
+    }
+
+    await _setProviderId(providerId);
   }
 
   Future<bool> _isCustomer(FirebaseUser user) async {
@@ -49,20 +81,28 @@ class UserBloc implements Bloc {
     return idToken.claims['admin'] != true && idToken.claims['supplierAdmin'] != true && idToken.claims['driver'] != true;
   }
 
+  Future _setProviderId(String providerId) async {
+    _authProviderIdController.value = providerId;
+    await _sharedPreferenceService.setAuthProvider(providerId);
+  }
+
   Future<bool> signInWithGoogle() async {
     var authResult = await _auth.signInWithGoogle();
     if (authResult == null) return false;
 
     if (!(await _isCustomer(authResult.user))) {
-      await _auth.signOut();
+      await signOut();
       throw NotACustomerException("user is not a customer");
     }
 
     var user = await _db.getUserById(authResult.user.uid);
     if (user == null) {
-      await _auth.signOut();
+      await signOut();
       throw NotRegisteredException("user account doesn't exist");
     }
+
+    await _setProviderId(GoogleAuthProvider.providerId);
+    _firebaseUserController.value = authResult.user;
 
     return true;
   }
@@ -72,20 +112,30 @@ class UserBloc implements Bloc {
     if (authResult == null) return false;
 
     await _db.createUser(authResult.user.uid, authResult.user.displayName, authResult.user.email);
+
+    await _setProviderId(GoogleAuthProvider.providerId);
+    _firebaseUserController.value = authResult.user;
+
     return true;
   }
 
   Future signInWithEmailAndPassword(String email, String password) async {
     var authResult = await _auth.signInWithEmailAndPassword(email, password);
     if (!(await _isCustomer(authResult.user))) {
-      await _auth.signOut();
+      await signOut();
       throw NotACustomerException("user is not a customer");
     }
+
+    await _setProviderId(EmailAuthProvider.providerId);
+    _firebaseUserController.value = authResult.user;
   }
 
   Future createUserWithEmailAndPassword(String nominative, String email, String password) async {
     var authResult = await _auth.createUserWithEmailAndPassword(email, password);
     await _db.createUser(authResult.user.uid, nominative, email);
+
+    await _setProviderId(EmailAuthProvider.providerId);
+    _firebaseUserController.value = authResult.user;
   }
 
   Future updateProfileImage(File image) async {
@@ -97,13 +147,17 @@ class UserBloc implements Bloc {
 
   Future updatePassword(String oldPassword, String password) async {
     var firebaseUser = await outFirebaseUser.first;
-    await _auth.reauthenticate(firebaseUser, oldPassword);
+    await _auth.reauthenticateWithEmailAndPassword(firebaseUser, oldPassword);
     await firebaseUser.updatePassword(password);
   }
 
   Future updateUserInfo(String oldPassword, String nominative, String email, String phoneNumber) async {
     var firebaseUser = await outFirebaseUser.first;
-    await _auth.reauthenticate(firebaseUser, oldPassword);
+
+    if (authProviderId == FacebookAuthProvider.providerId)
+      await _auth.reauthenticateWithEmailAndPassword(firebaseUser, oldPassword);
+    else if (authProviderId == GoogleAuthProvider.providerId) await _auth.reauthenticateWithGoogle(firebaseUser);
+
     await firebaseUser.updateEmail(email);
     await _db.updateUserNominative(firebaseUser.uid, nominative);
     await _db.updateUserEmail(firebaseUser.uid, email);
@@ -112,5 +166,12 @@ class UserBloc implements Bloc {
 
   void updateNotifyApp(bool value) async {
     await _db.updateNotifyApp(user.id, value);
+  }
+
+  Future signOut() async {
+    await _auth.signOut();
+    await _sharedPreferenceService.setAuthProvider("");
+    _authProviderIdController.value = null;
+    _firebaseUserController.value = null;
   }
 }

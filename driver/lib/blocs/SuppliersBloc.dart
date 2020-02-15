@@ -24,10 +24,10 @@ class SuppliersBloc implements Bloc {
     var suppliers = await _db.getSupplierListStream().first;
     var filteredSuppliers = List<SupplierModel>();
     for (var supplier in suppliers) {
-      if ((await DistanceHelper.fetchAproximateDistance(supplier.coordinates, driver.coordinates)) <= driver.deliveryRadius * 1000) filteredSuppliers.add(supplier);
+      if ((await DistanceHelper.fetchAproximateDistance(supplier.geohashPoint.geopoint, driver.geohashPoint.geopoint)) <= MapsConfig.DRIVER_RADIUS) filteredSuppliers.add(supplier);
     }
 
-    var supplierStartTimes = filteredSuppliers.map((supplier) => supplier.getStartTimes(date));
+    var supplierStartTimes = filteredSuppliers.map((supplier) => supplier.getShiftStartTimes(date));
 
     var currentDate = DateTimeHelper.getDay(date);
     var endDate = currentDate.add(Duration(days: 1));

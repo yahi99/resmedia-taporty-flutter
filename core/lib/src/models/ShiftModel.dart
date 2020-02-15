@@ -1,27 +1,24 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:resmedia_taporty_core/src/models/GeohashPointModel.dart';
 import 'package:resmedia_taporty_core/src/models/base/FirebaseModel.dart';
 import 'package:flutter/widgets.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 import 'package:resmedia_taporty_core/src/helper/DateTimeSerialization.dart';
-import 'package:resmedia_taporty_core/src/helper/GeopointSerialization.dart';
 
 part 'ShiftModel.g.dart';
 
 @JsonSerializable(anyMap: true, explicitToJson: true, includeIfNull: false, nullable: true)
 class ShiftModel extends FirebaseModel {
-  @JsonKey(toJson: datetimeToJson, fromJson: datetimeFromJson)
+  @JsonKey(toJson: datetimeToTimestamp, fromJson: datetimeFromTimestamp)
   final DateTime startTime;
-  @JsonKey(toJson: datetimeToJson, fromJson: datetimeFromJson)
+  @JsonKey(toJson: datetimeToTimestamp, fromJson: datetimeFromTimestamp)
   final DateTime endTime;
 
   final String driverId;
-  final double deliveryRadius;
-  @JsonKey(toJson: geopointToJson, fromJson: geopointFromJson)
-  final GeoPoint driverCoordinates;
+  final GeohashPointModel geohashPoint;
   final bool occupied;
-  @JsonKey(toJson: datetimeToJson, fromJson: datetimeFromJson)
-  final DateTime reservationTimestamp;
+  final double rating;
 
   String get id => driverId + startTime.millisecondsSinceEpoch.toString();
 
@@ -30,10 +27,9 @@ class ShiftModel extends FirebaseModel {
     @required this.endTime,
     @required this.startTime,
     this.driverId,
-    this.deliveryRadius,
-    this.driverCoordinates,
+    this.geohashPoint,
     this.occupied,
-    this.reservationTimestamp,
+    this.rating,
   }) : super(path);
 
   @override

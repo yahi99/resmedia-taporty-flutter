@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:core';
 
-import 'package:cloud_functions/cloud_functions.dart';
 import 'package:dash/dash.dart';
 import 'package:flutter/material.dart';
 import 'package:resmedia_taporty_core/core.dart';
@@ -64,16 +63,48 @@ class CheckoutBloc extends Bloc {
     _confirmLoadingController = BehaviorSubject.seeded(false);
     _selectedDateController = BehaviorSubject.seeded(DateTimeHelper.getDay(DateTime.now()));
     _selectedShiftController = BehaviorSubject.seeded(null);
-    _availableShiftListController = BehaviorController.catchStream(
-        source: CombineLatestStream.combine3(
+    _availableShiftListController = BehaviorSubject.seeded(null);
+
+    _availableShiftSub = CombineLatestStream.combine2(
       _selectedDateController.stream,
       supplierBloc.outSupplierId,
-      locationBloc.outCustomerLocation,
-      (DateTime _selectedDate, String _supplierId, LocationModel _location) => Tuple3(_selectedDate, _supplierId, _location.coordinates),
-    ).switchMap((tuple) {
-      return ConcatStream([Stream.value(null), Stream.fromFuture(_db.getAvailableShifts(tuple.item1, tuple.item2, tuple.item3))]);
-    }));
-    _availableShiftSub = _availableShiftListController.listen((shifts) => _selectedShiftController.value = (shifts == null) ? null : (shifts.isNotEmpty ? shifts.first : null));
+      (DateTime _selectedDate, String _supplierId) => Tuple2(
+        _selectedDate,
+        _supplierId,
+      ),
+    ).listen((tuple) async {
+      _availableShiftListController.value = null;
+      _selectedShiftController.value = null;
+      if (tuple.item1 == null || tuple.item2 == null) return;
+      var shifts = _availableShiftListController.value = await _getAvailableShifts(tuple.item1, tuple.item2);
+      _selectedShiftController.value = shifts.isNotEmpty ? shifts.first : null;
+    });
+  }
+
+  Future<List<ShiftModel>> _getAvailableShifts(DateTime day, String supplierId) async {
+    SupplierModel supplier = await supplierBloc.outSupplier.first;
+    var startTimes = supplier.getShiftStartTimes(day);
+    var filteredShifts = List<ShiftModel>();
+
+    /* 
+      Non è possibile richiedere un orario di consegna entro la prossima ora o oltre le 47 ore 
+      (per evitare il caso il cliente stia nel checkout per molto tempo)
+    */
+    startTimes = startTimes.where((startTime) {
+      var diff = startTime.difference(DateTime.now());
+      return diff.inHours > 1 && diff.inHours <= 47;
+    }).toList();
+
+    for (var startTime in startTimes) {
+      var reservedShifts = await _db.getAvailableShifts(datetimeToTimestamp(startTime), supplier.geohashPoint.geopoint);
+
+      // Aggiunge uno dei turni alla lista di turni selezionabili dall'utente (in questo caso il primo, tanto è indifferente)
+      if (reservedShifts.length > 0) {
+        filteredShifts.add(reservedShifts[0]);
+      }
+    }
+
+    return filteredShifts;
   }
 
   void setDefaultValues() {
@@ -120,9 +151,10 @@ class CheckoutBloc extends Bloc {
   }
 
   Future<String> _findDriver() async {
-    var supplierId = cartBloc.supplierId;
-    var customerCoordinates = locationBloc.customerLocation.coordinates;
-    var driverId = await _db.findDriver(selectedShift, supplierId, customerCoordinates);
+    var supplierId = supplierBloc.supplierId;
+    var supplier = supplierBloc.supplier;
+
+    var driverId = await _db.chooseDriver(datetimeToTimestamp(selectedShift.startTime), supplierId, supplier.geohashPoint.geopoint);
     if (driverId == null) throw new NoAvailableDriverException("No available drivers found.");
     return driverId;
   }
@@ -133,7 +165,7 @@ class CheckoutBloc extends Bloc {
 
     var products = cartBloc.clearCart();
     var customerId = userBloc.user.id;
-    var supplierId = cartBloc.supplierId;
+    var supplierId = supplierBloc.supplierId;
     var location = locationBloc.customerLocation;
 
     await _db.createOrder(

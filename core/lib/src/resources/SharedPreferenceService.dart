@@ -30,4 +30,14 @@ class SharedPreferenceService {
     var sp = await SharedPreferences.getInstance();
     await sp.setString("cart_$customerId$supplierId", jsonEncode(cart.toJson()));
   }
+
+  Future setAuthProvider(String providerId) async {
+    var sp = await SharedPreferences.getInstance();
+    await sp.setString("auth_provider_id", providerId);
+  }
+
+  Future<String> getAuthProvider() async {
+    var sp = await SharedPreferences.getInstance();
+    return sp.getString("auth_provider_id");
+  }
 }

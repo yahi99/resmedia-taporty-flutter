@@ -68,13 +68,13 @@ class DriverBloc implements Bloc {
 
   Future updatePassword(String oldPassword, String password) async {
     var firebaseUser = await outFirebaseUser.first;
-    await _auth.reauthenticate(firebaseUser, oldPassword);
+    await _auth.reauthenticateWithEmailAndPassword(firebaseUser, oldPassword);
     await firebaseUser.updatePassword(password);
   }
 
   Future updateNominativeAndEmail(String oldPassword, String nominative, String email) async {
     var firebaseUser = await outFirebaseUser.first;
-    await _auth.reauthenticate(firebaseUser, oldPassword);
+    await _auth.reauthenticateWithEmailAndPassword(firebaseUser, oldPassword);
     await firebaseUser.updateEmail(email);
     await _db.updateDriverNominative(firebaseUser.uid, nominative);
     await _db.updateDriverEmail(firebaseUser.uid, email);

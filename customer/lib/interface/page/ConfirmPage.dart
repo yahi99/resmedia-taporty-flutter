@@ -79,7 +79,6 @@ class _ConfirmState extends State<ConfirmPage> with AutomaticKeepAliveClientMixi
     );
   }
 
-  // TODO: Metti un riassunto di tutte le informazioni
   @override
   Widget build(BuildContext context) {
     super.build(context);

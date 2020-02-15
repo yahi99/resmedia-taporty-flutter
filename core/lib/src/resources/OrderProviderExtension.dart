@@ -76,7 +76,7 @@ extension OrderProviderExtension on DatabaseService {
       driverPhoneNumber: driver.phoneNumber,
       supplierImageUrl: supplier.imageUrl,
       supplierName: supplier.name,
-      supplierCoordinates: supplier.coordinates,
+      supplierCoordinates: supplier.geohashPoint.geopoint,
       supplierAddress: supplier.address,
       supplierPhoneNumber: supplier.phoneNumber,
       paymentIntentId: paymentIntentId,
@@ -128,7 +128,7 @@ extension OrderProviderExtension on DatabaseService {
 
         tx.update(orderDocument, {
           'state': orderStateEncode(OrderState.ARCHIVED),
-          'archiviationTimestamp': datetimeToJson(DateTime.now()),
+          'archiviationTimestamp': datetimeToTimestamp(DateTime.now()),
           'newOrderId': newOrderDocRef.documentID,
         });
 
@@ -141,7 +141,7 @@ extension OrderProviderExtension on DatabaseService {
         tx.update(orderDocument, {
           'state': orderStateEncode(OrderState.MODIFIED),
           'prevState': orderStateEncode(order.state),
-          'modificationTimestamp': datetimeToJson(DateTime.now()),
+          'modificationTimestamp': datetimeToTimestamp(DateTime.now()),
           'newProductCount': orderProducts.fold(0, (count, product) => count + product.quantity),
           'newTotalPrice': orderProducts.fold(0, (price, product) => price + product.quantity * product.price),
           'newProducts': orderProducts.map((o) => o.toJson()).toList(),
@@ -191,7 +191,7 @@ extension OrderProviderExtension on DatabaseService {
         'state': orderStateEncode(state),
         'visualized': false,
         'replied': false,
-        timestampField: datetimeToJson(DateTime.now()),
+        timestampField: datetimeToTimestamp(DateTime.now()),
       });
     });
     if (error) throw new InvalidOrderStateException("Invalid order state!");

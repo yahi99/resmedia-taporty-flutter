@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:resmedia_taporty_core/core.dart';
 import 'package:resmedia_taporty_core/src/models/ProductModel.dart';
 import 'package:resmedia_taporty_core/src/models/SupplierModel.dart';
@@ -25,10 +26,11 @@ extension SupplierProviderExtension on DatabaseService {
     });
   }
 
-  // TODO: Implementa il controllo sulla location e se hanno l'account Stripe attivato
   Stream<List<SupplierModel>> getSupplierListByLocationStream(GeoPoint coordinates) {
-    return supplierCollection.snapshots().map((query) {
-      return query.documents.map((snap) => SupplierModel.fromFirebase(snap)).toList();
+    var query = supplierCollection.where("stripeActivated", isEqualTo: true);
+    var geoFirePoint = GeoFirePoint(coordinates.latitude, coordinates.longitude);
+    return geoFirestore.collection(collectionRef: query).within(center: geoFirePoint, radius: MapsConfig.SUPPLIER_RADIUS, field: "geohashPoint").map((snapshots) {
+      return snapshots.map((snap) => SupplierModel.fromFirebase(snap)).toList();
     });
   }
 

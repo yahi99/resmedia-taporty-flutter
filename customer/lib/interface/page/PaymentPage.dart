@@ -1,9 +1,6 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:resmedia_taporty_core/core.dart';
 import 'package:resmedia_taporty_customer/interface/view/StripeCardView.dart';
 import 'package:stripe_payment/stripe_payment.dart';
@@ -78,7 +75,7 @@ class _PaymentState extends State<PaymentPage> with AutomaticKeepAliveClientMixi
                 );
               },
             ),
-            // TODO: Mantieni e magari implementa in futuro
+            // Mantieni e magari implementa in futuro
             /*if (Platform.isAndroid)
               FlatButton.icon(
                 icon: Icon(FontAwesomeIcons.google),
@@ -126,7 +123,7 @@ class _PaymentState extends State<PaymentPage> with AutomaticKeepAliveClientMixi
       ),
     );
   }
-  // TODO: Mantieni e magari implementa in futuro
+  // Mantieni e magari implementa in futuro
   /*void _initNativePay() async {
     Token t = await StripePayment.paymentRequestWithNativePay(
       androidPayOptions: AndroidPayPaymentRequest(

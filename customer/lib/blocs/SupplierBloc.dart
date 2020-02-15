@@ -35,6 +35,7 @@ class SupplierBloc implements Bloc {
   String get supplierId => _supplierIdController.value;
 
   Stream<SupplierModel> get outSupplier => _supplierController.stream;
+  SupplierModel get supplier => _supplierController.value;
 
   Stream<List<ProductModel>> get outProducts => _productsController;
 

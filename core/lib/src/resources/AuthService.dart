@@ -16,6 +16,10 @@ class AuthService {
   final FirebaseAuth firebaseAuth;
   final GoogleSignIn googleSignIn;
 
+  Future<FirebaseUser> getCurrentUser() async {
+    return firebaseAuth.currentUser();
+  }
+
   Future<AuthResult> signInWithEmailAndPassword(String email, String password) async {
     AuthResult result = await firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
     return result;
@@ -51,7 +55,20 @@ class AuthService {
     await firebaseAuth.sendPasswordResetEmail(email: email);
   }
 
-  Future reauthenticate(FirebaseUser user, String password) async {
+  Future reauthenticateWithGoogle(FirebaseUser user) async {
+    final GoogleSignInAccount googleSignInAccount = googleSignIn.currentUser;
+
+    final GoogleSignInAuthentication googleSignInAuthentication = await googleSignInAccount.authentication;
+
+    await user.reauthenticateWithCredential(
+      GoogleAuthProvider.getCredential(
+        accessToken: googleSignInAuthentication.accessToken,
+        idToken: googleSignInAuthentication.idToken,
+      ),
+    );
+  }
+
+  Future reauthenticateWithEmailAndPassword(FirebaseUser user, String password) async {
     await user.reauthenticateWithCredential(
       EmailAuthProvider.getCredential(
         email: user.email,

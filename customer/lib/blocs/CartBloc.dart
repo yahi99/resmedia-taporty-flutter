@@ -17,13 +17,9 @@ class CartBloc extends Bloc {
   CartModel get cart => _cartController.value;
   Stream<CartModel> get outCart => _cartController.stream;
 
-  final BehaviorSubject<String> _supplierIdController = BehaviorSubject();
-  String get supplierId => _supplierIdController.value;
-
   @override
   void dispose() {
     _cartController.close();
-    _supplierIdController.close();
   }
 
   CartBloc.instance() {
@@ -37,8 +33,6 @@ class CartBloc extends Bloc {
     var supplierId = supplierBloc.supplierId;
 
     if (customerId == null || supplierId == null) return;
-    _supplierIdController.add(supplierId);
-
     productSubscription?.cancel();
 
     if (customerId == null || supplierId == null) return;
@@ -96,6 +90,7 @@ class CartBloc extends Bloc {
   void _update(CartModel updatedCart) {
     _cartController.add(updatedCart);
     var customerId = userBloc.user.id;
+    var supplierId = supplierBloc.supplierId;
     _sharedPreferences.updateCart(customerId, supplierId, updatedCart);
   }
 }

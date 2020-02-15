@@ -12,13 +12,14 @@ DriverModel _$DriverModelFromJson(Map json) {
     fcmToken: json['fcmToken'] as String,
     imageUrl: json['imageUrl'] as String,
     numberOfReviews: json['numberOfReviews'] as int,
-    averageReviews: (json['averageReviews'] as num)?.toDouble(),
+    rating: (json['rating'] as num)?.toDouble(),
     nominative: json['nominative'] as String,
     email: json['email'] as String,
     phoneNumber: json['phoneNumber'] as String,
-    coordinates: geopointFromJson(json['coordinates']),
+    geohashPoint: json['geohashPoint'] == null
+        ? null
+        : GeohashPointModel.fromJson(json['geohashPoint'] as Map),
     address: json['address'] as String,
-    deliveryRadius: (json['deliveryRadius'] as num)?.toDouble(),
   );
 }
 
@@ -37,10 +38,9 @@ Map<String, dynamic> _$DriverModelToJson(DriverModel instance) {
   writeNotNull('email', instance.email);
   writeNotNull('phoneNumber', instance.phoneNumber);
   writeNotNull('numberOfReviews', instance.numberOfReviews);
-  writeNotNull('averageReviews', instance.averageReviews);
+  writeNotNull('rating', instance.rating);
   writeNotNull('imageUrl', instance.imageUrl);
-  writeNotNull('coordinates', geopointToJson(instance.coordinates));
+  writeNotNull('geohashPoint', instance.geohashPoint?.toJson());
   writeNotNull('address', instance.address);
-  writeNotNull('deliveryRadius', instance.deliveryRadius);
   return val;
 }

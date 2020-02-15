@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:resmedia_taporty_core/core.dart';
@@ -11,6 +12,7 @@ import 'package:resmedia_taporty_driver/interface/screen/HomeScreen.dart';
 import 'package:resmedia_taporty_driver/interface/screen/LoginScreen.dart';
 
 void main() async {
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   runApp(Taporty());
 }
 

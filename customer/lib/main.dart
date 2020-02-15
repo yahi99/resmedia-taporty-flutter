@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:resmedia_taporty_core/core.dart';
@@ -21,7 +22,6 @@ import 'package:resmedia_taporty_customer/interface/screen/SupplierReviewListScr
 import 'package:resmedia_taporty_customer/interface/screen/SupplierScreen.dart';
 import 'package:stripe_payment/stripe_payment.dart';
 
-// TODO: Imposta l'orientamento solo in Portrait
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   StripePayment.setOptions(StripeOptions(
@@ -29,6 +29,7 @@ void main() {
     merchantId: StripeConfig.STRIPE_MERCHANT_ID,
     androidPayMode: StripeConfig.STRIPE_ANDROID_PAY_MODE,
   ));
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   runApp(Taporty());
 }
 

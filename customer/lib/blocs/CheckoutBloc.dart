@@ -30,6 +30,7 @@ class CheckoutBloc extends Bloc {
   // Controller per la ShippingPage
   BehaviorSubject<DateTime> _selectedDateController;
   Stream<DateTime> get outSelectedDate => _selectedDateController.stream;
+  DateTime get _selectedDate => _selectedDateController.value;
 
   BehaviorSubject<List<ShiftModel>> _availableShiftListController;
   Stream<List<ShiftModel>> get outAvailableShifts => _availableShiftListController.stream;
@@ -64,16 +65,39 @@ class CheckoutBloc extends Bloc {
     _confirmLoadingController = BehaviorSubject.seeded(false);
     _selectedDateController = BehaviorSubject.seeded(DateTimeHelper.getDay(DateTime.now()));
     _selectedShiftController = BehaviorSubject.seeded(null);
-    _availableShiftListController = BehaviorController.catchStream(
-        source: CombineLatestStream.combine3(
-      _selectedDateController.stream,
-      supplierBloc.outSupplierId,
-      locationBloc.outCustomerLocation,
-      (DateTime _selectedDate, String _supplierId, LocationModel _location) => Tuple3(_selectedDate, _supplierId, _location.coordinates),
-    ).switchMap((tuple) {
-      return ConcatStream([Stream.value(null), Stream.fromFuture(_db.getAvailableShifts(tuple.item1, tuple.item2, tuple.item3))]);
-    }));
-    _availableShiftSub = _availableShiftListController.listen((shifts) => _selectedShiftController.value = (shifts == null) ? null : (shifts.isNotEmpty ? shifts.first : null));
+
+    // Aggiorna i turni disponibili ogni volta che l'utente seleziona un nuovo giorno di consegna o un nuovo ristorante
+    _availableShiftSub = CombineLatestStream.combine2(_selectedDateController.stream, supplierBloc.outSupplierId, (DateTime _selectedDate, String _supplierId) => Tuple2(_selectedDate, _supplierId))
+        .listen((tuple) async {
+      // Reimposta i turni disponibili e il turno selezionato a null
+      _availableShiftListController.value = null;
+      _selectedShiftController.value = null;
+      if (tuple.item1 == null || tuple.item2 == null) return;
+
+      // Imposta i turni disponibili
+      var shifts = _availableShiftListController.value = await _getAvailableShifts(tuple.item1, tuple.item2);
+      _selectedShiftController.value = (shifts.isNotEmpty ? shifts.first : null);
+    });
+  }
+
+  Future<List<ShiftModel>> _getAvailableShifts(DateTime selectedDate, String supplierId) async {
+    var supplier = await supplierBloc.outSupplier.first;
+    /* 
+      Non è possibile richiedere un orario di consegna entro la prossima ora o oltre le 47 ore 
+      (per evitare il caso il cliente stia nel checkout per molto tempo)
+    */
+    var shiftStartTime = DateTime.now().add(Duration(hours: 1));
+    var shiftEndTime = DateTime.now().add(Duration(hours: 24));
+    List<ShiftModel> availableShifts = await _db.getAvailableShifts(
+      selectedDate,
+      supplier.areaId,
+      datetimeToTimestamp(shiftStartTime),
+      datetimeToTimestamp(shiftEndTime),
+    );
+
+    // Mostra solamente i turni in linea con l'orario del ristorante
+    var startTimes = supplier.getShiftStartTimes(selectedDate);
+    return availableShifts.where((shift) => startTimes.contains(shift.startTime)).toList();
   }
 
   void setDefaultValues() {
@@ -120,9 +144,9 @@ class CheckoutBloc extends Bloc {
   }
 
   Future<String> _findDriver() async {
-    var supplierId = cartBloc.supplierId;
+    var supplier = await supplierBloc.outSupplier.first;
     var customerCoordinates = locationBloc.customerLocation.coordinates;
-    var driverId = await _db.findDriver(selectedShift, supplierId, customerCoordinates);
+    var driverId = await _db.chooseDriver(supplier.areaId, _selectedDate, selectedShift.startTime, customerCoordinates, supplier.geohashPoint.geopoint);
     if (driverId == null) throw new NoAvailableDriverException("No available drivers found.");
     return driverId;
   }
@@ -133,7 +157,7 @@ class CheckoutBloc extends Bloc {
 
     var products = cartBloc.clearCart();
     var customerId = userBloc.user.id;
-    var supplierId = cartBloc.supplierId;
+    var supplierId = supplierBloc.supplierId;
     var location = locationBloc.customerLocation;
 
     await _db.createOrder(

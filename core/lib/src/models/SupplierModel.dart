@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:resmedia_taporty_core/src/models/GeohashPointModel.dart';
 import 'package:resmedia_taporty_core/src/models/ProductCategoryModel.dart';
 import 'package:resmedia_taporty_core/src/models/base/FirebaseModel.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -21,8 +22,8 @@ class SupplierModel extends FirebaseModel {
   final String category;
   final List<String> tags;
 
-  @JsonKey(fromJson: geopointFromJson, toJson: geopointToJson)
-  final GeoPoint coordinates;
+  final String areaId;
+  final GeohashPointModel geohashPoint;
   final String address;
 
   final List<HolidayModel> holidays;
@@ -68,7 +69,7 @@ class SupplierModel extends FirebaseModel {
     return false;
   }
 
-  List<DateTime> getStartTimes(DateTime day) {
+  List<DateTime> getShiftStartTimes(DateTime day) {
     List<DateTime> startTimes = new List<DateTime>();
     if (isHoliday(datetime: day) || !weekdayTimetable[day.weekday].open) return startTimes;
 
@@ -107,7 +108,7 @@ class SupplierModel extends FirebaseModel {
     @required String path,
     @required this.name,
     @required this.description,
-    @required this.coordinates,
+    @required this.geohashPoint,
     @required this.category,
     @required this.tags,
     @required this.holidays,
@@ -119,11 +120,8 @@ class SupplierModel extends FirebaseModel {
     this.numberOfReviews,
     this.isDisabled,
     @required this.imageUrl,
+    @required this.areaId,
   }) : super(path);
-
-  LatLng getPos() {
-    return (coordinates != null) ? LatLng(coordinates.latitude, coordinates.longitude) : null;
-  }
 
   static SupplierModel fromJson(Map json) => _$SupplierModelFromJson(json);
 

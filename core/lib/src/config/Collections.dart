@@ -4,9 +4,8 @@ class Collections {
   static const SUPPLIERS = 'suppliers';
   static const SUPPLIER_CATEGORIES = 'supplier_categories';
   static const PRODUCTS = 'products';
-  static const TURNS = 'turns';
+  static const AREAS = 'areas';
   static const DAYS = 'days';
-  static const TIMES = 'times';
-  static const ORDERS = 'orders';
   static const SHIFTS = 'shifts';
+  static const ORDERS = 'orders';
 }

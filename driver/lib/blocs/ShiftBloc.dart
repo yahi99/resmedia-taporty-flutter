@@ -20,7 +20,7 @@ class ShiftBloc extends Bloc {
     var driverBloc = $Provider.of<DriverBloc>();
     _reservedShiftsController = BehaviorController.catchStream<List<ShiftModel>>(source: driverBloc.outDriver.switchMap((driver) {
       if (driver?.id == null) return Stream.value(null);
-      return _db.getReservedShiftsStream(driver.id);
+      return _db.getReservedShiftsStream(driver.id, datetimeToTimestamp(DateTimeHelper.getDay(DateTime.now())));
     }));
   }
 }

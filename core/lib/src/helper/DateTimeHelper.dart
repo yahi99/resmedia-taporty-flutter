@@ -6,6 +6,10 @@ class DateTimeHelper {
     return DateFormat("d MMMM", "it").format(datetime) + " alle " + DateFormat("HH:mm").format(datetime);
   }
 
+  static String getIso8601DateString(DateTime datetime) {
+    return DateFormat('yyyy-MM-dd').format(datetime);
+  }
+
   static String getDateString(DateTime datetime) {
     var string = DateFormat("EEEEE d MMMM yyyy", "it").format(datetime);
     return string.replaceRange(0, 1, string.substring(0, 1).toUpperCase());

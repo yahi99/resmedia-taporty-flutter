@@ -9,13 +9,13 @@ part of 'ShiftModel.dart';
 ShiftModel _$ShiftModelFromJson(Map json) {
   return ShiftModel(
     path: json['path'] as String,
-    endTime: datetimeFromJson(json['endTime']),
-    startTime: datetimeFromJson(json['startTime']),
-    driverId: json['driverId'] as String,
-    deliveryRadius: (json['deliveryRadius'] as num)?.toDouble(),
-    driverCoordinates: geopointFromJson(json['driverCoordinates']),
-    occupied: json['occupied'] as bool,
-    reservationTimestamp: datetimeFromJson(json['reservationTimestamp']),
+    endTime: datetimeFromTimestamp(json['endTime']),
+    startTime: datetimeFromTimestamp(json['startTime']),
+    availableDrivers: json['availableDrivers'] as int,
+    driverReservations: (json['driverReservations'] as Map)?.map(
+      (k, e) => MapEntry(k as String,
+          e == null ? null : DriverReservationModel.fromJson(e as Map)),
+    ),
   );
 }
 
@@ -29,13 +29,10 @@ Map<String, dynamic> _$ShiftModelToJson(ShiftModel instance) {
   }
 
   writeNotNull('path', instance.path);
-  writeNotNull('startTime', datetimeToJson(instance.startTime));
-  writeNotNull('endTime', datetimeToJson(instance.endTime));
-  writeNotNull('driverId', instance.driverId);
-  writeNotNull('deliveryRadius', instance.deliveryRadius);
-  writeNotNull('driverCoordinates', geopointToJson(instance.driverCoordinates));
-  writeNotNull('occupied', instance.occupied);
-  writeNotNull(
-      'reservationTimestamp', datetimeToJson(instance.reservationTimestamp));
+  writeNotNull('startTime', datetimeToTimestamp(instance.startTime));
+  writeNotNull('endTime', datetimeToTimestamp(instance.endTime));
+  writeNotNull('availableDrivers', instance.availableDrivers);
+  writeNotNull('driverReservations',
+      instance.driverReservations?.map((k, e) => MapEntry(k, e?.toJson())));
   return val;
 }

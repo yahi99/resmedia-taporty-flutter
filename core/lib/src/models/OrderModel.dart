@@ -80,25 +80,25 @@ class OrderModel extends FirebaseModel {
   final bool hasDriverReview;
 
   // Timestamps
-  @JsonKey(toJson: datetimeToJson, fromJson: datetimeFromJson)
+  @JsonKey(toJson: datetimeToTimestamp, fromJson: datetimeFromTimestamp)
   final DateTime creationTimestamp;
-  @JsonKey(toJson: datetimeToJson, fromJson: datetimeFromJson)
+  @JsonKey(toJson: datetimeToTimestamp, fromJson: datetimeFromTimestamp)
   final DateTime acceptanceTimestamp;
-  @JsonKey(toJson: datetimeToJson, fromJson: datetimeFromJson)
+  @JsonKey(toJson: datetimeToTimestamp, fromJson: datetimeFromTimestamp)
   final DateTime preferredDeliveryTimestamp;
-  @JsonKey(toJson: datetimeToJson, fromJson: datetimeFromJson)
+  @JsonKey(toJson: datetimeToTimestamp, fromJson: datetimeFromTimestamp)
   final DateTime modificationTimestamp;
-  @JsonKey(toJson: datetimeToJson, fromJson: datetimeFromJson)
+  @JsonKey(toJson: datetimeToTimestamp, fromJson: datetimeFromTimestamp)
   final DateTime cancellationTimestamp;
-  @JsonKey(toJson: datetimeToJson, fromJson: datetimeFromJson)
+  @JsonKey(toJson: datetimeToTimestamp, fromJson: datetimeFromTimestamp)
   final DateTime readyTimestamp;
-  @JsonKey(toJson: datetimeToJson, fromJson: datetimeFromJson)
+  @JsonKey(toJson: datetimeToTimestamp, fromJson: datetimeFromTimestamp)
   final DateTime pickupTimestamp;
-  @JsonKey(toJson: datetimeToJson, fromJson: datetimeFromJson)
+  @JsonKey(toJson: datetimeToTimestamp, fromJson: datetimeFromTimestamp)
   final DateTime deliveryTimestamp;
-  @JsonKey(toJson: datetimeToJson, fromJson: datetimeFromJson)
+  @JsonKey(toJson: datetimeToTimestamp, fromJson: datetimeFromTimestamp)
   final DateTime refusalTimestamp;
-  @JsonKey(toJson: datetimeToJson, fromJson: datetimeFromJson)
+  @JsonKey(toJson: datetimeToTimestamp, fromJson: datetimeFromTimestamp)
   final DateTime archiviationTimestamp;
 
   // Customer info

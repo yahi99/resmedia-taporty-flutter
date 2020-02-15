@@ -15,12 +15,12 @@ OrderModel _$OrderModelFromJson(Map json) {
     newProductCount: json['newProductCount'] as int,
     newTotalPrice: (json['newTotalPrice'] as num)?.toDouble(),
     preferredDeliveryTimestamp:
-        datetimeFromJson(json['preferredDeliveryTimestamp']),
-    modificationTimestamp: datetimeFromJson(json['modificationTimestamp']),
-    cancellationTimestamp: datetimeFromJson(json['cancellationTimestamp']),
-    readyTimestamp: datetimeFromJson(json['readyTimestamp']),
-    pickupTimestamp: datetimeFromJson(json['pickupTimestamp']),
-    deliveryTimestamp: datetimeFromJson(json['deliveryTimestamp']),
+        datetimeFromTimestamp(json['preferredDeliveryTimestamp']),
+    modificationTimestamp: datetimeFromTimestamp(json['modificationTimestamp']),
+    cancellationTimestamp: datetimeFromTimestamp(json['cancellationTimestamp']),
+    readyTimestamp: datetimeFromTimestamp(json['readyTimestamp']),
+    pickupTimestamp: datetimeFromTimestamp(json['pickupTimestamp']),
+    deliveryTimestamp: datetimeFromTimestamp(json['deliveryTimestamp']),
     customerName: json['customerName'] as String,
     customerCoordinates: geopointFromJson(json['customerCoordinates']),
     customerAddress: json['customerAddress'] as String,
@@ -45,10 +45,10 @@ OrderModel _$OrderModelFromJson(Map json) {
     newProducts: (json['newProducts'] as List)
         ?.map((e) => e == null ? null : OrderProductModel.fromJson(e as Map))
         ?.toList(),
-    creationTimestamp: datetimeFromJson(json['creationTimestamp']),
-    acceptanceTimestamp: datetimeFromJson(json['acceptanceTimestamp']),
-    refusalTimestamp: datetimeFromJson(json['refusalTimestamp']),
-    archiviationTimestamp: datetimeFromJson(json['archiviationTimestamp']),
+    creationTimestamp: datetimeFromTimestamp(json['creationTimestamp']),
+    acceptanceTimestamp: datetimeFromTimestamp(json['acceptanceTimestamp']),
+    refusalTimestamp: datetimeFromTimestamp(json['refusalTimestamp']),
+    archiviationTimestamp: datetimeFromTimestamp(json['archiviationTimestamp']),
     state: _$enumDecodeNullable(_$OrderStateEnumMap, json['state']),
     paymentIntentId: json['paymentIntentId'] as String,
   );
@@ -76,21 +76,25 @@ Map<String, dynamic> _$OrderModelToJson(OrderModel instance) {
   writeNotNull('state', _$OrderStateEnumMap[instance.state]);
   writeNotNull('hasSupplierReview', instance.hasSupplierReview);
   writeNotNull('hasDriverReview', instance.hasDriverReview);
-  writeNotNull('creationTimestamp', datetimeToJson(instance.creationTimestamp));
   writeNotNull(
-      'acceptanceTimestamp', datetimeToJson(instance.acceptanceTimestamp));
+      'creationTimestamp', datetimeToTimestamp(instance.creationTimestamp));
+  writeNotNull(
+      'acceptanceTimestamp', datetimeToTimestamp(instance.acceptanceTimestamp));
   writeNotNull('preferredDeliveryTimestamp',
-      datetimeToJson(instance.preferredDeliveryTimestamp));
+      datetimeToTimestamp(instance.preferredDeliveryTimestamp));
+  writeNotNull('modificationTimestamp',
+      datetimeToTimestamp(instance.modificationTimestamp));
+  writeNotNull('cancellationTimestamp',
+      datetimeToTimestamp(instance.cancellationTimestamp));
+  writeNotNull('readyTimestamp', datetimeToTimestamp(instance.readyTimestamp));
   writeNotNull(
-      'modificationTimestamp', datetimeToJson(instance.modificationTimestamp));
+      'pickupTimestamp', datetimeToTimestamp(instance.pickupTimestamp));
   writeNotNull(
-      'cancellationTimestamp', datetimeToJson(instance.cancellationTimestamp));
-  writeNotNull('readyTimestamp', datetimeToJson(instance.readyTimestamp));
-  writeNotNull('pickupTimestamp', datetimeToJson(instance.pickupTimestamp));
-  writeNotNull('deliveryTimestamp', datetimeToJson(instance.deliveryTimestamp));
-  writeNotNull('refusalTimestamp', datetimeToJson(instance.refusalTimestamp));
+      'deliveryTimestamp', datetimeToTimestamp(instance.deliveryTimestamp));
   writeNotNull(
-      'archiviationTimestamp', datetimeToJson(instance.archiviationTimestamp));
+      'refusalTimestamp', datetimeToTimestamp(instance.refusalTimestamp));
+  writeNotNull('archiviationTimestamp',
+      datetimeToTimestamp(instance.archiviationTimestamp));
   writeNotNull('customerId', instance.customerId);
   writeNotNull('customerName', instance.customerName);
   writeNotNull(

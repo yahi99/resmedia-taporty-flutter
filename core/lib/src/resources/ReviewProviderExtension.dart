@@ -19,7 +19,7 @@ extension ReviewProviderExtension on DatabaseService {
         description: description,
         customerName: customerName,
       ).toJson(),
-      'timestamp': datetimeToJson(DateTime.now()),
+      'timestamp': datetimeToTimestamp(DateTime.now()),
     });
     await orderCollection.document(orderId).updateData({'hasSupplierReview': true});
   }
@@ -33,7 +33,7 @@ extension ReviewProviderExtension on DatabaseService {
         description: description,
         customerName: customerName,
       ).toJson(),
-      'timestamp': datetimeToJson(DateTime.now()),
+      'timestamp': datetimeToTimestamp(DateTime.now()),
     });
     await orderCollection.document(orderId).updateData({'hasDriverReview': true});
   }

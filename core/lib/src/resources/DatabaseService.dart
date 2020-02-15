@@ -12,9 +12,10 @@ class DatabaseService {
   CollectionReference get userCollection => firestore.collection(Collections.USERS);
   CollectionReference get supplierCategoryCollection => firestore.collection(Collections.SUPPLIER_CATEGORIES);
   CollectionReference get driverCollection => firestore.collection(Collections.DRIVERS);
-  CollectionReference get shiftCollection => firestore.collection(Collections.SHIFTS);
   CollectionReference get orderCollection => firestore.collection(Collections.ORDERS);
   CollectionReference get supplierCollection => firestore.collection(Collections.SUPPLIERS);
+  CollectionReference get areaCollection => firestore.collection(Collections.AREAS);
+  CollectionReference get shiftCollectionGroup => firestore.collectionGroup(Collections.SHIFTS);
 
   DatabaseService.internal({
     @required this.firestore,

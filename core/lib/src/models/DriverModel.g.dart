@@ -11,7 +11,7 @@ DriverModel _$DriverModelFromJson(Map json) {
     path: json['path'] as String,
     fcmToken: json['fcmToken'] as String,
     imageUrl: json['imageUrl'] as String,
-    numberOfReviews: json['numberOfReviews'] as int,
+    reviewCount: json['reviewCount'] as int,
     rating: (json['rating'] as num)?.toDouble(),
     nominative: json['nominative'] as String,
     email: json['email'] as String,
@@ -20,6 +20,7 @@ DriverModel _$DriverModelFromJson(Map json) {
         ? null
         : GeohashPointModel.fromJson(json['geohashPoint'] as Map),
     address: json['address'] as String,
+    stripeAccountId: json['stripeAccountId'] as String,
   );
 }
 
@@ -37,10 +38,11 @@ Map<String, dynamic> _$DriverModelToJson(DriverModel instance) {
   writeNotNull('nominative', instance.nominative);
   writeNotNull('email', instance.email);
   writeNotNull('phoneNumber', instance.phoneNumber);
-  writeNotNull('numberOfReviews', instance.numberOfReviews);
+  writeNotNull('reviewCount', instance.reviewCount);
   writeNotNull('rating', instance.rating);
   writeNotNull('imageUrl', instance.imageUrl);
   writeNotNull('geohashPoint', instance.geohashPoint?.toJson());
   writeNotNull('address', instance.address);
+  writeNotNull('stripeAccountId', instance.stripeAccountId);
   return val;
 }

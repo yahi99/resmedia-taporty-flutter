@@ -1,6 +1,8 @@
 import 'package:cloud_functions/cloud_functions.dart';
-import 'package:resmedia_taporty_core/core.dart';
+import 'package:resmedia_taporty_core/src/exceptions/PaymentIntentException.dart';
+import 'package:resmedia_taporty_core/src/exceptions/StripeLinkException.dart';
 import 'package:resmedia_taporty_core/src/models/IntentCreationResult.dart';
+import 'package:resmedia_taporty_core/src/models/StripeLinkCreationResult.dart';
 
 class FunctionService {
   static FunctionService _instance;
@@ -28,6 +30,20 @@ class FunctionService {
 
     if (parsedResult.success == false) {
       throw new PaymentIntentException(parsedResult.error);
+    }
+
+    return parsedResult;
+  }
+
+  Future<StripeLinkCreationResult> createDriverLoginLink(String driverId) async {
+    var createDriverLoginLink = functions.getHttpsCallable(functionName: "createDriverLoginLink");
+    var result = await createDriverLoginLink.call(<String, dynamic>{
+      "driverId": driverId,
+    });
+
+    var parsedResult = StripeLinkCreationResult.fromJson(result.data);
+    if (parsedResult.success == false) {
+      throw new StripeLinkException(parsedResult.error);
     }
 
     return parsedResult;

@@ -2,9 +2,12 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:resmedia_taporty_core/core.dart';
 import 'package:resmedia_taporty_driver/blocs/DriverBloc.dart';
+import 'package:resmedia_taporty_driver/blocs/StripeBloc.dart';
 import 'package:resmedia_taporty_driver/generated/provider.dart';
+import 'package:toast/toast.dart';
 
 class AccountScreen extends StatelessWidget {
+  final _stripeBloc = $Provider.of<StripeBloc>();
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -80,6 +83,42 @@ class AccountScreen extends StatelessWidget {
                       driver.email,
                       style: theme.textTheme.subhead,
                     ),
+                    StreamBuilder<bool>(
+                        stream: _stripeBloc.outLinkCreationLoading,
+                        builder: (context, snapshot) {
+                          var isLoading = snapshot.data ?? false;
+                          return Row(
+                            children: <Widget>[
+                              Icon(Icons.euro_symbol),
+                              FlatButton(
+                                child: Text('Gestione pagamenti', style: theme.textTheme.subhead),
+                                onPressed: isLoading
+                                    ? null
+                                    : () async {
+                                        try {
+                                          await _stripeBloc.openStripeConsole();
+                                        } on StripeLinkException catch (err) {
+                                          Toast.show(err.message, context);
+                                        } catch (err) {
+                                          Toast.show("Errore inaspettato. Riprova più tardi.", context);
+                                        }
+                                      },
+                              ),
+                              if (isLoading)
+                                Expanded(
+                                  child: Center(
+                                    child: Container(
+                                      width: 20,
+                                      height: 20,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          );
+                        }),
                     Row(
                       children: <Widget>[
                         Icon(Icons.settings),

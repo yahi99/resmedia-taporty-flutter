@@ -28,8 +28,8 @@ SupplierModel _$SupplierModelFromJson(Map json) {
         ?.toList(),
     address: json['address'] as String,
     phoneNumber: json['phoneNumber'] as String,
-    averageReviews: (json['averageReviews'] as num)?.toDouble(),
-    numberOfReviews: json['numberOfReviews'] as int,
+    rating: (json['rating'] as num)?.toDouble(),
+    reviewCount: json['reviewCount'] as int,
     isDisabled: json['isDisabled'] as bool,
     imageUrl: json['imageUrl'] as String,
   );
@@ -56,8 +56,8 @@ Map<String, dynamic> _$SupplierModelToJson(SupplierModel instance) {
   val['holidays'] = instance.holidays?.map((e) => e?.toJson())?.toList();
   val['weekdayTimetable'] = instance.weekdayTimetable
       ?.map((k, e) => MapEntry(k.toString(), e?.toJson()));
-  val['numberOfReviews'] = instance.numberOfReviews;
-  val['averageReviews'] = instance.averageReviews;
+  val['reviewCount'] = instance.reviewCount;
+  val['rating'] = instance.rating;
   val['isDisabled'] = instance.isDisabled;
   val['categories'] = instance.categories?.map((e) => e?.toJson())?.toList();
   return val;

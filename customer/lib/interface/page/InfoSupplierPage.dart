@@ -57,14 +57,14 @@ class InfoSupplierPage extends StatelessWidget {
                             style: theme.textTheme.subhead,
                           ),
                         ),
-                      if (supplier.averageReviews != null)
+                      if (supplier.rating != null)
                         Padding(
                           padding: const EdgeInsets.only(left: 8.0),
                           child: InkWell(
                             child: Row(
                               children: <Widget>[
                                 RatingBar.readOnly(
-                                  initialRating: supplier.averageReviews,
+                                  initialRating: supplier.rating,
                                   filledIcon: Icons.star,
                                   emptyIcon: Icons.star_border,
                                   halfFilledIcon: Icons.star_half,
@@ -74,7 +74,7 @@ class InfoSupplierPage extends StatelessWidget {
                                   halfFilledColor: Colors.yellow,
                                   size: 26,
                                 ),
-                                supplier.averageReviews != null ? Text(' ' + supplier.averageReviews.toString()) : Container(),
+                                supplier.rating != null ? Text(' ' + supplier.rating.toString()) : Container(),
                               ],
                             ),
                             onTap: () {

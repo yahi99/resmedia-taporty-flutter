@@ -26,8 +26,8 @@ class SupplierModel extends FirebaseModel {
   final List<HolidayModel> holidays;
   final Map<int, TimetableModel> weekdayTimetable;
 
-  final int numberOfReviews;
-  final double averageReviews;
+  final int reviewCount;
+  final double rating;
 
   final bool isDisabled;
 
@@ -113,8 +113,8 @@ class SupplierModel extends FirebaseModel {
     @required this.categories,
     this.address,
     this.phoneNumber,
-    this.averageReviews,
-    this.numberOfReviews,
+    this.rating,
+    this.reviewCount,
     this.isDisabled,
     @required this.imageUrl,
   }) : super(path);

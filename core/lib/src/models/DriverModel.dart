@@ -11,7 +11,7 @@ class DriverModel extends UserFirebaseModel {
   final String nominative;
   final String email;
   final String phoneNumber;
-  final int numberOfReviews;
+  final int reviewCount;
   final double rating;
   final String imageUrl;
 
@@ -24,7 +24,7 @@ class DriverModel extends UserFirebaseModel {
     String path,
     String fcmToken,
     this.imageUrl,
-    this.numberOfReviews,
+    this.reviewCount,
     this.rating,
     this.nominative,
     this.email,

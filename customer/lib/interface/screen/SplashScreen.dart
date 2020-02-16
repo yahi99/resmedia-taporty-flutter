@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:resmedia_taporty_core/core.dart';
 import 'package:resmedia_taporty_customer/blocs/UserBloc.dart';
 import 'package:resmedia_taporty_customer/generated/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -49,10 +48,5 @@ class SplashScreenState extends State<SplashScreen> {
         data: Theme.of(context).copyWith(unselectedWidgetColor: Colors.white),
       ),
     );
-  }
-
-  Future<bool> checkFirstLaunch() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    return (prefs.getBool('first_launch') ?? true);
   }
 }

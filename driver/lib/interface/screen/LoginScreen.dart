@@ -1,5 +1,7 @@
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:resmedia_taporty_driver/blocs/DriverBloc.dart';
 import 'package:resmedia_taporty_core/core.dart';
@@ -12,6 +14,38 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  @override
+  void initState() {
+    super.initState();
+    this.initDynamicLinks();
+  }
+
+  Future _redirect(Uri deepLink) async {
+    if (deepLink == null) return;
+    var success = deepLink.queryParameters['error'] == "true" ? false : true;
+    var path = deepLink.path == "/" ? "/stripeActivationConfirm" : null;
+
+    if (path != null) {
+      Navigator.pushNamed(context, path, arguments: success);
+    }
+  }
+
+  void initDynamicLinks() async {
+    final PendingDynamicLinkData data = await FirebaseDynamicLinks.instance.getInitialLink();
+    final Uri deepLink = data?.link;
+
+    await _redirect(deepLink);
+
+    FirebaseDynamicLinks.instance.onLink(onSuccess: (PendingDynamicLinkData dynamicLink) async {
+      final Uri deepLink = dynamicLink?.link;
+
+      await _redirect(deepLink);
+    }, onError: (OnLinkErrorException e) async {
+      print('onLinkError');
+      print(e.message);
+    });
+  }
+
   final driverBloc = $Provider.of<DriverBloc>();
 
   final TextEditingController _emailController = new TextEditingController();
@@ -81,11 +115,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                 });
                                 try {
                                   await driverBloc.signInWithEmailAndPassword(_emailController.text, _passwordController.text);
-                                  Navigator.popAndPushNamed(context, "/home");
+                                  if (await driverBloc.isStripeActivated())
+                                    Navigator.pushNamedAndRemoveUntil(context, "/home", (route) => false);
+                                  else
+                                    Navigator.popAndPushNamed(context, "/stripeActivation");
                                 } on NotADriverException catch (err) {
                                   print(err);
                                   Toast.show("Non sei un fattorino", context);
-                                } catch (err) {
+                                } on PlatformException catch (err) {
                                   if (err.code == "ERROR_INVALID_EMAIL")
                                     Toast.show("Email invalida", context);
                                   else if (err.code == "ERROR_WRONG_PASSWORD")
@@ -93,7 +130,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                   else if (err.code == "ERROR_USER_NOT_FOUND")
                                     Toast.show("Account inesistente", context);
                                   else
-                                    Toast.show("Si è verificato un errore inaspettato", context);
+                                    throw err;
+                                } catch (err) {
+                                  Toast.show("Si è verificato un errore inaspettato", context);
                                 }
 
                                 setState(() {

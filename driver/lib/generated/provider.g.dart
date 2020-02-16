@@ -34,6 +34,16 @@ class $Provider extends Provider {
           return BlocCache.getBlocInstance(
               "DriverBloc", () => DriverBloc.instance());
         }
+      case StripeBloc:
+        {
+          return BlocCache.getBlocInstance(
+              "StripeBloc", () => StripeBloc.instance());
+        }
+      case ShiftBloc:
+        {
+          return BlocCache.getBlocInstance(
+              "ShiftBloc", () => ShiftBloc.instance());
+        }
     }
     return null;
   }
@@ -63,6 +73,16 @@ class $Provider extends Provider {
       case DriverBloc:
         {
           BlocCache.dispose("DriverBloc");
+          break;
+        }
+      case StripeBloc:
+        {
+          BlocCache.dispose("StripeBloc");
+          break;
+        }
+      case ShiftBloc:
+        {
+          BlocCache.dispose("ShiftBloc");
           break;
         }
     }

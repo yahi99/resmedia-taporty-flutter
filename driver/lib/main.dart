@@ -1,3 +1,4 @@
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -5,6 +6,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:resmedia_taporty_core/core.dart';
 import 'package:resmedia_taporty_driver/interface/screen/CustomerDetailScreen.dart';
+import 'package:resmedia_taporty_driver/interface/screen/StripeActivationScreen.dart';
+import 'package:resmedia_taporty_driver/interface/screen/StripeActivationConfirmScreen.dart';
 import 'package:resmedia_taporty_driver/interface/screen/SupplierDetailScreen.dart';
 import 'package:resmedia_taporty_driver/interface/screen/OrderDetailScreen.dart';
 import 'package:resmedia_taporty_driver/interface/screen/AccountScreen.dart';
@@ -12,6 +15,7 @@ import 'package:resmedia_taporty_driver/interface/screen/HomeScreen.dart';
 import 'package:resmedia_taporty_driver/interface/screen/LoginScreen.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   runApp(Taporty());
 }
@@ -116,6 +120,8 @@ class _TaportyState extends State<Taporty> {
         "/orderDetail": (context) => OrderDetailScreen(),
         "/customerDetail": (context) => CustomerDetailScreen(),
         "/supplierDetail": (context) => SupplierDetailScreen(),
+        "/stripeActivation": (context) => StripeActivationScreen(),
+        "/stripeActivationConfirm": (context) => StripeActivationConfirmScreen(),
       },
       initialRoute: "/login",
     );

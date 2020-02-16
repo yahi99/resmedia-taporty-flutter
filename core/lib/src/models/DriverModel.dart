@@ -18,6 +18,8 @@ class DriverModel extends UserFirebaseModel {
   final GeohashPointModel geohashPoint;
   final String address;
 
+  final String stripeAccountId;
+
   DriverModel({
     String path,
     String fcmToken,
@@ -29,6 +31,7 @@ class DriverModel extends UserFirebaseModel {
     this.phoneNumber,
     this.geohashPoint,
     this.address,
+    this.stripeAccountId,
   }) : super(path: path, fcmToken: fcmToken);
 
   static DriverModel fromJson(Map json) => _$DriverModelFromJson(json);

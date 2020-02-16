@@ -19,6 +19,12 @@ extension DriverProviderExtension on DatabaseService {
     });
   }
 
+  Future<void> setStripeActivationToken(String uid, String token) async {
+    await driverCollection.document(uid).updateData({
+      "stripeActivationToken": token,
+    });
+  }
+
   Future<void> updateDriverProfileImage(String uid, String path) async {
     await driverCollection.document(uid).updateData({'imageUrl': path});
   }

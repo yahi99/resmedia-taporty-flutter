@@ -21,6 +21,7 @@ class DriverBloc implements Bloc {
   BehaviorSubject<FirebaseUser> _firebaseUserController;
 
   Stream<FirebaseUser> get outFirebaseUser => _firebaseUserController.stream;
+  FirebaseUser get firebaseUser => _firebaseUserController.value;
 
   BehaviorSubject<DriverModel> _driverController;
 
@@ -44,7 +45,7 @@ class DriverBloc implements Bloc {
   Future<bool> _isDriver(FirebaseUser user) async {
     // Controlla che l'utente sia un fattorino
     var idToken = await user.getIdToken(refresh: true);
-    return !!idToken.claims['driver'];
+    return idToken.claims['driver'] == true;
   }
 
   Future signInWithEmailAndPassword(String email, String password) async {
@@ -55,6 +56,12 @@ class DriverBloc implements Bloc {
     }
 
     _firebaseUserController.value = authResult.user;
+  }
+
+  Future<bool> isStripeActivated() async {
+    // Controlla se l'utente ha già attivato l'account stripe
+    var idToken = await _firebaseUserController.value.getIdToken(refresh: true);
+    return idToken.claims['stripeActivated'] == true;
   }
 
   Future updateProfileImage(File image) async {

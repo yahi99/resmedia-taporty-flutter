@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:resmedia_taporty_driver/blocs/DriverBloc.dart';
 import 'package:resmedia_taporty_core/core.dart';
+import 'package:resmedia_taporty_driver/blocs/OrderBloc.dart';
 import 'package:resmedia_taporty_driver/generated/provider.dart';
 import 'package:toast/toast.dart';
 
@@ -18,6 +19,25 @@ class _LoginScreenState extends State<LoginScreen> {
   void initState() {
     super.initState();
     this.initDynamicLinks();
+    var _messagingService = CloudMessagingService();
+    _messagingService.init(_onNotificationClick);
+  }
+
+  void _onNotificationClick(Map<String, dynamic> message) async {
+    if (await driverBloc.outDriver.first == null) return;
+    if (!(await driverBloc.isStripeActivated())) return;
+
+    if (message['data']['type'] == 'ORDER_NOTIFICATION') {
+      var orderId = message['data']['orderId'];
+      if (orderId == null) return;
+
+      $Provider.of<OrderBloc>().setOrderStream(orderId);
+
+      await Navigator.pushNamed(
+        context,
+        "/orderDetail",
+      );
+    }
   }
 
   Future _redirect(Uri deepLink) async {

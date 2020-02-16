@@ -23,6 +23,7 @@ dependencies:
   google_maps_flutter: ^0.5.21+15
   shared_preferences: ^0.5.6+1
   stripe_payment: ^1.0.6
+  overlay_support: ^1.0.2
 
 
   flutter_localizations:

@@ -44,6 +44,7 @@ extension UserProviderExtension on DatabaseService {
           UserModel(
             nominative: nominative,
             email: email,
+            notifyApp: true,
           ).toJson(),
         );
   }

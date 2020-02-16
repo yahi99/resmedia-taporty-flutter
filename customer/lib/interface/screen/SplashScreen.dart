@@ -1,7 +1,7 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:resmedia_taporty_core/core.dart';
+import 'package:resmedia_taporty_customer/blocs/OrderBloc.dart';
 import 'package:resmedia_taporty_customer/blocs/UserBloc.dart';
 import 'package:resmedia_taporty_customer/generated/provider.dart';
 
@@ -29,6 +29,25 @@ class SplashScreenState extends State<SplashScreen> {
       else
         Navigator.pushReplacementNamed(context, "/geolocalization");
     });
+
+    var _messagingService = CloudMessagingService();
+    _messagingService.init(_onNotificationClick);
+  }
+
+  void _onNotificationClick(Map<String, dynamic> message) async {
+    if (await userBloc.outUser.first == null) return;
+
+    if (message['data']['type'] == 'ORDER_NOTIFICATION') {
+      var orderId = message['data']['orderId'];
+      if (orderId == null) return;
+
+      $Provider.of<OrderBloc>().setOrderStream(orderId);
+
+      await Navigator.pushNamed(
+        context,
+        "/orderDetail",
+      );
+    }
   }
 
   @override

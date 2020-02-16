@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:overlay_support/overlay_support.dart';
 import 'package:resmedia_taporty_core/core.dart';
 import 'package:resmedia_taporty_customer/interface/screen/OrderCartScreen.dart';
 import 'package:resmedia_taporty_customer/interface/screen/OrderDetailScreen.dart';
@@ -48,104 +49,106 @@ class _TaportyState extends State<Taporty> {
       secondaryVariant: ColorTheme.ACCENT_BLUE,
     );
 
-    return MaterialApp(
-      title: "Taporty",
-      theme: ThemeData(
-        colorScheme: cls,
-        primaryColor: cls.primary,
-        accentColor: cls.secondary,
-        buttonColor: cls.primary,
-        indicatorColor: Colors.white,
-        dividerColor: Colors.grey,
-        buttonTheme: ButtonThemeData(
-          // Rimossa questa indicazione di padding che non prevedeva un padding ai pulsanti.
-          // padding: const EdgeInsets.only(),
-          buttonColor: cls.secondary,
+    return OverlaySupport(
+      child: MaterialApp(
+        title: "Taporty",
+        theme: ThemeData(
           colorScheme: cls,
-          textTheme: ButtonTextTheme.primary,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(32.0)),
+          primaryColor: cls.primary,
+          accentColor: cls.secondary,
+          buttonColor: cls.primary,
+          indicatorColor: Colors.white,
+          dividerColor: Colors.grey,
+          buttonTheme: ButtonThemeData(
+            // Rimossa questa indicazione di padding che non prevedeva un padding ai pulsanti.
+            // padding: const EdgeInsets.only(),
+            buttonColor: cls.secondary,
+            colorScheme: cls,
+            textTheme: ButtonTextTheme.primary,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(32.0)),
+          ),
+          inputDecorationTheme: InputDecorationTheme(
+            border: const OutlineInputBorder(
+              borderRadius: const BorderRadius.all(const Radius.circular(32.0)),
+            ),
+            filled: true,
+            hintStyle: TextStyle(color: Colors.grey),
+            fillColor: Colors.white70,
+          ),
+          textTheme: TextTheme(
+            headline: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 26,
+              fontFamily: 'Comfortaa',
+            ),
+            title: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 22,
+              fontFamily: 'Comfortaa',
+            ),
+            subhead: TextStyle(
+              fontSize: 18,
+              fontFamily: 'Comfortaa',
+            ),
+            subtitle: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+              letterSpacing: 1,
+              fontFamily: 'Comfortaa',
+            ),
+            body1: TextStyle(
+              fontSize: 16,
+              letterSpacing: 0.5,
+              fontFamily: 'Comfortaa',
+            ),
+            body2: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 14,
+              letterSpacing: 0.5,
+              fontFamily: 'Comfortaa',
+            ),
+            button: TextStyle(
+              fontWeight: FontWeight.bold,
+              height: 0.8,
+              fontSize: 16,
+              color: Colors.white,
+              fontFamily: 'Comfortaa',
+            ),
+            overline: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 14,
+              color: cls.primaryVariant,
+              fontFamily: 'Comfortaa',
+            ),
+          ),
         ),
-        inputDecorationTheme: InputDecorationTheme(
-          border: const OutlineInputBorder(
-            borderRadius: const BorderRadius.all(const Radius.circular(32.0)),
-          ),
-          filled: true,
-          hintStyle: TextStyle(color: Colors.grey),
-          fillColor: Colors.white70,
-        ),
-        textTheme: TextTheme(
-          headline: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 26,
-            fontFamily: 'Comfortaa',
-          ),
-          title: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 22,
-            fontFamily: 'Comfortaa',
-          ),
-          subhead: TextStyle(
-            fontSize: 18,
-            fontFamily: 'Comfortaa',
-          ),
-          subtitle: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
-            letterSpacing: 1,
-            fontFamily: 'Comfortaa',
-          ),
-          body1: TextStyle(
-            fontSize: 16,
-            letterSpacing: 0.5,
-            fontFamily: 'Comfortaa',
-          ),
-          body2: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 14,
-            letterSpacing: 0.5,
-            fontFamily: 'Comfortaa',
-          ),
-          button: TextStyle(
-            fontWeight: FontWeight.bold,
-            height: 0.8,
-            fontSize: 16,
-            color: Colors.white,
-            fontFamily: 'Comfortaa',
-          ),
-          overline: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 14,
-            color: cls.primaryVariant,
-            fontFamily: 'Comfortaa',
-          ),
-        ),
+        localizationsDelegates: [
+          AppLocalizationsDelegate(),
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+        ],
+        supportedLocales: <Locale>[
+          const Locale("it"),
+        ],
+        routes: {
+          "/login": (context) => LoginScreen(),
+          "/signup": (context) => SignupScreen(),
+          "/account": (context) => AccountScreen(),
+          "/editAccount": (context) => EditAccountScreen(),
+          "/orderList": (context) => OrderListScreen(),
+          "/orderDetail": (context) => OrderDetailScreen(),
+          "/orderCart": (context) => OrderCartScreen(),
+          "/legalNotes": (context) => LegalNotesScreen(),
+          "/changePassword": (context) => ChangePasswordScreen(),
+          "/settings": (context) => SettingsScreen(),
+          "/geolocalization": (context) => GeolocalizationScreen(),
+          "/supplier": (context) => SupplierScreen(),
+          "/supplierReviewList": (context) => SupplierReviewListScreen(),
+          "/supplierList": (context) => SupplierListScreen(),
+          "/checkout": (context) => CheckoutScreen(),
+        },
+        home: SplashScreen(),
       ),
-      localizationsDelegates: [
-        AppLocalizationsDelegate(),
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ],
-      supportedLocales: <Locale>[
-        const Locale("it"),
-      ],
-      routes: {
-        "/login": (context) => LoginScreen(),
-        "/signup": (context) => SignupScreen(),
-        "/account": (context) => AccountScreen(),
-        "/editAccount": (context) => EditAccountScreen(),
-        "/orderList": (context) => OrderListScreen(),
-        "/orderDetail": (context) => OrderDetailScreen(),
-        "/orderCart": (context) => OrderCartScreen(),
-        "/legalNotes": (context) => LegalNotesScreen(),
-        "/changePassword": (context) => ChangePasswordScreen(),
-        "/settings": (context) => SettingsScreen(),
-        "/geolocalization": (context) => GeolocalizationScreen(),
-        "/supplier": (context) => SupplierScreen(),
-        "/supplierReviewList": (context) => SupplierReviewListScreen(),
-        "/supplierList": (context) => SupplierListScreen(),
-        "/checkout": (context) => CheckoutScreen(),
-      },
-      home: SplashScreen(),
     );
   }
 }

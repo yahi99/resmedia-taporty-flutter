@@ -46,6 +46,7 @@ export 'src/models/PaymentMethodModel.dart';
 
 // Resources
 export 'src/resources/DatabaseService.dart';
+export 'src/resources/CloudMessagingService.dart';
 export 'src/resources/DriverProviderExtension.dart';
 export 'src/resources/OrderProviderExtension.dart';
 export 'src/resources/ReviewProviderExtension.dart';
@@ -62,3 +63,4 @@ export 'src/widgets/FittedText.dart';
 export 'src/widgets/HeaderWidget.dart';
 export 'src/widgets/LogoView.dart';
 export 'src/widgets/ListViewSeparated.dart';
+export 'src/widgets/ForegroundNotification.dart';

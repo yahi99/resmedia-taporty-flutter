@@ -10,12 +10,14 @@ class IntentCreationResult {
   final String error;
   final String paymentIntentId;
   final String clientSecret;
+  final String paymentMethodId;
 
   IntentCreationResult(
     this.success,
     this.error,
     this.paymentIntentId,
     this.clientSecret,
+    this.paymentMethodId,
   );
 
   static IntentCreationResult fromJson(Map json) => _$IntentCreationResultFromJson(json);

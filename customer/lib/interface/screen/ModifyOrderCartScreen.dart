@@ -6,6 +6,7 @@ import 'package:resmedia_taporty_customer/interface/widget/StepperButton.dart';
 import 'package:toast/toast.dart';
 import 'package:vibration/vibration.dart';
 import 'package:resmedia_taporty_customer/blocs/SupplierBloc.dart';
+import 'package:resmedia_taporty_customer/blocs/OrderBloc.dart';
 
 class ModifyOrderCartScreen extends StatefulWidget {
   final OrderModel order;
@@ -177,9 +178,11 @@ class _ModifyOrderCartScreenState extends State<ModifyOrderCartScreen> {
                           color: ColorTheme.ACCENT_BLUE,
                           onPressed: () async {
                             try {
-                              await DatabaseService().modifyOrder(widget.order.id, orderProducts);
+                              await $Provider.of<OrderBloc>().modifyOrder(orderProducts);
                               Navigator.pop(context);
                               Toast.show("Modifica inviata", context);
+                            } on PaymentIntentException catch (err) {
+                              Toast.show(err.message, context);
                             } on InvalidOrderStateException catch (err) {
                               print(err);
                               Toast.show("L'ordine ha cambiato stato e non può più essere modificato.", context);

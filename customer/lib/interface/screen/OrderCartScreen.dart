@@ -119,7 +119,7 @@ class _OrderCartScreenState extends State<OrderCartScreen> {
   }
 
   _buildModifyWidgets(OrderModel order) {
-    if (order.state == OrderState.NEW || order.state == OrderState.ACCEPTED || order.state == OrderState.READY) {
+    if (order.state == OrderState.NEW) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -146,7 +146,7 @@ class _OrderCartScreenState extends State<OrderCartScreen> {
         ],
       );
     }
-    if (order.state == OrderState.PICKED_UP) {
+    if (order.state == OrderState.PICKED_UP || order.state == OrderState.ACCEPTED || order.state == OrderState.READY) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -154,7 +154,7 @@ class _OrderCartScreenState extends State<OrderCartScreen> {
           Padding(
             padding: EdgeInsets.all(16),
             child: Text(
-              "Non è più possibile modificare l'ordine in quanto è in consegna.",
+              "Non è più possibile modificare l'ordine in quanto è già stato accettato.",
             ),
           ),
         ],

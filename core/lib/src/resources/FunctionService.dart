@@ -35,6 +35,22 @@ class FunctionService {
     return parsedResult;
   }
 
+  Future<IntentCreationResult> createPaymentIntentFromPrevious(String prevPaymentIntentId, double amount) async {
+    var createPaymentIntentFromPrevious = functions.getHttpsCallable(functionName: "createPaymentIntentFromPrevious");
+    var result = await createPaymentIntentFromPrevious.call(<String, dynamic>{
+      "prevPaymentIntentId": prevPaymentIntentId,
+      "amount": amount,
+    });
+
+    IntentCreationResult parsedResult = IntentCreationResult.fromJson(result.data);
+
+    if (parsedResult.success == false) {
+      throw new PaymentIntentException(parsedResult.error);
+    }
+
+    return parsedResult;
+  }
+
   Future<StripeLinkCreationResult> createDriverLoginLink(String driverId) async {
     var createDriverLoginLink = functions.getHttpsCallable(functionName: "createDriverLoginLink");
     var result = await createDriverLoginLink.call(<String, dynamic>{

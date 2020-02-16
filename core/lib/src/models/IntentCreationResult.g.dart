@@ -12,6 +12,7 @@ IntentCreationResult _$IntentCreationResultFromJson(Map json) {
     json['error'] as String,
     json['paymentIntentId'] as String,
     json['clientSecret'] as String,
+    json['paymentMethodId'] as String,
   );
 }
 
@@ -29,5 +30,6 @@ Map<String, dynamic> _$IntentCreationResultToJson(
   writeNotNull('error', instance.error);
   writeNotNull('paymentIntentId', instance.paymentIntentId);
   writeNotNull('clientSecret', instance.clientSecret);
+  writeNotNull('paymentMethodId', instance.paymentMethodId);
   return val;
 }

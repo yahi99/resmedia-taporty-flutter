@@ -89,7 +89,7 @@ extension OrderProviderExtension on DatabaseService {
     await documentReference.setData({...order.toJson(), 'reference': documentReference});
   }
 
-  Future<void> modifyOrder(String orderId, List<OrderProductModel> orderProducts) async {
+  Future<void> modifyOrder(String orderId, List<OrderProductModel> orderProducts, String newPaymentIntentId) async {
     orderProducts = orderProducts.where((o) => o.quantity > 0).toList();
 
     var orderDocument = orderCollection.document(orderId);
@@ -97,7 +97,7 @@ extension OrderProviderExtension on DatabaseService {
     await Firestore.instance.runTransaction((Transaction tx) async {
       var order = OrderModel.fromFirebase(await tx.get(orderDocument));
 
-      if (order.state == OrderState.NEW) {
+      if (order.state == OrderState.NEW && newPaymentIntentId != null) {
         var newOrder = OrderModel(
           productCount: orderProducts.fold(0, (count, product) => count + product.quantity),
           totalPrice: orderProducts.fold(0, (price, product) => price + product.quantity * product.price),
@@ -121,7 +121,7 @@ extension OrderProviderExtension on DatabaseService {
           driverId: order.driverId,
           customerId: order.customerId,
           state: OrderState.NEW,
-          paymentIntentId: order.paymentIntentId,
+          paymentIntentId: newPaymentIntentId,
         );
 
         var newOrderDocRef = orderCollection.document();
@@ -137,7 +137,9 @@ extension OrderProviderExtension on DatabaseService {
           'reference': newOrderDocRef,
           'oldOrderId': order.id,
         });
-      } else if (order.state == OrderState.ACCEPTED || order.state == OrderState.READY) {
+      }
+      // Mantieni se nel futuro sarà possibile implementare la modifica con Stripe
+      /*else if (order.state == OrderState.ACCEPTED || order.state == OrderState.READY) {
         tx.update(orderDocument, {
           'state': orderStateEncode(OrderState.MODIFIED),
           'prevState': orderStateEncode(order.state),
@@ -146,7 +148,8 @@ extension OrderProviderExtension on DatabaseService {
           'newTotalPrice': orderProducts.fold(0, (price, product) => price + product.quantity * product.price),
           'newProducts': orderProducts.map((o) => o.toJson()).toList(),
         });
-      } else {
+      } */
+      else {
         error = true;
         return;
       }

@@ -10,6 +10,8 @@ import 'package:resmedia_taporty_core/src/models/OrderProductModel.dart';
 
 part 'OrderModel.g.dart';
 
+// Lo stato MODIFIED non viene utilizzato in quanto non è possibile modificare un pagamento una volta eseguito.
+// Mantieni comunque in caso Stripe in futuro decida di permetterlo.
 enum OrderState { NEW, ACCEPTED, MODIFIED, CANCELLED, READY, PICKED_UP, DELIVERED, ARCHIVED, REFUSED }
 
 String orderStateEncode(OrderState state) {

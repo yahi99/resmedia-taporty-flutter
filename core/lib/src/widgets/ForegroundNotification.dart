@@ -8,14 +8,19 @@ class ForegroundNotification extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      child: Card(
-        margin: const EdgeInsets.symmetric(horizontal: 4),
-        child: SafeArea(
-          child: ListTile(
-            title: Text(title),
-            subtitle: Text(message),
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Card(
+          margin: const EdgeInsets.symmetric(horizontal: 4),
+          child: InkWell(
+            onTap: onTap,
+            child: SafeArea(
+              child: ListTile(
+                title: Text(title),
+                subtitle: Text(message),
+              ),
+            ),
           ),
         ),
       ),

@@ -19,6 +19,10 @@ extension UserProviderExtension on DatabaseService {
     });
   }
 
+  Future<void> updateUserFcmToken(String uid, String fcmToken) async {
+    await userCollection.document(uid).updateData({'fcmToken': fcmToken});
+  }
+
   Future<void> updateProfileImage(String uid, String path) async {
     await userCollection.document(uid).updateData({'imageUrl': path});
   }

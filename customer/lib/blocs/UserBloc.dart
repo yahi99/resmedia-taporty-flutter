@@ -6,19 +6,21 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meta/meta.dart';
 import 'package:resmedia_taporty_core/core.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:tuple/tuple.dart';
 
 class UserBloc implements Bloc {
   final DatabaseService _db = DatabaseService();
   final StorageService _storage = StorageService();
   final AuthService _auth = AuthService();
-  final SharedPreferenceService _sharedPreferenceService = SharedPreferenceService();
+  final SharedPreferenceService _sharedPreferences = SharedPreferenceService();
+  final CloudMessagingService _messaging = CloudMessagingService();
 
   @protected
   dispose() {
     _firebaseUserController.close();
     _userController?.close();
     _authProviderIdController.close();
-    _checkProviderIdExists.cancel();
+    _refreshTokenSub.cancel();
   }
 
   BehaviorSubject<FirebaseUser> _firebaseUserController;
@@ -34,7 +36,7 @@ class UserBloc implements Bloc {
   String get authProviderId => _authProviderIdController.value;
   Stream<String> get outAuthProviderId => _authProviderIdController.stream;
 
-  StreamSubscription _checkProviderIdExists;
+  StreamSubscription _refreshTokenSub;
 
   UserBloc.instance() {
     _firebaseUserController = BehaviorSubject();
@@ -43,6 +45,14 @@ class UserBloc implements Bloc {
       if (_firebaseUser == null) return Stream.value(null);
       return _db.getUserStream(_firebaseUser);
     }));
+
+    // Quando il token cambia, aggiorna nel database
+    _refreshTokenSub = CombineLatestStream.combine2(outUser, _messaging.onTokenRefresh, (user, fcmToken) => Tuple2<UserModel, String>(user, fcmToken)).listen((tuple) async {
+      var user = tuple.item1;
+      var fcmToken = tuple.item2;
+      if (user == null || fcmToken == null) return;
+      if (user.fcmToken != fcmToken) await _db.updateUserFcmToken(user.id, fcmToken);
+    });
 
     _initFirebaseUser();
   }
@@ -55,6 +65,12 @@ class UserBloc implements Bloc {
   Future _initFirebaseUser() async {
     var firebaseUser = await _auth.getCurrentUser();
 
+    if (firebaseUser == null) {
+      _firebaseUserController.value = null;
+      await _setProviderId(null);
+      return;
+    }
+
     if (!(await _isCustomer(firebaseUser))) {
       await signOut();
       return;
@@ -62,7 +78,7 @@ class UserBloc implements Bloc {
 
     _firebaseUserController.value = firebaseUser;
 
-    var providerId = await _sharedPreferenceService.getAuthProvider();
+    var providerId = await _sharedPreferences.getAuthProvider();
     if (providerId == "") {
       if (firebaseUser.providerData.any((provider) => provider.providerId == GoogleAuthProvider.providerId))
         providerId = GoogleAuthProvider.providerId;
@@ -83,7 +99,7 @@ class UserBloc implements Bloc {
 
   Future _setProviderId(String providerId) async {
     _authProviderIdController.value = providerId;
-    await _sharedPreferenceService.setAuthProvider(providerId);
+    await _sharedPreferences.setAuthProvider(providerId);
   }
 
   Future<bool> signInWithGoogle() async {
@@ -142,7 +158,7 @@ class UserBloc implements Bloc {
     var user = await outUser.first;
     if (user.imageUrl != null && user.imageUrl != "") await _storage.deleteFile(user.imageUrl);
     var imageUrl = await _storage.uploadFile("users/${user.id}", image);
-    await _db.updateProfileImage(user.id, imageUrl);
+    await _db.updateUserFcmToken(user.id, imageUrl);
   }
 
   Future updatePassword(String oldPassword, String password) async {

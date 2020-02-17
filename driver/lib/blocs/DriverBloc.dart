@@ -6,16 +6,19 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meta/meta.dart';
 import 'package:resmedia_taporty_core/core.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:tuple/tuple.dart';
 
 class DriverBloc implements Bloc {
   final DatabaseService _db = DatabaseService();
   final StorageService _storage = StorageService();
   final AuthService _auth = AuthService();
+  final CloudMessagingService _messaging = CloudMessagingService();
 
   @protected
   dispose() {
     _firebaseUserController.close();
     _driverController?.close();
+    _refreshTokenSub.cancel();
   }
 
   BehaviorSubject<FirebaseUser> _firebaseUserController;
@@ -27,6 +30,8 @@ class DriverBloc implements Bloc {
 
   Stream<DriverModel> get outDriver => _driverController.stream;
 
+  StreamSubscription _refreshTokenSub;
+
   DriverBloc.instance() {
     _clearFirebaseUser();
     _firebaseUserController = BehaviorSubject();
@@ -35,6 +40,13 @@ class DriverBloc implements Bloc {
       if (_firebaseUser == null) return Stream.value(null);
       return _db.getDriverStream(_firebaseUser);
     }));
+
+    // Quando il token cambia, aggiorna nel database
+    _refreshTokenSub = CombineLatestStream.combine2(outDriver, _messaging.onTokenRefresh, (driver, fcmToken) => Tuple2<DriverModel, String>(driver, fcmToken)).listen((tuple) async {
+      var driver = tuple.item1;
+      var fcmToken = tuple.item2;
+      if (driver.fcmToken != fcmToken) await _db.updateDriverFcmToken(driver.id, fcmToken);
+    });
   }
 
   // Se un utente era rimasto loggato da una precedente esecuzione dell'app, sloggalo

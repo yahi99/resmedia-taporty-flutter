@@ -25,6 +25,10 @@ extension DriverProviderExtension on DatabaseService {
     });
   }
 
+  Future<void> updateDriverFcmToken(String uid, String fcmToken) async {
+    await driverCollection.document(uid).updateData({'fcmToken': fcmToken});
+  }
+
   Future<void> updateDriverProfileImage(String uid, String path) async {
     await driverCollection.document(uid).updateData({'imageUrl': path});
   }

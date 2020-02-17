@@ -17,6 +17,8 @@ class CloudMessagingService {
 
   final FirebaseMessaging _messaging;
 
+  Stream<String> get onTokenRefresh => _messaging.onTokenRefresh;
+
   Future init(Function(Map<String, dynamic> message) callback) async {
     if (Platform.isIOS) await iOSPermission();
 

@@ -125,6 +125,7 @@ class _TaportyState extends State<Taporty> {
           "/stripeActivationConfirm": (context) => StripeActivationConfirmScreen(),
         },
         initialRoute: "/login",
+        navigatorKey: NavigationService().navigatorKey,
       ),
     );
   }

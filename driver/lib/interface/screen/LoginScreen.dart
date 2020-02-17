@@ -33,10 +33,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
       $Provider.of<OrderBloc>().setOrderStream(orderId);
 
-      await Navigator.pushNamed(
-        context,
-        "/orderDetail",
-      );
+      await NavigationService().navigatorKey.currentState.pushNamed("/orderDetail");
     }
   }
 

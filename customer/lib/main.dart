@@ -148,6 +148,7 @@ class _TaportyState extends State<Taporty> {
           "/checkout": (context) => CheckoutScreen(),
         },
         home: SplashScreen(),
+        navigatorKey: NavigationService().navigatorKey,
       ),
     );
   }

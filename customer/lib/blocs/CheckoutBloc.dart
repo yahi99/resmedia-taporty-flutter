@@ -76,13 +76,15 @@ class CheckoutBloc extends Bloc {
       _availableShiftListController.value = null;
       _selectedShiftController.value = null;
       if (tuple.item1 == null || tuple.item2 == null) return;
-      var shifts = _availableShiftListController.value = await _getAvailableShifts(tuple.item1, tuple.item2);
+      SupplierModel supplier = await supplierBloc.outSupplier.first;
+
+      if (supplier == null) return;
+      var shifts = _availableShiftListController.value = await _getAvailableShifts(tuple.item1, supplier);
       _selectedShiftController.value = shifts.isNotEmpty ? shifts.first : null;
     });
   }
 
-  Future<List<ShiftModel>> _getAvailableShifts(DateTime day, String supplierId) async {
-    SupplierModel supplier = await supplierBloc.outSupplier.first;
+  Future<List<ShiftModel>> _getAvailableShifts(DateTime day, SupplierModel supplier) async {
     var startTimes = supplier.getShiftStartTimes(day);
     var filteredShifts = List<ShiftModel>();
 

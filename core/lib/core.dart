@@ -14,6 +14,7 @@ export 'src/helper/DistanceHelper.dart';
 export 'src/helper/GeopointSerialization.dart';
 export 'src/helper/Categorized.dart';
 export 'src/helper/Controller.dart';
+export 'src/helper/NavigationService.dart';
 
 // Exceptions
 export 'src/exceptions/InvalidOrderStateException.dart';

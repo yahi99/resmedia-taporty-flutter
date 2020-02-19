@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:dash/dash.dart';
 import 'package:meta/meta.dart';
+import 'package:random_string/random_string.dart';
 import 'package:resmedia_taporty_core/core.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:stripe_payment/stripe_payment.dart';
@@ -39,8 +40,8 @@ class OrderBloc implements Bloc {
   }
 
   // Crea il nuovo PaymentIntent a partire da quello vecchio
-  Future<String> _processPayment(double amount) async {
-    var result = await _functions.createPaymentIntentFromPrevious(order.paymentIntentId, amount);
+  Future<String> _processPayment(double amount, String orderId) async {
+    var result = await _functions.createPaymentIntentFromPrevious(order.paymentIntentId, amount, orderId);
     var confirmPaymentResult = await StripePayment.confirmPaymentIntent(PaymentIntent(
       clientSecret: result.clientSecret,
       paymentMethodId: result.paymentMethodId,
@@ -51,15 +52,15 @@ class OrderBloc implements Bloc {
 
   Future modifyOrder(List<OrderProductModel> orderProducts) async {
     if (order.state != OrderState.NEW) throw new InvalidOrderStateException("Invalid order state!");
-
+    String orderId = randomNumeric(10);
     // Crea un nuovo PaymentIntent (quello vecchio verrà annullato dalle Cloud Functions)
-    String newPaymentIntentId = await _processPayment(orderProducts.fold(0, (price, product) => price + product.quantity * product.price));
+    String newPaymentIntentId = await _processPayment(orderProducts.fold(0, (price, product) => price + product.quantity * product.price), orderId);
 
     /*
       Il PaymentIntent viene creato fuori dalla Transaction (che si trova nella funzione qui sotto).
       Potrebbe quindi accadere che non venga utilizzato perchè nel frattempo l'ordine ha cambiato stato.
       In questo caso non c'è comunque alcun problema, in quanto si annullerà da solo dopo 7 giorni.
     */
-    await _db.modifyOrder(order.id, orderProducts, newPaymentIntentId);
+    await _db.modifyOrder(orderId, order.id, orderProducts, newPaymentIntentId);
   }
 }

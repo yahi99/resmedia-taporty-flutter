@@ -53,6 +53,7 @@ dependencies:
   rating_bar: ^0.2.0
   overlay_support: ^1.0.2
   tuple: ^1.0.3
+  random_string: ^2.0.1
 
   flutter_localizations:
     sdk: flutter

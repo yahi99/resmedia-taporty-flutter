@@ -20,14 +20,23 @@ extension SupplierProviderExtension on DatabaseService {
     });
   }
 
-  Stream<List<SupplierModel>> getSupplierListStream() {
-    return supplierCollection.snapshots().map((query) {
-      return query.documents.map((snap) => SupplierModel.fromFirebase(snap)).toList();
-    });
+  Future<List<SupplierModel>> getSupplierListByDriverCoordinatesStream(GeoPoint driverCoordinates) async {
+    var query = supplierCollection.where("stripeActivated", isEqualTo: true).where("disabled", isEqualTo: false);
+    var geoFirePoint = GeoFirePoint(driverCoordinates.latitude, driverCoordinates.longitude);
+    return (await geoFirestore
+            .collection(collectionRef: query)
+            .within(
+              center: geoFirePoint,
+              radius: MapsConfig.DRIVER_RADIUS,
+              field: "geohashPoint",
+            )
+            .first)
+        .map((snap) => SupplierModel.fromFirebase(snap))
+        .toList();
   }
 
   Stream<List<SupplierModel>> getSupplierListByLocationStream(GeoPoint coordinates) {
-    var query = supplierCollection.where("stripeActivated", isEqualTo: true);
+    var query = supplierCollection.where("stripeActivated", isEqualTo: true).where("disabled", isEqualTo: false);
     var geoFirePoint = GeoFirePoint(coordinates.latitude, coordinates.longitude);
     return geoFirestore.collection(collectionRef: query).within(center: geoFirePoint, radius: MapsConfig.SUPPLIER_RADIUS, field: "geohashPoint").map((snapshots) {
       return snapshots.map((snap) => SupplierModel.fromFirebase(snap)).toList();

@@ -21,13 +21,9 @@ class SuppliersBloc implements Bloc {
 
   fetchAvailableStartTimes(DateTime date, String driverId) async {
     var driver = await _db.getDriverById(driverId);
-    var suppliers = await _db.getSupplierListStream().first;
-    var filteredSuppliers = List<SupplierModel>();
-    for (var supplier in suppliers) {
-      if ((await DistanceHelper.fetchAproximateDistance(supplier.geohashPoint.geopoint, driver.geohashPoint.geopoint)) <= MapsConfig.DRIVER_RADIUS) filteredSuppliers.add(supplier);
-    }
+    var suppliers = await _db.getSupplierListByDriverCoordinatesStream(driver.geohashPoint.geopoint);
 
-    var supplierStartTimes = filteredSuppliers.map((supplier) => supplier.getShiftStartTimes(date));
+    var supplierStartTimes = suppliers.map((supplier) => supplier.getShiftStartTimes(date));
 
     var currentDate = DateTimeHelper.getDay(date);
     var endDate = currentDate.add(Duration(days: 1));

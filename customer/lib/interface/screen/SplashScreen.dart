@@ -14,8 +14,6 @@ class SplashScreenState extends State<SplashScreen> {
   var userBloc = $Provider.of<UserBloc>();
   StreamSubscription subscription;
 
-  BuildContext _context;
-
   @override
   void dispose() {
     subscription.cancel();
@@ -25,7 +23,6 @@ class SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    _context = context;
     subscription = userBloc.outFirebaseUser.listen((user) {
       if (user == null)
         Navigator.pushReplacementNamed(context, "/login");

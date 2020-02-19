@@ -30,7 +30,9 @@ extension ShiftProvider on DatabaseService {
     String driverId;
     for (var document in shiftDocuments) {
       await Firestore.instance.runTransaction((Transaction tx) async {
-        var reservation = ShiftModel.fromFirebase(await tx.get(document.reference));
+        final snapshot = await tx.get(document.reference);
+        if (!snapshot.exists) return;
+        var reservation = ShiftModel.fromFirebase(snapshot);
         if (reservation.occupied != true) {
           tx.update(document.reference, {
             'occupied': true,

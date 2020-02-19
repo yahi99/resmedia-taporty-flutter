@@ -60,11 +60,22 @@ class DriverBloc implements Bloc {
     return idToken.claims['driver'] == true;
   }
 
+  Future<bool> _isDisabled(FirebaseUser user) async {
+    // Controlla che il fattorino non sia stato disabilitato
+    var idToken = await user.getIdToken(refresh: true);
+    return idToken.claims['disabled'] == true;
+  }
+
   Future signInWithEmailAndPassword(String email, String password) async {
     var authResult = await _auth.signInWithEmailAndPassword(email, password);
     if (!(await _isDriver(authResult.user))) {
       await signOut();
       throw NotADriverException("user is not a driver");
+    }
+
+    if (await _isDisabled(authResult.user)) {
+      await signOut();
+      throw DriverDisabledException("driver is disabled");
     }
 
     _firebaseUserController.value = authResult.user;

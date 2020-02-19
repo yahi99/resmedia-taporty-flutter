@@ -48,8 +48,8 @@ extension OrderProviderExtension on DatabaseService {
     return orderProducts;
   }
 
-  Future<void> createOrder(List<CartProductModel> cartProducts, String customerId, GeoPoint customerCoordinates, String customerAddress, String customerName, String customerPhone, String supplierId,
-      String driverId, ShiftModel selectedShift, String paymentIntentId, String notes) async {
+  Future<void> createOrder(String orderId, List<CartProductModel> cartProducts, String customerId, GeoPoint customerCoordinates, String customerAddress, String customerName, String customerPhone,
+      String supplierId, String driverId, ShiftModel selectedShift, String paymentIntentId, String notes) async {
     UserModel customer = await getUserById(customerId);
     UserModel driver = await getUserById(driverId);
     SupplierModel supplier = await getSupplierStream(supplierId).first;
@@ -84,15 +84,15 @@ extension OrderProviderExtension on DatabaseService {
       products: orderProducts,
     );
 
-    var documentReference = orderCollection.document();
+    var documentReference = orderCollection.document(orderId);
 
     await documentReference.setData({...order.toJson(), 'reference': documentReference});
   }
 
-  Future<void> modifyOrder(String orderId, List<OrderProductModel> orderProducts, String newPaymentIntentId) async {
+  Future<void> modifyOrder(String newOrderId, String oldOrderId, List<OrderProductModel> orderProducts, String newPaymentIntentId) async {
     orderProducts = orderProducts.where((o) => o.quantity > 0).toList();
 
-    var orderDocument = orderCollection.document(orderId);
+    var orderDocument = orderCollection.document(oldOrderId);
     var error = false;
     await Firestore.instance.runTransaction((Transaction tx) async {
       var order = OrderModel.fromFirebase(await tx.get(orderDocument));
@@ -124,7 +124,7 @@ extension OrderProviderExtension on DatabaseService {
           paymentIntentId: newPaymentIntentId,
         );
 
-        var newOrderDocRef = orderCollection.document();
+        var newOrderDocRef = orderCollection.document(newOrderId);
 
         tx.update(orderDocument, {
           'state': orderStateEncode(OrderState.ARCHIVED),

@@ -139,6 +139,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                 } on NotADriverException catch (err) {
                                   print(err);
                                   Toast.show("Non sei un fattorino", context);
+                                } on DriverDisabledException catch (err) {
+                                  print(err);
+                                  Toast.show("Sei stato disabilitato dagli amministratori di Taporty", context);
                                 } on PlatformException catch (err) {
                                   if (err.code == "ERROR_INVALID_EMAIL")
                                     Toast.show("Email invalida", context);

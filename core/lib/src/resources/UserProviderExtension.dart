@@ -44,12 +44,13 @@ extension UserProviderExtension on DatabaseService {
   }
 
   Future createUser(String uid, String nominative, String email) async {
-    await userCollection.document(uid).setData(
-          UserModel(
-            nominative: nominative,
-            email: email,
-            notifyApp: true,
-          ).toJson(),
-        );
+    await userCollection.document(uid).setData({
+      ...UserModel(
+        nominative: nominative,
+        email: email,
+        notifyApp: true,
+      ).toJson(),
+      "uid": uid,
+    });
   }
 }

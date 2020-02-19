@@ -19,11 +19,12 @@ class FunctionService {
 
   final CloudFunctions functions;
 
-  Future<IntentCreationResult> createPaymentIntent(String paymentMethodId, double amount) async {
+  Future<IntentCreationResult> createPaymentIntent(String paymentMethodId, double amount, String orderId) async {
     var createPaymentIntent = functions.getHttpsCallable(functionName: "createPaymentIntent");
     var result = await createPaymentIntent.call(<String, dynamic>{
       "paymentMethodId": paymentMethodId,
       "amount": amount,
+      "orderId": orderId,
     });
 
     IntentCreationResult parsedResult = IntentCreationResult.fromJson(result.data);
@@ -35,11 +36,12 @@ class FunctionService {
     return parsedResult;
   }
 
-  Future<IntentCreationResult> createPaymentIntentFromPrevious(String prevPaymentIntentId, double amount) async {
+  Future<IntentCreationResult> createPaymentIntentFromPrevious(String prevPaymentIntentId, double amount, String orderId) async {
     var createPaymentIntentFromPrevious = functions.getHttpsCallable(functionName: "createPaymentIntentFromPrevious");
     var result = await createPaymentIntentFromPrevious.call(<String, dynamic>{
       "prevPaymentIntentId": prevPaymentIntentId,
       "amount": amount,
+      "orderId": orderId,
     });
 
     IntentCreationResult parsedResult = IntentCreationResult.fromJson(result.data);

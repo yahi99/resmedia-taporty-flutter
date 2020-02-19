@@ -24,6 +24,7 @@ export 'src/exceptions/NotADriverException.dart';
 export 'src/exceptions/NoAvailableDriverException.dart';
 export 'src/exceptions/PaymentIntentException.dart';
 export 'src/exceptions/StripeLinkException.dart';
+export 'src/exceptions/DriverDisabledException.dart';
 
 // Models
 export 'src/models/CartModel.dart';

@@ -13,6 +13,7 @@ import 'package:resmedia_taporty_customer/generated/provider.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:stripe_payment/stripe_payment.dart';
 import 'package:tuple/tuple.dart';
+import 'package:random_string/random_string.dart';
 
 class CheckoutBloc extends Bloc {
   final DatabaseService _db = DatabaseService();
@@ -131,9 +132,10 @@ class CheckoutBloc extends Bloc {
   Future<bool> processOrder() async {
     _confirmLoadingController.value = true;
     try {
-      var paymentIntentId = await _processPayment();
+      var orderId = randomNumeric(10);
+      var paymentIntentId = await _processPayment(orderId);
       var driverId = await _findDriver();
-      await _confirmOrder(driverId, paymentIntentId);
+      await _confirmOrder(driverId, paymentIntentId, orderId);
     } catch (err) {
       _confirmLoadingController.value = false;
       throw err;
@@ -142,8 +144,8 @@ class CheckoutBloc extends Bloc {
     return true;
   }
 
-  Future<String> _processPayment() async {
-    var result = await _functions.createPaymentIntent(stripeBloc.paymentMethod.id, cartBloc.cart.totalPrice);
+  Future<String> _processPayment(String orderId) async {
+    var result = await _functions.createPaymentIntent(stripeBloc.paymentMethod.id, cartBloc.cart.totalPrice, orderId);
     var confirmPaymentResult = await StripePayment.confirmPaymentIntent(PaymentIntent(
       clientSecret: result.clientSecret,
       paymentMethodId: stripeBloc.paymentMethod.id,
@@ -161,7 +163,7 @@ class CheckoutBloc extends Bloc {
     return driverId;
   }
 
-  Future<bool> _confirmOrder(String driverId, String paymentIntentId) async {
+  Future<bool> _confirmOrder(String driverId, String paymentIntentId, String orderId) async {
     assert(selectedShift != null);
     assert(stripeBloc.paymentMethod != null);
 
@@ -171,6 +173,7 @@ class CheckoutBloc extends Bloc {
     var location = locationBloc.customerLocation;
 
     await _db.createOrder(
+      orderId,
       products,
       customerId,
       location.coordinates,

@@ -2,11 +2,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:resmedia_taporty_core/core.dart';
+import 'package:resmedia_taporty_driver/blocs/CalendarBloc.dart';
+import 'package:resmedia_taporty_driver/generated/provider.dart';
 import 'package:toast/toast.dart';
 
 class ShiftView extends StatelessWidget {
   final ShiftModel shift;
-  final DatabaseService _db = DatabaseService();
+  final CalendarBloc calendarBloc = $Provider.of<CalendarBloc>();
 
   ShiftView({Key key, @required this.shift}) : super(key: key);
 
@@ -52,7 +54,7 @@ class ShiftView extends StatelessWidget {
               color: ColorTheme.LIGHT_GREY,
               onPressed: () async {
                 try {
-                  await _db.removeShift(shift.driverId, shift.startTime);
+                  await calendarBloc.removeShift(shift.startTime);
                   Toast.show("Turno annullato", context);
                 } catch (e) {
                   Toast.show("Errore inaspettato", context);

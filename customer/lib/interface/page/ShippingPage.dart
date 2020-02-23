@@ -81,106 +81,120 @@ class _ShippingState extends State<ShippingPage> with AutomaticKeepAliveClientMi
                     StreamBuilder<DateTime>(
                       stream: checkoutBloc.outSelectedDate,
                       builder: (context, selectedDateSnapshot) {
+                        var selectedDate = selectedDateSnapshot.data;
                         var dateString = selectedDateSnapshot.hasData ? DateTimeHelper.getDateString(selectedDateSnapshot.data) : "Nessuna data selezionata";
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Padding(
-                              padding: EdgeInsets.only(top: 12.0),
-                              child: Text(
-                                'Giorno di consegna:',
-                                style: TextStyle(fontSize: 14),
-                              ),
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Text(dateString),
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(8),
-                                  child: Container(
-                                    color: ColorTheme.BLUE,
-                                    child: IconButton(
-                                      icon: Icon(
-                                        Icons.calendar_today,
-                                        color: Colors.white,
+                        return StreamBuilder<List<DateTime>>(
+                            stream: checkoutBloc.outAvailableDateRange,
+                            builder: (context, dateRangeSnap) {
+                              if (!dateRangeSnap.hasData) return Container();
+                              var dateRange = dateRangeSnap.data;
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Padding(
+                                    padding: EdgeInsets.only(top: 12.0),
+                                    child: Text(
+                                      'Giorno di consegna:',
+                                      style: TextStyle(fontSize: 14),
+                                    ),
+                                  ),
+                                  if (dateRange.isNotEmpty)
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: <Widget>[
+                                        Text(dateString),
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(8),
+                                          child: Container(
+                                            color: ColorTheme.BLUE,
+                                            child: IconButton(
+                                              icon: Icon(
+                                                Icons.calendar_today,
+                                                color: Colors.white,
+                                              ),
+                                              onPressed: () async {
+                                                var date = await showDatePicker(
+                                                  context: context,
+                                                  firstDate: selectedDate,
+                                                  initialDate: dateRange[0],
+                                                  lastDate: dateRange[1],
+                                                );
+                                                if (date != null) {
+                                                  checkoutBloc.changeSelectedDate(date);
+                                                }
+                                              },
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                  else
+                                    Column(
+                                      children: <Widget>[
+                                        Text('Non ci sono turni disponibili in questo giorno.'),
+                                      ],
+                                    ),
+                                  if (selectedDateSnapshot.hasData) ...[
+                                    Padding(
+                                      padding: EdgeInsets.only(top: 12.0, bottom: 6),
+                                      child: Text(
+                                        'Ora di consegna:',
+                                        style: TextStyle(fontSize: 14),
                                       ),
-                                      onPressed: () async {
-                                        var date = await showDatePicker(
-                                          context: context,
-                                          firstDate: DateTimeHelper.getDay(DateTime.now()),
-                                          initialDate: DateTimeHelper.getDay(DateTime.now()),
-                                          lastDate: DateTimeHelper.getDay(DateTime.now()).add(Duration(hours: 48)),
-                                        );
-                                        if (date != null) {
-                                          checkoutBloc.changeSelectedDate(date);
+                                    ),
+                                    StreamBuilder<List<ShiftModel>>(
+                                      stream: checkoutBloc.outAvailableShifts,
+                                      builder: (_, shiftListSnapshot) {
+                                        if (shiftListSnapshot.hasData) {
+                                          if (shiftListSnapshot.data.length > 0) {
+                                            List<DropdownMenuItem<ShiftModel>> drop = List<DropdownMenuItem<ShiftModel>>();
+                                            List<ShiftModel> dropdownOptions = List<ShiftModel>();
+                                            for (int i = 0; i < shiftListSnapshot.data.length; i++) {
+                                              dropdownOptions.add(shiftListSnapshot.data.elementAt(i));
+                                              drop.add(DropdownMenuItem<ShiftModel>(
+                                                child: Text(DateTimeHelper.getShiftString(shiftListSnapshot.data.elementAt(i))),
+                                                value: shiftListSnapshot.data.elementAt(i),
+                                              ));
+                                            }
+
+                                            return StreamBuilder<ShiftModel>(
+                                              stream: checkoutBloc.outSelectedShift,
+                                              builder: (context, selectedShiftSnapshot) {
+                                                return Row(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: <Widget>[
+                                                    DropdownButton<ShiftModel>(
+                                                      value: selectedShiftSnapshot.data,
+                                                      onChanged: (value) {
+                                                        checkoutBloc.changeSelectedShift(value);
+                                                      },
+                                                      items: drop,
+                                                    ),
+                                                  ],
+                                                );
+                                              },
+                                            );
+                                          } else {
+                                            return Column(
+                                              children: <Widget>[
+                                                Text('Non ci sono turni disponibili in questo giorno.'),
+                                              ],
+                                            );
+                                          }
+                                        } else {
+                                          return Padding(
+                                            padding: const EdgeInsets.only(top: 8.0),
+                                            child: Center(
+                                              child: CircularProgressIndicator(),
+                                            ),
+                                          );
                                         }
                                       },
                                     ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            if (selectedDateSnapshot.hasData) ...[
-                              Padding(
-                                padding: EdgeInsets.only(top: 12.0, bottom: 6),
-                                child: Text(
-                                  'Ora di consegna:',
-                                  style: TextStyle(fontSize: 14),
-                                ),
-                              ),
-                              StreamBuilder<List<ShiftModel>>(
-                                stream: checkoutBloc.outAvailableShifts,
-                                builder: (ctx, shiftListSnapshot) {
-                                  if (shiftListSnapshot.hasData) {
-                                    if (shiftListSnapshot.data.length > 0) {
-                                      List<DropdownMenuItem<ShiftModel>> drop = List<DropdownMenuItem<ShiftModel>>();
-                                      List<ShiftModel> dropdownOptions = List<ShiftModel>();
-                                      for (int i = 0; i < shiftListSnapshot.data.length; i++) {
-                                        dropdownOptions.add(shiftListSnapshot.data.elementAt(i));
-                                        drop.add(DropdownMenuItem<ShiftModel>(
-                                          child: Text(DateTimeHelper.getShiftString(shiftListSnapshot.data.elementAt(i))),
-                                          value: shiftListSnapshot.data.elementAt(i),
-                                        ));
-                                      }
-
-                                      return StreamBuilder<ShiftModel>(
-                                        stream: checkoutBloc.outSelectedShift,
-                                        builder: (context, selectedShiftSnapshot) {
-                                          return Row(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: <Widget>[
-                                              DropdownButton<ShiftModel>(
-                                                value: selectedShiftSnapshot.data,
-                                                onChanged: (value) {
-                                                  checkoutBloc.changeSelectedShift(value);
-                                                },
-                                                items: drop,
-                                              ),
-                                            ],
-                                          );
-                                        },
-                                      );
-                                    } else {
-                                      return Column(
-                                        children: <Widget>[
-                                          Text('Non ci sono turni disponibili in questo giorno.'),
-                                        ],
-                                      );
-                                    }
-                                  } else {
-                                    return Padding(
-                                      padding: const EdgeInsets.only(top: 8.0),
-                                      child: Center(
-                                        child: CircularProgressIndicator(),
-                                      ),
-                                    );
-                                  }
-                                },
-                              ),
-                            ]
-                          ],
-                        );
+                                  ]
+                                ],
+                              );
+                            });
                       },
                     ),
                   ],

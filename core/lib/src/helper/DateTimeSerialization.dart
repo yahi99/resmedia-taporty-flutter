@@ -1,12 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-DateTime datetimeFromTimestamp(dynamic input) {
+DateTime datetimeFromTimestamp(Timestamp input) {
   if (input == null) return null;
-  var timestamp = input as Timestamp;
-  return timestamp.toDate();
+  return input.toDate();
 }
 
-dynamic datetimeToTimestamp(DateTime input) {
+Timestamp datetimeToTimestamp(DateTime input) {
   if (input == null) return null;
   return Timestamp.fromDate(input);
 }

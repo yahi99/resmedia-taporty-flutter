@@ -9,8 +9,8 @@ part of 'ShiftModel.dart';
 ShiftModel _$ShiftModelFromJson(Map json) {
   return ShiftModel(
     path: json['path'] as String,
-    endTime: datetimeFromTimestamp(json['endTime']),
-    startTime: datetimeFromTimestamp(json['startTime']),
+    endTime: datetimeFromTimestamp(json['endTime'] as Timestamp),
+    startTime: datetimeFromTimestamp(json['startTime'] as Timestamp),
     driverId: json['driverId'] as String,
     geohashPoint: json['geohashPoint'] == null
         ? null

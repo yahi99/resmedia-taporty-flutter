@@ -7,6 +7,7 @@ class DateTimeHelper {
   }
 
   static String getDateString(DateTime datetime) {
+    if (datetime == null) return "";
     var string = DateFormat("EEEEE d MMMM yyyy", "it").format(datetime);
     return string.replaceRange(0, 1, string.substring(0, 1).toUpperCase());
   }
@@ -46,5 +47,11 @@ class DateTimeHelper {
   static String getMonthYear(DateTime datetime) {
     var string = DateFormat("MMMM yyyy", "it").format(datetime);
     return string.replaceRange(0, 1, string.substring(0, 1).toUpperCase());
+  }
+
+  static DateTime baseDateTime() => DateTime.fromMillisecondsSinceEpoch(0);
+
+  static DateTime clone(DateTime datetime) {
+    return DateTime.parse(datetime.toIso8601String());
   }
 }

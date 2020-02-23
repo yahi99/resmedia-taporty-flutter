@@ -29,6 +29,7 @@ class DriverBloc implements Bloc {
   BehaviorSubject<DriverModel> _driverController;
 
   Stream<DriverModel> get outDriver => _driverController.stream;
+  DriverModel get driver => _driverController.value;
 
   StreamSubscription _refreshTokenSub;
 
@@ -45,6 +46,7 @@ class DriverBloc implements Bloc {
     _refreshTokenSub = CombineLatestStream.combine2(outDriver, _messaging.onTokenRefresh, (driver, fcmToken) => Tuple2<DriverModel, String>(driver, fcmToken)).listen((tuple) async {
       var driver = tuple.item1;
       var fcmToken = tuple.item2;
+      if (driver == null || fcmToken == null) return;
       if (driver.fcmToken != fcmToken) await _db.updateDriverFcmToken(driver.id, fcmToken);
     });
   }

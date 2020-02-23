@@ -12,7 +12,6 @@ import 'package:resmedia_taporty_customer/blocs/UserBloc.dart';
 import 'package:resmedia_taporty_customer/generated/provider.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:stripe_payment/stripe_payment.dart';
-import 'package:tuple/tuple.dart';
 import 'package:random_string/random_string.dart';
 
 class CheckoutBloc extends Bloc {
@@ -29,10 +28,36 @@ class CheckoutBloc extends Bloc {
 
   // Controller per la ShippingPage
   BehaviorSubject<DateTime> _selectedDateController;
+  DateTime get _selectedDate => _selectedDateController.value;
   Stream<DateTime> get outSelectedDate => _selectedDateController.stream;
 
-  BehaviorSubject<List<ShiftModel>> _availableShiftListController;
-  Stream<List<ShiftModel>> get outAvailableShifts => _availableShiftListController.stream;
+  BehaviorSubject<List<ShiftModel>> _shiftListController;
+
+  // Mostra solamente il range di date in cui sono presenti turni disponibili
+  Stream<List<DateTime>> get outAvailableDateRange => _shiftListController.stream.map((shifts) {
+        if (shifts == null) return null;
+        List<DateTime> range = new List<DateTime>();
+        if (shifts.isNotEmpty) {
+          range.add(DateTimeHelper.getDay(shifts.first.startTime));
+          range.add(DateTimeHelper.getDay(shifts.last.startTime));
+        }
+        return range;
+      });
+
+  // Mostra solamente i turni inclusi nella giornata selezionata.
+  Stream<List<ShiftModel>> get outAvailableShifts => CombineLatestStream.combine2(_shiftListController.stream, _selectedDateController.stream, (shifts, selectedDate) {
+        if (shifts == null || selectedDate == null) return null;
+        return shifts
+            .where(
+              (s) =>
+                  (s.startTime.isAtSameMomentAs(selectedDate) || s.startTime.isAfter(selectedDate)) &&
+                  s.startTime.isBefore(
+                    selectedDate.add(Duration(days: 1)),
+                  ),
+            )
+            .toList();
+      });
+
   StreamSubscription _availableShiftSub;
 
   BehaviorSubject<ShiftModel> _selectedShiftController;
@@ -52,7 +77,7 @@ class CheckoutBloc extends Bloc {
     phoneController.dispose();
     _selectedShiftController.close();
     _selectedDateController.close();
-    _availableShiftListController.close();
+    _shiftListController.close();
     _availableShiftSub.cancel();
     _confirmLoadingController.close();
   }
@@ -64,29 +89,25 @@ class CheckoutBloc extends Bloc {
     _confirmLoadingController = BehaviorSubject.seeded(false);
     _selectedDateController = BehaviorSubject.seeded(DateTimeHelper.getDay(DateTime.now()));
     _selectedShiftController = BehaviorSubject.seeded(null);
-    _availableShiftListController = BehaviorSubject.seeded(null);
+    _shiftListController = BehaviorSubject.seeded(null);
 
-    _availableShiftSub = CombineLatestStream.combine2(
-      _selectedDateController.stream,
-      supplierBloc.outSupplierId,
-      (DateTime _selectedDate, String _supplierId) => Tuple2(
-        _selectedDate,
-        _supplierId,
-      ),
-    ).listen((tuple) async {
-      _availableShiftListController.value = null;
+    _availableShiftSub =
+        CombineLatestStream.combine2(customStreamPeriodic(Duration(minutes: 30)), supplierBloc.outSupplierId, (dynamic _, String _supplierId) => _supplierId).listen((supplierId) async {
+      _shiftListController.value = null;
       _selectedShiftController.value = null;
-      if (tuple.item1 == null || tuple.item2 == null) return;
+      if (supplierId == null) return;
       SupplierModel supplier = await supplierBloc.outSupplier.first;
 
       if (supplier == null) return;
-      var shifts = _availableShiftListController.value = await _getAvailableShifts(tuple.item1, supplier);
+      var shifts = _shiftListController.value = await _getAvailableShifts(supplier);
       _selectedShiftController.value = shifts.isNotEmpty ? shifts.first : null;
     });
   }
 
-  Future<List<ShiftModel>> _getAvailableShifts(DateTime day, SupplierModel supplier) async {
-    var startTimes = supplier.getShiftStartTimes(day);
+  Future<List<ShiftModel>> _getAvailableShifts(SupplierModel supplier) async {
+    DateTime now = DateTime.now();
+    // Orari di inizio turno nel range di 2 giorni
+    var startTimes = supplier.getShiftStartTimes(now, now.add(Duration(days: 2)));
     var filteredShifts = List<ShiftModel>();
 
     /* 
@@ -106,6 +127,9 @@ class CheckoutBloc extends Bloc {
         filteredShifts.add(reservedShifts[0]);
       }
     }
+
+    // Nel caso in cui il giorno selezionabile sia nel giorno precedente, aggiornalo con il giorno corrente
+    if (_selectedDate.isBefore(DateTimeHelper.getDay(now))) _selectedDateController.value = DateTimeHelper.getDay(now);
 
     return filteredShifts;
   }

@@ -14,14 +14,18 @@ OrderModel _$OrderModelFromJson(Map json) {
     totalPrice: (json['totalPrice'] as num)?.toDouble(),
     newProductCount: json['newProductCount'] as int,
     newTotalPrice: (json['newTotalPrice'] as num)?.toDouble(),
-    shiftStartTime: datetimeFromTimestamp(json['shiftStartTime']),
+    shiftStartTime: datetimeFromTimestamp(json['shiftStartTime'] as Timestamp),
     preferredDeliveryTimestamp:
-        datetimeFromTimestamp(json['preferredDeliveryTimestamp']),
-    modificationTimestamp: datetimeFromTimestamp(json['modificationTimestamp']),
-    cancellationTimestamp: datetimeFromTimestamp(json['cancellationTimestamp']),
-    readyTimestamp: datetimeFromTimestamp(json['readyTimestamp']),
-    pickupTimestamp: datetimeFromTimestamp(json['pickupTimestamp']),
-    deliveryTimestamp: datetimeFromTimestamp(json['deliveryTimestamp']),
+        datetimeFromTimestamp(json['preferredDeliveryTimestamp'] as Timestamp),
+    modificationTimestamp:
+        datetimeFromTimestamp(json['modificationTimestamp'] as Timestamp),
+    cancellationTimestamp:
+        datetimeFromTimestamp(json['cancellationTimestamp'] as Timestamp),
+    readyTimestamp: datetimeFromTimestamp(json['readyTimestamp'] as Timestamp),
+    pickupTimestamp:
+        datetimeFromTimestamp(json['pickupTimestamp'] as Timestamp),
+    deliveryTimestamp:
+        datetimeFromTimestamp(json['deliveryTimestamp'] as Timestamp),
     customerName: json['customerName'] as String,
     customerCoordinates: geopointFromJson(json['customerCoordinates']),
     customerAddress: json['customerAddress'] as String,
@@ -46,10 +50,14 @@ OrderModel _$OrderModelFromJson(Map json) {
     newProducts: (json['newProducts'] as List)
         ?.map((e) => e == null ? null : OrderProductModel.fromJson(e as Map))
         ?.toList(),
-    creationTimestamp: datetimeFromTimestamp(json['creationTimestamp']),
-    acceptanceTimestamp: datetimeFromTimestamp(json['acceptanceTimestamp']),
-    refusalTimestamp: datetimeFromTimestamp(json['refusalTimestamp']),
-    archiviationTimestamp: datetimeFromTimestamp(json['archiviationTimestamp']),
+    creationTimestamp:
+        datetimeFromTimestamp(json['creationTimestamp'] as Timestamp),
+    acceptanceTimestamp:
+        datetimeFromTimestamp(json['acceptanceTimestamp'] as Timestamp),
+    refusalTimestamp:
+        datetimeFromTimestamp(json['refusalTimestamp'] as Timestamp),
+    archiviationTimestamp:
+        datetimeFromTimestamp(json['archiviationTimestamp'] as Timestamp),
     state: _$enumDecodeNullable(_$OrderStateEnumMap, json['state']),
     paymentIntentId: json['paymentIntentId'] as String,
     driverPickedUp: json['driverPickedUp'] as bool ?? false,

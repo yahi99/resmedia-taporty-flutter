@@ -4,7 +4,6 @@ import 'package:resmedia_taporty_core/core.dart';
 import 'package:resmedia_taporty_core/src/models/ShiftModel.dart';
 import 'package:resmedia_taporty_core/src/models/base/FirebaseModel.dart';
 import 'package:resmedia_taporty_core/src/resources/DatabaseService.dart';
-import 'package:resmedia_taporty_core/src/resources/DriverProviderExtension.dart';
 
 extension ShiftProvider on DatabaseService {
   Future<List<DocumentSnapshot>> _getAvailableShiftDocuments(Timestamp startTime, GeoPoint supplierCoordinates) async {
@@ -50,26 +49,17 @@ extension ShiftProvider on DatabaseService {
         .where('driverId', isEqualTo: driverId)
         .where("startTime", isGreaterThanOrEqualTo: startTime)
         .orderBy("startTime")
-        .snapshots(includeMetadataChanges: true)
+        .snapshots()
         .map((querySnap) => fromQuerySnaps(querySnap, ShiftModel.fromFirebase));
   }
 
-  Future addShift(String driverId, DateTime startTime) async {
-    var driver = await getDriverById(driverId);
-    var shift = ShiftModel(
-      startTime: startTime,
-      endTime: startTime.add(Duration(minutes: 15)),
-      geohashPoint: driver.geohashPoint,
-      driverId: driverId,
-      rating: driver.rating,
-      occupied: false,
-    );
-    await shiftCollection.document(driverId + startTime.millisecondsSinceEpoch.toString()).setData({
+  Future addShift(String driverId, ShiftModel shift) async {
+    await shiftCollection.document(driverId + shift.startTime.millisecondsSinceEpoch.toString()).setData({
       ...shift.toJson(),
     });
   }
 
-  Future removeShift(String driverId, DateTime startTime) async {
+  Future removeShiftByStartTime(String driverId, DateTime startTime) async {
     await shiftCollection.document(driverId + startTime.millisecondsSinceEpoch.toString()).delete();
   }
 }

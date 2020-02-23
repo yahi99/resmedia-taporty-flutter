@@ -15,6 +15,7 @@ export 'src/helper/GeopointSerialization.dart';
 export 'src/helper/Categorized.dart';
 export 'src/helper/Controller.dart';
 export 'src/helper/NavigationService.dart';
+export 'src/helper/StreamPeriodicHelper.dart';
 
 // Exceptions
 export 'src/exceptions/InvalidOrderStateException.dart';

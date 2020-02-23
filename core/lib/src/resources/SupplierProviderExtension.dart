@@ -20,7 +20,7 @@ extension SupplierProviderExtension on DatabaseService {
     });
   }
 
-  Future<List<SupplierModel>> getSupplierListByDriverCoordinatesStream(GeoPoint driverCoordinates) async {
+  Future<List<SupplierModel>> getSupplierListByDriverCoordinates(GeoPoint driverCoordinates) async {
     var query = supplierCollection.where("stripeActivated", isEqualTo: true).where("disabled", isEqualTo: false);
     var geoFirePoint = GeoFirePoint(driverCoordinates.latitude, driverCoordinates.longitude);
     return (await geoFirestore

@@ -46,7 +46,7 @@ class _SupplierDetailScreenState extends State<SupplierDetailScreen> {
                         onPressed: () async {
                           Navigator.pop(context);
                           try {
-                            await _db.updateOrderState(orderId, OrderState.PICKED_UP);
+                            await _db.setPickedUp(orderId);
                             Toast.show("Ordine ritirato", context);
                           } catch (e) {
                             Toast.show("Errore inaspettato", context);
@@ -236,7 +236,7 @@ class _SupplierDetailScreenState extends State<SupplierDetailScreen> {
                     "Start",
                   ),
                 ),
-              if (order.state == OrderState.READY)
+              if (order.state == OrderState.READY && !order.driverPickedUp)
                 RaisedButton(
                   color: ColorTheme.ACCENT_BLUE,
                   onPressed: () {
@@ -246,6 +246,7 @@ class _SupplierDetailScreenState extends State<SupplierDetailScreen> {
                     "Ritirato",
                   ),
                 ),
+              if (order.state == OrderState.READY && order.driverPickedUp) Text("Ritiro dell'ordine confermato. In attesa che il fornitore confermi la preso in carico da parte tua."),
             ],
           ),
         ],

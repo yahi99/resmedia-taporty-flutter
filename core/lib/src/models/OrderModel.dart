@@ -87,6 +87,8 @@ class OrderModel extends FirebaseModel {
   @JsonKey(toJson: datetimeToTimestamp, fromJson: datetimeFromTimestamp)
   final DateTime acceptanceTimestamp;
   @JsonKey(toJson: datetimeToTimestamp, fromJson: datetimeFromTimestamp)
+  final DateTime shiftStartTime;
+  @JsonKey(toJson: datetimeToTimestamp, fromJson: datetimeFromTimestamp)
   final DateTime preferredDeliveryTimestamp;
   @JsonKey(toJson: datetimeToTimestamp, fromJson: datetimeFromTimestamp)
   final DateTime modificationTimestamp;
@@ -128,6 +130,12 @@ class OrderModel extends FirebaseModel {
   final String driverPhoneNumber;
   final String driverImageUrl;
 
+  // Controllo sullo stato di ritirato dell'ordine
+  @JsonKey(defaultValue: false)
+  final bool driverPickedUp;
+  @JsonKey(defaultValue: false)
+  final bool supplierPickedUp;
+
   OrderModel({
     String path,
     this.productCount,
@@ -135,6 +143,7 @@ class OrderModel extends FirebaseModel {
     this.totalPrice,
     this.newProductCount,
     this.newTotalPrice,
+    this.shiftStartTime,
     this.preferredDeliveryTimestamp,
     this.modificationTimestamp,
     this.cancellationTimestamp,
@@ -167,6 +176,8 @@ class OrderModel extends FirebaseModel {
     this.archiviationTimestamp,
     this.state,
     this.paymentIntentId,
+    this.driverPickedUp,
+    this.supplierPickedUp,
   }) : super(path);
 
   List<LatLng> get positions => [LatLng(customerCoordinates.latitude, customerCoordinates.longitude)];

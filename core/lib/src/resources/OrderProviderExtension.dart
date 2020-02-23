@@ -62,6 +62,7 @@ extension OrderProviderExtension on DatabaseService {
       driverId: driverId,
       supplierId: supplierId,
       notes: notes,
+      shiftStartTime: selectedShift.startTime,
       preferredDeliveryTimestamp: selectedShift.endTime,
       productCount: orderProducts.fold(0, (count, product) => count + product.quantity),
       totalPrice: orderProducts.fold(0, (price, product) => price + product.quantity * product.price),
@@ -122,6 +123,7 @@ extension OrderProviderExtension on DatabaseService {
           customerId: order.customerId,
           state: OrderState.NEW,
           paymentIntentId: newPaymentIntentId,
+          shiftStartTime: order.shiftStartTime,
         );
 
         var newOrderDocRef = orderCollection.document(newOrderId);
@@ -155,6 +157,31 @@ extension OrderProviderExtension on DatabaseService {
       }
     });
 
+    if (error) throw new InvalidOrderStateException("Invalid order state!");
+  }
+
+  Future setPickedUp(String orderId) async {
+    var document = orderCollection.document(orderId);
+    bool error = false;
+    await Firestore.instance.runTransaction((Transaction tx) async {
+      var order = OrderModel.fromFirebase(await tx.get(document));
+      var update = Map<String, dynamic>();
+      if (order.state == OrderState.PICKED_UP) {
+      } else if (order.state != OrderState.READY) {
+        error = true;
+      } else if (order.supplierPickedUp == true) {
+        update = {
+          'state': orderStateEncode(OrderState.PICKED_UP),
+          'driverPickedUp': true,
+        };
+      } else {
+        update = {
+          'driverPickedUp': true,
+          'pickupTimestamp': datetimeToTimestamp(DateTime.now()),
+        };
+      }
+      await tx.update(document, update);
+    });
     if (error) throw new InvalidOrderStateException("Invalid order state!");
   }
 

@@ -14,6 +14,7 @@ OrderModel _$OrderModelFromJson(Map json) {
     totalPrice: (json['totalPrice'] as num)?.toDouble(),
     newProductCount: json['newProductCount'] as int,
     newTotalPrice: (json['newTotalPrice'] as num)?.toDouble(),
+    shiftStartTime: datetimeFromTimestamp(json['shiftStartTime']),
     preferredDeliveryTimestamp:
         datetimeFromTimestamp(json['preferredDeliveryTimestamp']),
     modificationTimestamp: datetimeFromTimestamp(json['modificationTimestamp']),
@@ -51,6 +52,8 @@ OrderModel _$OrderModelFromJson(Map json) {
     archiviationTimestamp: datetimeFromTimestamp(json['archiviationTimestamp']),
     state: _$enumDecodeNullable(_$OrderStateEnumMap, json['state']),
     paymentIntentId: json['paymentIntentId'] as String,
+    driverPickedUp: json['driverPickedUp'] as bool ?? false,
+    supplierPickedUp: json['supplierPickedUp'] as bool ?? false,
   );
 }
 
@@ -80,6 +83,7 @@ Map<String, dynamic> _$OrderModelToJson(OrderModel instance) {
       'creationTimestamp', datetimeToTimestamp(instance.creationTimestamp));
   writeNotNull(
       'acceptanceTimestamp', datetimeToTimestamp(instance.acceptanceTimestamp));
+  writeNotNull('shiftStartTime', datetimeToTimestamp(instance.shiftStartTime));
   writeNotNull('preferredDeliveryTimestamp',
       datetimeToTimestamp(instance.preferredDeliveryTimestamp));
   writeNotNull('modificationTimestamp',
@@ -114,6 +118,8 @@ Map<String, dynamic> _$OrderModelToJson(OrderModel instance) {
   writeNotNull('driverName', instance.driverName);
   writeNotNull('driverPhoneNumber', instance.driverPhoneNumber);
   writeNotNull('driverImageUrl', instance.driverImageUrl);
+  writeNotNull('driverPickedUp', instance.driverPickedUp);
+  writeNotNull('supplierPickedUp', instance.supplierPickedUp);
   return val;
 }
 

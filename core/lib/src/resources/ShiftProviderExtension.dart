@@ -20,7 +20,7 @@ extension ShiftProvider on DatabaseService {
   }
 
   Future<List<ShiftModel>> getAvailableShifts(Timestamp startTime, GeoPoint supplierCoordinates) async {
-    return (await _getAvailableShiftDocuments(startTime, supplierCoordinates)).map(ShiftModel.fromFirebase);
+    return (await _getAvailableShiftDocuments(startTime, supplierCoordinates)).map(ShiftModel.fromFirebase).toList();
   }
 
   Future<String> chooseDriver(Timestamp startTime, String supplierId, GeoPoint supplierCoordinates) async {

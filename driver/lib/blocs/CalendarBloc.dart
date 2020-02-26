@@ -69,7 +69,7 @@ class CalendarBloc extends Bloc {
       endTime: startTime.add(Duration(minutes: 15)),
       geohashPoint: driver.geohashPoint,
       driverId: driver.id,
-      rating: driver.rating,
+      rating: driver.rating ?? 0,
       occupied: false,
     );
     await _db.addShift(driver.id, shift);

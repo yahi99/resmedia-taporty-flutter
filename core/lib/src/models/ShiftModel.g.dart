@@ -16,7 +16,7 @@ ShiftModel _$ShiftModelFromJson(Map json) {
         ? null
         : GeohashPointModel.fromJson(json['geohashPoint'] as Map),
     occupied: json['occupied'] as bool,
-    rating: (json['rating'] as num)?.toDouble(),
+    rating: (json['rating'] as num)?.toDouble() ?? 0,
   );
 }
 

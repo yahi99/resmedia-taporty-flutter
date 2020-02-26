@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:resmedia_taporty_core/core.dart';
@@ -22,6 +23,7 @@ class ModifyOrderCartScreen extends StatefulWidget {
 
 class _ModifyOrderCartScreenState extends State<ModifyOrderCartScreen> {
   SupplierBloc supplierBloc = $Provider.of<SupplierBloc>();
+  OrderBloc orderBloc = $Provider.of<OrderBloc>();
   List<OrderProductModel> orderProducts;
 
   @override
@@ -74,7 +76,8 @@ class _ModifyOrderCartScreenState extends State<ModifyOrderCartScreen> {
                     shrinkWrap: true,
                     itemCount: products.length,
                     itemBuilder: (_, index) {
-                      var orderProduct = orderProducts.firstWhere((p) => p.id == products[index].id, orElse: () => null);
+                      var product = products[index];
+                      var orderProduct = orderProducts.firstWhere((p) => p.id == product.id, orElse: () => null);
                       var quantity = 0;
                       if (orderProduct != null) quantity = orderProduct.quantity;
                       return Padding(
@@ -82,50 +85,78 @@ class _ModifyOrderCartScreenState extends State<ModifyOrderCartScreen> {
                         child: DefaultTextStyle(
                           style: theme.textTheme.body1,
                           child: SizedBox(
-                            height: 110,
+                            height: 90,
                             child: Row(
+                              mainAxisSize: MainAxisSize.min,
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
-                                Row(
-                                  children: <Widget>[
-                                    Padding(
-                                      padding: const EdgeInsets.all(4.0),
-                                      child: AspectRatio(
-                                        aspectRatio: 1,
-                                        child: ClipRRect(
-                                          borderRadius: BorderRadius.circular(16.0),
-                                          child: CachedNetworkImage(
-                                            imageUrl: products[index].imageUrl,
-                                            fit: BoxFit.fitHeight,
-                                            placeholder: (context, url) => SizedBox(
-                                              height: 30.0,
-                                              width: 30.0,
-                                              child: Center(
-                                                child: CircularProgressIndicator(),
+                                Expanded(
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: <Widget>[
+                                      if (product.imageUrl != null && product.imageUrl != "") ...[
+                                        Padding(
+                                          padding: const EdgeInsets.only(right: 8.0),
+                                          child: AspectRatio(
+                                            aspectRatio: 1,
+                                            child: ClipRRect(
+                                              borderRadius: BorderRadius.circular(16.0),
+                                              child: CachedNetworkImage(
+                                                imageUrl: product.imageUrl,
+                                                fit: BoxFit.fitHeight,
+                                                placeholder: (context, url) => SizedBox(
+                                                  height: 30.0,
+                                                  width: 30.0,
+                                                  child: Center(
+                                                    child: CircularProgressIndicator(),
+                                                  ),
+                                                ),
+                                                errorWidget: (context, url, error) => Center(child: Icon(Icons.error, color: Colors.grey)),
                                               ),
                                             ),
-                                            errorWidget: (context, url, error) => Center(child: Icon(Icons.error, color: Colors.grey)),
                                           ),
                                         ),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: 16.0,
-                                    ),
-                                    Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: <Widget>[
-                                        Flexible(
-                                          child: Container(child: Text(products[index].name), width: MediaQuery.of(context).size.width * 2 / 5),
-                                        ),
                                       ],
-                                    ),
-                                  ],
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: <Widget>[
+                                            AutoSizeText(
+                                              product.name,
+                                              maxLines: 2,
+                                              style: TextStyle(fontWeight: FontWeight.bold),
+                                            ),
+                                            if (product.description != null && product.description != "")
+                                              AutoSizeText(
+                                                product.description,
+                                                maxLines: 3,
+                                                minFontSize: 12,
+                                                maxFontSize: 14,
+                                              ),
+                                            Padding(
+                                              padding: const EdgeInsets.only(top: 4.0),
+                                              child: Text(
+                                                '€ ${product.price.toStringAsFixed(2)}',
+                                                style: TextStyle(fontSize: 15),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                                 StepperButton(
+                                  backgroundColor: ColorTheme.ACCENT_BLUE,
+                                  padding: EdgeInsets.all(3),
                                   direction: Axis.vertical,
-                                  child: Text(quantity.toString()),
+                                  child: AutoSizeText(
+                                    quantity.toString() ?? "0",
+                                    maxLines: 1,
+                                    minFontSize: 10,
+                                  ),
                                   onDecrease: () {
                                     if (orderProduct != null) {
                                       if (orderProduct.quantity == 0) return;
@@ -134,14 +165,24 @@ class _ModifyOrderCartScreenState extends State<ModifyOrderCartScreen> {
                                   },
                                   onIncrement: () {
                                     if (orderProduct != null) {
-                                      if (products[index].maxQuantity == orderProduct.quantity) {
+                                      if (product.maxQuantity != 0 && product.maxQuantity == orderProduct.quantity) {
                                         Toast.show("Massima quantità ordinabile raggiunta", context);
+                                        return;
                                       }
                                       Vibration.vibrate(duration: 65);
                                       this.setState(() => orderProduct.quantity++);
                                     } else {
-                                      var p = products[index];
-                                      this.setState(() => orderProducts.add(OrderProductModel(id: p.id, name: p.name, quantity: 1, imageUrl: p.imageUrl, price: p.price)));
+                                      this.setState(
+                                        () => orderProducts.add(
+                                          OrderProductModel(
+                                            id: product.id,
+                                            name: product.name,
+                                            quantity: 1,
+                                            imageUrl: product.imageUrl,
+                                            price: product.price,
+                                          ),
+                                        ),
+                                      );
                                     }
                                   },
                                 ),
@@ -160,45 +201,55 @@ class _ModifyOrderCartScreenState extends State<ModifyOrderCartScreen> {
                     color: Colors.grey,
                     height: 0,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        RaisedButton(
-                          color: ColorTheme.ACCENT_BLUE,
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          child: Text(
-                            "Annulla",
+                  StreamBuilder<bool>(
+                      stream: orderBloc.outConfirmLoading,
+                      builder: (context, loadingSnap) {
+                        var loading = loadingSnap.data ?? false;
+                        return Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              RaisedButton(
+                                color: ColorTheme.ACCENT_BLUE,
+                                onPressed: loading
+                                    ? null
+                                    : () {
+                                        Navigator.pop(context);
+                                      },
+                                child: Text(
+                                  "Annulla",
+                                ),
+                              ),
+                              RaisedButton(
+                                color: ColorTheme.ACCENT_BLUE,
+                                onPressed: loading
+                                    ? null
+                                    : () async {
+                                        try {
+                                          var newOrderId = await $Provider.of<OrderBloc>().modifyOrder(orderProducts);
+                                          orderBloc.setOrderStream(newOrderId);
+                                          Navigator.pop(context);
+                                          Toast.show("Modifica inviata", context);
+                                        } on PaymentIntentException catch (err) {
+                                          Toast.show(err.message, context);
+                                        } on InvalidOrderStateException catch (err) {
+                                          print(err);
+                                          Toast.show("L'ordine ha cambiato stato e non può più essere modificato.", context);
+                                          Navigator.pop(context);
+                                        } catch (err) {
+                                          print(err);
+                                          Toast.show("Errore inaspettato!", context);
+                                        }
+                                      },
+                                child: Text(
+                                  "Invia modifica",
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                        RaisedButton(
-                          color: ColorTheme.ACCENT_BLUE,
-                          onPressed: () async {
-                            try {
-                              await $Provider.of<OrderBloc>().modifyOrder(orderProducts);
-                              Navigator.pop(context);
-                              Toast.show("Modifica inviata", context);
-                            } on PaymentIntentException catch (err) {
-                              Toast.show(err.message, context);
-                            } on InvalidOrderStateException catch (err) {
-                              print(err);
-                              Toast.show("L'ordine ha cambiato stato e non può più essere modificato.", context);
-                              Navigator.pop(context);
-                            } catch (err) {
-                              print(err);
-                              Toast.show("Errore inaspettato!", context);
-                            }
-                          },
-                          child: Text(
-                            "Invia modifica",
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
+                        );
+                      })
                 ],
               ),
             );

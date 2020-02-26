@@ -99,9 +99,11 @@ class _ConfirmState extends State<ConfirmPage> with AutomaticKeepAliveClientMixi
                   ? Center(
                       child: CircularProgressIndicator(),
                     )
-                  : CartProductListView(
-                      cart: cartSnapshot.data,
-                      modifiable: false,
+                  : SingleChildScrollView(
+                      child: CartProductListView(
+                        cart: cartSnapshot.data,
+                        modifiable: false,
+                      ),
                     ),
               bottomNavigationBar: BottomButtonBar(
                 color: Colors.white10,

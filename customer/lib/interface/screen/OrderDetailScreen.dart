@@ -478,7 +478,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
   }
 
   _buildCancelWidgets(OrderModel order) {
-    if (order.state == OrderState.NEW || order.state == OrderState.ACCEPTED || order.state == OrderState.READY || order.state == OrderState.MODIFIED) {
+    if (order.state == OrderState.NEW) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -498,7 +498,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
         ],
       );
     }
-    if (order.state == OrderState.PICKED_UP) {
+    if (order.state == OrderState.PICKED_UP || order.state == OrderState.ACCEPTED || order.state == OrderState.READY || order.state == OrderState.MODIFIED) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -506,7 +506,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
           Padding(
             padding: EdgeInsets.all(16),
             child: Text(
-              "Non è più possibile annullare l'ordine in quanto è in consegna.",
+              "Non è più possibile annullare l'ordine in quanto è stato accettato dal fornitore.",
             ),
           ),
         ],

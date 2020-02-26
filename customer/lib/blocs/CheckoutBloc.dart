@@ -31,18 +31,11 @@ class CheckoutBloc extends Bloc {
   DateTime get _selectedDate => _selectedDateController.value;
   Stream<DateTime> get outSelectedDate => _selectedDateController.stream;
 
-  BehaviorSubject<List<ShiftModel>> _shiftListController;
-
   // Mostra solamente il range di date in cui sono presenti turni disponibili
-  Stream<List<DateTime>> get outAvailableDateRange => _shiftListController.stream.map((shifts) {
-        if (shifts == null) return null;
-        List<DateTime> range = new List<DateTime>();
-        if (shifts.isNotEmpty) {
-          range.add(DateTimeHelper.getDay(shifts.first.startTime));
-          range.add(DateTimeHelper.getDay(shifts.last.startTime));
-        }
-        return range;
-      });
+  BehaviorSubject<List<DateTime>> _availableDateRangeController;
+  Stream<List<DateTime>> get outAvailableDateRange => _availableDateRangeController.stream;
+
+  BehaviorSubject<List<ShiftModel>> _shiftListController;
 
   // Mostra solamente i turni inclusi nella giornata selezionata.
   Stream<List<ShiftModel>> get outAvailableShifts => CombineLatestStream.combine2(_shiftListController.stream, _selectedDateController.stream, (shifts, selectedDate) {
@@ -80,6 +73,7 @@ class CheckoutBloc extends Bloc {
     _shiftListController.close();
     _availableShiftSub.cancel();
     _confirmLoadingController.close();
+    _availableDateRangeController.close();
   }
 
   CheckoutBloc.instance() {
@@ -90,18 +84,29 @@ class CheckoutBloc extends Bloc {
     _selectedDateController = BehaviorSubject.seeded(DateTimeHelper.getDay(DateTime.now()));
     _selectedShiftController = BehaviorSubject.seeded(null);
     _shiftListController = BehaviorSubject.seeded(null);
+    _availableDateRangeController = BehaviorSubject.seeded(null);
 
-    _availableShiftSub =
-        CombineLatestStream.combine2(customStreamPeriodic(Duration(minutes: 30)), supplierBloc.outSupplierId, (dynamic _, String _supplierId) => _supplierId).listen((supplierId) async {
-      _shiftListController.value = null;
-      _selectedShiftController.value = null;
-      if (supplierId == null) return;
-      SupplierModel supplier = await supplierBloc.outSupplier.first;
+    _availableShiftSub = supplierBloc.outSupplierId.listen((supplierId) => updateAvailableShifts());
+  }
 
-      if (supplier == null) return;
-      var shifts = _shiftListController.value = await _getAvailableShifts(supplier);
-      _selectedShiftController.value = shifts.isNotEmpty ? shifts.first : null;
-    });
+  Future updateAvailableShifts() async {
+    _shiftListController.value = null;
+    _selectedShiftController.value = null;
+    _availableDateRangeController.value = null;
+    _selectedDateController.value = null;
+
+    SupplierModel supplier = await supplierBloc.outSupplier.first;
+
+    if (supplier == null) return;
+    var shifts = _shiftListController.value = await _getAvailableShifts(supplier);
+
+    List<DateTime> range = new List<DateTime>();
+    if (shifts.isNotEmpty) {
+      range.add(DateTimeHelper.getDay(shifts.first.startTime));
+      range.add(DateTimeHelper.getDay(shifts.last.startTime));
+      _selectedDateController.value = range[0];
+    }
+    _availableDateRangeController.value = range;
   }
 
   Future<List<ShiftModel>> _getAvailableShifts(SupplierModel supplier) async {
@@ -116,8 +121,11 @@ class CheckoutBloc extends Bloc {
     */
     startTimes = startTimes.where((startTime) {
       var diff = startTime.difference(DateTime.now());
-      return diff.inHours > 1 && diff.inHours <= 47;
+      return diff.inMinutes >= 60 && diff.inHours <= 47;
     }).toList();
+
+    // Ordina i turni
+    startTimes.sort();
 
     for (var startTime in startTimes) {
       var reservedShifts = await _db.getAvailableShifts(datetimeToTimestamp(startTime), supplier.geohashPoint.geopoint);
@@ -127,9 +135,6 @@ class CheckoutBloc extends Bloc {
         filteredShifts.add(reservedShifts[0]);
       }
     }
-
-    // Nel caso in cui il giorno selezionabile sia nel giorno precedente, aggiornalo con il giorno corrente
-    if (_selectedDate.isBefore(DateTimeHelper.getDay(now))) _selectedDateController.value = DateTimeHelper.getDay(now);
 
     return filteredShifts;
   }
@@ -141,12 +146,14 @@ class CheckoutBloc extends Bloc {
     noteController.text = "";
     _selectedDateController.value = DateTimeHelper.getDay(DateTime.now());
     _selectedShiftController.value = null;
+    _availableDateRangeController.value = null;
     if (user.nominative != null) nameController.text = user.nominative;
     if (user.phoneNumber != null) phoneController.text = user.phoneNumber;
   }
 
   void changeSelectedDate(DateTime date) {
     _selectedDateController.value = date;
+    _selectedShiftController.value = null;
   }
 
   void changeSelectedShift(ShiftModel shift) {
@@ -160,6 +167,7 @@ class CheckoutBloc extends Bloc {
       var paymentIntentId = await _processPayment(orderId);
       var driverId = await _findDriver();
       await _confirmOrder(driverId, paymentIntentId, orderId);
+      _confirmLoadingController.value = false;
     } catch (err) {
       _confirmLoadingController.value = false;
       throw err;
@@ -170,10 +178,15 @@ class CheckoutBloc extends Bloc {
 
   Future<String> _processPayment(String orderId) async {
     var result = await _functions.createPaymentIntent(stripeBloc.paymentMethod.id, cartBloc.cart.totalPrice, orderId);
-    var confirmPaymentResult = await StripePayment.confirmPaymentIntent(PaymentIntent(
-      clientSecret: result.clientSecret,
-      paymentMethodId: stripeBloc.paymentMethod.id,
-    ));
+    var confirmPaymentResult;
+    try {
+      confirmPaymentResult = await StripePayment.confirmPaymentIntent(PaymentIntent(
+        clientSecret: result.clientSecret,
+        paymentMethodId: stripeBloc.paymentMethod.id,
+      ));
+    } catch (err) {
+      throw new PaymentIntentException("C'è stato un errore durante il pagamento.");
+    }
     if (confirmPaymentResult.status != 'requires_capture') throw new PaymentIntentException("C'è stato un errore durante il pagamento.");
     return confirmPaymentResult.paymentIntentId;
   }

@@ -17,15 +17,15 @@ class _OrderTabState extends State<OrderTab> {
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
     return Scaffold(
-      body: SingleChildScrollView(
-        child: StreamBuilder<List<OrderModel>>(
-          stream: orderListBloc.outOrders,
-          builder: (_, orderListSnapshot) {
-            if (orderListSnapshot.connectionState == ConnectionState.active) {
-              if (orderListSnapshot.hasData && orderListSnapshot.data.length > 0) {
-                var categorizedOrders = categorized<DriverOrderState, OrderModel>(DriverOrderState.values, orderListSnapshot.data, (order) => orderStateToDriverOrderState(order.state));
-                categorizedOrders.remove(DriverOrderState.HIDDEN);
-                return Column(
+      body: StreamBuilder<List<OrderModel>>(
+        stream: orderListBloc.outOrders,
+        builder: (_, orderListSnapshot) {
+          if (orderListSnapshot.connectionState == ConnectionState.active) {
+            if (orderListSnapshot.hasData && orderListSnapshot.data.length > 0) {
+              var categorizedOrders = categorized<DriverOrderState, OrderModel>(DriverOrderState.values, orderListSnapshot.data, (order) => orderStateToDriverOrderState(order.state));
+              categorizedOrders.remove(DriverOrderState.HIDDEN);
+              return SingleChildScrollView(
+                child: Column(
                   children: categorizedOrders.keys.map<Widget>(
                     (orderState) {
                       final orders = categorizedOrders[orderState];
@@ -65,18 +65,18 @@ class _OrderTabState extends State<OrderTab> {
                       );
                     },
                   ).toList(),
-                );
-              }
-              return Padding(
-                child: Text('Non ci sono ordini a te assegnati.'),
-                padding: EdgeInsets.all(16.0),
+                ),
               );
             }
-            return Center(
-              child: CircularProgressIndicator(),
+            return Padding(
+              child: Text('Non ci sono ordini a te assegnati.'),
+              padding: EdgeInsets.all(16.0),
             );
-          },
-        ),
+          }
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        },
       ),
     );
   }

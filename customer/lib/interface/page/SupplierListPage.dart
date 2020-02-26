@@ -122,7 +122,7 @@ class SupplierView extends StatelessWidget {
         alignment: Alignment.bottomCenter,
         children: <Widget>[
           CachedNetworkImage(
-            imageUrl: supplier.imageUrl,
+            imageUrl: supplier.thumbnailUrl ?? supplier.imageUrl,
             fit: BoxFit.fitHeight,
             placeholder: (context, url) => SizedBox(
               height: 30.0,

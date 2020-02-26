@@ -86,12 +86,12 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                   HeaderWidget("FORNITORE"),
                   InkWell(
                     onTap: () => Navigator.pushNamed(context, "/supplierDetail"),
-                    child: _buildSubjectDetails(order.supplierImageUrl, order.supplierName, order.supplierAddress),
+                    child: _buildSubjectDetails(order.supplierImageUrl, order.supplierName, order.supplierAddress, "supplierImage"),
                   ),
                   HeaderWidget("CLIENTE"),
                   InkWell(
-                    onTap: () => Navigator.pushNamed(context, "/clientDetail"),
-                    child: _buildSubjectDetails(order.customerImageUrl, order.customerName, order.customerAddress),
+                    onTap: () => Navigator.pushNamed(context, "/customerDetail"),
+                    child: _buildSubjectDetails(order.customerImageUrl, order.customerName, order.customerAddress, "customerImage"),
                   ),
                 ],
               ),
@@ -126,7 +126,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
     );
   }
 
-  _buildSubjectDetails(String imageUrl, String name, String address) {
+  _buildSubjectDetails(String imageUrl, String name, String address, String heroTag) {
     var textTheme = Theme.of(context).textTheme;
     Widget imageWidget = Image(
       fit: BoxFit.cover,
@@ -153,7 +153,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
           Container(
             width: 80,
             child: Hero(
-              tag: "image",
+              tag: heroTag,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(6.0),
                 child: imageWidget,

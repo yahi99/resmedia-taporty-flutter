@@ -204,7 +204,7 @@ extension OrderProviderExtension on DatabaseService {
     bool error = false;
     await Firestore.instance.runTransaction((Transaction tx) async {
       var order = OrderModel.fromFirebase(await tx.get(document));
-      if (state == OrderState.CANCELLED && (order.state != OrderState.NEW && order.state != OrderState.ACCEPTED && order.state != OrderState.READY)) {
+      if (state == OrderState.CANCELLED && order.state != OrderState.NEW) {
         error = true;
         return;
       }

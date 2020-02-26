@@ -26,6 +26,7 @@ SupplierModel _$SupplierModelFromJson(Map json) {
     categories: (json['categories'] as List)
         ?.map((e) => e == null ? null : ProductCategoryModel.fromJson(e as Map))
         ?.toList(),
+    thumbnailUrl: json['thumbnailUrl'] as String,
     address: json['address'] as String,
     phoneNumber: json['phoneNumber'] as String,
     rating: (json['rating'] as num)?.toDouble(),
@@ -48,6 +49,7 @@ Map<String, dynamic> _$SupplierModelToJson(SupplierModel instance) {
   val['name'] = instance.name;
   val['description'] = instance.description;
   val['imageUrl'] = instance.imageUrl;
+  val['thumbnailUrl'] = instance.thumbnailUrl;
   val['phoneNumber'] = instance.phoneNumber;
   val['category'] = instance.category;
   val['tags'] = instance.tags;

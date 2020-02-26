@@ -16,6 +16,7 @@ class SupplierModel extends FirebaseModel {
   final String name;
   final String description;
   final String imageUrl;
+  final String thumbnailUrl;
   final String phoneNumber;
 
   final String category;
@@ -115,6 +116,7 @@ class SupplierModel extends FirebaseModel {
     @required this.holidays,
     @required this.weekdayTimetable,
     @required this.categories,
+    this.thumbnailUrl,
     this.address,
     this.phoneNumber,
     this.rating,

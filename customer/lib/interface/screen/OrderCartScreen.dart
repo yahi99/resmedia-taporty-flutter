@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:resmedia_taporty_core/core.dart';
+import 'package:resmedia_taporty_customer/blocs/SupplierBloc.dart';
 import 'package:resmedia_taporty_customer/generated/provider.dart';
 import 'package:resmedia_taporty_customer/blocs/OrderBloc.dart';
 import 'package:resmedia_taporty_customer/interface/screen/ModifyOrderCartScreen.dart';
@@ -129,6 +130,7 @@ class _OrderCartScreenState extends State<OrderCartScreen> {
             child: RaisedButton(
               color: ColorTheme.ACCENT_BLUE,
               onPressed: () {
+                $Provider.of<SupplierBloc>().setSupplier(order.supplierId);
                 Navigator.push(
                   context,
                   MaterialPageRoute(

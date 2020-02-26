@@ -172,7 +172,7 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> {
               Container(
                 constraints: BoxConstraints(maxWidth: 130, maxHeight: 130),
                 child: Hero(
-                  tag: "image",
+                  tag: "customerImage",
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(6.0),
                     child: imageWidget,
@@ -241,7 +241,7 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> {
                     }
                   },
                   child: Text(
-                    "Start",
+                    "Indicazioni",
                   ),
                 ),
               if (order.state == OrderState.PICKED_UP)

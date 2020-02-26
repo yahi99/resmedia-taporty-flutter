@@ -18,6 +18,7 @@ class ShiftModel extends FirebaseModel {
   final String driverId;
   final GeohashPointModel geohashPoint;
   final bool occupied;
+  @JsonKey(defaultValue: 0)
   final double rating;
 
   String get id => driverId + startTime.millisecondsSinceEpoch.toString();

@@ -153,7 +153,7 @@ class _SupplierDetailScreenState extends State<SupplierDetailScreen> {
               Container(
                 constraints: BoxConstraints(maxWidth: 130, maxHeight: 130),
                 child: Hero(
-                  tag: "image",
+                  tag: "supplierImage",
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(6.0),
                     child: CachedNetworkImage(
@@ -233,7 +233,7 @@ class _SupplierDetailScreenState extends State<SupplierDetailScreen> {
                     }
                   },
                   child: Text(
-                    "Start",
+                    "Indicazioni",
                   ),
                 ),
               if (order.state == OrderState.READY && !order.driverPickedUp)

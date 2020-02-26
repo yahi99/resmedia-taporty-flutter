@@ -84,56 +84,56 @@ class _ShippingState extends State<ShippingPage> with AutomaticKeepAliveClientMi
                         var selectedDate = selectedDateSnapshot.data;
                         var dateString = selectedDateSnapshot.hasData ? DateTimeHelper.getDateString(selectedDateSnapshot.data) : "Nessuna data selezionata";
                         return StreamBuilder<List<DateTime>>(
-                            stream: checkoutBloc.outAvailableDateRange,
-                            builder: (context, dateRangeSnap) {
-                              if (!dateRangeSnap.hasData) return Container();
-                              var dateRange = dateRangeSnap.data;
-                              return Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Padding(
-                                    padding: EdgeInsets.only(top: 12.0),
-                                    child: Text(
-                                      'Giorno di consegna:',
-                                      style: TextStyle(fontSize: 14),
-                                    ),
+                          stream: checkoutBloc.outAvailableDateRange,
+                          builder: (context, dateRangeSnap) {
+                            var dateRange = dateRangeSnap.data;
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Padding(
+                                  padding: EdgeInsets.only(top: 12.0),
+                                  child: Text(
+                                    'Giorno di consegna:',
+                                    style: TextStyle(fontSize: 14),
                                   ),
-                                  if (dateRange.isNotEmpty)
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: <Widget>[
-                                        Text(dateString),
-                                        ClipRRect(
-                                          borderRadius: BorderRadius.circular(8),
-                                          child: Container(
-                                            color: ColorTheme.BLUE,
-                                            child: IconButton(
-                                              icon: Icon(
-                                                Icons.calendar_today,
-                                                color: Colors.white,
-                                              ),
-                                              onPressed: () async {
-                                                var date = await showDatePicker(
-                                                  context: context,
-                                                  firstDate: selectedDate,
-                                                  initialDate: dateRange[0],
-                                                  lastDate: dateRange[1],
-                                                );
-                                                if (date != null) {
-                                                  checkoutBloc.changeSelectedDate(date);
-                                                }
-                                              },
+                                ),
+                                if (!dateRangeSnap.hasData)
+                                  Container(
+                                    height: 80,
+                                    child: Center(
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                  )
+                                else if (dateRange.isNotEmpty) ...[
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: <Widget>[
+                                      Text(dateString),
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(8),
+                                        child: Container(
+                                          color: ColorTheme.BLUE,
+                                          child: IconButton(
+                                            icon: Icon(
+                                              Icons.calendar_today,
+                                              color: Colors.white,
                                             ),
+                                            onPressed: () async {
+                                              var date = await showDatePicker(
+                                                context: context,
+                                                firstDate: dateRange[0],
+                                                initialDate: selectedDate,
+                                                lastDate: dateRange[1],
+                                              );
+                                              if (date != null) {
+                                                checkoutBloc.changeSelectedDate(date);
+                                              }
+                                            },
                                           ),
                                         ),
-                                      ],
-                                    )
-                                  else
-                                    Column(
-                                      children: <Widget>[
-                                        Text('Non ci sono turni disponibili in questo giorno.'),
-                                      ],
-                                    ),
+                                      ),
+                                    ],
+                                  ),
                                   if (selectedDateSnapshot.hasData) ...[
                                     Padding(
                                       padding: EdgeInsets.only(top: 12.0, bottom: 6),
@@ -192,9 +192,26 @@ class _ShippingState extends State<ShippingPage> with AutomaticKeepAliveClientMi
                                       },
                                     ),
                                   ]
-                                ],
-                              );
-                            });
+                                ] else
+                                  Column(
+                                    children: <Widget>[
+                                      Text('Non ci sono turni disponibili nei prossimi giorni.'),
+                                    ],
+                                  ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                InkWell(
+                                  onTap: () => checkoutBloc.updateAvailableShifts(),
+                                  child: Text(
+                                    "Aggiorna i turni disponibili",
+                                    style: TextStyle(color: ColorTheme.BLUE, fontSize: 14),
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        );
                       },
                     ),
                   ],

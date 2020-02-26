@@ -6,10 +6,27 @@ import 'package:resmedia_taporty_core/src/models/base/FirebaseModel.dart';
 import 'package:resmedia_taporty_core/src/resources/DatabaseService.dart';
 
 extension ShiftProvider on DatabaseService {
-  Future<List<DocumentSnapshot>> _getAvailableShiftDocuments(Timestamp startTime, GeoPoint supplierCoordinates) async {
-    var query = shiftCollection.where("startTime", isEqualTo: startTime).where("occupied", isEqualTo: false).orderBy("rating", descending: true);
+  Future<List<ShiftModel>> getAvailableShifts(Timestamp startTime, GeoPoint supplierCoordinates) async {
+    var query = shiftCollection.where("startTime", isEqualTo: startTime).where("occupied", isEqualTo: false);
+
     var geoFirePoint = GeoFirePoint(supplierCoordinates.latitude, supplierCoordinates.longitude);
-    return await geoFirestore
+
+    return (await geoFirestore
+            .collection(collectionRef: query)
+            .within(
+              center: geoFirePoint,
+              radius: MapsConfig.DRIVER_RADIUS,
+              field: "geohashPoint",
+            )
+            .first)
+        .map(ShiftModel.fromFirebase)
+        .toList();
+  }
+
+  Future<String> chooseDriver(Timestamp startTime, String supplierId, GeoPoint supplierCoordinates) async {
+    var query = shiftCollection.where("startTime", isEqualTo: startTime).where("occupied", isEqualTo: false);
+    var geoFirePoint = GeoFirePoint(supplierCoordinates.latitude, supplierCoordinates.longitude);
+    var shiftDocuments = await geoFirestore
         .collection(collectionRef: query)
         .within(
           center: geoFirePoint,
@@ -17,14 +34,12 @@ extension ShiftProvider on DatabaseService {
           field: "geohashPoint",
         )
         .first;
-  }
 
-  Future<List<ShiftModel>> getAvailableShifts(Timestamp startTime, GeoPoint supplierCoordinates) async {
-    return (await _getAvailableShiftDocuments(startTime, supplierCoordinates)).map(ShiftModel.fromFirebase).toList();
-  }
-
-  Future<String> chooseDriver(Timestamp startTime, String supplierId, GeoPoint supplierCoordinates) async {
-    var shiftDocuments = await _getAvailableShiftDocuments(startTime, supplierCoordinates);
+    // Ordina i documenti in base alla valutazione del fattorino
+    shiftDocuments.sort((d1, d2) {
+      if (d1.data["rating"] > d2.data["rating"]) return -1;
+      return 1;
+    });
 
     String driverId;
     for (var document in shiftDocuments) {

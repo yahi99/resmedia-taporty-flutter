@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>84538476825-cl8pvrl38seg7gvhsmeeas28hfb9bcm9.apps.googleusercontent.com</string>
+	<string>84538476825-5s8f2v0o0gcljhvug6jksijf44s9fdqc.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.84538476825-cl8pvrl38seg7gvhsmeeas28hfb9bcm9</string>
+	<string>com.googleusercontent.apps.84538476825-5s8f2v0o0gcljhvug6jksijf44s9fdqc</string>
 	<key>ANDROID_CLIENT_ID</key>
 	<string>84538476825-57bbkvm2qib5qopohol40a9dcr28chna.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
@@ -15,7 +15,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>it.resmedia.taporty.drivers</string>
+	<string>it.resmedia.taporty.customers</string>
 	<key>PROJECT_ID</key>
 	<string>taporty-779ff</string>
 	<key>STORAGE_BUCKET</key>
@@ -31,7 +31,7 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:84538476825:ios:20d61b440629fe0a39dd88</string>
+	<string>1:84538476825:ios:633a90c9a194901839dd88</string>
 	<key>DATABASE_URL</key>
 	<string>https://taporty-779ff.firebaseio.com</string>
 </dict>

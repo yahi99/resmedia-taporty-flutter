@@ -21,7 +21,7 @@ class FunctionService {
 
   Future<IntentCreationResult> createPaymentIntent(String paymentMethodId, double amount, String orderId) async {
     var createPaymentIntent = functions.getHttpsCallable(functionName: "createPaymentIntent");
-    var result = await createPaymentIntent.call(<String, dynamic>{
+    var result = await createPaymentIntent(<String, dynamic>{
       "paymentMethodId": paymentMethodId,
       "amount": amount,
       "orderId": orderId,
@@ -38,7 +38,7 @@ class FunctionService {
 
   Future<IntentCreationResult> createPaymentIntentFromPrevious(String prevPaymentIntentId, double amount, String orderId) async {
     var createPaymentIntentFromPrevious = functions.getHttpsCallable(functionName: "createPaymentIntentFromPrevious");
-    var result = await createPaymentIntentFromPrevious.call(<String, dynamic>{
+    var result = await createPaymentIntentFromPrevious(<String, dynamic>{
       "prevPaymentIntentId": prevPaymentIntentId,
       "amount": amount,
       "orderId": orderId,
@@ -55,7 +55,7 @@ class FunctionService {
 
   Future<StripeLinkCreationResult> createDriverLoginLink(String driverId) async {
     var createDriverLoginLink = functions.getHttpsCallable(functionName: "createDriverLoginLink");
-    var result = await createDriverLoginLink.call(<String, dynamic>{
+    var result = await createDriverLoginLink(<String, dynamic>{
       "driverId": driverId,
     });
 

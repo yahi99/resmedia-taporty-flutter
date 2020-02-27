@@ -36,17 +36,16 @@ dependencies:
   google_maps_flutter: ^0.5.21
   location: ^2.3.5
   cached_network_image: ^2.0.0
-  vibration: ^1.2.2
+  vibration: ^1.2.4
   font_awesome_flutter: ^8.5.0
   flutter_sticky_header: ^0.4.0
   google_maps_webservice: ^0.0.16
   flutter_slidable: ^0.5.4
-  cloud_functions: ^0.4.1
+  cloud_functions: 0.4.1+8
   cloud_firestore: ^0.13.0+1
   firebase_storage: ^3.1.0
   firebase_auth: ^0.15.2
   firebase_messaging: ^6.0.8
-  flutter_local_notifications: ^0.8.4
   dash: ^0.5.7
   rxdart: ^0.23.1
   sticky_headers: ^0.1.8+1

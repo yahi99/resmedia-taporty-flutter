@@ -27,7 +27,6 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
   StripePayment.setOptions(StripeOptions(
     publishableKey: StripeConfig.STRIPE_PUBLIC_KEY,
-    merchantId: StripeConfig.STRIPE_MERCHANT_ID,
     androidPayMode: StripeConfig.STRIPE_ANDROID_PAY_MODE,
   ));
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);

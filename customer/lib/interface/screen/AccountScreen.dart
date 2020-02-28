@@ -118,7 +118,7 @@ class AccountScreen extends StatelessWidget {
                             ),
                           ],
                         ),
-                        Row(
+                        /*Row(
                           children: <Widget>[
                             Icon(Icons.insert_drive_file),
                             FlatButton(
@@ -126,7 +126,7 @@ class AccountScreen extends StatelessWidget {
                               onPressed: () => Navigator.pushNamed(context, "/legalNotes"),
                             ),
                           ],
-                        ),
+                        ),*/
                         if (providerId == EmailAuthProvider.providerId)
                           Row(
                             children: <Widget>[

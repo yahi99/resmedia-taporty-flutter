@@ -31,11 +31,13 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>(PRODUCT_NAME) requires location services to work.</string>
+	<string>$(PRODUCT_NAME) requires location services to work.</string>
 	<key>NSLocationUsageDescription</key>
-	<string>(PRODUCT_NAME) requires location services to work.</string>
+	<string>$(PRODUCT_NAME) requires location services to work.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>This application requires location services to work.</string>
+	<string>$(PRODUCT_NAME) requires location services to work.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>$(PRODUCT_NAME) requires location services to work.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>$(PRODUCT_NAME) requires access to your media library in order to work.</string>
 	<key>UIBackgroundModes</key>

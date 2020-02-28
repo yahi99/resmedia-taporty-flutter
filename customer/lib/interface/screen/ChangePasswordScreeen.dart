@@ -14,7 +14,6 @@ class _ChangePasswordState extends State<ChangePasswordScreen> {
   final _passwordController = TextEditingController();
   final _prevPasswordController = TextEditingController();
   final userBloc = $Provider.of<UserBloc>();
-  var isCorrect = false;
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +49,7 @@ class _ChangePasswordState extends State<ChangePasswordScreen> {
                       validator: (value) {
                         if (value.isEmpty) {
                           return 'Campo invalido';
-                        } else if (!isCorrect) return 'Password non corretta';
+                        }
                         return null;
                       },
                     ),

@@ -162,6 +162,7 @@ class _EditAccountState extends State<EditAccountScreen> {
                                       await userBloc.updateUserInfo(
                                           _passwordController.text, _nameKey.currentState.value.toString(), _emailKey.currentState.value.toString(), _phoneKey.currentState.value.toString());
                                       Toast.show('Cambiamenti eseguiti!', context);
+                                      Navigator.pop(context);
                                     } catch (error) {
                                       print(error);
                                       if (error.code == 'ERROR_INVALID_EMAIL') {

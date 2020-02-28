@@ -31,7 +31,10 @@ class _SettingsState extends State<SettingsScreen> {
               children: <Widget>[
                 Row(
                   children: <Widget>[
-                    Text('RICEVI AGGIORNAMENTI TRAMITE'),
+                    Text(
+                      'NOTIFICHE',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
                   ],
                 ),
                 /*Row(
@@ -61,7 +64,7 @@ class _SettingsState extends State<SettingsScreen> {
                 ),*/
                 Row(
                   children: <Widget>[
-                    Expanded(child: Text('Notifiche App')),
+                    Expanded(child: Text('Notifiche sugli ordini')),
                     Switch(
                       onChanged: (value) {
                         userBloc.updateNotifyApp(value);

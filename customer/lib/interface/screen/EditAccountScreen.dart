@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:resmedia_taporty_core/core.dart';
 import 'package:resmedia_taporty_customer/generated/provider.dart';
 import 'package:resmedia_taporty_customer/blocs/UserBloc.dart';
@@ -19,6 +23,8 @@ class _EditAccountState extends State<EditAccountScreen> {
   final _emailKey = GlobalKey<FormFieldState>();
   final _nameKey = GlobalKey<FormFieldState>();
   final _passwordController = TextEditingController();
+
+  File _profileImage;
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +49,26 @@ class _EditAccountState extends State<EditAccountScreen> {
 
               var providerId = providerIdSnap.data;
               var user = userSnapshot.data;
+
+              Widget imageWidget = Image(
+                fit: BoxFit.cover,
+                image: AssetImage("assets/img/default_profile_photo.jpg"),
+              );
+
+              if (_profileImage != null)
+                imageWidget = Image.file(
+                  _profileImage,
+                  fit: BoxFit.cover,
+                );
+              else if (user.imageUrl != null && user.imageUrl != "") {
+                imageWidget = CachedNetworkImage(
+                  imageUrl: user.imageUrl,
+                  fit: BoxFit.cover,
+                  placeholder: (context, url) => Center(child: CircularProgressIndicator()),
+                  errorWidget: (context, url, error) => imageWidget,
+                );
+              }
+
               return Column(
                 children: <Widget>[
                   Stack(
@@ -57,18 +83,20 @@ class _EditAccountState extends State<EditAccountScreen> {
                       ),
                       Padding(
                         padding: EdgeInsets.only(top: 25.0),
-                        child: Container(
-                          width: 190.0,
-                          height: 190.0,
+                        child: InkWell(
+                          onTap: () async {
+                            var image = await ImagePicker.pickImage(source: ImageSource.gallery, maxHeight: 500, maxWidth: 500);
+                            setState(() {
+                              _profileImage = image;
+                            });
+                          },
                           child: Container(
-                            width: double.infinity,
-                            height: double.infinity,
-                            child: (userSnapshot.data.imageUrl != null)
-                                ? CircleAvatar(backgroundImage: CachedNetworkImageProvider(user.imageUrl))
-                                : Image(
-                                    fit: BoxFit.cover,
-                                    image: AssetImage("assets/img/default_profile_photo.jpg"),
-                                  ),
+                            width: 190.0,
+                            height: 190.0,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(14.0),
+                              child: imageWidget,
+                            ),
                           ),
                         ),
                       )
@@ -161,9 +189,10 @@ class _EditAccountState extends State<EditAccountScreen> {
                                     try {
                                       await userBloc.updateUserInfo(
                                           _passwordController.text, _nameKey.currentState.value.toString(), _emailKey.currentState.value.toString(), _phoneKey.currentState.value.toString());
+                                      if (_profileImage != null) await userBloc.updateProfileImage(_profileImage);
                                       Toast.show('Cambiamenti eseguiti!', context);
                                       Navigator.pop(context);
-                                    } catch (error) {
+                                    } on PlatformException catch (error) {
                                       print(error);
                                       if (error.code == 'ERROR_INVALID_EMAIL') {
                                         Toast.show('E-mail non valida', context);
@@ -171,6 +200,9 @@ class _EditAccountState extends State<EditAccountScreen> {
                                         Toast.show('Password fornita non corretta', context);
                                       } else
                                         Toast.show('Ci sono stati degli errori', context);
+                                    } catch (error) {
+                                      print(error);
+                                      Toast.show('Ci sono stati degli errori', context);
                                     }
                                   }
                                 },

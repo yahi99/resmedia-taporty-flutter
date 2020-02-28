@@ -1,10 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:resmedia_taporty_core/core.dart';
 import 'package:resmedia_taporty_customer/generated/provider.dart';
-import 'package:toast/toast.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:resmedia_taporty_customer/blocs/UserBloc.dart';
 
@@ -33,8 +31,23 @@ class AccountScreen extends StatelessWidget {
                 return Center(
                   child: CircularProgressIndicator(),
                 );
+
               var user = userSnapshot.data;
               var providerId = providerIdSnap.data;
+
+              Widget imageWidget = Image(
+                fit: BoxFit.cover,
+                image: AssetImage("assets/img/default_profile_photo.jpg"),
+              );
+
+              if (user.imageUrl != null && user.imageUrl != "") {
+                imageWidget = CachedNetworkImage(
+                  imageUrl: user.imageUrl,
+                  fit: BoxFit.cover,
+                  placeholder: (context, url) => Center(child: CircularProgressIndicator()),
+                  errorWidget: (context, url, error) => imageWidget,
+                );
+              }
               return Column(
                 children: <Widget>[
                   Stack(
@@ -52,40 +65,10 @@ class AccountScreen extends StatelessWidget {
                         child: Container(
                           width: 190.0,
                           height: 190.0,
-                          child: Container(
-                            width: double.infinity,
-                            height: double.infinity,
-                            child: (user.imageUrl != null)
-                                ? CircleAvatar(backgroundColor: Colors.white, backgroundImage: CachedNetworkImageProvider(user.imageUrl))
-                                : Image(
-                                    fit: BoxFit.cover,
-                                    image: AssetImage("assets/img/default_profile_photo.jpg"),
-                                  ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(14.0),
+                            child: imageWidget,
                           ),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(top: 25.0, left: 140.0),
-                        child: IconButton(
-                          iconSize: 50.0,
-                          icon: Icon(
-                            Icons.camera_alt,
-                            color: Colors.white,
-                          ),
-                          onPressed: () async {
-                            try {
-                              var imageFile = await ImagePicker.pickImage(source: ImageSource.gallery, maxHeight: 500, maxWidth: 500);
-                              if (imageFile != null) {
-                                await userBloc.updateProfileImage(imageFile);
-                                Toast.show('Immagine di profilo cambiata', context, duration: 3);
-                              }
-                            } catch (err) {
-                              if (err.code == 'photo_access_denied')
-                                Toast.show('Accesso alla galleria non fornito.', context, duration: 3);
-                              else
-                                Toast.show('Errore inaspettato.', context, duration: 3);
-                            }
-                          },
                         ),
                       ),
                     ],

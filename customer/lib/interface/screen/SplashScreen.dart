@@ -52,7 +52,7 @@ class SplashScreenState extends State<SplashScreen> {
     return Material(
       child: Theme(
         child: LogoView(
-          logoHeight: 200,
+          logoHeight: 150,
           children: [
             Expanded(
               child: Center(

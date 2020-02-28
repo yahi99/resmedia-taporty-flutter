@@ -27,7 +27,7 @@ dependencies:
   stripe_payment: ^1.0.6
   flutter_google_places: 
     git: git://github.com/FedeZara/flutter_google_places.git
-  image_picker: ^0.6.2
+  image_picker: 0.6.2+1
   intl: ^0.16.0
   shared_preferences: ^0.5.6
   geolocator: ^5.1.5

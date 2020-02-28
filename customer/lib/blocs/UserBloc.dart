@@ -158,7 +158,7 @@ class UserBloc implements Bloc {
     var user = await outUser.first;
     if (user.imageUrl != null && user.imageUrl != "") await _storage.deleteFile(user.imageUrl);
     var imageUrl = await _storage.uploadFile("users/${user.id}", image);
-    await _db.updateUserFcmToken(user.id, imageUrl);
+    await _db.updateProfileImage(user.id, imageUrl);
   }
 
   Future updatePassword(String oldPassword, String password) async {

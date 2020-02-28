@@ -28,6 +28,21 @@ class AccountScreen extends StatelessWidget {
             );
 
           var driver = driverSnapshot.data;
+
+          Widget imageWidget = Image(
+            fit: BoxFit.cover,
+            image: AssetImage("assets/img/default_profile_photo.jpg"),
+          );
+
+          if (driver.imageUrl != null && driver.imageUrl != "") {
+            imageWidget = CachedNetworkImage(
+              imageUrl: driver.imageUrl,
+              fit: BoxFit.cover,
+              placeholder: (context, url) => Center(child: CircularProgressIndicator()),
+              errorWidget: (context, url, error) => imageWidget,
+            );
+          }
+
           return Column(
             children: <Widget>[
               Stack(
@@ -45,15 +60,9 @@ class AccountScreen extends StatelessWidget {
                     child: Container(
                       width: 190.0,
                       height: 190.0,
-                      child: Container(
-                        width: double.infinity,
-                        height: double.infinity,
-                        child: (driver.imageUrl != null)
-                            ? CircleAvatar(backgroundColor: Colors.white, backgroundImage: CachedNetworkImageProvider(driver.imageUrl))
-                            : Image(
-                                fit: BoxFit.cover,
-                                image: AssetImage("assets/img/default_profile_photo.jpg"),
-                              ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(14.0),
+                        child: imageWidget,
                       ),
                     ),
                   ),

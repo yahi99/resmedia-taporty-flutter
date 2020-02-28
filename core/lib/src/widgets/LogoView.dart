@@ -50,7 +50,11 @@ class LogoView extends StatelessWidget {
             SizedBox(
               height: 32,
             ),
-          ]..addAll(children),
+            ...children,
+            SizedBox(
+              height: 32,
+            ),
+          ],
         ),
       ),
     );

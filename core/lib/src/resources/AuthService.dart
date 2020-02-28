@@ -56,7 +56,7 @@ class AuthService {
   }
 
   Future reauthenticateWithGoogle(FirebaseUser user) async {
-    final GoogleSignInAccount googleSignInAccount = googleSignIn.currentUser;
+    final GoogleSignInAccount googleSignInAccount = await googleSignIn.signIn();
 
     final GoogleSignInAuthentication googleSignInAuthentication = await googleSignInAccount.authentication;
 

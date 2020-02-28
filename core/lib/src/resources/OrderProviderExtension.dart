@@ -51,7 +51,7 @@ extension OrderProviderExtension on DatabaseService {
   Future<void> createOrder(String orderId, List<CartProductModel> cartProducts, String customerId, GeoPoint customerCoordinates, String customerAddress, String customerName, String customerPhone,
       String supplierId, String driverId, ShiftModel selectedShift, String paymentIntentId, String notes) async {
     UserModel customer = await getUserById(customerId);
-    UserModel driver = await getUserById(driverId);
+    DriverModel driver = await getDriverById(driverId);
     SupplierModel supplier = await getSupplierStream(supplierId).first;
     List<ProductModel> products = await getProductListStream(supplierId).first;
 

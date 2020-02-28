@@ -67,7 +67,7 @@ class ProductListPage extends StatelessWidget {
                     }).toList(),
                   ),
                 ),
-                if (selectedCategories.length > 1)
+                if (categoryTuples.length > 1)
                   Positioned(
                     left: 20,
                     bottom: 20,

@@ -50,7 +50,13 @@ class LogoView extends StatelessWidget {
             SizedBox(
               height: 32,
             ),
-            ...children,
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: children,
+                ),
+              ),
+            ),
             SizedBox(
               height: 32,
             ),

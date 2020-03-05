@@ -127,7 +127,7 @@ class UserBloc implements Bloc {
     var authResult = await _auth.signInWithGoogle();
     if (authResult == null) return false;
 
-    await _db.createUser(authResult.user.uid, authResult.user.displayName, authResult.user.email);
+    if (!await _db.userExists(authResult.user.uid)) await _db.createUser(authResult.user.uid, authResult.user.displayName, authResult.user.email);
 
     await _setProviderId(GoogleAuthProvider.providerId);
     _firebaseUserController.value = authResult.user;

@@ -149,9 +149,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                     Toast.show("Password errata", context);
                                   else if (err.code == "ERROR_USER_NOT_FOUND")
                                     Toast.show("Account inesistente", context);
-                                  else
-                                    throw err;
+                                  else {
+                                    print(err);
+                                    Toast.show("Si è verificato un errore inaspettato", context);
+                                  }
                                 } catch (err) {
+                                  print(err);
                                   Toast.show("Si è verificato un errore inaspettato", context);
                                 }
 

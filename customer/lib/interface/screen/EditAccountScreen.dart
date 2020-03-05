@@ -198,7 +198,9 @@ class _EditAccountState extends State<EditAccountScreen> {
                                         Toast.show('E-mail non valida', context);
                                       } else if (error.code == 'ERROR_WRONG_PASSWORD') {
                                         Toast.show('Password fornita non corretta', context);
-                                      } else
+                                      } else if (error.code == "ERROR_EMAIL_ALREADY_IN_USE")
+                                        Toast.show("Email non disponibile", context);
+                                      else
                                         Toast.show('Ci sono stati degli errori', context);
                                     } catch (error) {
                                       print(error);

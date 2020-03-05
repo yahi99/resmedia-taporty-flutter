@@ -166,8 +166,12 @@ class _SignupScreenState extends State<SignupScreen> {
                               } on PlatformException catch (err) {
                                 if (err.code == "ERROR_INVALID_EMAIL")
                                   Toast.show("Email invalida", context);
-                                else
-                                  throw err;
+                                else if (err.code == "ERROR_EMAIL_ALREADY_IN_USE")
+                                  Toast.show("Email non disponibile", context);
+                                else {
+                                  print(err);
+                                  Toast.show("Si è verificato un errore inaspettato", context);
+                                }
                               } catch (err) {
                                 print(err);
                                 Toast.show("Si è verificato un errore inaspettato", context);

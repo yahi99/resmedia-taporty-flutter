@@ -13,6 +13,10 @@ extension UserProviderExtension on DatabaseService {
     return UserModel.fromFirebase(await userCollection.document(uid).get());
   }
 
+  Future<bool> userExists(String uid) async {
+    return (await userCollection.document(uid).get()).exists;
+  }
+
   Stream<UserModel> getUserByIdStream(String uid) {
     return userCollection.document(uid).snapshots().map((snap) {
       return UserModel.fromFirebase(snap);

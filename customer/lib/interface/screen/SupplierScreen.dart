@@ -7,7 +7,6 @@ import 'package:resmedia_taporty_customer/blocs/SupplierBloc.dart';
 import 'package:resmedia_taporty_customer/blocs/UserBloc.dart';
 import 'package:resmedia_taporty_customer/generated/provider.dart';
 import 'package:resmedia_taporty_customer/interface/page/InfoSupplierPage.dart';
-import 'package:resmedia_taporty_customer/interface/page/ProductCategoryListPage.dart';
 import 'package:resmedia_taporty_customer/interface/page/ProductListPage.dart';
 
 class SupplierScreen extends StatefulWidget {
@@ -118,13 +117,7 @@ class _SupplierScreenState extends State<SupplierScreen> {
               return TabBarView(
                 children: <Widget>[
                   InfoSupplierPage(supplier: supplier),
-                  StreamBuilder<bool>(
-                      stream: supplierBloc.outIsSelectingCategories,
-                      builder: (context, isSelectingCategories) {
-                        var isSelecting = isSelectingCategories.data ?? false;
-                        if (isSelecting) return ProductCategoryListPage();
-                        return ProductListPage();
-                      }),
+                  ProductListPage(),
                 ],
               );
             }

@@ -71,144 +71,148 @@ class _SignupScreenState extends State<SignupScreen> {
             ),
           ),
           children: [
-            Form(
-              key: _formKey,
-              child: Column(
-                children: <Widget>[
-                  TextFormField(
-                    decoration: InputDecoration(hintText: "Nominativo", prefixIcon: const Icon(Icons.account_circle)),
-                    maxLines: 1,
-                    validator: (value) => value.isEmpty ? "Nome vuoto" : null,
-                    controller: _nameController,
-                  ),
-                  SizedBox(
-                    height: 12.0,
-                  ),
-                  TextFormField(
-                    decoration: InputDecoration(
-                      prefixIcon: const Icon(Icons.email),
-                      hintText: "Email",
-                    ),
-                    maxLines: 1,
-                    keyboardType: TextInputType.emailAddress,
-                    validator: (value) => value.isEmpty ? "Email vuota" : emailRegExp.hasMatch(value) ? null : "Email non valida",
-                    controller: _emailController,
-                  ),
-                  SizedBox(
-                    height: 12.0,
-                  ),
-                  TextFormField(
-                    decoration: InputDecoration(
-                      hintText: "Password",
-                      prefixIcon: const Icon(Icons.lock),
-                    ),
-                    maxLines: 1,
-                    keyboardType: TextInputType.text,
-                    validator: (value) => value.isEmpty ? "Password vuota" : value.length < 6 ? "Password troppo corta" : null,
-                    controller: _passwordController,
-                    obscureText: true,
-                  ),
-                  SizedBox(
-                    height: 12.0,
-                  ),
-                  TextFormField(
-                    decoration: InputDecoration(
-                      hintText: "Conferma password",
-                      hintStyle: TextStyle(fontSize: 15, color: Colors.grey),
-                      prefixIcon: const Icon(Icons.lock),
-                    ),
-                    maxLines: 1,
-                    keyboardType: TextInputType.text,
-                    validator: (value) => value != _passwordController.text ? "Le password non corrispondono" : null,
-                    controller: _confirmPasswordController,
-                    obscureText: true,
-                  ),
-                  SizedBox(
-                    height: 12.0,
-                  ),
-                  Row(
+            Expanded(
+              child: SingleChildScrollView(
+                child: Form(
+                  key: _formKey,
+                  child: Column(
                     children: <Widget>[
-                      Checkbox(
-                        value: _privacyChecked,
-                        onChanged: (value) {
-                          setState(() {
-                            _privacyChecked = value;
-                          });
-                        },
+                      TextFormField(
+                        decoration: InputDecoration(hintText: "Nominativo", prefixIcon: const Icon(Icons.account_circle)),
+                        maxLines: 1,
+                        validator: (value) => value.isEmpty ? "Nome vuoto" : null,
+                        controller: _nameController,
                       ),
-                      FlatButton(
-                        child: Text(
-                          'Privacy Policy',
-                          style: TextStyle(color: Colors.white),
+                      SizedBox(
+                        height: 12.0,
+                      ),
+                      TextFormField(
+                        decoration: InputDecoration(
+                          prefixIcon: const Icon(Icons.email),
+                          hintText: "Email",
                         ),
-                        onPressed: () {
-                          _showPolicyDialog(context);
-                        },
+                        maxLines: 1,
+                        keyboardType: TextInputType.emailAddress,
+                        validator: (value) => value.isEmpty ? "Email vuota" : emailRegExp.hasMatch(value) ? null : "Email non valida",
+                        controller: _emailController,
                       ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 12.0,
-                  ),
-                  RaisedButton(
-                    child: FittedText('Registrati'),
-                    onPressed: !_privacyChecked && !_isLoading
-                        ? null
-                        : () async {
-                            if (_formKey.currentState.validate()) {
+                      SizedBox(
+                        height: 12.0,
+                      ),
+                      TextFormField(
+                        decoration: InputDecoration(
+                          hintText: "Password",
+                          prefixIcon: const Icon(Icons.lock),
+                        ),
+                        maxLines: 1,
+                        keyboardType: TextInputType.text,
+                        validator: (value) => value.isEmpty ? "Password vuota" : value.length < 6 ? "Password troppo corta" : null,
+                        controller: _passwordController,
+                        obscureText: true,
+                      ),
+                      SizedBox(
+                        height: 12.0,
+                      ),
+                      TextFormField(
+                        decoration: InputDecoration(
+                          hintText: "Conferma password",
+                          hintStyle: TextStyle(fontSize: 15, color: Colors.grey),
+                          prefixIcon: const Icon(Icons.lock),
+                        ),
+                        maxLines: 1,
+                        keyboardType: TextInputType.text,
+                        validator: (value) => value != _passwordController.text ? "Le password non corrispondono" : null,
+                        controller: _confirmPasswordController,
+                        obscureText: true,
+                      ),
+                      SizedBox(
+                        height: 12.0,
+                      ),
+                      Row(
+                        children: <Widget>[
+                          Checkbox(
+                            value: _privacyChecked,
+                            onChanged: (value) {
                               setState(() {
-                                _isLoading = true;
+                                _privacyChecked = value;
                               });
+                            },
+                          ),
+                          FlatButton(
+                            child: Text(
+                              'Privacy Policy',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            onPressed: () {
+                              _showPolicyDialog(context);
+                            },
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 12.0,
+                      ),
+                      RaisedButton(
+                        child: FittedText('Registrati'),
+                        onPressed: !_privacyChecked && !_isLoading
+                            ? null
+                            : () async {
+                                if (_formKey.currentState.validate()) {
+                                  setState(() {
+                                    _isLoading = true;
+                                  });
 
-                              try {
-                                await _userBloc.createUserWithEmailAndPassword(_nameController.text, _emailController.text, _passwordController.text);
-                                Navigator.popAndPushNamed(context, "/geolocalization");
-                              } on PlatformException catch (err) {
-                                if (err.code == "ERROR_INVALID_EMAIL")
-                                  Toast.show("Email invalida", context);
-                                else if (err.code == "ERROR_EMAIL_ALREADY_IN_USE")
-                                  Toast.show("Email non disponibile", context);
-                                else {
+                                  try {
+                                    await _userBloc.createUserWithEmailAndPassword(_nameController.text, _emailController.text, _passwordController.text);
+                                    Navigator.popAndPushNamed(context, "/geolocalization");
+                                  } on PlatformException catch (err) {
+                                    if (err.code == "ERROR_INVALID_EMAIL")
+                                      Toast.show("Email invalida", context);
+                                    else if (err.code == "ERROR_EMAIL_ALREADY_IN_USE")
+                                      Toast.show("Email non disponibile", context);
+                                    else {
+                                      print(err);
+                                      Toast.show("Si è verificato un errore inaspettato", context);
+                                    }
+                                  } catch (err) {
+                                    print(err);
+                                    Toast.show("Si è verificato un errore inaspettato", context);
+                                  }
+
+                                  setState(() {
+                                    _isLoading = false;
+                                  });
+                                }
+                              },
+                      ),
+                      SizedBox(
+                        height: 12.0,
+                      ),
+                      RaisedButton.icon(
+                        onPressed: !_privacyChecked && !_isLoading
+                            ? null
+                            : () async {
+                                setState(() {
+                                  _isLoading = true;
+                                });
+                                try {
+                                  var result = await _userBloc.signUpWithGoogle();
+                                  if (result) Navigator.popAndPushNamed(context, "/geolocalization");
+                                } catch (err) {
                                   print(err);
                                   Toast.show("Si è verificato un errore inaspettato", context);
                                 }
-                              } catch (err) {
-                                print(err);
-                                Toast.show("Si è verificato un errore inaspettato", context);
-                              }
 
-                              setState(() {
-                                _isLoading = false;
-                              });
-                            }
-                          },
+                                setState(() {
+                                  _isLoading = false;
+                                });
+                              },
+                        icon: Icon(FontAwesomeIcons.google),
+                        label: Text('Registrati con Google'),
+                      ),
+                    ],
                   ),
-                  SizedBox(
-                    height: 12.0,
-                  ),
-                  RaisedButton.icon(
-                    onPressed: !_privacyChecked && !_isLoading
-                        ? null
-                        : () async {
-                            setState(() {
-                              _isLoading = true;
-                            });
-                            try {
-                              var result = await _userBloc.signUpWithGoogle();
-                              if (result) Navigator.popAndPushNamed(context, "/geolocalization");
-                            } catch (err) {
-                              print(err);
-                              Toast.show("Si è verificato un errore inaspettato", context);
-                            }
-
-                            setState(() {
-                              _isLoading = false;
-                            });
-                          },
-                    icon: Icon(FontAwesomeIcons.google),
-                    label: Text('Registrati con Google'),
-                  ),
-                ],
+                ),
               ),
             ),
           ],

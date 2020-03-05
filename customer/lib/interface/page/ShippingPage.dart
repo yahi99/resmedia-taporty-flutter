@@ -217,29 +217,6 @@ class _ShippingState extends State<ShippingPage> with AutomaticKeepAliveClientMi
                   ],
                 ),
               ),
-              Column(
-                children: [
-                  HeaderWidget("Note aggiuntive"),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8.0, bottom: 16, left: 16, right: 16),
-                    child: TextFormField(
-                      maxLines: null,
-                      minLines: 4,
-                      decoration: InputDecoration(
-                        hintMaxLines: 4,
-                        hintText: "Inserisci ciò che vuoi far sapere al ristorante...",
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey, width: 0.0),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.black, width: 0.0),
-                        ),
-                      ),
-                      controller: checkoutBloc.noteController,
-                    ),
-                  ),
-                ],
-              ),
             ],
           ),
         ),

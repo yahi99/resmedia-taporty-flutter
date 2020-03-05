@@ -36,8 +36,35 @@ class _CartState extends State<CartPage> with AutomaticKeepAliveClientMixin {
 
         return Scaffold(
           body: SingleChildScrollView(
-            child: CartProductListView(
-              cart: cartSnapshot.data,
+            child: Column(
+              children: <Widget>[
+                CartProductListView(
+                  cart: cartSnapshot.data,
+                ),
+                Column(
+                  children: [
+                    HeaderWidget("Note aggiuntive"),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8.0, bottom: 16, left: 16, right: 16),
+                      child: TextFormField(
+                        maxLines: null,
+                        minLines: 4,
+                        decoration: InputDecoration(
+                          hintMaxLines: 4,
+                          hintText: "Inserisci ciò che vuoi far sapere al fornitore...",
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.grey, width: 0.0),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Colors.black, width: 0.0),
+                          ),
+                        ),
+                        controller: checkoutBloc.noteController,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
           bottomNavigationBar: BottomButtonBar(

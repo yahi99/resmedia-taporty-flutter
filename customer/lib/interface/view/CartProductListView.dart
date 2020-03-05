@@ -29,8 +29,43 @@ class CartProductListView extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Text(
-              'Prezzo totale: ' + (cart.totalPrice.toStringAsFixed(2)) + "€",
+            child: Column(
+              children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text(
+                      'Prezzo prodotti: ',
+                    ),
+                    Text((cart.totalPrice.toStringAsFixed(2)) + "€"),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text(
+                      'Prezzo consegna: ',
+                    ),
+                    Text("5.00€"), // TODO: Prendi il prezzo di consegna dal database
+                  ],
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text(
+                        'Totale: ',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        ((cart.totalPrice + 5).toStringAsFixed(2)) + "€",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
         ] else

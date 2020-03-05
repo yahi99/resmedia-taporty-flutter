@@ -6,8 +6,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:resmedia_taporty_core/core.dart';
 import 'package:resmedia_taporty_driver/interface/screen/CustomerDetailScreen.dart';
-import 'package:resmedia_taporty_driver/interface/screen/StripeActivationScreen.dart';
-import 'package:resmedia_taporty_driver/interface/screen/StripeActivationConfirmScreen.dart';
 import 'package:resmedia_taporty_driver/interface/screen/SupplierDetailScreen.dart';
 import 'package:resmedia_taporty_driver/interface/screen/OrderDetailScreen.dart';
 import 'package:resmedia_taporty_driver/interface/screen/AccountScreen.dart';
@@ -121,8 +119,8 @@ class _TaportyState extends State<Taporty> {
           "/orderDetail": (context) => OrderDetailScreen(),
           "/customerDetail": (context) => CustomerDetailScreen(),
           "/supplierDetail": (context) => SupplierDetailScreen(),
-          "/stripeActivation": (context) => StripeActivationScreen(),
-          "/stripeActivationConfirm": (context) => StripeActivationConfirmScreen(),
+          //"/stripeActivation": (context) => StripeActivationScreen(),
+          //"/stripeActivationConfirm": (context) => StripeActivationConfirmScreen(),
         },
         initialRoute: "/login",
         navigatorKey: NavigationService().navigatorKey,

@@ -1,4 +1,3 @@
-import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -18,14 +17,14 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
-    this.initDynamicLinks();
+    //this.initDynamicLinks();
     var _messagingService = CloudMessagingService();
     _messagingService.init(_onNotificationClick);
   }
 
   void _onNotificationClick(Map<String, dynamic> message) async {
     if (await driverBloc.outDriver.first == null) return;
-    if (!(await driverBloc.isStripeActivated())) return;
+    //if (!(await driverBloc.isStripeActivated())) return;
 
     if (message['data']['type'] == 'ORDER_NOTIFICATION') {
       var orderId = message['data']['orderId'];
@@ -37,7 +36,7 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  Future _redirect(Uri deepLink) async {
+  /*Future _redirect(Uri deepLink) async {
     if (deepLink == null) return;
     var success = deepLink.queryParameters['error'] == "true" ? false : true;
     var path = deepLink.path == "/" ? "/stripeActivationConfirm" : null;
@@ -61,7 +60,7 @@ class _LoginScreenState extends State<LoginScreen> {
       print('onLinkError');
       print(e.message);
     });
-  }
+  }*/
 
   final driverBloc = $Provider.of<DriverBloc>();
 
@@ -132,10 +131,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                 });
                                 try {
                                   await driverBloc.signInWithEmailAndPassword(_emailController.text, _passwordController.text);
-                                  if (await driverBloc.isStripeActivated())
-                                    Navigator.pushNamedAndRemoveUntil(context, "/home", (route) => false);
-                                  else
+                                  /*if (!await driverBloc.isStripeActivated())
                                     Navigator.popAndPushNamed(context, "/stripeActivation");
+                                  else*/
+                                  Navigator.pushNamedAndRemoveUntil(context, "/home", (route) => false);
                                 } on NotADriverException catch (err) {
                                   print(err);
                                   Toast.show("Non sei un fattorino", context);

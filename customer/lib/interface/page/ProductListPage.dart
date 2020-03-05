@@ -4,7 +4,6 @@ import 'package:resmedia_taporty_customer/blocs/SupplierBloc.dart';
 import 'package:resmedia_taporty_customer/generated/provider.dart';
 import 'package:resmedia_taporty_customer/interface/view/ProductCategoryListView.dart';
 import 'package:resmedia_taporty_customer/interface/view/ProductView.dart';
-import 'package:sticky_headers/sticky_headers/widget.dart';
 
 class ProductListPage extends StatelessWidget {
   ProductListPage({Key key}) : super(key: key);

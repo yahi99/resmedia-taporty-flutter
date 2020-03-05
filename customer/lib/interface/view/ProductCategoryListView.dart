@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:resmedia_taporty_core/core.dart';
 import 'package:resmedia_taporty_customer/blocs/SupplierBloc.dart';
 import 'package:resmedia_taporty_customer/generated/provider.dart';
-import 'package:tuple/tuple.dart';
 
 class ProductCategoryListView extends StatelessWidget {
   final supplierBloc = $Provider.of<SupplierBloc>();

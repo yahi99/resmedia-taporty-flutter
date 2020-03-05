@@ -28,7 +28,6 @@ class CheckoutBloc extends Bloc {
 
   // Controller per la ShippingPage
   BehaviorSubject<DateTime> _selectedDateController;
-  DateTime get _selectedDate => _selectedDateController.value;
   Stream<DateTime> get outSelectedDate => _selectedDateController.stream;
 
   // Mostra solamente il range di date in cui sono presenti turni disponibili

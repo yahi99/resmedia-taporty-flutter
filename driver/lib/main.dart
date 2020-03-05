@@ -6,6 +6,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:resmedia_taporty_core/core.dart';
 import 'package:resmedia_taporty_driver/interface/screen/CustomerDetailScreen.dart';
+import 'package:resmedia_taporty_driver/interface/screen/SettingsScreen.dart';
 import 'package:resmedia_taporty_driver/interface/screen/SupplierDetailScreen.dart';
 import 'package:resmedia_taporty_driver/interface/screen/OrderDetailScreen.dart';
 import 'package:resmedia_taporty_driver/interface/screen/AccountScreen.dart';
@@ -115,6 +116,7 @@ class _TaportyState extends State<Taporty> {
         routes: {
           "/login": (context) => LoginScreen(),
           "/account": (context) => AccountScreen(),
+          "/settings": (context) => SettingsScreen(),
           "/home": (context) => HomeScreen(),
           "/orderDetail": (context) => OrderDetailScreen(),
           "/customerDetail": (context) => CustomerDetailScreen(),

@@ -89,6 +89,10 @@ class DriverBloc implements Bloc {
     return idToken.claims['stripeActivated'] == true;
   }
 
+  Future updateIBAN(String iban) async {
+    await _db.updateIBAN(driver.id, iban);
+  }
+
   Future updateProfileImage(File image) async {
     var user = await outDriver.first;
     if (user.imageUrl != null && user.imageUrl != "") await _storage.deleteFile(user.imageUrl);

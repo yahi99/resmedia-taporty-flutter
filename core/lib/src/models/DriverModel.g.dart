@@ -20,7 +20,7 @@ DriverModel _$DriverModelFromJson(Map json) {
         ? null
         : GeohashPointModel.fromJson(json['geohashPoint'] as Map),
     address: json['address'] as String,
-    stripeAccountId: json['stripeAccountId'] as String,
+    iban: json['iban'] as String,
   );
 }
 
@@ -43,6 +43,6 @@ Map<String, dynamic> _$DriverModelToJson(DriverModel instance) {
   writeNotNull('imageUrl', instance.imageUrl);
   writeNotNull('geohashPoint', instance.geohashPoint?.toJson());
   writeNotNull('address', instance.address);
-  writeNotNull('stripeAccountId', instance.stripeAccountId);
+  writeNotNull('iban', instance.iban);
   return val;
 }

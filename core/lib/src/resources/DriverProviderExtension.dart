@@ -25,6 +25,10 @@ extension DriverProviderExtension on DatabaseService {
     });
   }
 
+  Future<void> updateIBAN(String uid, String iban) async {
+    await driverCollection.document(uid).updateData({'iban': iban});
+  }
+
   Future<void> updateDriverFcmToken(String uid, String fcmToken) async {
     await driverCollection.document(uid).updateData({'fcmToken': fcmToken});
   }

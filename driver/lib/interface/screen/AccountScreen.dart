@@ -90,6 +90,10 @@ class AccountScreen extends StatelessWidget {
                       driver.email,
                       style: theme.textTheme.subhead,
                     ),
+                    Text(
+                      driver.iban,
+                      style: theme.textTheme.subhead,
+                    ),
                     /*StreamBuilder<bool>(
                         stream: _stripeBloc.outLinkCreationLoading,
                         builder: (context, snapshot) {
@@ -129,6 +133,17 @@ class AccountScreen extends StatelessWidget {
                     Row(
                       children: <Widget>[
                         Icon(Icons.settings),
+                        FlatButton(
+                          child: Text('Impostazioni', style: theme.textTheme.subhead),
+                          onPressed: () async {
+                            Navigator.pushNamed(context, "/settings");
+                          },
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: <Widget>[
+                        Icon(Icons.exit_to_app),
                         FlatButton(
                           child: Text('Log Out', style: theme.textTheme.subhead),
                           onPressed: () async {

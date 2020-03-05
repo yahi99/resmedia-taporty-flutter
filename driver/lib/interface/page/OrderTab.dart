@@ -17,6 +17,7 @@ class _OrderTabState extends State<OrderTab> {
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
     return Scaffold(
+      backgroundColor: Colors.grey[200],
       body: StreamBuilder<List<OrderModel>>(
         stream: orderListBloc.outOrders,
         builder: (_, orderListSnapshot) {

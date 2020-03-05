@@ -246,7 +246,6 @@ class _SupplierDetailScreenState extends State<SupplierDetailScreen> {
                     "Ritirato",
                   ),
                 ),
-              if (order.state == OrderState.READY && order.driverPickedUp) Text("Ritiro dell'ordine confermato. In attesa che il fornitore confermi la preso in carico da parte tua."),
             ],
           ),
         ],
@@ -260,9 +259,12 @@ class _SupplierDetailScreenState extends State<SupplierDetailScreen> {
     if (order.state == OrderState.ACCEPTED) {
       date = DateTimeHelper.getCompleteDateTimeString(order.acceptanceTimestamp);
       string = "L'ordine è stato accettato dal fornitore ed è in stato di preparazione.";
-    } else if (order.state == OrderState.READY) {
+    } else if (order.state == OrderState.READY && !order.driverPickedUp) {
       date = DateTimeHelper.getCompleteDateTimeString(order.readyTimestamp);
       string = "L'ordine è pronto per essere ritirato presso il fornitore.";
+    } else if (order.state == OrderState.READY && order.driverPickedUp) {
+      date = DateTimeHelper.getCompleteDateTimeString(order.pickupTimestamp);
+      string = "Hai confermato il ritiro dell'ordine. In attesa che il fornitore faccia lo stesso.";
     } else if (order.state == OrderState.PICKED_UP || order.state == OrderState.DELIVERED) {
       date = DateTimeHelper.getCompleteDateTimeString(order.pickupTimestamp);
       string = "Hai ritirato l'ordine dal fornitore.";

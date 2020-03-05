@@ -185,8 +185,10 @@ class UserBloc implements Bloc {
   }
 
   Future signOut() async {
+    var userId = user.id;
     await _auth.signOut();
     await _setProviderId(null);
     _firebaseUserController.value = null;
+    await _db.updateUserFcmToken(userId, null);
   }
 }

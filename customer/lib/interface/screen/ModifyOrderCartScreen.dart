@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:resmedia_taporty_core/core.dart';
 import 'package:resmedia_taporty_customer/generated/provider.dart';
+import 'package:resmedia_taporty_customer/interface/widget/ProductNoteDialog.dart';
 import 'package:resmedia_taporty_customer/interface/widget/StepperButton.dart';
 import 'package:toast/toast.dart';
 import 'package:vibration/vibration.dart';
@@ -35,6 +36,7 @@ class _ModifyOrderCartScreenState extends State<ModifyOrderCartScreen> {
               name: product.name,
               quantity: product.quantity,
               price: product.price,
+              notes: product.notes,
             ))
         .toList();
     super.initState();
@@ -79,25 +81,29 @@ class _ModifyOrderCartScreenState extends State<ModifyOrderCartScreen> {
                       var product = products[index];
                       var orderProduct = orderProducts.firstWhere((p) => p.id == product.id, orElse: () => null);
                       var quantity = 0;
-                      if (orderProduct != null) quantity = orderProduct.quantity;
+                      var notes = "";
+                      if (orderProduct != null) {
+                        quantity = orderProduct.quantity;
+                        notes = orderProduct.notes ?? "";
+                      }
                       return Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: DefaultTextStyle(
                           style: theme.textTheme.body1,
-                          child: SizedBox(
-                            height: 90,
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Expanded(
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: <Widget>[
-                                      if (product.imageUrl != null && product.imageUrl != "") ...[
-                                        Padding(
-                                          padding: const EdgeInsets.only(right: 8.0),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Expanded(
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: <Widget>[
+                                    if (product.imageUrl != null && product.imageUrl != "") ...[
+                                      Padding(
+                                        padding: const EdgeInsets.only(right: 8.0),
+                                        child: Container(
+                                          height: 90,
                                           child: AspectRatio(
                                             aspectRatio: 1,
                                             child: ClipRRect(
@@ -117,77 +123,110 @@ class _ModifyOrderCartScreenState extends State<ModifyOrderCartScreen> {
                                             ),
                                           ),
                                         ),
-                                      ],
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: <Widget>[
-                                            AutoSizeText(
-                                              product.name,
-                                              maxLines: 2,
-                                              style: TextStyle(fontWeight: FontWeight.bold),
-                                            ),
-                                            if (product.description != null && product.description != "")
-                                              AutoSizeText(
-                                                product.description,
-                                                maxLines: 3,
-                                                minFontSize: 12,
-                                                maxFontSize: 14,
-                                              ),
-                                            Padding(
-                                              padding: const EdgeInsets.only(top: 4.0),
-                                              child: Text(
-                                                '€ ${product.price.toStringAsFixed(2)}',
-                                                style: TextStyle(fontSize: 15),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
                                       ),
                                     ],
-                                  ),
-                                ),
-                                StepperButton(
-                                  backgroundColor: ColorTheme.ACCENT_BLUE,
-                                  padding: EdgeInsets.all(3),
-                                  direction: Axis.vertical,
-                                  child: AutoSizeText(
-                                    quantity.toString() ?? "0",
-                                    maxLines: 1,
-                                    minFontSize: 10,
-                                  ),
-                                  onDecrease: () {
-                                    if (orderProduct != null) {
-                                      if (orderProduct.quantity == 0) return;
-                                      this.setState(() => orderProduct.quantity--);
-                                    }
-                                  },
-                                  onIncrement: () {
-                                    if (orderProduct != null) {
-                                      if (product.maxQuantity != 0 && product.maxQuantity == orderProduct.quantity) {
-                                        Toast.show("Massima quantità ordinabile raggiunta", context);
-                                        return;
-                                      }
-                                      Vibration.vibrate(duration: 65);
-                                      this.setState(() => orderProduct.quantity++);
-                                    } else {
-                                      this.setState(
-                                        () => orderProducts.add(
-                                          OrderProductModel(
-                                            id: product.id,
-                                            name: product.name,
-                                            quantity: 1,
-                                            imageUrl: product.imageUrl,
-                                            price: product.price,
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: <Widget>[
+                                          AutoSizeText(
+                                            product.name,
+                                            maxLines: 2,
+                                            style: TextStyle(fontWeight: FontWeight.bold),
                                           ),
-                                        ),
-                                      );
-                                    }
-                                  },
+                                          if (product.description != null && product.description != "")
+                                            AutoSizeText(
+                                              product.description,
+                                              maxLines: 3,
+                                              minFontSize: 12,
+                                              maxFontSize: 14,
+                                            ),
+                                          Padding(
+                                            padding: const EdgeInsets.only(top: 4.0),
+                                            child: Text(
+                                              '€ ${product.price.toStringAsFixed(2)}',
+                                              style: TextStyle(fontSize: 15),
+                                            ),
+                                          ),
+                                          if (quantity > 0)
+                                            Padding(
+                                              padding: const EdgeInsets.only(top: 8.0),
+                                              child: InkWell(
+                                                onTap: () {
+                                                  showDialog(
+                                                    context: context,
+                                                    builder: (_context) {
+                                                      return ProductNoteDialog(
+                                                        defaultNotes: notes,
+                                                        onConfirm: (notes) async {
+                                                          try {
+                                                            this.setState(() => orderProduct.notes = notes);
+                                                            Toast.show("Nota aggiunta con successo!", context);
+                                                            Navigator.pop(context);
+                                                          } catch (err) {
+                                                            print(err);
+                                                            Toast.show("Errore inaspettato!", context);
+                                                          }
+                                                        },
+                                                      );
+                                                    },
+                                                  );
+                                                },
+                                                child: AutoSizeText(
+                                                  notes == "" ? "Aggiungi una nota" : "Modifica nota",
+                                                  maxLines: 1,
+                                                  maxFontSize: 12,
+                                                  minFontSize: 8,
+                                                  style: TextStyle(fontSize: 12, color: ColorTheme.ACCENT_BLUE),
+                                                ),
+                                              ),
+                                            )
+                                        ],
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
+                              ),
+                              StepperButton(
+                                backgroundColor: ColorTheme.ACCENT_BLUE,
+                                padding: EdgeInsets.all(3),
+                                direction: Axis.vertical,
+                                child: AutoSizeText(
+                                  quantity.toString() ?? "0",
+                                  maxLines: 1,
+                                  minFontSize: 10,
+                                ),
+                                onDecrease: () {
+                                  if (orderProduct != null) {
+                                    if (orderProduct.quantity == 0) return;
+                                    this.setState(() => orderProduct.quantity--);
+                                  }
+                                },
+                                onIncrement: () {
+                                  if (orderProduct != null) {
+                                    if (product.maxQuantity != 0 && product.maxQuantity == orderProduct.quantity) {
+                                      Toast.show("Massima quantità ordinabile raggiunta", context);
+                                      return;
+                                    }
+                                    Vibration.vibrate(duration: 65);
+                                    this.setState(() => orderProduct.quantity++);
+                                  } else {
+                                    this.setState(
+                                      () => orderProducts.add(
+                                        OrderProductModel(
+                                          id: product.id,
+                                          name: product.name,
+                                          quantity: 1,
+                                          imageUrl: product.imageUrl,
+                                          price: product.price,
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                },
+                              ),
+                            ],
                           ),
                         ),
                       );

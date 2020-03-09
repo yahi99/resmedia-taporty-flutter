@@ -54,6 +54,11 @@ class CartModel {
     if (product != null) _onRemove(product);
   }
 
+  void setProductNote(String productId, String notes) {
+    var product = getProduct(productId);
+    if (product != null) _update(product.setNotes(notes));
+  }
+
   void add(ProductModel product) {
     var cartProduct = getProduct(product.id);
     if (cartProduct == null) _onAdd(product);

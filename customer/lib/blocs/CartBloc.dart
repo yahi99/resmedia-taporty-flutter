@@ -67,6 +67,11 @@ class CartBloc extends Bloc {
     return products;
   }
 
+  void setProductNote(String productId, String notes) {
+    cart.setProductNote(productId, notes);
+    _update(cart);
+  }
+
   void increment(String id) async {
     cart.increment(id);
     _update(cart);

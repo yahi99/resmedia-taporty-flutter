@@ -13,6 +13,7 @@ OrderProductModel _$OrderProductModelFromJson(Map json) {
     price: (json['price'] as num)?.toDouble(),
     quantity: json['quantity'] as int,
     imageUrl: json['imageUrl'] as String,
+    notes: json['notes'] as String,
   );
 }
 
@@ -23,4 +24,5 @@ Map<String, dynamic> _$OrderProductModelToJson(OrderProductModel instance) =>
       'price': instance.price,
       'imageUrl': instance.imageUrl,
       'quantity': instance.quantity,
+      'notes': instance.notes,
     };

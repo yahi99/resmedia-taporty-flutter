@@ -42,7 +42,7 @@ extension OrderProviderExtension on DatabaseService {
       if (cartProduct.quantity <= 0) continue;
       var product = products.firstWhere((p) => p.id == cartProduct.id, orElse: () => null);
       if (product != null) {
-        orderProducts.add(OrderProductModel(id: product.id, imageUrl: product.imageUrl, quantity: cartProduct.quantity, name: product.name, price: product.price));
+        orderProducts.add(OrderProductModel(id: product.id, imageUrl: product.imageUrl, quantity: cartProduct.quantity, name: product.name, price: product.price, notes: cartProduct.notes));
       }
     }
     return orderProducts;

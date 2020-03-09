@@ -13,6 +13,7 @@ class OrderProductModel {
   final double price;
   final String imageUrl;
   int quantity;
+  String notes;
 
   OrderProductModel({
     @required this.id,
@@ -20,6 +21,7 @@ class OrderProductModel {
     @required this.price,
     @required this.quantity,
     @required this.imageUrl,
+    this.notes,
   });
 
   static OrderProductModel fromJson(Map json) => _$OrderProductModelFromJson(json);

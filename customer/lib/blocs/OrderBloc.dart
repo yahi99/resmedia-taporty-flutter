@@ -69,10 +69,10 @@ class OrderBloc implements Bloc {
       String newPaymentIntentId = await _processPayment(orderProducts.fold(0, (price, product) => price + product.quantity * product.price), orderId);
 
       /*
-      Il PaymentIntent viene creato fuori dalla Transaction (che si trova nella funzione qui sotto).
-      Potrebbe quindi accadere che non venga utilizzato perchè nel frattempo l'ordine ha cambiato stato.
-      In questo caso non c'è comunque alcun problema, in quanto si annullerà da solo dopo 7 giorni.
-    */
+        Il PaymentIntent viene creato fuori dalla Transaction (che si trova nella funzione qui sotto).
+        Potrebbe quindi accadere che non venga utilizzato perchè nel frattempo l'ordine ha cambiato stato.
+        In questo caso non c'è comunque alcun problema, in quanto si annullerà da solo dopo 7 giorni.
+      */
       await _db.modifyOrder(orderId, order.id, orderProducts, newPaymentIntentId);
       _confirmLoadingController.value = false;
       return orderId;

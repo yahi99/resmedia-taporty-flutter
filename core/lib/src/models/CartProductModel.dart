@@ -11,23 +11,29 @@ class CartProductModel {
   final int quantity;
   final double price;
   final String type;
+  final String notes;
 
   CartProductModel({
     @required this.type,
     @required this.id,
     this.quantity: 0,
     @required this.price,
+    this.notes,
   })  : assert(quantity != null),
         assert(id != null);
 
   double get totalPrice => price * quantity.toDouble();
 
   CartProductModel decrease() {
-    return copyWith(countProducts: quantity - 1);
+    return copyWith(newQuantity: quantity - 1);
   }
 
   CartProductModel increment() {
-    return copyWith(countProducts: quantity + 1);
+    return copyWith(newQuantity: quantity + 1);
+  }
+
+  CartProductModel setNotes(String notes) {
+    return copyWith(newNotes: notes);
   }
 
   @override
@@ -36,8 +42,8 @@ class CartProductModel {
   @override
   bool operator ==(o) => o is CartProductModel && o.id == id;
 
-  CartProductModel copyWith({int countProducts}) {
-    return CartProductModel(id: id, quantity: countProducts, price: price, type: type);
+  CartProductModel copyWith({int newQuantity, String newNotes}) {
+    return CartProductModel(id: id, quantity: newQuantity ?? quantity, price: price, type: type, notes: newNotes ?? notes);
   }
 
   static CartProductModel fromJson(Map json) => _$CartProductModelFromJson(json);

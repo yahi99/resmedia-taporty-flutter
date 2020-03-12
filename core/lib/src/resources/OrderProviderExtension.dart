@@ -1,16 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:resmedia_taporty_core/core.dart';
-import 'package:resmedia_taporty_core/src/models/CartProductModel.dart';
 import 'package:resmedia_taporty_core/src/helper/DateTimeSerialization.dart';
 import 'package:resmedia_taporty_core/src/models/OrderModel.dart';
-import 'package:resmedia_taporty_core/src/models/ProductModel.dart';
 import 'package:resmedia_taporty_core/src/models/OrderProductModel.dart';
-import 'package:resmedia_taporty_core/src/models/SupplierModel.dart';
-import 'package:resmedia_taporty_core/src/models/ShiftModel.dart';
-import 'package:resmedia_taporty_core/src/models/UserModel.dart';
 import 'package:resmedia_taporty_core/src/resources/DatabaseService.dart';
-import 'package:resmedia_taporty_core/src/resources/UserProviderExtension.dart';
-import 'package:resmedia_taporty_core/src/resources/SupplierProviderExtension.dart';
 
 extension OrderProviderExtension on DatabaseService {
   Stream<OrderModel> getOrderStream(String orderId) {
@@ -36,72 +29,27 @@ extension OrderProviderExtension on DatabaseService {
     });
   }
 
-  List<OrderProductModel> _getOrderProducts(List<ProductModel> products, List<CartProductModel> cartProducts, String customerId) {
-    var orderProducts = List<OrderProductModel>();
-    for (var cartProduct in cartProducts) {
-      if (cartProduct.quantity <= 0) continue;
-      var product = products.firstWhere((p) => p.id == cartProduct.id, orElse: () => null);
-      if (product != null) {
-        orderProducts.add(OrderProductModel(id: product.id, imageUrl: product.imageUrl, quantity: cartProduct.quantity, name: product.name, price: product.price, notes: cartProduct.notes));
-      }
-    }
-    return orderProducts;
-  }
-
-  Future<void> createOrder(String orderId, List<CartProductModel> cartProducts, String customerId, GeoPoint customerCoordinates, String customerAddress, String customerName, String customerPhone,
-      String supplierId, String driverId, ShiftModel selectedShift, String paymentIntentId, String notes) async {
-    UserModel customer = await getUserById(customerId);
-    DriverModel driver = await getDriverById(driverId);
-    SupplierModel supplier = await getSupplierStream(supplierId).first;
-    List<ProductModel> products = await getProductListStream(supplierId).first;
-
-    var orderProducts = _getOrderProducts(products, cartProducts, customerId);
-
-    var order = OrderModel(
-      customerId: customerId,
-      driverId: driverId,
-      supplierId: supplierId,
-      notes: notes,
-      shiftStartTime: selectedShift.startTime,
-      preferredDeliveryTimestamp: selectedShift.endTime,
-      productCount: orderProducts.fold(0, (count, product) => count + product.quantity),
-      totalPrice: orderProducts.fold(0, (price, product) => price + product.quantity * product.price),
-      state: OrderState.NEW,
-      customerImageUrl: customer.imageUrl,
-      customerName: customerName,
-      customerCoordinates: customerCoordinates,
-      customerAddress: customerAddress,
-      customerPhoneNumber: customerPhone,
-      driverImageUrl: driver.imageUrl,
-      driverName: driver.nominative,
-      driverPhoneNumber: driver.phoneNumber,
-      supplierImageUrl: supplier.imageUrl,
-      supplierName: supplier.name,
-      supplierCoordinates: supplier.geohashPoint.geopoint,
-      supplierAddress: supplier.address,
-      supplierPhoneNumber: supplier.phoneNumber,
-      paymentIntentId: paymentIntentId,
-      creationTimestamp: DateTime.now(),
-      products: orderProducts,
-    );
-
+  Future<void> createOrder(String orderId, OrderModel order) async {
     var documentReference = orderCollection.document(orderId);
 
     await documentReference.setData({...order.toJson(), 'reference': documentReference});
   }
 
-  Future<void> modifyOrder(String newOrderId, String oldOrderId, List<OrderProductModel> orderProducts, String newPaymentIntentId) async {
+  Future<void> modifyOrder(String newOrderId, String oldOrderId, double cartAmount, double deliveryAmount, List<OrderProductModel> orderProducts, String newPaymentIntentId) async {
     orderProducts = orderProducts.where((o) => o.quantity > 0).toList();
 
     var orderDocument = orderCollection.document(oldOrderId);
     var error = false;
-    await Firestore.instance.runTransaction((Transaction tx) async {
+    await firestore.runTransaction((Transaction tx) async {
       var order = OrderModel.fromFirebase(await tx.get(orderDocument));
 
       if (order.state == OrderState.NEW && newPaymentIntentId != null) {
         var newOrder = OrderModel(
           productCount: orderProducts.fold(0, (count, product) => count + product.quantity),
-          totalPrice: orderProducts.fold(0, (price, product) => price + product.quantity * product.price),
+          cartAmount: cartAmount,
+          deliveryAmount: deliveryAmount,
+          driverAmount: order.driverAmount,
+          supplierPercentage: order.supplierPercentage,
           products: orderProducts,
           preferredDeliveryTimestamp: order.preferredDeliveryTimestamp,
           creationTimestamp: DateTime.now(),

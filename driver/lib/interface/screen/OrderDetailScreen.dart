@@ -61,7 +61,6 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                           children: [
                             _buildTableRow("CODICE", order.id),
                             _buildTableRow("DATA", DateFormat("dd-MM-yyyy", "it").format(order.creationTimestamp)),
-                            _buildTableRow("TOTALE", order.totalPrice.toStringAsFixed(2) + " €"),
                           ],
                         ),
                       ],

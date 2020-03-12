@@ -162,10 +162,29 @@ class CheckoutBloc extends Bloc {
   Future<bool> processOrder() async {
     _confirmLoadingController.value = true;
     try {
-      var orderId = randomNumeric(10);
-      var paymentIntentId = await _processPayment(orderId);
+      // Cerca un potenziale fattorino per l'ordine
       var driverId = await _findDriver();
-      await _confirmOrder(driverId, paymentIntentId, orderId);
+
+      // Assegna un id a 10 cifre all'ordine
+      var orderId = randomNumeric(10);
+
+      // Ottiene la lista di OrderProductModel
+      var products = _getOrderProducts();
+
+      // Calcola il totale dei prodotti
+      var cartAmount = products.fold(0, (price, product) => price + product.quantity * product.price);
+
+      // Ottiene il prezzo per la spedizione, la percentuale del fornitore e il compenso del fattorino
+      var settings = await _db.getSettingsStream().first;
+      var deliveryAmount = settings.deliveryAmount;
+      var supplierPercentage = settings.supplierPercentage;
+      var driverAmount = settings.driverAmount;
+
+      // Crea il PaymentIntent
+      var paymentIntentId = await _processPayment(orderId, cartAmount, deliveryAmount);
+
+      // Conferma l'ordine e lo salva nel database
+      await _confirmOrder(driverId, paymentIntentId, orderId, cartAmount, deliveryAmount, supplierPercentage, driverAmount, products);
       _confirmLoadingController.value = false;
     } catch (err) {
       _confirmLoadingController.value = false;
@@ -175,8 +194,31 @@ class CheckoutBloc extends Bloc {
     return true;
   }
 
-  Future<String> _processPayment(String orderId) async {
-    var result = await _functions.createPaymentIntent(stripeBloc.paymentMethod.id, cartBloc.cart.totalPrice, orderId);
+  Future<String> _findDriver() async {
+    var supplierId = supplierBloc.supplierId;
+    var supplier = supplierBloc.supplier;
+
+    var driverId = await _db.chooseDriver(datetimeToTimestamp(selectedShift.startTime), supplierId, supplier.geohashPoint.geopoint);
+    if (driverId == null) throw new NoAvailableDriverException("No available drivers found.");
+    return driverId;
+  }
+
+  List<OrderProductModel> _getOrderProducts() {
+    var cartProducts = cartBloc.cart.products;
+    var products = supplierBloc.products;
+    var orderProducts = List<OrderProductModel>();
+    for (var cartProduct in cartProducts) {
+      if (cartProduct.quantity <= 0) continue;
+      var product = products.firstWhere((p) => p.id == cartProduct.id, orElse: () => null);
+      if (product != null) {
+        orderProducts.add(OrderProductModel(id: product.id, imageUrl: product.imageUrl, quantity: cartProduct.quantity, name: product.name, price: product.price, notes: cartProduct.notes));
+      }
+    }
+    return orderProducts;
+  }
+
+  Future<String> _processPayment(String orderId, double cartAmount, double deliveryAmount) async {
+    var result = await _functions.createPaymentIntent(stripeBloc.paymentMethod.id, cartAmount + deliveryAmount, orderId);
     var confirmPaymentResult;
     try {
       confirmPaymentResult = await StripePayment.confirmPaymentIntent(PaymentIntent(
@@ -190,37 +232,50 @@ class CheckoutBloc extends Bloc {
     return confirmPaymentResult.paymentIntentId;
   }
 
-  Future<String> _findDriver() async {
-    var supplierId = supplierBloc.supplierId;
-    var supplier = supplierBloc.supplier;
-
-    var driverId = await _db.chooseDriver(datetimeToTimestamp(selectedShift.startTime), supplierId, supplier.geohashPoint.geopoint);
-    if (driverId == null) throw new NoAvailableDriverException("No available drivers found.");
-    return driverId;
-  }
-
-  Future<bool> _confirmOrder(String driverId, String paymentIntentId, String orderId) async {
+  Future<bool> _confirmOrder(
+      String driverId, String paymentIntentId, String orderId, double cartAmount, double deliveryAmount, double supplierPercentage, double driverAmount, List<OrderProductModel> products) async {
     assert(selectedShift != null);
     assert(stripeBloc.paymentMethod != null);
 
-    var products = cartBloc.clearCart();
-    var customerId = userBloc.user.id;
-    var supplierId = supplierBloc.supplierId;
+    var customer = userBloc.user;
     var location = locationBloc.customerLocation;
+    var supplier = supplierBloc.supplier;
+    var driver = await _db.getDriverById(driverId);
+
+    var order = OrderModel(
+      customerId: customer.id,
+      driverId: driverId,
+      supplierId: supplier.id,
+      notes: noteController.text,
+      shiftStartTime: selectedShift.startTime,
+      preferredDeliveryTimestamp: selectedShift.endTime,
+      productCount: products.fold(0, (count, product) => count + product.quantity),
+      cartAmount: cartAmount,
+      deliveryAmount: deliveryAmount,
+      supplierPercentage: supplierPercentage,
+      driverAmount: driverAmount,
+      state: OrderState.NEW,
+      customerImageUrl: customer.imageUrl,
+      customerName: nameController.text,
+      customerCoordinates: location.coordinates,
+      customerAddress: location.address,
+      customerPhoneNumber: phoneController.text,
+      driverImageUrl: driver.imageUrl,
+      driverName: driver.nominative,
+      driverPhoneNumber: driver.phoneNumber,
+      supplierImageUrl: supplier.imageUrl,
+      supplierName: supplier.name,
+      supplierCoordinates: supplier.geohashPoint.geopoint,
+      supplierAddress: supplier.address,
+      supplierPhoneNumber: supplier.phoneNumber,
+      paymentIntentId: paymentIntentId,
+      creationTimestamp: DateTime.now(),
+      products: products,
+    );
 
     await _db.createOrder(
       orderId,
-      products,
-      customerId,
-      location.coordinates,
-      location.address,
-      nameController.text,
-      phoneController.text,
-      supplierId,
-      driverId,
-      selectedShift,
-      paymentIntentId,
-      noteController.text,
+      order,
     );
 
     reset();
@@ -231,5 +286,6 @@ class CheckoutBloc extends Bloc {
     noteController.clear();
     nameController.clear();
     phoneController.clear();
+    cartBloc.clearCart();
   }
 }

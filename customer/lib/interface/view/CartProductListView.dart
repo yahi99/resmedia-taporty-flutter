@@ -37,17 +37,23 @@ class CartProductListView extends StatelessWidget {
                     Text(
                       'Prezzo prodotti: ',
                     ),
-                    Text((cart.totalPrice.toStringAsFixed(2)) + "€"),
+                    Text((cart.amount.toStringAsFixed(2)) + "€"),
                   ],
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Text(
-                      'Prezzo consegna: ',
-                    ),
-                    Text("5.00€"), // TODO: Prendi il prezzo di consegna dal database
-                  ],
+                StreamBuilder<SettingsModel>(
+                  stream: DatabaseService().getSettingsStream(),
+                  builder: (_, settingsSnap) {
+                    var settings = settingsSnap.data;
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Text(
+                          'Prezzo consegna: ',
+                        ),
+                        Text((settings?.deliveryAmount ?? 5).toStringAsFixed(2) + "€"),
+                      ],
+                    );
+                  },
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 8.0),
@@ -59,7 +65,7 @@ class CartProductListView extends StatelessWidget {
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       Text(
-                        ((cart.totalPrice + 5).toStringAsFixed(2)) + "€",
+                        ((cart.amount + 5).toStringAsFixed(2)) + "€",
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ],

@@ -33,7 +33,7 @@ class CartModel {
 
   int get totalItems => products.fold(0, (_prev, p) => _prev + p.quantity);
 
-  double get totalPrice => products.fold(0, (_prev, p) => _prev + p.totalPrice);
+  double get amount => products.fold(0, (_prev, p) => _prev + p.totalPrice);
 
   CartProductModel getProduct(String id) {
     return products.firstWhere((item) => item.id == id, orElse: () => null);

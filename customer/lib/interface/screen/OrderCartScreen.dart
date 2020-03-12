@@ -39,7 +39,8 @@ class _OrderCartScreenState extends State<OrderCartScreen> {
         stream: _orderBloc.outOrder,
         builder: (_, orderSnapshot) {
           if (orderSnapshot.connectionState == ConnectionState.active && orderSnapshot.hasData && orderSnapshot.data != null) {
-            var products = orderSnapshot.data.state == OrderState.MODIFIED ? orderSnapshot.data.newProducts : orderSnapshot.data.products;
+            //var products = orderSnapshot.data.state == OrderState.MODIFIED ? orderSnapshot.data.newProducts : orderSnapshot.data.products;
+            var products = orderSnapshot.data.products;
             return SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

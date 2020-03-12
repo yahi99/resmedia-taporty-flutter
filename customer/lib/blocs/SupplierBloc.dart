@@ -34,6 +34,7 @@ class SupplierBloc implements Bloc {
   SupplierModel get supplier => _supplierController.value;
 
   Stream<List<ProductModel>> get outProducts => _productsController;
+  List<ProductModel> get products => _productsController.value;
 
   Stream<Map<String, List<ProductModel>>> get outProductsByCategory => CombineLatestStream.combine2(
         _supplierController,

@@ -12,7 +12,7 @@ part 'OrderModel.g.dart';
 
 // Lo stato MODIFIED non viene utilizzato in quanto non è possibile modificare un pagamento una volta eseguito.
 // Mantieni comunque in caso Stripe in futuro decida di permetterlo.
-enum OrderState { NEW, ACCEPTED, MODIFIED, CANCELLED, READY, PICKED_UP, DELIVERED, ARCHIVED, REFUSED }
+enum OrderState { NEW, ACCEPTED, /*MODIFIED,*/ CANCELLED, READY, PICKED_UP, DELIVERED, ARCHIVED, REFUSED }
 
 String orderStateEncode(OrderState state) {
   return _$OrderStateEnumMap[state];
@@ -32,8 +32,8 @@ String translateOrderState(OrderState state) {
       return "Consegnato";
     case OrderState.CANCELLED:
       return "Ordine cancellato";
-    case OrderState.MODIFIED:
-      return "Modifica in attesa";
+    /*case OrderState.MODIFIED:
+      return "Modifica in attesa";*/
     case OrderState.READY:
       return "Pronto";
     case OrderState.ARCHIVED:
@@ -68,12 +68,13 @@ DriverOrderState orderStateToDriverOrderState(OrderState state) {
 @JsonSerializable(anyMap: true, explicitToJson: true, nullable: true, includeIfNull: false)
 class OrderModel extends FirebaseModel {
   final List<OrderProductModel> products;
-  final List<OrderProductModel> newProducts;
   final int productCount;
-  final double totalPrice;
-  final int newProductCount;
-  final double newTotalPrice;
+  final double cartAmount;
+  final double deliveryAmount;
   final String notes;
+
+  final double supplierPercentage;
+  final double driverAmount;
 
   final OrderState state;
   @JsonKey(defaultValue: false)
@@ -140,9 +141,10 @@ class OrderModel extends FirebaseModel {
     String path,
     this.productCount,
     this.notes,
-    this.totalPrice,
-    this.newProductCount,
-    this.newTotalPrice,
+    this.cartAmount,
+    this.deliveryAmount,
+    this.supplierPercentage,
+    this.driverAmount,
     this.shiftStartTime,
     this.preferredDeliveryTimestamp,
     this.modificationTimestamp,
@@ -169,7 +171,6 @@ class OrderModel extends FirebaseModel {
     this.hasDriverReview,
     this.customerId,
     this.products,
-    this.newProducts,
     this.creationTimestamp,
     this.acceptanceTimestamp,
     this.refusalTimestamp,

@@ -73,7 +73,7 @@ class _OrderViewState extends State<OrderView> {
                                 ),
                               ),
                               TextSpan(
-                                text: widget.order.totalPrice.toStringAsFixed(2),
+                                text: (widget.order.cartAmount + widget.order.deliveryAmount).toStringAsFixed(2),
                                 style: theme.textTheme.body1.copyWith(fontSize: 15),
                               ),
                             ],

@@ -12,7 +12,7 @@ class ColorTheme {
   static const Map<OrderState, Color> STATE_COLORS = {
     OrderState.NEW: Color(0xFFFFC107),
     OrderState.ACCEPTED: Color(0xFF17A2B8),
-    OrderState.MODIFIED: Color(0xFFFFC107),
+    //OrderState.MODIFIED: Color(0xFFFFC107),
     OrderState.CANCELLED: Color(0xFFDC3545),
     OrderState.PICKED_UP: Color(0xFF17A2B8),
     OrderState.DELIVERED: Color(0xFF28a745),

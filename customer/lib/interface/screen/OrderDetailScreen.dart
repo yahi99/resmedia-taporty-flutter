@@ -133,13 +133,15 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                         Table(
                           columnWidths: {
                             0: FlexColumnWidth(1),
-                            1: FlexColumnWidth(3),
+                            1: FlexColumnWidth(1),
                           },
                           children: [
                             _buildTableRow("CODICE", order.id),
                             _buildTableRow("DATA", DateFormat("dd-MM-yyyy", "it").format(order.creationTimestamp)),
-                            _buildTableRow("TOTALE", order.totalPrice.toStringAsFixed(2) + " €"),
                             _buildTableRow("STATO", translateOrderState(order.state), color: ColorTheme.STATE_COLORS[order.state]),
+                            _buildTableRow("PRODOTTI", order.cartAmount.toStringAsFixed(2) + " €"),
+                            _buildTableRow("SPEDIZIONE", order.deliveryAmount.toStringAsFixed(2) + " €"),
+                            _buildTableRow("TOTALE", (order.cartAmount + order.deliveryAmount).toStringAsFixed(2) + " €"),
                           ],
                         ),
                       ],
@@ -439,10 +441,10 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
         date = DateTimeHelper.getCompleteDateTimeString(order.acceptanceTimestamp);
         string = "L'ordine è stato accettato dal fornitore ed è in stato di preparazione.";
         break;
-      case OrderState.MODIFIED:
+      /*case OrderState.MODIFIED:
         date = DateTimeHelper.getCompleteDateTimeString(order.modificationTimestamp);
         string = "La tua modifica deve essere accettata dal fornitore.";
-        break;
+        break;*/
       case OrderState.CANCELLED:
         date = DateTimeHelper.getCompleteDateTimeString(order.cancellationTimestamp);
         string = "Hai annullato quest'ordine.";
@@ -498,7 +500,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
         ],
       );
     }
-    if (order.state == OrderState.PICKED_UP || order.state == OrderState.ACCEPTED || order.state == OrderState.READY || order.state == OrderState.MODIFIED) {
+    if (order.state == OrderState.PICKED_UP || order.state == OrderState.ACCEPTED || order.state == OrderState.READY /*|| order.state == OrderState.MODIFIED*/) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[

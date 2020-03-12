@@ -51,20 +51,10 @@ class CartBloc extends Bloc {
     });
   }
 
-  List<CartProductModel> clearCart() {
-    var cartProducts = cart.products;
-    List<CartProductModel> products = List<CartProductModel>();
-    for (int i = 0; i < cartProducts.length; i++) {
-      products.add(cartProducts.elementAt(i));
-    }
-
-    for (int i = 0; i < products.length; i++) {
-      cart.remove(products.elementAt(i).id);
-    }
+  void clearCart() {
+    cart.products.clear();
 
     _update(cart);
-
-    return products;
   }
 
   void setProductNote(String productId, String notes) {

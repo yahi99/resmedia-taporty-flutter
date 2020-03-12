@@ -46,6 +46,7 @@ export 'src/models/UserModel.dart';
 export 'src/models/DriverModel.dart';
 export 'src/models/LocationModel.dart';
 export 'src/models/PaymentMethodModel.dart';
+export 'src/models/SettingsModel.dart';
 
 // Resources
 export 'src/resources/DatabaseService.dart';
@@ -56,6 +57,7 @@ export 'src/resources/ReviewProviderExtension.dart';
 export 'src/resources/ShiftProviderExtension.dart';
 export 'src/resources/SupplierProviderExtension.dart';
 export 'src/resources/UserProviderExtension.dart';
+export 'src/resources/SettingsProviderExtension.dart';
 export 'src/resources/FunctionService.dart';
 export 'src/resources/StorageService.dart';
 export 'src/resources/AuthService.dart';

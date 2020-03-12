@@ -11,9 +11,10 @@ OrderModel _$OrderModelFromJson(Map json) {
     path: json['path'] as String,
     productCount: json['productCount'] as int,
     notes: json['notes'] as String,
-    totalPrice: (json['totalPrice'] as num)?.toDouble(),
-    newProductCount: json['newProductCount'] as int,
-    newTotalPrice: (json['newTotalPrice'] as num)?.toDouble(),
+    cartAmount: (json['cartAmount'] as num)?.toDouble(),
+    deliveryAmount: (json['deliveryAmount'] as num)?.toDouble(),
+    supplierPercentage: (json['supplierPercentage'] as num)?.toDouble(),
+    driverAmount: (json['driverAmount'] as num)?.toDouble(),
     shiftStartTime: datetimeFromTimestamp(json['shiftStartTime'] as Timestamp),
     preferredDeliveryTimestamp:
         datetimeFromTimestamp(json['preferredDeliveryTimestamp'] as Timestamp),
@@ -47,9 +48,6 @@ OrderModel _$OrderModelFromJson(Map json) {
     products: (json['products'] as List)
         ?.map((e) => e == null ? null : OrderProductModel.fromJson(e as Map))
         ?.toList(),
-    newProducts: (json['newProducts'] as List)
-        ?.map((e) => e == null ? null : OrderProductModel.fromJson(e as Map))
-        ?.toList(),
     creationTimestamp:
         datetimeFromTimestamp(json['creationTimestamp'] as Timestamp),
     acceptanceTimestamp:
@@ -77,13 +75,12 @@ Map<String, dynamic> _$OrderModelToJson(OrderModel instance) {
   writeNotNull('path', instance.path);
   writeNotNull(
       'products', instance.products?.map((e) => e?.toJson())?.toList());
-  writeNotNull(
-      'newProducts', instance.newProducts?.map((e) => e?.toJson())?.toList());
   writeNotNull('productCount', instance.productCount);
-  writeNotNull('totalPrice', instance.totalPrice);
-  writeNotNull('newProductCount', instance.newProductCount);
-  writeNotNull('newTotalPrice', instance.newTotalPrice);
+  writeNotNull('cartAmount', instance.cartAmount);
+  writeNotNull('deliveryAmount', instance.deliveryAmount);
   writeNotNull('notes', instance.notes);
+  writeNotNull('supplierPercentage', instance.supplierPercentage);
+  writeNotNull('driverAmount', instance.driverAmount);
   writeNotNull('state', _$OrderStateEnumMap[instance.state]);
   writeNotNull('hasSupplierReview', instance.hasSupplierReview);
   writeNotNull('hasDriverReview', instance.hasDriverReview);
@@ -166,7 +163,6 @@ T _$enumDecodeNullable<T>(
 const _$OrderStateEnumMap = {
   OrderState.NEW: 'NEW',
   OrderState.ACCEPTED: 'ACCEPTED',
-  OrderState.MODIFIED: 'MODIFIED',
   OrderState.CANCELLED: 'CANCELLED',
   OrderState.READY: 'READY',
   OrderState.PICKED_UP: 'PICKED_UP',

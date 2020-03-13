@@ -19,6 +19,7 @@ class DriverModel extends UserFirebaseModel {
   final String address;
 
   final String iban;
+  final double balance;
 
   DriverModel({
     String path,
@@ -32,6 +33,7 @@ class DriverModel extends UserFirebaseModel {
     this.geohashPoint,
     this.address,
     this.iban,
+    this.balance,
   }) : super(path: path, fcmToken: fcmToken);
 
   static DriverModel fromJson(Map json) => _$DriverModelFromJson(json);

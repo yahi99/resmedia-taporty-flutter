@@ -21,6 +21,7 @@ DriverModel _$DriverModelFromJson(Map json) {
         : GeohashPointModel.fromJson(json['geohashPoint'] as Map),
     address: json['address'] as String,
     iban: json['iban'] as String,
+    balance: (json['balance'] as num)?.toDouble(),
   );
 }
 
@@ -44,5 +45,6 @@ Map<String, dynamic> _$DriverModelToJson(DriverModel instance) {
   writeNotNull('geohashPoint', instance.geohashPoint?.toJson());
   writeNotNull('address', instance.address);
   writeNotNull('iban', instance.iban);
+  writeNotNull('balance', instance.balance);
   return val;
 }

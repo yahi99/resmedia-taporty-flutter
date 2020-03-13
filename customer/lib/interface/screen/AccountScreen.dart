@@ -133,7 +133,7 @@ class AccountScreen extends StatelessWidget {
                           children: <Widget>[
                             Icon(Icons.exit_to_app),
                             FlatButton(
-                              child: Text('Log Out', style: theme.textTheme.subhead),
+                              child: Text('Esci', style: theme.textTheme.subhead),
                               onPressed: () async {
                                 await userBloc.signOut();
                                 Navigator.pushNamedAndRemoveUntil(context, "/login", (Route<dynamic> route) => false);

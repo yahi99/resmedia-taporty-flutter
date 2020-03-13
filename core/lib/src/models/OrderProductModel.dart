@@ -13,6 +13,7 @@ class OrderProductModel {
   final double price;
   final String imageUrl;
   int quantity;
+  @JsonKey(defaultValue: "")
   String notes;
 
   OrderProductModel({

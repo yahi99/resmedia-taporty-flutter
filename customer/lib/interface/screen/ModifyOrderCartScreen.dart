@@ -45,6 +45,18 @@ class _ModifyOrderCartScreenState extends State<ModifyOrderCartScreen> {
   @override
   Widget build(BuildContext context) {
     var theme = Theme.of(context);
+
+    // Determina se l'ordine ha delle modifiche sui prodotti ordinati o sulle note
+    var hasModifications = false;
+    for (var p in orderProducts) {
+      var found = widget.order.products.firstWhere((p1) => p.id == p1.id, orElse: () => null);
+      if (found == null && p.quantity == 0) continue;
+      if (found == null || p.quantity != found.quantity || p.notes != found.notes) {
+        hasModifications = true;
+        break;
+      }
+    }
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: true,
@@ -240,7 +252,8 @@ class _ModifyOrderCartScreenState extends State<ModifyOrderCartScreen> {
                     color: Colors.grey,
                     height: 0,
                   ),
-                  StreamBuilder<bool>(
+                  if (hasModifications)
+                    StreamBuilder<bool>(
                       stream: orderBloc.outConfirmLoading,
                       builder: (context, loadingSnap) {
                         var loading = loadingSnap.data ?? false;
@@ -288,7 +301,8 @@ class _ModifyOrderCartScreenState extends State<ModifyOrderCartScreen> {
                             ],
                           ),
                         );
-                      })
+                      },
+                    )
                 ],
               ),
             );

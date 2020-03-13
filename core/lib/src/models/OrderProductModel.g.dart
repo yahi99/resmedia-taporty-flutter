@@ -13,7 +13,7 @@ OrderProductModel _$OrderProductModelFromJson(Map json) {
     price: (json['price'] as num)?.toDouble(),
     quantity: json['quantity'] as int,
     imageUrl: json['imageUrl'] as String,
-    notes: json['notes'] as String,
+    notes: json['notes'] as String ?? '',
   );
 }
 

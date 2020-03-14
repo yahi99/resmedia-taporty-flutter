@@ -326,6 +326,9 @@ PODS:
     - nanopb (~> 0.3.901)
   - GoogleMaps (3.8.0):
     - GoogleMaps/Maps (= 3.8.0)
+  - GoogleMaps/Base (3.8.0)
+  - GoogleMaps/Maps (3.8.0):
+    - GoogleMaps/Base
   - GoogleSignIn (5.0.2):
     - AppAuth (~> 1.2)
     - GTMAppAuth (~> 1.0)

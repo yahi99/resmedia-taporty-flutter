@@ -15,6 +15,9 @@ UserModel _$UserModelFromJson(Map json) {
     email: json['email'] as String,
     phoneNumber: json['phoneNumber'] as String,
     notifyApp: json['notifyApp'] as bool,
+    lastLocation: json['lastLocation'] == null
+        ? null
+        : LocationModel.fromJson(json['lastLocation'] as Map),
   );
 }
 
@@ -34,5 +37,6 @@ Map<String, dynamic> _$UserModelToJson(UserModel instance) {
   writeNotNull('phoneNumber', instance.phoneNumber);
   writeNotNull('imageUrl', instance.imageUrl);
   writeNotNull('notifyApp', instance.notifyApp);
+  writeNotNull('lastLocation', instance.lastLocation?.toJson());
   return val;
 }

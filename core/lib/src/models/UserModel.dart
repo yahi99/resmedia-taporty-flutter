@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:resmedia_taporty_core/core.dart';
 import 'package:resmedia_taporty_core/src/models/base/UserFirebaseModel.dart';
 import 'package:resmedia_taporty_core/src/models/base/FirebaseModel.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -11,12 +12,8 @@ class UserModel extends UserFirebaseModel {
   final String email;
   final String phoneNumber;
   final String imageUrl;
-  /*final bool notifyEmail;
-  final bool notifySms;*/
   final bool notifyApp;
-  /*final bool offersEmail;
-  final bool offersSms;
-  final bool offersApp;*/
+  final LocationModel lastLocation;
 
   UserModel({
     String path,
@@ -26,11 +23,7 @@ class UserModel extends UserFirebaseModel {
     this.email,
     this.phoneNumber,
     this.notifyApp,
-    /*this.notifyEmail,
-    this.notifySms,
-    this.offersApp,
-    this.offersEmail,
-    this.offersSms,*/
+    this.lastLocation,
   }) : super(path: path, fcmToken: fcmToken);
 
   static UserModel fromJson(Map json) => _$UserModelFromJson(json);

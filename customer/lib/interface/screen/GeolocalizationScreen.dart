@@ -18,6 +18,7 @@ class GeolocalizationScreen extends StatefulWidget {
 }
 
 class _GeolocalizationScreenState extends State<GeolocalizationScreen> {
+  final locationBloc = $Provider.of<LocationBloc>();
   GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: MapsConfig.GOOGLE_PUBLIC_KEY);
 
   TextEditingController _controller = TextEditingController();
@@ -26,8 +27,14 @@ class _GeolocalizationScreenState extends State<GeolocalizationScreen> {
   bool _isLoading = false;
   GeoPoint customerCoordinates;
   String customerAddress;
+  String customerShortAddress;
 
-  // ignore: close_sinks
+  @override
+  void dispose() {
+    geo.close();
+    super.dispose();
+  }
+
   final geo = StreamController<String>();
 
   void _focusNodePlaces() async {
@@ -51,8 +58,8 @@ class _GeolocalizationScreenState extends State<GeolocalizationScreen> {
       double lng = detail.result.geometry.location.lng;
 
       customerCoordinates = GeoPoint(lat, lng);
-
       customerAddress = p.description;
+      customerShortAddress = p.structuredFormatting.mainText;
 
       isValid = true;
 
@@ -66,64 +73,75 @@ class _GeolocalizationScreenState extends State<GeolocalizationScreen> {
       child: StreamBuilder<String>(
         stream: geo.stream,
         builder: (ctx, snap) {
-          if (snap.hasData) _controller.value = TextEditingValue(text: snap.data);
-          return LogoView(
-            top: FittedBox(
-              fit: BoxFit.contain,
-              child: Icon(
-                Icons.lock_open,
-                color: Colors.white,
-              ),
-            ),
-            children: <Widget>[
-              TextField(
-                controller: _controller,
-                onTap: _focusNodePlaces,
-                decoration: const InputDecoration(
-                  filled: true,
-                  fillColor: Colors.white70,
-                  hintStyle: TextStyle(color: Colors.grey),
-                  border: OutlineInputBorder(
-                    borderRadius: const BorderRadius.all(const Radius.circular(15.0)),
+          return StreamBuilder<LocationModel>(
+              stream: locationBloc.outCustomerLocation,
+              builder: (context, locationSnap) {
+                if (snap.hasData)
+                  _controller.value = TextEditingValue(text: snap.data);
+                else if (locationSnap.hasData) _controller.value = TextEditingValue(text: locationSnap.data.address);
+                return LogoView(
+                  top: FittedBox(
+                    fit: BoxFit.contain,
+                    child: Icon(
+                      Icons.lock_open,
+                      color: Colors.white,
+                    ),
                   ),
-                  suffixIcon: Icon(
-                    Icons.location_on,
-                  ),
-                  hintText: 'Via Mario Rossi',
-                ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  FlatButton(
-                    child: Icon(Icons.check),
-                    color: Colors.blue,
-                    onPressed: _isLoading
-                        ? null
-                        : () async {
-                            if (isValid) {
-                              setState(() {
-                                _isLoading = true;
-                              });
-                              var locationBloc = $Provider.of<LocationBloc>();
-                              locationBloc.setLocation(customerAddress, customerCoordinates);
-                              await Navigator.pushNamedAndRemoveUntil(
-                                context,
-                                "/supplierList",
-                                (Route<dynamic> route) => false,
-                              );
-                              setState(() {
-                                _isLoading = false;
-                              });
-                            } else {
-                              Toast.show('Inserire un indirizzo valido', context);
-                            }
-                          },
-                  ),
-                ],
-              ),
-            ],
-          );
+                  children: <Widget>[
+                    TextField(
+                      controller: _controller,
+                      onTap: _focusNodePlaces,
+                      decoration: const InputDecoration(
+                        filled: true,
+                        fillColor: Colors.white70,
+                        hintStyle: TextStyle(color: Colors.grey),
+                        border: OutlineInputBorder(
+                          borderRadius: const BorderRadius.all(const Radius.circular(15.0)),
+                        ),
+                        suffixIcon: Icon(
+                          Icons.location_on,
+                        ),
+                        hintText: 'Via Mario Rossi',
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        FlatButton(
+                          child: Icon(Icons.check),
+                          color: Colors.blue,
+                          onPressed: _isLoading
+                              ? null
+                              : () async {
+                                  if (isValid) {
+                                    setState(() {
+                                      _isLoading = true;
+                                    });
+                                    locationBloc.setLocation(customerAddress, customerShortAddress, customerCoordinates);
+                                    await Navigator.pushNamedAndRemoveUntil(
+                                      context,
+                                      "/supplierList",
+                                      (Route<dynamic> route) => false,
+                                    );
+                                    setState(() {
+                                      _isLoading = false;
+                                    });
+                                  } else if (locationSnap.hasData) {
+                                    await Navigator.pushNamedAndRemoveUntil(
+                                      context,
+                                      "/supplierList",
+                                      (Route<dynamic> route) => false,
+                                    );
+                                  } else {
+                                    Toast.show('Inserire un indirizzo valido', context);
+                                  }
+                                },
+                        ),
+                      ],
+                    ),
+                  ],
+                );
+              });
         },
       ),
     );

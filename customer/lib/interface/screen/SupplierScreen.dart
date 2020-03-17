@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:resmedia_taporty_core/core.dart';
@@ -37,9 +38,14 @@ class _SupplierScreenState extends State<SupplierScreen> {
           backgroundColor: colorScheme.primary,
           title: StreamBuilder<SupplierModel>(
             stream: supplierBloc.outSupplier,
-            builder: (_, supplierSnap) => Text(
-              supplierSnap.data?.name ?? "Caricamento...",
-              style: theme.textTheme.body2.copyWith(color: Colors.white, fontSize: 18),
+            builder: (_, supplierSnap) => FittedBox(
+              child: AutoSizeText(
+                supplierSnap.data?.name ?? "Caricamento...",
+                minFontSize: 12,
+                maxFontSize: 18,
+                overflow: TextOverflow.fade,
+                style: theme.textTheme.body2.copyWith(color: Colors.white, fontSize: 18),
+              ),
             ),
           ),
           actions: <Widget>[

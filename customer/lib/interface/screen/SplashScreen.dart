@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:resmedia_taporty_core/core.dart';
+import 'package:resmedia_taporty_customer/blocs/LocationBloc.dart';
 import 'package:resmedia_taporty_customer/blocs/OrderBloc.dart';
 import 'package:resmedia_taporty_customer/blocs/UserBloc.dart';
 import 'package:resmedia_taporty_customer/generated/provider.dart';
@@ -23,11 +24,15 @@ class SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    subscription = userBloc.outFirebaseUser.listen((user) {
+    subscription = userBloc.outUser.listen((user) {
       if (user == null)
         Navigator.pushReplacementNamed(context, "/login");
-      else
+      else if (user.lastLocation == null)
         Navigator.pushReplacementNamed(context, "/geolocalization");
+      else {
+        $Provider.of<LocationBloc>().initLocation(user.lastLocation);
+        Navigator.pushReplacementNamed(context, "/supplierList");
+      }
     });
 
     var _messagingService = CloudMessagingService();

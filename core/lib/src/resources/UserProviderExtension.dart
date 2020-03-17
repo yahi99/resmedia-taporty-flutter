@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:resmedia_taporty_core/core.dart';
 import 'package:resmedia_taporty_core/src/models/UserModel.dart';
 import 'package:resmedia_taporty_core/src/resources/DatabaseService.dart';
 
@@ -45,6 +46,10 @@ extension UserProviderExtension on DatabaseService {
 
   Future<void> updateNotifyApp(String uid, bool value) async {
     await userCollection.document(uid).updateData({'notifyApp': value});
+  }
+
+  Future<void> updateLastLocation(String uid, LocationModel location) async {
+    await userCollection.document(uid).updateData({'lastLocation': location.toJson()});
   }
 
   Future createUser(String uid, String nominative, String email) async {

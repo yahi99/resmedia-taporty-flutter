@@ -19,7 +19,10 @@ class AccountScreen extends StatelessWidget {
             icon: Icon(Icons.mode_edit),
           )
         ],
-        title: Text("Account"),
+        title: Text(
+          "Account",
+          style: theme.textTheme.body2.copyWith(color: Colors.white, fontSize: 18),
+        ),
       ),
       body: StreamBuilder<String>(
         stream: userBloc.outAuthProviderId,

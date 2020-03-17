@@ -153,7 +153,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 icon: Icon(FontAwesomeIcons.google),
                 label: Text('Accedi con Google'),
               ),
-              // TODO: Aggiungere Facebook come metodo di autenticazione
             ],
           ),
         ),

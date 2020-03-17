@@ -17,6 +17,7 @@ class ProductCategoryListView extends StatelessWidget {
           builder: (context, selectedCategoryIdListSnap) {
             List<ProductCategoryModel> categories = categoryListSnap.data ?? List<ProductCategoryModel>();
             final selectedCategoryIds = selectedCategoryIdListSnap.data ?? List<String>();
+            if (categories.length == 0 || categories.length == 1) return Container();
             return Container(
               height: 50,
               color: Colors.white,

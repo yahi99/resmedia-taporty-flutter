@@ -7,6 +7,7 @@ import 'package:overlay_support/overlay_support.dart';
 import 'package:resmedia_taporty_core/core.dart';
 import 'package:resmedia_taporty_driver/interface/screen/CustomerDetailScreen.dart';
 import 'package:resmedia_taporty_driver/interface/screen/PaymentsManagementScreen.dart';
+import 'package:resmedia_taporty_driver/interface/screen/SplashScreen.dart';
 import 'package:resmedia_taporty_driver/interface/screen/SupplierDetailScreen.dart';
 import 'package:resmedia_taporty_driver/interface/screen/OrderDetailScreen.dart';
 import 'package:resmedia_taporty_driver/interface/screen/AccountScreen.dart';
@@ -124,7 +125,7 @@ class _TaportyState extends State<Taporty> {
           //"/stripeActivation": (context) => StripeActivationScreen(),
           //"/stripeActivationConfirm": (context) => StripeActivationConfirmScreen(),
         },
-        initialRoute: "/login",
+        home: SplashScreen(),
         navigatorKey: NavigationService().navigatorKey,
       ),
     );

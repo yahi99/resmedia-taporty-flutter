@@ -13,6 +13,7 @@ class ProductListPage extends StatelessWidget {
     final theme = Theme.of(context);
     final supplierBloc = $Provider.of<SupplierBloc>();
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         ProductCategoryListView(),
         Expanded(

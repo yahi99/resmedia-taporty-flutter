@@ -19,11 +19,11 @@ extension DriverProviderExtension on DatabaseService {
     });
   }
 
-  Future<void> setStripeActivationToken(String uid, String token) async {
+  /*Future<void> setStripeActivationToken(String uid, String token) async {
     await driverCollection.document(uid).updateData({
       "stripeActivationToken": token,
     });
-  }
+  }*/
 
   Future<void> updateIBAN(String uid, String iban) async {
     await driverCollection.document(uid).updateData({'iban': iban});

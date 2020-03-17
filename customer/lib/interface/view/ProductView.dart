@@ -124,9 +124,9 @@ class _ProductViewState extends State<ProductView> {
                                 child: AutoSizeText(
                                   hasNotes ? "Modifica nota" : "Aggiungi una nota",
                                   maxLines: 1,
-                                  maxFontSize: 12,
-                                  minFontSize: 8,
-                                  style: TextStyle(fontSize: 12, color: ColorTheme.ACCENT_BLUE),
+                                  maxFontSize: 14,
+                                  minFontSize: 10,
+                                  style: TextStyle(fontSize: 13, color: ColorTheme.ACCENT_BLUE),
                                 ),
                               ),
                             );
@@ -139,40 +139,43 @@ class _ProductViewState extends State<ProductView> {
             ),
           ),
           if (widget.modifiable)
-            StreamBuilder<CartModel>(
-              stream: cartBloc.outCart,
-              builder: (context, cartSnapshot) {
-                if (!cartSnapshot.hasData) return Container();
-                var cart = cartSnapshot.data;
-                var cartProduct = cart.getProduct(widget.product.id);
-                return StepperButton(
-                  backgroundColor: ColorTheme.ACCENT_BLUE,
-                  direction: Axis.vertical,
-                  padding: EdgeInsets.all(3),
-                  child: AutoSizeText(
-                    cartProduct?.quantity?.toString() ?? "0",
-                    maxLines: 1,
-                    minFontSize: 10,
-                  ),
-                  onDecrease: () {
-                    cartBloc.decrease(widget.product.id);
-                    Vibration.vibrate(duration: 65);
-                  },
-                  onIncrement: () {
-                    if (cartProduct != null) {
-                      if (widget.product.maxQuantity != 0 && widget.product.maxQuantity <= cartProduct.quantity) {
-                        Toast.show("Massima quantità ordinabile raggiunta", context, duration: 3);
-                        return;
+            Padding(
+              padding: const EdgeInsets.only(left: 8.0),
+              child: StreamBuilder<CartModel>(
+                stream: cartBloc.outCart,
+                builder: (context, cartSnapshot) {
+                  if (!cartSnapshot.hasData) return Container();
+                  var cart = cartSnapshot.data;
+                  var cartProduct = cart.getProduct(widget.product.id);
+                  return StepperButton(
+                    backgroundColor: ColorTheme.ACCENT_BLUE,
+                    direction: Axis.vertical,
+                    padding: EdgeInsets.all(3),
+                    child: AutoSizeText(
+                      cartProduct?.quantity?.toString() ?? "0",
+                      maxLines: 1,
+                      minFontSize: 10,
+                    ),
+                    onDecrease: () {
+                      cartBloc.decrease(widget.product.id);
+                      Vibration.vibrate(duration: 65);
+                    },
+                    onIncrement: () {
+                      if (cartProduct != null) {
+                        if (widget.product.maxQuantity != 0 && widget.product.maxQuantity <= cartProduct.quantity) {
+                          Toast.show("Massima quantità ordinabile raggiunta", context, duration: 3);
+                          return;
+                        }
+                        Vibration.vibrate(duration: 65);
+                        cartBloc.increment(cartProduct.id);
+                      } else {
+                        Vibration.vibrate(duration: 65);
+                        cartBloc.add(widget.product);
                       }
-                      Vibration.vibrate(duration: 65);
-                      cartBloc.increment(cartProduct.id);
-                    } else {
-                      Vibration.vibrate(duration: 65);
-                      cartBloc.add(widget.product);
-                    }
-                  },
-                );
-              },
+                    },
+                  );
+                },
+              ),
             ),
         ],
       ),

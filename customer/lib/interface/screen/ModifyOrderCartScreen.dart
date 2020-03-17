@@ -188,9 +188,9 @@ class _ModifyOrderCartScreenState extends State<ModifyOrderCartScreen> {
                                                 child: AutoSizeText(
                                                   notes == "" ? "Aggiungi una nota" : "Modifica nota",
                                                   maxLines: 1,
-                                                  maxFontSize: 12,
-                                                  minFontSize: 8,
-                                                  style: TextStyle(fontSize: 12, color: ColorTheme.ACCENT_BLUE),
+                                                  maxFontSize: 14,
+                                                  minFontSize: 10,
+                                                  style: TextStyle(fontSize: 13, color: ColorTheme.ACCENT_BLUE),
                                                 ),
                                               ),
                                             )
@@ -200,43 +200,46 @@ class _ModifyOrderCartScreenState extends State<ModifyOrderCartScreen> {
                                   ],
                                 ),
                               ),
-                              StepperButton(
-                                backgroundColor: ColorTheme.ACCENT_BLUE,
-                                padding: EdgeInsets.all(3),
-                                direction: Axis.vertical,
-                                child: AutoSizeText(
-                                  quantity.toString() ?? "0",
-                                  maxLines: 1,
-                                  minFontSize: 10,
-                                ),
-                                onDecrease: () {
-                                  if (orderProduct != null) {
-                                    if (orderProduct.quantity == 0) return;
-                                    this.setState(() => orderProduct.quantity--);
-                                  }
-                                },
-                                onIncrement: () {
-                                  if (orderProduct != null) {
-                                    if (product.maxQuantity != 0 && product.maxQuantity == orderProduct.quantity) {
-                                      Toast.show("Massima quantità ordinabile raggiunta", context);
-                                      return;
+                              Padding(
+                                padding: const EdgeInsets.only(left: 8.0),
+                                child: StepperButton(
+                                  backgroundColor: ColorTheme.ACCENT_BLUE,
+                                  padding: EdgeInsets.all(3),
+                                  direction: Axis.vertical,
+                                  child: AutoSizeText(
+                                    quantity.toString() ?? "0",
+                                    maxLines: 1,
+                                    minFontSize: 10,
+                                  ),
+                                  onDecrease: () {
+                                    if (orderProduct != null) {
+                                      if (orderProduct.quantity == 0) return;
+                                      this.setState(() => orderProduct.quantity--);
                                     }
-                                    Vibration.vibrate(duration: 65);
-                                    this.setState(() => orderProduct.quantity++);
-                                  } else {
-                                    this.setState(
-                                      () => orderProducts.add(
-                                        OrderProductModel(
-                                          id: product.id,
-                                          name: product.name,
-                                          quantity: 1,
-                                          imageUrl: product.imageUrl,
-                                          price: product.price,
+                                  },
+                                  onIncrement: () {
+                                    if (orderProduct != null) {
+                                      if (product.maxQuantity != 0 && product.maxQuantity == orderProduct.quantity) {
+                                        Toast.show("Massima quantità ordinabile raggiunta", context);
+                                        return;
+                                      }
+                                      Vibration.vibrate(duration: 65);
+                                      this.setState(() => orderProduct.quantity++);
+                                    } else {
+                                      this.setState(
+                                        () => orderProducts.add(
+                                          OrderProductModel(
+                                            id: product.id,
+                                            name: product.name,
+                                            quantity: 1,
+                                            imageUrl: product.imageUrl,
+                                            price: product.price,
+                                          ),
                                         ),
-                                      ),
-                                    );
-                                  }
-                                },
+                                      );
+                                    }
+                                  },
+                                ),
                               ),
                             ],
                           ),

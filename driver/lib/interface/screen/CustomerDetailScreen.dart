@@ -188,10 +188,10 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> {
                     children: <Widget>[
                       Text(
                         order.customerName,
-                        style: textTheme.subhead.copyWith(fontWeight: FontWeight.bold),
+                        style: textTheme.body1.copyWith(fontWeight: FontWeight.bold),
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
+                        padding: const EdgeInsets.only(top: 4.0),
                         child: Text(
                           order.customerAddress,
                           style: TextStyle(fontSize: 14),
@@ -217,6 +217,29 @@ class _CustomerDetailScreenState extends State<CustomerDetailScreen> {
               ),
             ],
           ),
+          if (order.notes != null && order.notes != "")
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 12.0),
+                    child: Text(
+                      "Note dal cliente",
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4.0),
+                    child: Text(
+                      order.notes,
+                      style: TextStyle(fontSize: 13),
+                    ),
+                  ),
+                ],
+              ),
+            ),
         ],
       ),
     );

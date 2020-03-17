@@ -21,7 +21,7 @@ extension SupplierProviderExtension on DatabaseService {
   }
 
   Future<List<SupplierModel>> getSupplierListByDriverCoordinates(GeoPoint driverCoordinates) async {
-    var query = supplierCollection.where("stripeActivated", isEqualTo: true).where("disabled", isEqualTo: false);
+    var query = supplierCollection.where("disabled", isEqualTo: false);
     var geoFirePoint = GeoFirePoint(driverCoordinates.latitude, driverCoordinates.longitude);
     return (await geoFirestore
             .collection(collectionRef: query)
@@ -36,7 +36,7 @@ extension SupplierProviderExtension on DatabaseService {
   }
 
   Stream<List<SupplierModel>> getSupplierListByLocationStream(GeoPoint coordinates) {
-    var query = supplierCollection.where("stripeActivated", isEqualTo: true).where("disabled", isEqualTo: false);
+    var query = supplierCollection.where("disabled", isEqualTo: false);
     var geoFirePoint = GeoFirePoint(coordinates.latitude, coordinates.longitude);
     return geoFirestore.collection(collectionRef: query).within(center: geoFirePoint, radius: MapsConfig.SUPPLIER_RADIUS, field: "geohashPoint").map((snapshots) {
       return snapshots.map((snap) => SupplierModel.fromFirebase(snap)).toList();

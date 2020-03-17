@@ -43,15 +43,14 @@ class _CartState extends State<CartPage> with AutomaticKeepAliveClientMixin {
                 ),
                 Column(
                   children: [
-                    HeaderWidget("Note aggiuntive"),
+                    HeaderWidget("Note per il fattorino"),
                     Padding(
                       padding: const EdgeInsets.only(top: 8.0, bottom: 16, left: 16, right: 16),
                       child: TextFormField(
-                        maxLines: null,
-                        minLines: 4,
+                        maxLines: 5,
                         decoration: InputDecoration(
                           hintMaxLines: 4,
-                          hintText: "Inserisci ciò che vuoi far sapere al fornitore...",
+                          hintText: "Inserisci indicazioni per aiutare il fattorino a trovare il tuo indirizzo...",
                           border: OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.grey, width: 0.0),
                           ),

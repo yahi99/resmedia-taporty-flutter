@@ -98,7 +98,8 @@ class SupplierBloc implements Bloc {
 
   List<ProductCategoryModel> productCategories(SupplierModel supplier, List<ProductModel> products) {
     if (products == null) return null;
-    if (supplier.categories == null || supplier.categories.isEmpty) return null;
+    if (supplier == null) return null;
+    if (supplier.categories == null) return List<ProductCategoryModel>();
 
     return supplier.categories.where((category) => products.any((p) => p.category == category.id)).toList();
   }

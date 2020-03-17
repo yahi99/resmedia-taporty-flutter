@@ -34,7 +34,6 @@ class DriverBloc implements Bloc {
   StreamSubscription _refreshTokenSub;
 
   DriverBloc.instance() {
-    _clearFirebaseUser();
     _firebaseUserController = BehaviorSubject();
 
     _driverController = BehaviorController.catchStream(source: _firebaseUserController.switchMap((_firebaseUser) {
@@ -49,11 +48,32 @@ class DriverBloc implements Bloc {
       if (driver == null || fcmToken == null) return;
       if (driver.fcmToken != fcmToken) await _db.updateDriverFcmToken(driver.id, fcmToken);
     });
+
+    _initFirebaseUser();
   }
 
-  // Se un utente era rimasto loggato da una precedente esecuzione dell'app, sloggalo
-  Future _clearFirebaseUser() async {
-    await signOut();
+  /* 
+    Inserisce come primo valore l'ultimo utente che ha eseguito l'accesso, se esiste.
+  */
+  Future _initFirebaseUser() async {
+    var firebaseUser = await _auth.getCurrentUser();
+
+    if (firebaseUser == null) {
+      _firebaseUserController.value = null;
+      return;
+    }
+
+    if (!(await _isDriver(firebaseUser))) {
+      await signOut();
+      return;
+    }
+
+    if (await _isDisabled(firebaseUser)) {
+      await signOut();
+      return;
+    }
+
+    _firebaseUserController.value = firebaseUser;
   }
 
   Future<bool> _isDriver(FirebaseUser user) async {

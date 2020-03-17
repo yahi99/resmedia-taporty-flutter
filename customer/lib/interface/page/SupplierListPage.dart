@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -118,33 +119,44 @@ class SupplierView extends StatelessWidget {
 
     return ClipRRect(
       borderRadius: BorderRadius.circular(8.0),
-      child: Stack(
-        alignment: Alignment.bottomCenter,
+      child: Column(
         children: <Widget>[
-          CachedNetworkImage(
-            imageUrl: supplier.thumbnailUrl ?? supplier.imageUrl,
-            fit: BoxFit.fitHeight,
-            placeholder: (context, url) => SizedBox(
-              height: 30.0,
-              width: 30.0,
-              child: Center(
-                child: CircularProgressIndicator(),
+          SizedBox(
+            width: double.infinity,
+            height: 150,
+            child: CachedNetworkImage(
+              imageUrl: supplier.thumbnailUrl ?? supplier.imageUrl,
+              fit: BoxFit.cover,
+              placeholder: (context, url) => SizedBox(
+                height: 30.0,
+                width: 30.0,
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
               ),
+              errorWidget: (context, url, error) => Center(child: Icon(Icons.error, color: Colors.grey)),
             ),
-            errorWidget: (context, url, error) => Center(child: Icon(Icons.error, color: Colors.grey)),
           ),
-          Container(
-            color: Colors.black,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-              child: DefaultTextStyle(
-                style: TextStyle(color: Colors.white),
+          SizedBox(
+            height: 50,
+            child: Container(
+              color: Colors.black,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    DefaultTextStyle(
-                      style: TextStyle(fontSize: 20),
-                      child: Text("${supplier.name}"),
+                    Expanded(
+                      child: AutoSizeText(
+                        supplier.name,
+                        maxFontSize: 18,
+                        minFontSize: 14,
+                        maxLines: 2,
+                        style: TextStyle(fontSize: 18, color: Colors.white),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 8,
                     ),
                     Row(
                       mainAxisSize: MainAxisSize.min,
@@ -156,12 +168,10 @@ class SupplierView extends StatelessWidget {
                         SizedBox(
                           width: 8.0,
                         ),
-                        Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            (times != null) ? Text(times) : Container(),
-                          ],
-                        )
+                        Text(
+                          times,
+                          style: TextStyle(fontSize: 14, color: Colors.white),
+                        ),
                       ],
                     )
                   ],

@@ -27,24 +27,24 @@ class CartProductListView extends StatelessWidget {
               );
             },
           ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          StreamBuilder<SettingsModel>(
+            stream: DatabaseService().getSettingsStream(),
+            builder: (_, settingsSnap) {
+              var settings = settingsSnap.data;
+              return Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
                   children: <Widget>[
-                    Text(
-                      'Prezzo prodotti: ',
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Text(
+                          'Prezzo prodotti: ',
+                        ),
+                        Text((cart.amount.toStringAsFixed(2)) + "€"),
+                      ],
                     ),
-                    Text((cart.amount.toStringAsFixed(2)) + "€"),
-                  ],
-                ),
-                StreamBuilder<SettingsModel>(
-                  stream: DatabaseService().getSettingsStream(),
-                  builder: (_, settingsSnap) {
-                    var settings = settingsSnap.data;
-                    return Row(
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         Text(
@@ -52,28 +52,28 @@ class CartProductListView extends StatelessWidget {
                         ),
                         Text((settings?.deliveryAmount ?? 5).toStringAsFixed(2) + "€"),
                       ],
-                    );
-                  },
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Text(
-                        'Totale: ',
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Text(
+                            'Totale: ',
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            ((cart.amount + (settings?.deliveryAmount ?? 5)).toStringAsFixed(2)) + "€",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ],
                       ),
-                      Text(
-                        ((cart.amount + 5).toStringAsFixed(2)) + "€",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          ),
+              );
+            },
+          )
         ] else
           Padding(
             padding: EdgeInsets.all(16.0),

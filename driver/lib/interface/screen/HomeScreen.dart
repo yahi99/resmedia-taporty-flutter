@@ -28,7 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
             )
           ],
           bottom: TabBar(
-            labelStyle: theme.textTheme.body1.copyWith(fontSize: 16, fontWeight: FontWeight.bold),
+            labelStyle: theme.textTheme.body1.copyWith(fontSize: 14, fontWeight: FontWeight.bold),
             tabs: [
               Tab(
                 text: 'Ordini',

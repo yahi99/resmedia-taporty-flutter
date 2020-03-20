@@ -39,7 +39,7 @@ class SplashScreenState extends State<SplashScreen> {
     _messagingService.init(_onNotificationClick);
   }
 
-  void _onNotificationClick(Map<String, dynamic> data) async {
+  void _onNotificationClick(dynamic data) async {
     if (await userBloc.outUser.first == null) return;
 
     if (data['type'] == 'ORDER_NOTIFICATION') {

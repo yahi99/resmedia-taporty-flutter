@@ -34,7 +34,7 @@ class SplashScreenState extends State<SplashScreen> {
     _messagingService.init(_onNotificationClick);
   }
 
-  void _onNotificationClick(Map<String, dynamic> data) async {
+  void _onNotificationClick(dynamic data) async {
     if (await driverBloc.outDriver.first == null) return;
     //if (!(await driverBloc.isStripeActivated())) return;
 
@@ -47,7 +47,7 @@ class SplashScreenState extends State<SplashScreen> {
       await NavigationService().navigatorKey.currentState.pushNamed("/orderDetail");
     }
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Material(

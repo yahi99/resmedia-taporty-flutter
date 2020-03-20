@@ -19,15 +19,14 @@ class CloudMessagingService {
 
   Stream<String> get onTokenRefresh => _messaging.onTokenRefresh;
 
-  Future init(Function(Map<String, dynamic> message) callback) async {
+  Future init(Function(dynamic data) callback) async {
     if (Platform.isIOS) await iOSPermission();
 
     _messaging.configure(
       onMessage: (Map<String, dynamic> message) async {
         print(message);
         var data = message['data'] ?? message;
-        var notification =
-            message['notification'] ?? message['aps']['alert'] ?? null;
+        var notification = message['notification'] ?? message['aps']['alert'] ?? null;
         if (notification != null)
           showOverlayNotification((context) {
             return ForegroundNotification(
@@ -48,7 +47,6 @@ class CloudMessagingService {
   }
 
   Future iOSPermission() async {
-    await _messaging.requestNotificationPermissions(
-        IosNotificationSettings(sound: true, badge: true, alert: true));
+    await _messaging.requestNotificationPermissions(IosNotificationSettings(sound: true, badge: true, alert: true));
   }
 }

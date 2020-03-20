@@ -39,11 +39,11 @@ class SplashScreenState extends State<SplashScreen> {
     _messagingService.init(_onNotificationClick);
   }
 
-  void _onNotificationClick(Map<String, dynamic> message) async {
+  void _onNotificationClick(Map<String, dynamic> data) async {
     if (await userBloc.outUser.first == null) return;
 
-    if (message['data']['type'] == 'ORDER_NOTIFICATION') {
-      var orderId = message['data']['orderId'];
+    if (data['type'] == 'ORDER_NOTIFICATION') {
+      var orderId = data['orderId'];
       if (orderId == null) return;
 
       $Provider.of<OrderBloc>().setOrderStream(orderId);

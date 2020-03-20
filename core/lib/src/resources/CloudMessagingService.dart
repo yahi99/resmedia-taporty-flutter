@@ -24,24 +24,31 @@ class CloudMessagingService {
 
     _messaging.configure(
       onMessage: (Map<String, dynamic> message) async {
-        showOverlayNotification((context) {
-          return ForegroundNotification(
-            message['notification']['title'],
-            message['notification']['body'],
-            onTap: () {
-              OverlaySupportEntry.of(context).dismiss();
-              callback(message);
-            },
-          );
-        });
+        print(message);
+        var data = message['data'] ?? message;
+        var notification =
+            message['notification'] ?? message['aps']['alert'] ?? null;
+        if (notification != null)
+          showOverlayNotification((context) {
+            return ForegroundNotification(
+              notification['title'],
+              notification['body'],
+              onTap: () {
+                OverlaySupportEntry.of(context).dismiss();
+                callback(data);
+              },
+            );
+          });
       },
       onResume: (Map<String, dynamic> message) async {
-        callback(message);
+        var data = message['data'] ?? message;
+        callback(data);
       },
     );
   }
 
   Future iOSPermission() async {
-    await _messaging.requestNotificationPermissions(IosNotificationSettings(sound: true, badge: true, alert: true));
+    await _messaging.requestNotificationPermissions(
+        IosNotificationSettings(sound: true, badge: true, alert: true));
   }
 }

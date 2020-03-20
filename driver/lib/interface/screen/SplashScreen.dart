@@ -34,12 +34,12 @@ class SplashScreenState extends State<SplashScreen> {
     _messagingService.init(_onNotificationClick);
   }
 
-  void _onNotificationClick(Map<String, dynamic> message) async {
+  void _onNotificationClick(Map<String, dynamic> data) async {
     if (await driverBloc.outDriver.first == null) return;
     //if (!(await driverBloc.isStripeActivated())) return;
 
-    if (message['data']['type'] == 'ORDER_NOTIFICATION') {
-      var orderId = message['data']['orderId'];
+    if (data['type'] == 'ORDER_NOTIFICATION') {
+      var orderId = data['orderId'];
       if (orderId == null) return;
 
       $Provider.of<OrderBloc>().setOrderStream(orderId);
@@ -47,7 +47,7 @@ class SplashScreenState extends State<SplashScreen> {
       await NavigationService().navigatorKey.currentState.pushNamed("/orderDetail");
     }
   }
-
+  
   @override
   Widget build(BuildContext context) {
     return Material(
